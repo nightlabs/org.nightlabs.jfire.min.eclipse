@@ -28,6 +28,7 @@ public class RemoteClassLoadingHook implements ClassLoadingHook, HookConfigurato
 	 * 
 	 */
 	public RemoteClassLoadingHook() {
+		System.out.println("RemoteClassLoadingHook instantiated");
 	}
 
 	/*
