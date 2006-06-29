@@ -121,11 +121,13 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 			}
 		}
 
+		// if there are no new ones, we simply return false
 		if (newExportPackage == null) {
 			System.out.println("There are NO new remote packages. No need to rewrite the MANIFEST.MF!");
 			return false;
 		}
 
+		// there are new remote packages => rewrite MANIFEST.MF
 		System.out.println("There are new remote packages. We must rewrite the MANIFEST.MF!");
 		manifest.getMainAttributes().put(new Attributes.Name("Export-Package"), newExportPackage.toString());
 //		OutputStream out = new FileOutputStream(new File(manifestFile.getAbsolutePath()+".new"));
