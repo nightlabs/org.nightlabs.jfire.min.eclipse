@@ -8,12 +8,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -66,6 +70,24 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	protected List<Pattern> getExcludeRemotePackagePatterns()
+	{
+		Set<String> res = new HashSet<String>();
+		// TODO this should be populated by an extension point!!!
+		res.add("org\\.nightlabs\\.editor2d");
+		res.add("org\\.nightlabs\\.editor2d\\..*");
+		res.add("org\\.nightlabs\\.ipanema\\.sun");
+		res.add("org\\.nightlabs\\.ipanema\\.sun\\..*");
+		res.add("org\\.nightlabs\\.ipanema\\.sand");
+		res.add("org\\.nightlabs\\.ipanema\\.sand\\..*");
+
+		List<Pattern> resP = new ArrayList<Pattern>(res.size());
+		for (String regex : res) {
+			resP.add(Pattern.compile(regex));
+		}
+		return resP;
+	}
+
 	/**
 	 * This method rewrites (if necessary) the MANIFEST.MF of this plugin (i.e. <code>org.nightlabs.jfire.base.j2ee</code>).
 	 *
@@ -101,17 +123,46 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 
 		String exportPackage = manifest.getMainAttributes().getValue("Export-Package");
 
+		List<Pattern> excludeRemotePackagePatterns = getExcludeRemotePackagePatterns();
+		StringBuffer newExportPackage = null;
+
 		// parse the comma-separated packages
 		StringTokenizer st = new StringTokenizer(exportPackage, ",");
 		SortedSet<String> exportPackageSet = new TreeSet<String>();
 		while (st.hasMoreTokens()) {
-			exportPackageSet.add(st.nextToken());
+			String pkg = st.nextToken();
+			boolean exclude = false;
+			for (Pattern pattern : excludeRemotePackagePatterns) {
+				if (pattern.matcher(pkg).matches()) {
+					exclude = true;
+					newExportPackage = new StringBuffer();
+					break;
+				}
+			}
+
+			if (!exclude)
+				exportPackageSet.add(pkg);
+		}
+
+		if (newExportPackage != null) {
+			boolean first = true;
+			for (String pkg : exportPackageSet) {
+				if (!first)
+					newExportPackage.append(',');
+
+				newExportPackage.append(pkg);
+				first = false;
+			}
 		}
 
 		// check, whether there are new remote packages that do not yet exist locally.
 		Set<String> remotePackages = JFireRCDLDelegate.sharedInstance().getPublishedRemotePackages();
-		StringBuffer newExportPackage = null;
-		for (String pkg : remotePackages) {
+		iterateRemotePackages : for (String pkg : remotePackages) {
+			for (Pattern pattern : excludeRemotePackagePatterns) {
+				if (pattern.matcher(pkg).matches())
+					continue iterateRemotePackages;
+			}
+
 			if (!exportPackageSet.contains(pkg)) {
 				if (newExportPackage == null)
 					newExportPackage = new StringBuffer(exportPackage);
