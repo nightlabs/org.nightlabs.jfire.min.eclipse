@@ -1,28 +1,33 @@
 package org.nightlabs.jfire.base.j2ee;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StreamTokenizer;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
+import org.nightlabs.util.Utils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -70,22 +75,39 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	protected List<Pattern> getExcludeRemotePackagePatterns()
+	protected Set<String> readPublishedRemotePackages(File f)
+	throws IOException
 	{
-		Set<String> res = new HashSet<String>();
-		// TODO this should be populated by an extension point!!!
-		res.add("org\\.nightlabs\\.editor2d");
-		res.add("org\\.nightlabs\\.editor2d\\..*");
-		res.add("org\\.nightlabs\\.ipanema\\.sun");
-		res.add("org\\.nightlabs\\.ipanema\\.sun\\..*");
-		res.add("org\\.nightlabs\\.ipanema\\.sand");
-		res.add("org\\.nightlabs\\.ipanema\\.sand\\..*");
-
-		List<Pattern> resP = new ArrayList<Pattern>(res.size());
-		for (String regex : res) {
-			resP.add(Pattern.compile(regex));
+		HashSet<String> res = new HashSet<String>();
+		Reader r = new BufferedReader(new FileReader(f));
+		try {
+			StreamTokenizer st = new StreamTokenizer(r);
+			st.resetSyntax();
+			st.wordChars(0, '\n' - 1); st.wordChars('\n' + 1, Integer.MAX_VALUE);
+			while (st.ttype != StreamTokenizer.TT_EOF) {
+				if (st.ttype == StreamTokenizer.TT_WORD) {
+					res.add(st.sval);
+				}
+				st.nextToken();
+			}
+		} finally {
+			r.close();
 		}
-		return resP;
+		return res;
+	}
+
+	protected void writePublishedRemotePackages(Set<String> packages, File f)
+	throws IOException
+	{
+		Writer w = new BufferedWriter(new FileWriter(f));
+		try {
+			for (String pkg : packages) {
+				w.write(pkg);
+				w.write('\n');
+			}
+		} finally {
+			w.close();
+		}
 	}
 
 	/**
@@ -95,14 +117,15 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 	 * @throws IOException 
 	 * @throws URISyntaxException 
 	 */
-	public boolean updateManifest() throws IOException, URISyntaxException
+	public boolean updateManifest()
+	throws IOException, URISyntaxException
 	{
 		System.out.println("****************************************************************");
 
 		// find the MANIFEST.MF
 		File manifestFile;
 		{
-//			Bundle bundle = Platform.getBundle(PLUGIN_ID);
+			// Bundle bundle = Platform.getBundle(PLUGIN_ID);
 			Bundle bundle = getBundle();
 			Path path = new Path("META-INF/MANIFEST.MF");
 			URL fileURL = FileLocator.find(bundle, path, null);
@@ -112,8 +135,61 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 				throw new IllegalStateException("The plugin's MANIFEST.MF does not exist: " + manifestFile.getAbsolutePath());
 		}
 
-		// read the MANIFEST.MF
-		InputStream in = new FileInputStream(manifestFile);
+		File metaInfDir = manifestFile.getParentFile();
+		File origManifestFile = new File(metaInfDir, "MANIFEST.MF.orig");
+		if (!origManifestFile.exists()) {
+			// it seems, this is the first start - so create a backup of the original MANIFEST.MF
+
+			InputStream in = new FileInputStream(manifestFile);
+			try {
+				OutputStream out = new FileOutputStream(origManifestFile);
+				try {
+					Utils.transferStreamData(in, out);
+				} finally {
+					out.close();
+				}
+			} finally {
+				in.close();
+			}
+			origManifestFile.setLastModified(manifestFile.lastModified());
+		}
+
+		// read the last server-package-list
+		File publishedRemotePackagesFile = new File(metaInfDir, "publishedRemotePackages.csv");
+		Set<String> lastPublishedRemotePackages;
+		if (publishedRemotePackagesFile.exists())
+			lastPublishedRemotePackages = readPublishedRemotePackages(publishedRemotePackagesFile);
+		else
+			lastPublishedRemotePackages = new HashSet<String>();
+
+		// obtain the current published remote packages
+		Set<String> currentPublishedRemotePackages = JFireRCDLDelegate.sharedInstance().getPublishedRemotePackages();
+
+		// diff the last and the new ones
+		boolean changed = false;
+		for (String currPkg : currentPublishedRemotePackages) {
+			if (!lastPublishedRemotePackages.contains(currPkg)) {
+				changed = true; // there is a new one on the server which we don't have yet locally
+				break;
+			}
+		}
+
+		if (!changed) {
+			for (String lastPkg : lastPublishedRemotePackages) {
+				if (!currentPublishedRemotePackages.contains(lastPkg)) {
+					changed = true; // one of the packages that we still have locally doesn't exist anymore on the server
+					break;
+				}
+			}
+		}
+
+		if (!changed)
+			return false;
+
+		// We need to read the MANIFEST.MF.orig, append all the current published packages and write it as MANIFEST.MF.
+
+		// read the MANIFEST.MF.orig
+		InputStream in = new FileInputStream(origManifestFile);
 		Manifest manifest;
 		try {
 			manifest = new Manifest(in);
@@ -121,73 +197,27 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 			in.close();
 		}
 
-		String exportPackage = manifest.getMainAttributes().getValue("Export-Package");
+		// get the Export-Package entry
+		StringBuffer exportPackage = new StringBuffer(
+				manifest.getMainAttributes().getValue("Export-Package"));
 
-		List<Pattern> excludeRemotePackagePatterns = getExcludeRemotePackagePatterns();
-		StringBuffer newExportPackage = null;
-
-		// parse the comma-separated packages
-		StringTokenizer st = new StringTokenizer(exportPackage, ",");
-		SortedSet<String> exportPackageSet = new TreeSet<String>();
-		while (st.hasMoreTokens()) {
-			String pkg = st.nextToken();
-			boolean exclude = false;
-			for (Pattern pattern : excludeRemotePackagePatterns) {
-				if (pattern.matcher(pkg).matches()) {
-					exclude = true;
-					newExportPackage = new StringBuffer();
-					break;
-				}
-			}
-
-			if (!exclude)
-				exportPackageSet.add(pkg);
+		// append all the packages from the server
+		for (String pkg : currentPublishedRemotePackages) {
+			exportPackage.append(',');
+			exportPackage.append(pkg);
 		}
 
-		if (newExportPackage != null) {
-			boolean first = true;
-			for (String pkg : exportPackageSet) {
-				if (!first)
-					newExportPackage.append(',');
-
-				newExportPackage.append(pkg);
-				first = false;
-			}
-		}
-
-		// check, whether there are new remote packages that do not yet exist locally.
-		Set<String> remotePackages = JFireRCDLDelegate.sharedInstance().getPublishedRemotePackages();
-		iterateRemotePackages : for (String pkg : remotePackages) {
-			for (Pattern pattern : excludeRemotePackagePatterns) {
-				if (pattern.matcher(pkg).matches())
-					continue iterateRemotePackages;
-			}
-
-			if (!exportPackageSet.contains(pkg)) {
-				if (newExportPackage == null)
-					newExportPackage = new StringBuffer(exportPackage);
-
-				newExportPackage.append(',');
-				newExportPackage.append(pkg);
-			}
-		}
-
-		// if there are no new ones, we simply return false
-		if (newExportPackage == null) {
-			System.out.println("There are NO new remote packages. No need to rewrite the MANIFEST.MF!");
-			return false;
-		}
-
-		// there are new remote packages => rewrite MANIFEST.MF
-		System.out.println("There are new remote packages. We must rewrite the MANIFEST.MF!");
-		manifest.getMainAttributes().put(new Attributes.Name("Export-Package"), newExportPackage.toString());
-//		OutputStream out = new FileOutputStream(new File(manifestFile.getAbsolutePath()+".new"));
+		// write the MANIFEST.MF
+		manifest.getMainAttributes().put(new Attributes.Name("Export-Package"), exportPackage.toString());
 		OutputStream out = new FileOutputStream(manifestFile);
 		try {
 			manifest.write(out);
 		} finally {
 			out.close();
 		}
+
+		// write the server's packages
+		writePublishedRemotePackages(currentPublishedRemotePackages, publishedRemotePackagesFile);
 
 		return true;
 	}
