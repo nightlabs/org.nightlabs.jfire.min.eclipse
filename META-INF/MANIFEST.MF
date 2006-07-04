@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.nightlabs.jfire.base.j2ee.osgi
 Bundle-Version: 1.0.0
 Bundle-ClassPath: org.nightlabs.jfire.base.j2ee.osgi.jar
 Bundle-Vendor: NightLabs.org
-Fragment-Host: org.eclipse.osgi;bundle-version="3.2.0"
+Fragment-Host: org.eclipse.osgi
 Bundle-Localization: plugin
 Export-Package: org.nightlabs.classloader,
  org.nightlabs.classloader.osgi,
