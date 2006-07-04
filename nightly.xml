@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nightlybuild PUBLIC "-//NightLabs//DTD NightlyBuild V 0.5//EN" "http://www.nightlabs.de/dtd/nightlybuild_0_5.dtd">
+
+<nightlybuild>
+
+  <project name="org.nightlabs.jfire.base.j2ee">
+    <ant path="org.nightlabs.jfire.base.j2ee" file="build-nightlabs.xml" target="deploy"/>
+    <requires/>
+    <provides/>
+    <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_1.0.0.tar.gz"/>
+    <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
+  </project>
+
+</nightlybuild>
