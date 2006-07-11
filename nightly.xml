@@ -5,7 +5,11 @@
 
   <project name="org.nightlabs.jfire.base.j2ee">
     <ant path="org.nightlabs.jfire.base.j2ee" file="build-nightlabs.xml" target="deploy"/>
-    <requires/>
+	<requires/>
+	<requires path="/NightLabsCascadedAuthenticationJBoss"/>
+	<requires path="/JFireRCLBackend"/>
+	<requires path="/JFireRCLBackendBean"/>
+	<requires path="/JFireRemoteClassLoader"/>
     <provides/>
     <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_1.0.0.tar.gz"/>
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
