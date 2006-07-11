@@ -15,11 +15,12 @@
 	  
 	  
     <provides/>
-    <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/NightLabsCascadedAuthenticationJBoss.jar"/>
+	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/NightLabsCascadedAuthenticationJBoss.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRemoteClassLoader.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackend.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
-
+    <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
+	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/jbossall-client.jar"/>
 	  	  
     <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_1.0.0.tar.gz"/>
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
