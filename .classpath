@@ -4,7 +4,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jbossall-client.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JFireRCLBackend.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JFireRCLBackendBean.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/JFireRemoteClassLoader.jar"/>
+	<classpathentry exported="true" sourcepath="/JFireRemoteClassLoader/src" kind="lib" path="lib/JFireRemoteClassLoader.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/NightLabsCascadedAuthenticationJBoss.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
