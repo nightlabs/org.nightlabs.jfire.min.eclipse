@@ -66,6 +66,7 @@ implements JFireRCDLDelegateFilter
 	}
 
 // TODO is supported by Eclipse's compiler but not by Sun's	@Override
+// it should be sth. like @Implement anyway - but that's not yet known by Java
 	public String getExtensionPointID()
 	{
 		return "org.nightlabs.jfire.base.j2ee.remoteResourceFilter";
@@ -74,6 +75,7 @@ implements JFireRCDLDelegateFilter
 	private LinkedList<Pattern> exclusionPatterns = new LinkedList<Pattern>();
 
 // TODO is supported by Eclipse's compiler but not by Sun's	@Override
+// it should be sth. like @Implement anyway - but that's not yet known by Java
 	public void processElement(IExtension extension, IConfigurationElement element)
 			throws EPProcessorException
 	{
