@@ -38,8 +38,10 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -152,7 +154,10 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 			Path path = new Path("META-INF/MANIFEST.MF");
 			URL fileURL = FileLocator.find(bundle, path, null);
 			URL realURL = FileLocator.resolve(fileURL);
-			manifestFile = new File(realURL.toURI());
+			if (!realURL.getProtocol().equalsIgnoreCase("file"))
+				//TODO: Maybe handle jar as well?
+				throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee seems is not released as directory. Its URL protocol is "+realURL.getProtocol());
+			manifestFile = new File(realURL.getPath());
 			if (!manifestFile.exists())
 				throw new IllegalStateException("The plugin's MANIFEST.MF does not exist: " + manifestFile.getAbsolutePath());
 		}
