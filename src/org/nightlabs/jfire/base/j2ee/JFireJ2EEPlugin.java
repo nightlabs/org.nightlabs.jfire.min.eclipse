@@ -153,8 +153,8 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 			URL fileURL = FileLocator.find(bundle, path, null);
 			URL realURL = FileLocator.resolve(fileURL);
 			if (!realURL.getProtocol().equalsIgnoreCase("file"))
-				//TODO: Maybe handle jar as well?
-				throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee seems is not released as directory. Its URL protocol is "+realURL.getProtocol());
+				throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee is not deployed as directory-plugin. Its URL protocol is "+realURL.getProtocol());
+
 			manifestFile = new File(realURL.getPath());
 			if (!manifestFile.exists())
 				throw new IllegalStateException("The plugin's MANIFEST.MF does not exist: " + manifestFile.getAbsolutePath());
