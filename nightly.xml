@@ -9,14 +9,14 @@
 	<requires/>
 	  
     <!-- For the build-nightlabs-compile.pre.xml to work, the following projects must be built before. -->
-	<requires path="/NightLabsCascadedAuthenticationJBoss"/>
+	<requires path="/JFireIntegrationJBoss"/>
 	<requires path="/JFireRCLBackend"/>
 	<requires path="/JFireRCLBackendBean"/>
 	<requires path="/JFireRemoteClassLoader"/>
 	  
 	  
     <provides/>
-	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/NightLabsCascadedAuthenticationJBoss.jar"/>
+	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireIntegrationJBoss.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRemoteClassLoader.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackend.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
