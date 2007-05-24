@@ -8,7 +8,7 @@ Bundle-ClassPath: org.nightlabs.jfire.base.j2ee.jar,
  lib/JFireRCLBackend.jar,
  lib/JFireRCLBackendBean.jar,
  lib/JFireRemoteClassLoader.jar,
- lib/NightLabsCascadedAuthenticationJBoss.jar
+ lib/JFireIntegrationJBoss.jar
 Bundle-Activator: org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -239,5 +239,5 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.nightlabs.authentication.jboss,
  org.nightlabs.jfire.base.j2ee,
  org.nightlabs.jfire.classloader,
- org.nightlabs.jfire.classloader.test,
+ org.nightlabs.jfire.jboss.cascadedauthentication,
  org.omg.stub.javax.ejb

@@ -2,12 +2,14 @@
 	<target name="compile.pre">
 	    <mkdir dir="${project.dir}/${lib.dir}"/>
 
-	    <copy file="../NightLabsCascadedAuthenticationJBoss/dist/NightLabsCascadedAuthenticationJBoss.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
-		<jarlib-resolve property="NightLabsCascadedAuthenticationJBoss.library" failonerror="true" checkextension="false">
-			<extension extensionname="NightLabsCascadedAuthenticationJBoss"/>
-			<location location="${project.dir}/${lib.dir}/NightLabsCascadedAuthenticationJBoss.jar"/>
+	   	<delete file="${project.dir}/${lib.dir}/NightLabsCascadedAuthenticationJBoss.jar"/>
+
+	    <copy file="../JFireIntegrationJBoss/dist/JFireIntegrationJBoss.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+		<jarlib-resolve property="JFireIntegrationJBoss.library" failonerror="true" checkextension="false">
+			<extension extensionname="JFireIntegrationJBoss"/>
+			<location location="${project.dir}/${lib.dir}/JFireIntegrationJBoss.jar"/>
 			<url
-				url="http://jfire.nightlabs.org/~nightly/NightLabs/NightLabsCascadedAuthenticationJBoss.jar"
+				url="http://jfire.nightlabs.org/~nightly/NightLabs/JFireIntegrationJBoss.jar"
 				destdir="${project.dir}/${lib.dir}"/>
 		</jarlib-resolve>
 
