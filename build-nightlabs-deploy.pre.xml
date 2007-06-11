@@ -1,0 +1,7 @@
+<project>
+	<target name="deploy.pre">
+		<delete
+			verbose="true"
+			dir="${rcp.deploy.allplatforms.dir}/${rcp.deploy.subdir}/${project.name}_${project.version}" />
+	</target>
+</project>

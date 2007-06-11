@@ -3,6 +3,8 @@
 	    <mkdir dir="${project.dir}/${lib.dir}"/>
 
 	   	<delete file="${project.dir}/${lib.dir}/NightLabsCascadedAuthenticationJBoss.jar"/>
+			<delete dir="${project.dir}/${dist.dir}"/>
+			<mkdir dir="${project.dir}/${dist.dir}"/>
 
 	    <copy file="../JFireIntegrationJBoss/dist/JFireIntegrationJBoss.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
 		<jarlib-resolve property="JFireIntegrationJBoss.library" failonerror="true" checkextension="false">
