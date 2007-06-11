@@ -77,7 +77,7 @@ implements JFireRCDLDelegateFilter
 // TODO is supported by Eclipse's compiler but not by Sun's	@Override
 // it should be sth. like @Implement anyway - but that's not yet known by Java
 	public void processElement(IExtension extension, IConfigurationElement element)
-			throws EPProcessorException
+			throws Exception
 	{
 		try {
 			String pattern = element.getAttribute("pattern");

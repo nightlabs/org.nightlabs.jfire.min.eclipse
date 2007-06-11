@@ -238,5 +238,6 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.jnp.server,
  org.nightlabs.jfire.base.j2ee,
  org.nightlabs.jfire.classloader,
+ org.nightlabs.jfire.jboss.authentication,
  org.nightlabs.jfire.jboss.cascadedauthentication,
  org.omg.stub.javax.ejb
