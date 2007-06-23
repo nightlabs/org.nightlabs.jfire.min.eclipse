@@ -57,18 +57,110 @@ public class DelegatingClassLoaderOSGI
 	{
 		super(parent, delegate, domain, bundledata, classpath);
 		classLoadingDelegator = new ClassLoadingDelegator(this);
+//		loaderThread.start();
 		LogUtil.log_info(this.getClass(), "init", "DelegatingClassLoader instantiated.");
 	}
+
+//	private List<String> classnamesToLoad = Collections.synchronizedList(new LinkedList<String>());
+//	private Map<String, Class> classesLoaded = Collections.synchronizedMap(new HashMap<String, Class>());
+//
+//	private Thread loaderThread = new Thread()
+//	{
+//		private boolean reallyInterrupted = false;
+//
+//		public void run() {
+//			while (!isInterrupted()) {
+//				try {
+//					if (classnamesToLoad.isEmpty()) {
+//						synchronized (classnamesToLoad) {
+//							try {
+//								classnamesToLoad.wait(1000);
+//							} catch (InterruptedException e) {
+//								// ignore
+//							}
+//						}
+//					}
+//
+//					while (!classnamesToLoad.isEmpty()) {
+//						String classname = classnamesToLoad.get(0);
+//						LogUtil.log_debug(this.getClass(), "run", "loading class on loaderThread: " + classname);
+//
+//						Class clazz;
+//						try {
+//							clazz = findLocalClass(classname);
+//						} catch (ClassNotFoundException x) {
+//							clazz = null;
+//						}
+//						classesLoaded.put(classname, clazz);
+//						classnamesToLoad.remove(0);
+//						synchronized (DelegatingClassLoaderOSGI.this) {
+//							DelegatingClassLoaderOSGI.this.notifyAll();
+//						}
+//					}
+//				} catch (Throwable t) {
+//					LogUtil.log_error(this.getClass(), "run", t.getMessage(), t);
+//				}
+//			}
+//		}
+//
+//		@Override
+//		public boolean isInterrupted()
+//		{
+//			return reallyInterrupted || super.isInterrupted();
+//		}
+//
+//		public void interrupt() {
+//			reallyInterrupted = true;
+//			super.interrupt();
+//		}
+//	};
 
 	/**
 	 * DelegatingClassLoader overrides findLocal* methods to check its
 	 * delegates when classes or resources could not be found by the
 	 * parent implementation.
+	 *
+	 * TODO I synchronized this method, because
+	 * we often had deadlocks with the ClassPathManager which tries to synchronise on this object as well.
 	 */
 	@Override
 	public Class findLocalClass(String classname) throws ClassNotFoundException {
 		LogUtil.log_debug(this.getClass(), "findLocalClass", "Asked for "+classname);
 		Class result = null;
+
+//		ClassLoader cl = this;
+//		String prefix = "";
+//		while (cl != null) {
+//			LogUtil.log_debug(this.getClass(), "findLocalClass", prefix + String.valueOf(cl));
+//			cl = cl.getParent();
+//			prefix = prefix + "  ";
+//		}
+
+//		if (Thread.currentThread() != loaderThread) {
+//			LogUtil.log_debug(this.getClass(), "findLocalClass", "Delegating classload to loaderThread for "+classname);
+//
+//			classnamesToLoad.add(classname);
+//			synchronized (classnamesToLoad) {
+//				classnamesToLoad.notifyAll();
+//			}
+//
+//			synchronized (this) {
+//				while (!classesLoaded.containsKey(classname)) {
+//					try {
+//						this.wait(1000);
+//					} catch (InterruptedException e) {
+//						// ignore
+//					}
+//				};
+//			}
+//			result = classesLoaded.get(classname);
+//
+//			if (result == null)
+//				throw new ClassNotFoundException(classname);
+//
+//			return result;
+//		}
+
 		try {
 			result = super.findLocalClass(classname);
 		} catch (ClassNotFoundException e) {
@@ -81,7 +173,7 @@ public class DelegatingClassLoaderOSGI
 		LogUtil.log_debug(this.getClass(), "findLocalClass", "Returning "+result);
 		return result;		
 	}
-	
+
 	/**
 	 * DelegatingClassLoader overrides findLocal* methods to check its
 	 * delegates when classes or resources could not be found by the
