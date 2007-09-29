@@ -13,7 +13,7 @@ Bundle-Activator: org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.nightlabs.base
+ org.nightlabs.base.ui
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Export-Package: EDU.oswego.cs.dl.util.concurrent,
