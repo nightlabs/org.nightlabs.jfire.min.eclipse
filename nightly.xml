@@ -3,13 +3,13 @@
 
 <nightlybuild>
 
-  <project name="org.nightlabs.jfire.base.admin">
+  <project name="org.nightlabs.jfire.base.admin.ui">
 	<plugin/>
-    <ant path="org.nightlabs.jfire.base.admin" file="build-nightlabs.xml" target="deploy"/>
+    <ant path="org.nightlabs.jfire.base.admin.ui" file="build-nightlabs.xml" target="deploy"/>
     <requires/>
     <provides/>
-    <publishes description="..." location="org.nightlabs.jfire.base.admin/dist/org.nightlabs.jfire.base.admin_0.9.1.tar.gz"/>
-    <javadoc path="org.nightlabs.jfire.base.admin/src"/>
+    <publishes description="..." location="org.nightlabs.jfire.base.admin.ui/dist/org.nightlabs.jfire.base.admin.ui_0.9.1.tar.gz"/>
+    <javadoc path="org.nightlabs.jfire.base.admin.ui/src"/>
   </project>
 
 </nightlybuild>
