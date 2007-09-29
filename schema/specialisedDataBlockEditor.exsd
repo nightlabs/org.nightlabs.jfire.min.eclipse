@@ -55,7 +55,7 @@
                   Specialised DataBlockEditorFactory to provide editors for the structBlock with the given structBlockID.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.prop.edit.blockbased.PropDataBlockEditorFactory"/>
+                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.ui.prop.edit.blockbased.PropDataBlockEditorFactory"/>
                </appInfo>
             </annotation>
          </attribute>

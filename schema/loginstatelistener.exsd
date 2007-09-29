@@ -50,7 +50,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.login.LoginStateListener"/>
+                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.ui.login.LoginStateListener"/>
                </appInfo>
             </annotation>
          </attribute>

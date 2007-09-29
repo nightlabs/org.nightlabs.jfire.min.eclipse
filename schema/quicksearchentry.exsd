@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.nightlabs.jfire.base">
+<schema targetNamespace="org.nightlabs.jfire.base.ui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.nightlabs.jfire.base" id="quickSearchEntry" name="quickSearchEntry"/>
+         <meta.schema plugin="org.nightlabs.jfire.base.ui" id="quickSearchEntry" name="quickSearchEntry"/>
       </appInfo>
       <documentation>
-         Extension Point for registering Implementations of org.nightlabs.jfire.base.overview.search.QuickSearchEntry which are used in an implementation of org.nightlabs.jfire.base.overview.search.SearchEntryViewer
+         Extension Point for registering Implementations of org.nightlabs.jfire.base.ui.overview.search.QuickSearchEntry which are used in an implementation of org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer
       </documentation>
    </annotation>
 
@@ -50,7 +50,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.nightlabs.jfire.base.overview.search.QuickSearchEntryFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.nightlabs.jfire.base.ui.overview.search.QuickSearchEntryFactory"/>
                </appInfo>
             </annotation>
          </attribute>

@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.nightlabs.jfire.base">
+<schema targetNamespace="org.nightlabs.jfire.base.ui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.nightlabs.jfire.base" id="overview" name="overview"/>
+         <meta.schema plugin="org.nightlabs.jfire.base.ui" id="overview" name="overview"/>
       </appInfo>
       <documentation>
          Add categories and entries to the overview perspective
@@ -80,7 +80,7 @@
                   Use this to overwrite the CategoryFactory implementation used. If omitted, the framework will use the &lt;code&gt;DefaultCategoryFactory&lt;/code&gt; wich will lead to the display of all entries in a Table within the category.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.overview.CategoryFactory"/>
+                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.ui.overview.CategoryFactory"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -131,10 +131,10 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  An implementation of the interface org.nightlabs.jfire.base.overview.Entry
+                  An implementation of the interface org.nightlabs.jfire.base.ui.overview.Entry
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.overview.EntryFactory"/>
+                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.ui.overview.EntryFactory"/>
                </appInfo>
             </annotation>
          </attribute>

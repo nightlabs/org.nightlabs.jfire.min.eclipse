@@ -55,7 +55,7 @@
                   Subclass of AbstractPropDataFieldEditorFactory that should provided an DataFieldEditor for the given DataField.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.prop.edit.AbstractPropDataFieldEditorFactory:org.nightlabs.jfire.base.prop.edit.DataFieldEditorFactory"/>
+                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.ui.prop.edit.AbstractPropDataFieldEditorFactory:org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory"/>
                </appInfo>
             </annotation>
          </attribute>

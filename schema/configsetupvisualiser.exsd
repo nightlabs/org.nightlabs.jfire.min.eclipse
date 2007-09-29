@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.nightlabs.jfire.base">
+<schema targetNamespace="org.nightlabs.jfire.base.ui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.nightlabs.jfire.base" id="configsetupvisualiser" name="ConfigSetupVisualiser extension-point"/>
+         <meta.schema plugin="org.nightlabs.jfire.base.ui" id="configsetupvisualiser" name="ConfigSetupVisualiser extension-point"/>
       </appInfo>
       <documentation>
          The configsetup extensionpoint is used to configure a set of different types of Config grouping.
