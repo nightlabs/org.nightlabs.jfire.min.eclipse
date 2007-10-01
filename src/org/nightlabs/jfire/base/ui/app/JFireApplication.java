@@ -64,7 +64,7 @@ extends AbstractApplication
 	public static final int APPLICATION_EVENTTYPE_STARTED = 1;
 
 	void notifyApplicationListeners(int applicationEventType) {
-		for (Iterator iter = applicationListener.iterator(); iter.hasNext();) {
+		for (Iterator<?> iter = applicationListener.iterator(); iter.hasNext();) {
 			JFireApplicationListener listener = (JFireApplicationListener) iter.next();
 			switch (applicationEventType) {
 				case APPLICATION_EVENTTYPE_STARTED: 
@@ -113,10 +113,10 @@ extends AbstractApplication
 	protected void initLogin() throws LoginException, WorkOfflineException
 	{
 		// create log directory if not existent
-		JFireApplication.getLogDir();
+		AbstractApplication.getLogDir();
 		try {	
 			org.nightlabs.jfire.classloader.JFireRCDLDelegate.
-					createSharedInstance(Login.getLogin(false), new File(JFireApplication.getRootDir(), "classloader.cache")) //$NON-NLS-1$
+					createSharedInstance(Login.getLogin(false), new File(AbstractApplication.getRootDir(), "classloader.cache")) //$NON-NLS-1$
 					.setFilter(RemoteResourceFilterRegistry.sharedInstance());
 		} catch (LoginException e) {
 			throw e;
