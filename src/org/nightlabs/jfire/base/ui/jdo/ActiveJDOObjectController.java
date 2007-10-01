@@ -122,7 +122,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 	 * we cannot know with which types the generic ActiveTreeContentProvider has been created.
 	 * I hope that Java will - in the future - improve the generics! Marco.
 	 */
-	protected abstract Class getJDOObjectClass();
+	protected abstract Class<JDOObject> getJDOObjectClass();
 
 	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
 	{
