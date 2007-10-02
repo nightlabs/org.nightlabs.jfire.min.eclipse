@@ -40,7 +40,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 	protected Collection<Class<? extends NotificationListener>> getValidListenerTypes() {
 		Collection<Class<? extends NotificationListener>> superResult = super.getValidListenerTypes();
 		superResult.add(NotificationListenerJob.class);
-		superResult.add(NotificationListenerSWTThreadAsync.class);
+		superResult.add(NotificationListenerSWTThreadSync.class);
 		superResult.add(NotificationListenerSWTThreadAsync.class);
 		return superResult;
 	}
