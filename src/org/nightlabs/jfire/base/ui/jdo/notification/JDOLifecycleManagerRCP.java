@@ -118,6 +118,8 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 
 		if (notifyRCP(filterID, event, listener))
 			return;
+
+		super.notify(filterID, event);
 	}	
 	
 	private boolean notifyRCP(Long filterID, final JDOLifecycleEvent event, final JDOLifecycleListener listener)
