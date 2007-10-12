@@ -133,7 +133,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 	}
 }
 
-class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDataFieldEditor, NumberDataField> {
+class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDataFieldEditor> {
 
 //	private Label title;
 	private Spinner valueSpinner;

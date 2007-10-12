@@ -13,7 +13,7 @@ import org.nightlabs.jfire.prop.exception.StructFieldValueNotFoundException;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
 import org.nightlabs.jfire.prop.structfield.StructFieldValue;
 
-public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor, SelectionDataField> {
+public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor> {
 
 //	private Label fieldName;
 	private XComboComposite<StructFieldValue> fieldValueCombo;

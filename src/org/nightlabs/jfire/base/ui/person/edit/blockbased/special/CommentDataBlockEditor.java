@@ -48,7 +48,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor;
 import org.nightlabs.jfire.person.PersonStruct;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
@@ -146,7 +146,7 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 		return this;
 	}
 
-	public DataFieldEditor getNewEditorInstance(IStruct struct, AbstractDataField data) {
+	public DataFieldEditor getNewEditorInstance(IStruct struct, DataField data) {
 		return new CommentDataBlockEditor(struct, dataBlock,getParent(),getStyle());
 	}
 
@@ -248,12 +248,12 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 		return factory;
 	}
 
-	public void setData(IStruct struct, AbstractDataField data) {
+	public void setData(IStruct struct, DataField data) {
 		commentData = (TextDataField)data;
 		refresh();
 	}
 
-	public AbstractDataField getDataField() {
+	public DataField getDataField() {
 		return null;
 	}
 

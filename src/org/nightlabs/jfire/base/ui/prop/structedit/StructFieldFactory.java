@@ -3,7 +3,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.jface.wizard.WizardPage;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
-import org.nightlabs.jfire.prop.AbstractStructField;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructBlock;
 
 /**
@@ -26,7 +26,7 @@ public interface StructFieldFactory extends IExecutableExtension
 	 * @param block The {@link StructBlock} in which this struct field should be created.
 	 * @param wizardPage A {@link WizardPage} that serves to acquire additional information for the creation of
 	 * 				the struct field.	 * 
-	 * @return The {@link AbstractStructField} that has just been created.
+	 * @return The {@link StructField} that has just been created.
 	 */
-	public AbstractStructField createStructField(StructBlock block, WizardPage wizardPage);
+	public StructField createStructField(StructBlock block, WizardPage wizardPage);
 }

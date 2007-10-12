@@ -35,13 +35,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class TextDataFieldComposite<DataFieldType extends AbstractDataField & II18nTextDataField> extends AbstractInlineDataFieldComposite<AbstractDataFieldEditor<DataFieldType>, DataFieldType> {
+public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextDataField> extends AbstractInlineDataFieldComposite<AbstractDataFieldEditor<DataFieldType>> {
 
 //	private Label fieldName;
 	private Text fieldText;

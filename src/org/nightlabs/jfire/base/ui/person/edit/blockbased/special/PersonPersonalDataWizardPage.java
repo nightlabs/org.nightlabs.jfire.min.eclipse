@@ -19,7 +19,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockWizardPage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.datafield.TextDataField;
@@ -122,7 +122,7 @@ implements DataBlockEditorChangedListener
 		getPropertySet().setDisplayName(displayName.getTextControl().getText(), StructLocalDAO.sharedInstance().getStructLocal(Person.class, structLocalScope, new NullProgressMonitor()));
 	}
 
-	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends AbstractDataField> dataFieldEditor) {
+	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		pageChanged();
 	}
 	

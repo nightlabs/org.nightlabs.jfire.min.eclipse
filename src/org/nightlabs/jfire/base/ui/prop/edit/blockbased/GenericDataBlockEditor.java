@@ -37,7 +37,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.IStruct;
 
@@ -82,10 +82,10 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 	
 	
 	public void createFieldEditors() {
-		for (Iterator<AbstractDataField> it = getOrderedPropDataFieldsIterator(); it.hasNext(); ) {
-			AbstractDataField dataField = it.next();
+		for (Iterator<DataField> it = getOrderedPropDataFieldsIterator(); it.hasNext(); ) {
+			DataField dataField = it.next();
 			if (!hasFieldEditorFor(dataField)) {
-				DataFieldEditor<AbstractDataField> fieldEditor;
+				DataFieldEditor<DataField> fieldEditor;
 				try {
 					fieldEditor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
 							getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, 

@@ -27,7 +27,7 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.nightlabs.jfire.prop.AbstractStructField;
+import org.nightlabs.jfire.prop.StructField;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -35,7 +35,7 @@ import org.nightlabs.jfire.prop.AbstractStructField;
 public interface StructFieldEditorFactory extends IExecutableExtension
 {	
 	/**
-	 * Editors should return an appropriate {@link StructFieldEditor} for the given {@link AbstractStructField}
+	 * Editors should return an appropriate {@link StructFieldEditor} for the given {@link StructField}
 	 */
 	public StructFieldEditor getStructFieldEditorSingleton(String structFieldClass);
 	
@@ -51,13 +51,13 @@ public interface StructFieldEditorFactory extends IExecutableExtension
 	public void setStructFieldEditorClass(String theClass);
 	
 	/**
-	 * Should return a subclass of {@link AbstractStructField}
+	 * Should return a subclass of {@link StructField}
 	 */
 	public String getStructFieldClass();
 	
 	/**
 	 * Sets the struct field.
-	 * @param theClass Must be a subclass of {@link AbstractStructField}
+	 * @param theClass Must be a subclass of {@link StructField}
 	 */
 	public void setStructFieldClass(String theClass);
 }

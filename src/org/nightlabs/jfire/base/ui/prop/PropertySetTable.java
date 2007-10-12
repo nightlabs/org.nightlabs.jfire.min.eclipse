@@ -37,7 +37,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructField;
@@ -191,7 +191,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 */
 	protected String getStructFieldText(PropertySet propertySet, int structFieldIdx) {
 		if (structFieldIdx >= 0 && structFieldIdx < structFieldIDs.length) {
-			AbstractDataField dataField = propertySet.getPersistentDataField(structFieldIDs[structFieldIdx], 0);
+			DataField dataField = propertySet.getPersistentDataField(structFieldIDs[structFieldIdx], 0);
 			if (dataField != null && dataField instanceof II18nTextDataField) {
 				return ((II18nTextDataField) dataField).getText(Locale.getDefault());
 			} else

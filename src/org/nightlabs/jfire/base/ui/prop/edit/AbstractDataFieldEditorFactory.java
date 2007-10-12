@@ -26,7 +26,7 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit;
 
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**
@@ -34,7 +34,7 @@ import org.nightlabs.jfire.prop.IStruct;
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public abstract class AbstractDataFieldEditorFactory<F extends AbstractDataField> implements DataFieldEditorFactory<F> {
+public abstract class AbstractDataFieldEditorFactory<F extends DataField> implements DataFieldEditorFactory<F> {
 
 	/**
 	 * Default constructor does nothing.

@@ -35,7 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.exception.DataBlockNotFoundException;
@@ -138,7 +138,7 @@ implements DataBlockEditorChangedListener
 		changeListener.add(listener);
 	}
 	
-	protected synchronized void notifyChangeListeners(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends AbstractDataField> dataFieldEditor) {
+	protected synchronized void notifyChangeListeners(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
 			((DataBlockEditorChangedListener) listener).propDataBlockEditorChanged(dataBlockEditor,dataFieldEditor);
@@ -148,7 +148,7 @@ implements DataBlockEditorChangedListener
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener#propDataBlockEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractDataBlockEditor, org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
 	 */
-	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends AbstractDataField> dataFieldEditor) {
+	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		notifyChangeListeners(dataBlockEditor,dataFieldEditor);
 	}
 	

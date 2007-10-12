@@ -177,7 +177,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 	
 	
 	/**
-	 * key: String AbstractStructField.getPrimaryKey<br/>
+	 * key: String StructField.getPrimaryKey<br/>
 	 * value: Integer priority
 	 */
 	private Map structFieldDisplayOrder;

@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.jdo.search.SearchFilterItem;
-import org.nightlabs.jfire.prop.AbstractStructField;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
 
@@ -65,7 +65,7 @@ public class TextStructFieldSearchItemEditorHelper
 	 * @param personStructField
 	 */
 	public TextStructFieldSearchItemEditorHelper(
-			AbstractStructField structField) {
+			StructField structField) {
 		super(structField);
 	}
 

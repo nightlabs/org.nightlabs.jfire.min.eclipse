@@ -29,7 +29,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jdo.search.SearchFilterItem;
-import org.nightlabs.jfire.prop.AbstractStructField;
+import org.nightlabs.jfire.prop.StructField;
 
 /**
  * A concrete StructFieldSearchItemEditorHelper that
@@ -54,7 +54,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 	 * @param personStructField
 	 */
 	public PropertySetStructFieldSearchItemEditorManager(
-			AbstractStructField personStructField) {
+			StructField personStructField) {
 		super(personStructField);
 	}
 

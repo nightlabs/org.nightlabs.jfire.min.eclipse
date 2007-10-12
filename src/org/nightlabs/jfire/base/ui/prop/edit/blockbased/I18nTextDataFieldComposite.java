@@ -41,7 +41,7 @@ import org.nightlabs.jfire.prop.structfield.I18nTextStructField;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite<I18nTextDataFieldEditor, I18nTextDataField> {
+public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite<I18nTextDataFieldEditor> {
 
 	private ModifyListener modifyListener;
 	private I18nTextEditor i18nTextEditor;

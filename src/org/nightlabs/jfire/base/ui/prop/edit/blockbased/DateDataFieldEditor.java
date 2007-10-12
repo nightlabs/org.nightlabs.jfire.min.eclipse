@@ -98,7 +98,7 @@ public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> 
 	}
 }
 
-class DateDataFieldComposite extends AbstractInlineDataFieldComposite<DateDataFieldEditor, DateDataField> {
+class DateDataFieldComposite extends AbstractInlineDataFieldComposite<DateDataFieldEditor> {
 
 	private DateTimeEdit dateTimeEdit;
 	

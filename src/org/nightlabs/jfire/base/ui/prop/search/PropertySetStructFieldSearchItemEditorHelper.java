@@ -29,7 +29,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jdo.search.SearchFilterItem;
-import org.nightlabs.jfire.prop.AbstractStructField;
+import org.nightlabs.jfire.prop.StructField;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -38,7 +38,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 		PropertySetSearchFilterItemEditorHelper {
 
 	
-	protected AbstractStructField personStructField;
+	protected StructField personStructField;
 	
 	
 	protected PropertySetStructFieldSearchItemEditorHelper() {
@@ -51,13 +51,13 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	 * 
 	 * @param personStructField 
 	 */
-	public PropertySetStructFieldSearchItemEditorHelper(AbstractStructField _personStructField) {
+	public PropertySetStructFieldSearchItemEditorHelper(StructField _personStructField) {
 		super();
 		init(_personStructField);
 	}
 	
 	
-	public void init(AbstractStructField personStructField) {
+	public void init(StructField personStructField) {
 		this.personStructField = personStructField;
 	}
 

@@ -47,7 +47,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -157,7 +157,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	 * @param field
 	 * @return A new GridData or null.
 	 */
-	protected GridData getGridDataForField(AbstractDataField field) {
+	protected GridData getGridDataForField(DataField field) {
 		return null;
 	}
 	
@@ -259,7 +259,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	 * key: StructFieldID structFieldID<br/>
 	 * value: DataFieldEditor fieldEditor
 	 */
-	private Map<StructFieldID, DataFieldEditor<AbstractDataField>> fieldEditors = new HashMap<StructFieldID, DataFieldEditor<AbstractDataField>>();
+	private Map<StructFieldID, DataFieldEditor<DataField>> fieldEditors = new HashMap<StructFieldID, DataFieldEditor<DataField>>();
 	
 	
 	/**
@@ -277,7 +277,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 					
 					for (Iterator iter = EditorStructFieldRegistry.sharedInstance().getStructFieldList(getEditorType()).iterator(); iter.hasNext();) {
 						StructFieldID structFieldID = (StructFieldID) iter.next();
-						AbstractDataField field = null;
+						DataField field = null;
 						try {
 							field = propertySet.getDataField(structFieldID);
 						} catch (DataNotFoundException e) {
@@ -293,7 +293,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 								continue;
 							}
 						}
-						DataFieldEditor<AbstractDataField> editor = null;
+						DataFieldEditor<DataField> editor = null;
 						if (!fieldEditors.containsKey(structFieldID)) {
 							try {
 								editor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(

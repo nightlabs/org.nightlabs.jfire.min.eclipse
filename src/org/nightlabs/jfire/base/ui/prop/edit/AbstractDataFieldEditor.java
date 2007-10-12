@@ -33,7 +33,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.language.LanguageCf;
@@ -44,7 +44,7 @@ import org.nightlabs.language.LanguageCf;
  * This class as well already implements ModifyListener so it can be used as listener for Text Widgets. 
  * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public abstract class AbstractDataFieldEditor<F extends AbstractDataField> implements DataFieldEditor<F>, ModifyListener
+public abstract class AbstractDataFieldEditor<F extends DataField> implements DataFieldEditor<F>, ModifyListener
 {
 	private StructField structField;
 	private IStruct struct;
@@ -97,7 +97,7 @@ public abstract class AbstractDataFieldEditor<F extends AbstractDataField> imple
 	
 	/**
 	 * Subclasses should perfom refreshing <b>here<b> and not override
-	 * {@link #refresh(AbstractDataField)}
+	 * {@link #refresh(DataField)}
 	 */
 	public abstract void doRefresh();
 	
@@ -106,7 +106,7 @@ public abstract class AbstractDataFieldEditor<F extends AbstractDataField> imple
 	/**
 	 * Not intended to be overridden.
 	 * 
-	 * @see #doRefresh(AbstractDataField) 
+	 * @see #doRefresh(DataField) 
 	 */
 	public final void refresh() {
 		refreshing = true;

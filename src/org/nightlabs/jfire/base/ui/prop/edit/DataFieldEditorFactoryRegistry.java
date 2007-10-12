@@ -34,11 +34,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**
- * A Registry holding associations from subclasses of {@link org.nightlabs.jfire.base.ui.prop.AbstractDataField} to
+ * A Registry holding associations from subclasses of {@link org.nightlabs.jfire.base.ui.prop.DataField} to
  * {@link org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor}s grouped by editorTypes.<br/>
  * 
  * As EPProcessor it processes extensions to org.nightlabs.jfire.base.ui.prop.edit.propDataFieldEditor.
@@ -77,7 +77,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	/**
 	 * Add a new {@link DataFieldEditor} to the registry.
 	 * Checks if {@link DataFieldEditor#getTargetPropStructType()} returns
-	 * a subclass of {@link org.nightlabs.jfire.base.ui.prop.AbstractDataField}
+	 * a subclass of {@link org.nightlabs.jfire.base.ui.prop.DataField}
 	 * and throws a {@link IllegalArgumentException}
 	 * 
 	 * @param context The context in which this binding should be used. <code>null</code> can be used to indicate
@@ -93,8 +93,8 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 		if (targetType == null)
 			throw new IllegalArgumentException("Parameter targetType must not be null!"); //$NON-NLS-1$
 		
-		if (!(AbstractDataField.class.isAssignableFrom(targetType)))
-			throw new IllegalArgumentException("TargetType must be subclass of AbstractDataField but is "+targetType.getName()); //$NON-NLS-1$
+		if (!(DataField.class.isAssignableFrom(targetType)))
+			throw new IllegalArgumentException("TargetType must be subclass of DataField but is "+targetType.getName()); //$NON-NLS-1$
 		
 		for (String editorType : editorFactory.getEditorTypes()) {
 			getTypedRegistry(editorType).put(targetType, editorFactory);
@@ -139,7 +139,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 */
 	public DataFieldEditor getNewEditorInstance(
 			IStruct struct, String editorType, 
-			String context, AbstractDataField dataField, boolean setData
+			String context, DataField dataField, boolean setData
 		) 
 	throws DataFieldEditorNotFoundException 
 	{
@@ -159,7 +159,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 */
 	public DataFieldEditor getNewEditorInstance(
 			IStruct struct, String editorType, 
-			String context, AbstractDataField dataField
+			String context, DataField dataField
 		) 
 	throws DataFieldEditorNotFoundException 
 	{

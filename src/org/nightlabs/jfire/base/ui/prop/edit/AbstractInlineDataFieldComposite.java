@@ -31,17 +31,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 
 /**
- * Abstract base composite for composites that are supposed to edit a single {@link AbstractDataField} in an <b>inline</b> style,
+ * Abstract base composite for composites that are supposed to edit a single {@link DataField} in an <b>inline</b> style,
  * that means they consist of a label for the respective data field and a single input element like a textbox. Extending this
  * class makes it easy to create different composites that look similar according to insets and spacing.
  *  
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldEditor<DataField>, DataField extends AbstractDataField> extends XComposite {
+public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldEditor<? extends DataField>> extends XComposite {
 	private Editor editor;
 	private Label title;
 	

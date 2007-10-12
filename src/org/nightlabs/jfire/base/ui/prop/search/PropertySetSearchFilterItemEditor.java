@@ -49,7 +49,7 @@ import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jdo.ui.search.SearchFilterItemEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.prop.AbstractStructField;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.dao.StructDAO;
 import org.nightlabs.jfire.prop.structfield.TextStructField;
@@ -138,7 +138,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		for (Iterator iter = StructDAO.sharedInstance().getStruct(Person.class.getName(), monitor).getStructBlocks().iterator(); iter.hasNext();) {
 			StructBlock structBlock = (StructBlock) iter.next();
 			for (Iterator iterator = structBlock.getStructFields().iterator(); iterator.hasNext();) {
-				AbstractStructField structField = (AbstractStructField) iterator.next();
+				StructField structField = (StructField) iterator.next();
 				if (PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().hasHelper(structField.getClass()))
 					helperList.add(new PropertySetStructFieldSearchItemEditorManager(structField));
 			}

@@ -26,24 +26,24 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit;
 
-import org.nightlabs.jfire.prop.AbstractDataField;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**
  * {@link DataFieldEditorFactory}s are used to register specific types
- * of {@link DataFieldEditor}s to edit their corresponding {@link AbstractDataField}. 
+ * of {@link DataFieldEditor}s to edit their corresponding {@link DataField}. 
  * The factory is responsible for creating the field editors and should be
  * registered as extension to the point <code>org.nightlabs.jfire.base.ui.propDataFieldEditorFactory</code>
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public interface DataFieldEditorFactory<F extends AbstractDataField> {
+public interface DataFieldEditorFactory<F extends DataField> {
 	/**
-	 * Should return the subclass of {@link AbstractDataField}
+	 * Should return the subclass of {@link DataField}
 	 * the {@link DataFieldEditor} this factory creates can modify.
 	 *  
-	 * @return The type of {@link AbstractDataField} edited by the field editor this factory creates.
+	 * @return The type of {@link DataField} edited by the field editor this factory creates.
 	 */
 	public Class<F> getPropDataFieldType();
 
