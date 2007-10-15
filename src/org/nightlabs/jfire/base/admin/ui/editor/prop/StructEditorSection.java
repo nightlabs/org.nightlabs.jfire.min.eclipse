@@ -64,7 +64,9 @@ implements StructureChangedListener
 		Menu popupMenu = menuManager.getMenu();
 		structTreeViewer.getTree().setMenu(popupMenu);
 		// TODO if this identifier for registerContextMenu is really meaningful, it should be a constant! And it should be documented! Marco.
-		page.getEditorSite().registerContextMenu("StructEditorPage.PropertyActions", menuManager, structTreeViewer); //$NON-NLS-1$
+		// This is necessary if we want other plugins to be able to extend this menu, but then we need more than only this registration.
+		//  -> remove it for now. (Marius)
+//		page.getEditorSite().registerContextMenu("StructEditorPage.PropertyActions", menuManager, structTreeViewer); //$NON-NLS-1$
 //		((EntityEditorPageWithProgress)page).setMenu(popupMenu);
 	}
 	
