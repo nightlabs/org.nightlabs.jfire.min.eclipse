@@ -274,7 +274,7 @@ extends LSDPreferencePage
 				else {
 					if (inheritMemberConfigModule.getSelection()) {
 						// we are in a group and the memberConfigModule wants to inherit settings
-						// -> synchronious update
+						// -> synchronous update
 						Display.getDefault().asyncExec( new Runnable() {
 							public void run() {
 								if (fadableWrapper.isDisposed())
