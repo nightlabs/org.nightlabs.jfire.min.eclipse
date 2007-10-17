@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE nightlybuild PUBLIC "-//NightLabs//DTD NightlyBuild V 0.9//EN" "http://www.nightlabs.de/dtd/nightlybuild_0_9.dtd">
+<!DOCTYPE nightlybuild PUBLIC "-//NightLabs//DTD NightlyBuild V 0.18//EN" "http://www.nightlabs.de/dtd/nightlybuild_0_18.dtd">
 
 <nightlybuild>
 
@@ -7,14 +7,13 @@
 	<plugin/>
     <ant path="org.nightlabs.jfire.base.j2ee" file="build-nightlabs.xml" target="deploy"/>
 	<requires/>
-	  
+
     <!-- For the build-nightlabs-compile.pre.xml to work, the following projects must be built before. -->
 	<requires path="/JFireIntegrationJBoss"/>
 	<requires path="/JFireRCLBackend"/>
 	<requires path="/JFireRCLBackendBean"/>
 	<requires path="/JFireRemoteClassLoader"/>
-	  
-	  
+
     <provides/>
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireIntegrationJBoss.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRemoteClassLoader.jar"/>
@@ -22,7 +21,7 @@
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/jbossall-client.jar"/>
-	  	  
+
     <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_0.9.1.tar.gz"/>
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
   </project>
