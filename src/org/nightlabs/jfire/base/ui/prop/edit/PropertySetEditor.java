@@ -52,7 +52,7 @@ public interface PropertySetEditor {
 	/**
 	 * Link the editor to a {@link PropertySet}.
 	 * <p>
-	 * Note that it is recommended to pass an already exploded {@link PropertySet}
+	 * Note that it is recommended to pass an already inflated {@link PropertySet}
 	 * to the editor.
 	 * </p>
 	 * @param propertySet The PropertySet this editor should modify
@@ -63,7 +63,7 @@ public interface PropertySetEditor {
 	 * Link the editor to a Property and refresh the Control
 	 * if refresh is true.
 	 * <p>
-	 * Note that it is recommended to pass an already exploded {@link PropertySet}
+	 * Note that it is recommended to pass an already inflated {@link PropertySet}
 	 * to the editor.
 	 * </p>
 	 * @param propertySet The PropertySet this editor should modify

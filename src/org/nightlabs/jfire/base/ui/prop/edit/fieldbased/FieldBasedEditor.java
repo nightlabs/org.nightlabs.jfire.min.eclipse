@@ -272,8 +272,8 @@ public class FieldBasedEditor implements PropertySetEditor {
 					if (propertySet == null)
 						return;
 					
-					if (!propertySet.isExploded())
-						getPropStructure(new NullProgressMonitor()).explodePropertySet(propertySet);
+					if (!propertySet.isInflated())
+						propertySet.inflate(getPropStructure(new NullProgressMonitor()));
 					
 					for (Iterator iter = EditorStructFieldRegistry.sharedInstance().getStructFieldList(getEditorType()).iterator(); iter.hasNext();) {
 						StructFieldID structFieldID = (StructFieldID) iter.next();
@@ -324,7 +324,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	}
 	
 	protected IStruct getPropStructure(ProgressMonitor monitor) {
-		if (propertySet.isExploded())
+		if (propertySet.isInflated())
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(

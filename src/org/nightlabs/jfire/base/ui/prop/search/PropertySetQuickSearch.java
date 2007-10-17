@@ -94,7 +94,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	 */
 	public Composite createComposite(Composite parent) {
 		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
-//			quickButton = new Button(wrapperComposite,SWT.TOGGLE);
+//			quickButton = new Button(scrolledComposite,SWT.TOGGLE);
 //			quickButton.setText(buttonText);
 //			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 //			gd.heightHint = 25;

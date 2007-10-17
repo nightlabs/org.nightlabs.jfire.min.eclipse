@@ -34,6 +34,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
@@ -71,11 +72,11 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 		// set grid data for this
 		GridData thisData = new GridData(GridData.FILL_HORIZONTAL);
 		thisData.grabExcessHorizontalSpace = true;
-//		thisData.grabExcessVerticalSpace = true;
 		this.setLayoutData(thisData);
 		
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.numColumns = columnHint;
+		thisLayout.makeColumnsEqualWidth = true;
 		setLayout(thisLayout);		
 		createFieldEditors();
 	}
@@ -100,7 +101,7 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 				// have an editor, store it
 //				fieldEditors.put(dataFieldKey,fieldEditor);
 				// wrap the editor in a Composite to make it easier to layout
-				XComposite wrapperComp = new XComposite(this, SWT.PUSH, XComposite.LayoutMode.TIGHT_WRAPPER);
+				XComposite wrapperComp = new XComposite(this, SWT.PUSH, LayoutMode.TIGHT_WRAPPER);
 				((GridLayout)wrapperComp.getLayout()).verticalSpacing = 5;
 				// add the field editor
 				fieldEditor.createControl(wrapperComp);

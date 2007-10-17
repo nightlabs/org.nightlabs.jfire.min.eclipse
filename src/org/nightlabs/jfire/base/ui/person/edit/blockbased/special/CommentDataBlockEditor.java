@@ -260,5 +260,9 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	public StructField getStructField() {
 		return null;
 	}
-
+	
+	@Override
+	public void updatePropertySet() {
+		commentData.setText(textComment.getText());
+	}
 }

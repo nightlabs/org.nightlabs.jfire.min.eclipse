@@ -71,7 +71,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 						IDGenerator.nextID(PropertySet.class)
 					);
 					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());
-					structLocal.explodePropertySet(newPerson);
+					newPerson.inflate(structLocal);
 					editorWizardHop = new PersonEditorWizardHop();
 					editorWizardHop.initialise(newPerson);
 				}

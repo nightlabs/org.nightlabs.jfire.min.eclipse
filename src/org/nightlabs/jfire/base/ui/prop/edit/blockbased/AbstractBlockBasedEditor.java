@@ -117,7 +117,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * @return
 	 */
 	protected IStruct getPropStructure(ProgressMonitor monitor) {
-		if (propertySet.isExploded())
+		if (propertySet.isInflated())
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractBlockBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(

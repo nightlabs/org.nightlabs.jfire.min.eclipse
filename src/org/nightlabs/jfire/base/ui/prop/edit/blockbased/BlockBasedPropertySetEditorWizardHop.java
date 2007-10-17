@@ -13,7 +13,7 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
  * A wizard hop that can create {@link CompoundDataBlockWizardPage}s as its
- * sub-pages. It is indendet to be placed in a Wizard taht should edit a 
+ * sub-pages. It is intended to be placed in a Wizard that should edit a 
  * {@link PropertySet}. 
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
@@ -110,6 +110,10 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 		if (getEntryPage() == null)
 			return BlockBasedPropertySetEditorWizardHop.class.getName() + "#0"; //$NON-NLS-1$
 		return BlockBasedPropertySetEditorWizardHop.class.getName() + "#" + String.valueOf(getHopPages().size()); //$NON-NLS-1$
+	}
+	
+	public PropertySet getPropertySet() {
+		return propertySet;
 	}
 	
 	private String getEditorScope() {

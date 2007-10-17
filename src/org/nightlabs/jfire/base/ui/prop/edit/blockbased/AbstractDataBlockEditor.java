@@ -96,7 +96,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 	}
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
 		for (DataBlockEditorChangedListener listener : new ArrayList<DataBlockEditorChangedListener>(changeListener)) {
-			listener.propDataBlockEditorChanged(this,dataFieldEditor);
+			listener.dataBlockEditorChanged(this,dataFieldEditor);
 		}
 	}
 
@@ -163,5 +163,9 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {
 			editor.updatePropertySet();
 		}
+	}
+
+	public DataBlock getDataBlock() {
+		return dataBlock;
 	}	
 }

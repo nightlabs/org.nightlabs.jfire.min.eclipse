@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
@@ -62,7 +63,7 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 		providerRegistry.put(provider.getProviderStructBlockID(), provider);
 	}
 	
-	public AbstractDataBlockEditor getPropDataBlockEditor(
+	public AbstractDataBlockEditor createDataBlockEditor(
 		IStruct struct,
 		DataBlock dataBlock,
 		Composite parent, 

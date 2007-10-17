@@ -122,7 +122,7 @@ implements DataBlockEditorChangedListener
 		getPropertySet().setDisplayName(displayName.getTextControl().getText(), StructLocalDAO.sharedInstance().getStructLocal(Person.class, structLocalScope, new NullProgressMonitor()));
 	}
 
-	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		pageChanged();
 	}
 	

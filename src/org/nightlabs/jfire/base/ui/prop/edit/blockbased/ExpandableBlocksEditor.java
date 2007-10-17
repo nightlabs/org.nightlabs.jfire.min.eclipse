@@ -131,7 +131,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	}
 	
 	protected IStruct getPropStructure(ProgressMonitor monitor) {
-		if (prop.isExploded())
+		if (prop.isInflated())
 			return prop.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
@@ -155,8 +155,8 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		Display.getDefault().asyncExec( 
 			new Runnable() {
 				public void run() {
-					if (!prop.isExploded())
-						getPropStructure(new NullProgressMonitor()).explodePropertySet(prop);
+					if (!prop.isInflated())
+						prop.inflate(getPropStructure(new NullProgressMonitor()));
 					
 					// get the ordered dataBlocks
 					for (Iterator<DataBlockGroup> it = ExpandableBlocksEditor.this.getOrderedDataBlockGroupsIterator(); it.hasNext(); ) {

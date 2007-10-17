@@ -26,19 +26,25 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.prop.DataField;
+import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
-import org.nightlabs.jfire.prop.exception.DataBlockNotFoundException;
+import org.nightlabs.jfire.prop.exception.DataBlockRemovalException;
+import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -54,6 +60,9 @@ implements DataBlockEditorChangedListener
 	
 	private IStruct struct;
 	
+	private List<Composite> blockComposites = new LinkedList<Composite>();
+	
+	
 	/**
 	 * @param parent
 	 * @param style
@@ -66,68 +75,148 @@ implements DataBlockEditorChangedListener
 		super(parent, SWT.NONE);		
 		this.blockGroup = blockGroup;
 		
-		wrapperComposite = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);		
 		
-		createDataBlockEditors(struct, wrapperComposite);
+		
+		scrolledComposite = new ScrolledComposite(this, SWT.V_SCROLL);
+		scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));		
+		content = new XComposite(scrolledComposite, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
+		scrolledComposite.setContent(content);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		
+		refresh(struct, blockGroup);
 	}
 	
-	XComposite wrapperComposite;
+	private ScrolledComposite scrolledComposite;
+	private XComposite content;
 	
-	private List<AbstractDataBlockEditor> propDataBlockEditors = new LinkedList<AbstractDataBlockEditor>();
+	private List<AbstractDataBlockEditor> dataBlockEditors = new LinkedList<AbstractDataBlockEditor>();
 	
 	public void refresh(IStruct struct, DataBlockGroup blockGroup) {
 		this.blockGroup = blockGroup;
-		createDataBlockEditors(struct, wrapperComposite);
-		for (int i=0; i<propDataBlockEditors.size(); i++){
-			AbstractDataBlockEditor dataBlockEditor = (AbstractDataBlockEditor)propDataBlockEditors.get(i);
-			try {
-				dataBlockEditor.refresh(struct, blockGroup.getDataBlock(i));
-			} catch (DataBlockNotFoundException e) {
-				IllegalStateException ill = new IllegalStateException("No no datablock found on pos "+i); //$NON-NLS-1$
-				ill.initCause(e);
-				throw ill;
-			}
-		}
-	}
-	
-	
-	protected void createDataBlockEditors(IStruct struct, Composite wrapperComp) {
-		if (propDataBlockEditors.size() != blockGroup.getDataBlocks().size()) {
-			int i = 0;;
-			int j = 0;
-			for (i=0; i<blockGroup.getDataBlocks().size(); i++){
-				if (propDataBlockEditors.size() <= i) {
-					try {
-						AbstractDataBlockEditor blockEditor = DataBlockEditorFactoryRegistry.sharedInstance().getPropDataBlockEditor(
-								struct,
-								blockGroup.getDataBlock(0),
-								wrapperComp,
-								SWT.NONE,
-								2
-						);
-						blockEditor.addPropDataBlockEditorChangedListener(this);
-						propDataBlockEditors.add(blockEditor);
-					} catch (DataBlockNotFoundException e) {
-						LOGGER.error("Could not find DataBlock (idx = 0) for "+blockGroup.getStructBlockKey()); //$NON-NLS-1$
-					}
-				}
-				j = i;
-			}				
-			for (int k=propDataBlockEditors.size()-1; k>j; k--) {
-				AbstractDataBlockEditor dataBlockEditor = (AbstractDataBlockEditor)propDataBlockEditors.get(k);
-				dataBlockEditor.dispose();
-				propDataBlockEditors.remove(k);
-			}
+		this.struct = struct;
+		createDataBlockEditors(struct, content);
+		scrolledComposite.setMinSize(content.computeSize(SWT.DEFAULT, SWT.DEFAULT));		
+		
+		assert(dataBlockEditors.size() == blockGroup.getDataBlocks().size());
+		
+		Iterator<AbstractDataBlockEditor> editorIt = dataBlockEditors.iterator();
+		Iterator<DataBlock> blockIt = blockGroup.getDataBlocks().iterator();
+		
+		while (editorIt.hasNext()) {
+			AbstractDataBlockEditor dataBlockEditor = editorIt.next();
+			DataBlock block = blockIt.next();
+			dataBlockEditor.refresh(struct, block);
 		}
 		
+//		for (int i=0; i<dataBlockEditors.size(); i++){
+//			AbstractDataBlockEditor dataBlockEditor = (AbstractDataBlockEditor)dataBlockEditors.get(i);
+//			try {
+//				dataBlockEditor.refresh(struct, blockGroup.getDataBlock(i));
+//			} catch (DataBlockNotFoundException e) {
+//				IllegalStateException ill = new IllegalStateException("No datablock found on pos "+i); //$NON-NLS-1$
+//				ill.initCause(e);
+//				throw ill;
+//			}
+//		}
+		scrolledComposite.layout(true, true);
 	}
 	
-	
-//	private ScrolledForm owner = null;
+//	private SelectionListener addListener = new SelectionListener() {
+//		public void widgetDefaultSelected(SelectionEvent e) {}
+//		public void widgetSelected(SelectionEvent e) {
+//			Button addButton = (Button) e.widget;
+//			int index = ((Integer) addButton.getData()) + 1;
+//			try {
+//				blockGroup.addDataBlock(struct, index).explode(struct);				
+//			} catch (DataBlockUniqueException e1) {
+//				e1.printStackTrace();
+//			}
+//			refresh(struct, blockGroup);
+//		}
+//	};
 //	
-//	public void setOwner(ScrolledForm owner) {
-//		this.owner = owner;
-//	}
+//	private SelectionListener removeListener = new SelectionListener() {
+//		public void widgetDefaultSelected(SelectionEvent e) {}
+//		public void widgetSelected(SelectionEvent e) {
+//			Button removeButton = (Button) e.widget;
+//			try {
+//				blockGroup.removeDataBlock(blockGroup.getBlockByIndex((Integer) removeButton.getData()));
+//			} catch (DataBlockRemovalException e1) {
+//				e1.printStackTrace();
+//			}
+//			refresh(struct, blockGroup);
+//		}
+//	};
+	
+	protected void createDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
+		for (Composite comp : blockComposites) {
+			comp.dispose();
+		}
+		dataBlockEditors.clear();
+		blockComposites.clear();
+		
+		List<DataBlock> dataBlocks = blockGroup.getDataBlocks();
+		for (int i = 0; i < dataBlocks.size(); i++) {
+			DataBlock dataBlock = dataBlocks.get(i);
+			Composite wrapper = new XComposite(wrapperComp, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
+			blockComposites.add(wrapper);
+
+			if (i > 0) {
+				Label sep = new Label(wrapper, SWT.SEPARATOR | SWT.HORIZONTAL);
+				GridData gd = new GridData(SWT.HORIZONTAL | SWT.FILL);
+				gd.horizontalSpan = 2;
+				sep.setLayoutData(gd);							
+			}
+
+			AbstractDataBlockEditor blockEditor = DataBlockEditorFactoryRegistry.sharedInstance().createDataBlockEditor(
+					_struct,
+					dataBlock,
+					wrapper,
+					SWT.NONE,
+					2
+			);
+			blockEditor.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
+//			GridData gd = (GridData) blockEditor.getLayoutData();
+//			gd.verticalAlignment = SWT.BEGINNING;
+//			blockEditor.setLayoutData(gd);
+			blockEditor.addPropDataBlockEditorChangedListener(this);
+			dataBlockEditors.add(blockEditor);
+
+			if (! _struct.getStructBlock(blockGroup).isUnique()) {							
+				AddOrRemoveDataBlockGroupComposite manager = new AddOrRemoveDataBlockGroupComposite(wrapper, dataBlock, i);
+				manager.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER));
+				manager.setListener(new AddOrRemoveDataBlockGroupComposite.Listener() {
+					public void addDataBlock(int index) {
+						try {
+							for (AbstractDataBlockEditor editor : dataBlockEditors)
+								editor.updatePropertySet();
+
+							blockGroup.addDataBlock(_struct.getStructBlock(blockGroup), index);
+							refresh(struct, blockGroup);
+						} catch (DataBlockUniqueException e) {
+							e.printStackTrace();
+						}
+					}
+					public void removeDataBlock(DataBlock block) {
+						try {
+							for (AbstractDataBlockEditor editor : dataBlockEditors)
+								editor.updatePropertySet();
+
+							blockGroup.removeDataBlock(block);
+							refresh(struct, blockGroup);
+						} catch (DataBlockRemovalException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+
+				if (blockGroup.getDataBlocks().size() == 1) {
+					manager.getRemoveButton().setEnabled(false);
+				}
+			}
+		}
+	}
 	
 	private ListenerList changeListener = new ListenerList();	
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
@@ -141,19 +230,19 @@ implements DataBlockEditorChangedListener
 	protected synchronized void notifyChangeListeners(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
-			((DataBlockEditorChangedListener) listener).propDataBlockEditorChanged(dataBlockEditor,dataFieldEditor);
+			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(dataBlockEditor,dataFieldEditor);
 		}
 	}
 	
 	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener#propDataBlockEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractDataBlockEditor, org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener#dataBlockEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractDataBlockEditor, org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
 	 */
-	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		notifyChangeListeners(dataBlockEditor,dataFieldEditor);
 	}
 	
-	public void updatePropopertySet() {
-		for (AbstractDataBlockEditor blockEditor : propDataBlockEditors) {
+	public void updatePropertySet() {
+		for (AbstractDataBlockEditor blockEditor : dataBlockEditors) {
 			blockEditor.updatePropertySet();
 		}
 	}

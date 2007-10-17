@@ -96,12 +96,12 @@ implements DataBlockEditorChangedListener
 		
 	}
 
-	public void propDataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
-		blockGroupEditor.propDataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
+	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+		blockGroupEditor.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
 	}
 	
 	public void updateProp() {
-		blockGroupEditor.updatePropopertySet();
+		blockGroupEditor.updatePropertySet();
 	}
 	
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {

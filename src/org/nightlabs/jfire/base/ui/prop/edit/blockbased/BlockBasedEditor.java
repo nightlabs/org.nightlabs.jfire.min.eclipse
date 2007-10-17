@@ -86,7 +86,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 		public void updateProp() {
 			if (groupEditor != null) {
-				groupEditor.updatePropopertySet();
+				groupEditor.updatePropertySet();
 			}
 		}
 	}
@@ -113,8 +113,8 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					if (groupedContentComposite == null || groupedContentComposite.isDisposed())
 						return;
 					
-					if (!propertySet.isExploded())
-						getPropStructure(new NullProgressMonitor()).explodePropertySet(propertySet);
+					if (!propertySet.isInflated())
+						propertySet.inflate(getPropStructure(new NullProgressMonitor()));
 					
 					// get the ordered dataBlocks
 					for (Iterator<DataBlockGroup> it = BlockBasedEditor.this.getOrderedDataBlockGroupsIterator(); it.hasNext(); ) {

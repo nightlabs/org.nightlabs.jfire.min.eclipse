@@ -179,7 +179,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	 */
 	public void updatePropertySet() {
 		for (DataBlockGroupEditor editor : propDataBlockGroupEditors.values()) {
-			editor.updatePropopertySet();
+			editor.updatePropertySet();
 		}
 	}
 	

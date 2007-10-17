@@ -67,10 +67,10 @@ public class EditorStructBlockRegistry
 		this(linkClass.getName(), stuctLocalScope);
 	}
 	
-	public EditorStructBlockRegistry(String linkClass, String stuctLocalScope)
+	public EditorStructBlockRegistry(String linkClass, String structLocalScope)
 	{
 		this.linkClass = linkClass;
-		this.structLocalScope = stuctLocalScope;
+		this.structLocalScope = structLocalScope;
 		editorsStructBlocks = new HashMap<String, List<StructBlockID>>();
 	}
 	
