@@ -141,6 +141,7 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 			commentLData.grabExcessVerticalSpace = true;
 			commentLData.horizontalAlignment = GridData.FILL;
 			commentLData.verticalAlignment = GridData.FILL;
+			commentLData.heightHint = 100;
 			textComment.setLayoutData(commentLData);
 		}
 		return this;

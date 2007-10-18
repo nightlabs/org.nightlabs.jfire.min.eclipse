@@ -9,9 +9,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -366,7 +368,8 @@ public class StructEditor {
 		StructFieldCreationWizard wiz = new StructFieldCreationWizard();
 		DynamicPathWizardDialog dialog = new DynamicPathWizardDialog(wiz);
 
-		if (dialog.open() == SWT.CANCEL)
+		int retVal = dialog.open();
+		if (retVal == Window.CANCEL)
 			return;
 
 		StructFieldMetaData newFieldMetaData = wiz.getSelectedFieldMetaData();
@@ -412,8 +415,7 @@ public class StructEditor {
 			try {
 				currentStruct.removeStructBlock(blockNode.getBlock());
 			} catch (IllegalStructureModificationException e) {
-				Logger.getLogger(StructEditor.class).error("Structure modification failed!", e); //$NON-NLS-1$
-				mb = new MessageBox(null, SWT.ICON_ERROR | SWT.OK);
+				mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_ERROR | SWT.OK);
 				// TODO Shouldn't we simply rethrow this exception as RuntimeException and leave the work to our general exception handler? 
 				mb.setMessage("Block could not be deleted: " + e.getMessage()); //$NON-NLS-1$
 				mb.setText("Deleting failed"); //$NON-NLS-1$
