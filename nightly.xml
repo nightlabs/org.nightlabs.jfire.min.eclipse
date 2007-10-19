@@ -22,7 +22,7 @@
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/jbossall-client.jar"/>
 
-    <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_0.9.1.tar.gz"/>
+    <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_0.9.1.jar"/>
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
   </project>
 
