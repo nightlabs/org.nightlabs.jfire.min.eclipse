@@ -1,25 +1,20 @@
 <project>
-	<target name="deploy.post">
+	<target name="dist.plugin.jar.post">
 <!--
 	According to http://wiki.eclipse.org/index.php/Adaptor_Hooks and especially our own experiments,
 	we MUST use a JAR - a directory does NOT work.
 -->
+		<delete file="${project.dir}/${dist.dir}/${project.fileName}_${project.version}.jar" failonerror="false" />
+		<delete file="${project.dir}/${dist.dir}/${project.fileName}.jar" failonerror="false" />
 
-		<mkdir dir="${rcp.deploy.allplatforms.dir}/${rcp.deploy.subdir}"/>
-
-<!-- The JAR is now already created in build-nightlabs-dist.plugin.jar.post.xml
-		<zip zipfile="${rcp.deploy.allplatforms.dir}/${rcp.deploy.subdir}/${project.name}_${project.version}.jar">
+		<zip zipfile="${project.dir}/${dist.dir}/${project.fileName}_${project.version}.jar">
 			<fileset dir="${project.dir}" includes="${project.dir}/META-INF/MANIFEST.MF" />
 			<fileset dir="${project.dir}/${dist.dir}/${project.name}_${project.version}" includes="**/*" excludes="org.nightlabs.jfire.base.j2ee.osgi.jar"/>
 			<fileset dir="${project.dir}/${bin.dir}">
 		        <include name="**/*.*"/>
 		     </fileset>
 	    </zip>
--->
 
-		<copy
-			file="${project.dir}/${dist.dir}/${project.fileName}_${project.version}.jar"
-			todir="${rcp.deploy.allplatforms.dir}/${rcp.deploy.subdir}" />
-
+		<delete dir="${project.dir}/${dist.dir}/${project.name}_${project.version}" failonerror="false" />
 	</target>
 </project>
