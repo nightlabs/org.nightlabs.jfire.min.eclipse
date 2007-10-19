@@ -96,8 +96,8 @@ implements DataBlockEditorChangedListener
 	protected void pageChanged() {
 		try {
 			updatePropertySet();
-			TextDataField name = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlock(0).getDataField(PersonStruct.PERSONALDATA_NAME);
-			TextDataField firstName = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlock(0).getDataField(PersonStruct.PERSONALDATA_FIRSTNAME);
+			TextDataField name = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_NAME);
+			TextDataField firstName = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_FIRSTNAME);
 			displayName.getTextControl().setText(getPropertySet().getDisplayName());
 
 			if (firstName.isEmpty())
