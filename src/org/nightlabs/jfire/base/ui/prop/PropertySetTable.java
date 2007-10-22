@@ -183,7 +183,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	
 	/**
 	 * Used by the {@link LabelProvider} of this table to display the
-	 * value of a StructField an may be used in custom implementations.
+	 * value of a StructField and may be used in custom implementations.
 	 * 
 	 * @param propertySet The {@link PropertySet} to get the field value from. 
 	 * @param structFieldIdx The index of the {@link StructFieldID} to get. (Array passed in the constructor).
@@ -191,7 +191,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 */
 	protected String getStructFieldText(PropertySet propertySet, int structFieldIdx) {
 		if (structFieldIdx >= 0 && structFieldIdx < structFieldIDs.length) {
-			DataField dataField = propertySet.getPersistentDataField(structFieldIDs[structFieldIdx], 0);
+			DataField dataField = propertySet.getPersistentDataFieldByIndex(structFieldIDs[structFieldIdx], 0);
 			if (dataField != null && dataField instanceof II18nTextDataField) {
 				return ((II18nTextDataField) dataField).getText(Locale.getDefault());
 			} else

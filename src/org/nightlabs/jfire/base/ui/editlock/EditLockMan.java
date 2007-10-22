@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.editlock;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,22 +45,6 @@ public class EditLockMan
 			}
 		}
 		return sharedInstance;
-	}
-
-	protected void softReleaseEditLockOnUserInactivity(Collection<EditLockCarrier> editLockCarriers)
-	{
-		List<ObjectID> objectIDs = new ArrayList<ObjectID>(editLockCarriers.size());
-		for (EditLockCarrier editLockCarrier : editLockCarriers) {
-			boolean canReleaseEditLock = true;
-			EditLockCallback callbackListener = editLockCarrier.getEditLockCallbackListener();
-			if (callbackListener != null)
-				canReleaseEditLock = callbackListener.canReleaseEditLock(editLockCarrier);
-
-			if (canReleaseEditLock)	
-				objectIDs.add(editLockCarrier.getEditLock().getLockedObjectID());
-		}
-
-		releaseEditLockWithJob(objectIDs, ReleaseReason.userInactivity);
 	}
 
 	private class EditLockRefreshJob extends Job
@@ -115,25 +98,37 @@ public class EditLockMan
 					{
 						public void run()
 						{
-							boolean canPopupDialog = true;
+							InactivityAction inactivityAction = InactivityAction.DIALOG_BLOCKING_DUE_TO_INACTIVITY;
 							EditLockCallback callbackListener = editLockCarrier.getEditLockCallbackListener();
 							if (callbackListener != null)
-								canPopupDialog = callbackListener.canPopupDialog(editLockCarrier);
-
-							if (!canPopupDialog) {
-								ArrayList<EditLockCarrier> carriers = new ArrayList<EditLockCarrier>(1);
-								carriers.add(editLockCarrier);
-								softReleaseEditLockOnUserInactivity(carriers);
-							}
-							else {
-								if (editLockAboutToExpireDueToUserInactivityDialog == null) {
-									editLockAboutToExpireDueToUserInactivityDialog = new EditLockAboutToExpireDueToUserInactivityDialog(EditLockMan.this, RCPUtil.getActiveWorkbenchShell());
-									editLockAboutToExpireDueToUserInactivityDialog.setBlockOnOpen(false);
-									editLockAboutToExpireDueToUserInactivityDialog.open();
+								inactivityAction = callbackListener.getEditLockAction(editLockCarrier);
+							else
+								inactivityAction = InactivityAction.DIALOG_BLOCKING_DUE_TO_INACTIVITY;
+							
+							switch (inactivityAction) {
+							case DIALOG_ABOUT_TO_EXPIRE:
+								if (editLockAboutToExpireDialog == null) {
+									editLockAboutToExpireDialog = new EditLockAboutToExpireDueToUserInactivityDialog(EditLockMan.this, Display.getDefault().getActiveShell());
+									editLockAboutToExpireDialog.setBlockOnOpen(false);
+									editLockAboutToExpireDialog.open();
 								}
-
 								// add the EditLock to the dialog
-								editLockAboutToExpireDueToUserInactivityDialog.addEditLockCarrier(editLockCarrier);
+								editLockAboutToExpireDialog.addEditLockCarrier(editLockCarrier);
+								break;
+							case DIALOG_BLOCKING_DUE_TO_INACTIVITY:
+								if (blockingDueToInactivityDialog == null) {
+									blockingDueToInactivityDialog = new BlockingDueToInactivityDialog(EditLockMan.this, Display.getDefault().getActiveShell());
+									blockingDueToInactivityDialog.setBlockOnOpen(false);
+									blockingDueToInactivityDialog.open();
+								}
+								blockingDueToInactivityDialog.addEditLockCarrier(editLockCarrier);
+								break;
+							case REFRESH_LOCK:
+								editLock.setLastAcquireDT();
+								break;
+							case RELEASE_LOCK:
+								releaseEditLock(editLock.getLockedObjectID());
+							default:
 							}
 						}
 					});
@@ -205,11 +200,16 @@ public class EditLockMan
 	private long expiryClientLostTimestamp;
 	private long expiryUserInactivityTimestamp;
 
-	private EditLockAboutToExpireDueToUserInactivityDialog editLockAboutToExpireDueToUserInactivityDialog = null;
+	private EditLockAboutToExpireDueToUserInactivityDialog editLockAboutToExpireDialog = null;
+	private BlockingDueToInactivityDialog blockingDueToInactivityDialog = null;
 
 	protected void onCloseEditLockAboutToExpireDueToUserInactivityDialog()
 	{
-		this.editLockAboutToExpireDueToUserInactivityDialog = null;
+		this.editLockAboutToExpireDialog = null;
+	}
+	
+	protected void onCloseBlockingDueToInactivityDialog() {
+		this.blockingDueToInactivityDialog = null;
 	}
 
 	private Map<EditLockID, EditLockRefreshJob> editLockID2Job = new HashMap<EditLockID, EditLockRefreshJob>();
@@ -262,10 +262,13 @@ public class EditLockMan
 	 * @param objectID The ID of the object that shall be locked.
 	 * @param description A human-readable description describing the object that is locked.
 	 * @param editLockCallback Either <code>null</code> or your callback-implementation.
+	 * 
+	 * @return An {@link EditLockHandle} on the acquired lock that serves to conveniently refresh or release the lock.
 	 */
-	public void acquireEditLockAsynchronously(final EditLockTypeID editLockTypeID, 
+	public EditLockHandle acquireEditLockAsynchronously(final EditLockTypeID editLockTypeID, 
 			final ObjectID objectID, final String description, final EditLockCallback editLockCallback)
 	{
+		EditLockHandle handle = new EditLockHandle(editLockTypeID, objectID, description, editLockCallback, (Shell) null);
 		Job lockJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockMan.acquireEditLockAsynchronously.job.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -274,9 +277,11 @@ public class EditLockMan
 			}
 		};
 		
-	lockJob.setPriority(Job.SHORT);
-//	lockJob.setUser(true); // notify user of checking locks?
-	lockJob.schedule();
+		lockJob.setPriority(Job.SHORT);
+//		lockJob.setUser(true); // notify user of checking locks?
+		lockJob.schedule();
+		
+		return handle;
 	}
 	
 	/**
@@ -288,10 +293,14 @@ public class EditLockMan
 	 * @param description A human-readable description describing the object that is locked.
 	 * @param editLockCallback Either <code>null</code> or your callback-implementation.
 	 * @param monitor As this method synchronously communicates with the server (if necessary), it takes this "tagging" parameter.
+	 * 
+	 * @return An {@link EditLockHandle} on the acquired lock that serves to conveniently refresh or release the lock.
 	 */
-	public void acquireEditLock(EditLockTypeID editLockTypeID, ObjectID objectID, String description, EditLockCallback editLockCallback, ProgressMonitor monitor)
+	public EditLockHandle acquireEditLock(EditLockTypeID editLockTypeID, ObjectID objectID, String description, EditLockCallback editLockCallback, ProgressMonitor monitor)
 	{
-		acquireEditLock(editLockTypeID, objectID, description, editLockCallback, (Shell)null, monitor);
+		EditLockHandle handle = new EditLockHandle(editLockTypeID, objectID, description, editLockCallback, (Shell) null);
+		acquireEditLock(handle, monitor);
+		return handle;
 	}
 
 	/**
@@ -304,9 +313,23 @@ public class EditLockMan
 	 * @param editLockCallback Either <code>null</code> or your callback-implementation.
 	 * @param parentShell Can be <code>null</code>. If it's undefined, {@link RCPUtil#getActiveWorkbenchShell()} will be used to obtain the parent shell. This shell will be used as parent for the collision-dialog, if the object is already locked by someone else. It is not used
 	 * @param monitor As this method synchronously communicates with the server (if necessary), it takes this "tagging" parameter.
+	 * 
+	 * @return An {@link EditLockHandle} on the acquired lock that serves to conveniently refresh or release the lock.
 	 */
-	public void acquireEditLock(EditLockTypeID editLockTypeID, ObjectID objectID, String description, EditLockCallback editLockCallback, final Shell parentShell, ProgressMonitor monitor)
+	public EditLockHandle acquireEditLock(EditLockTypeID editLockTypeID, ObjectID objectID, String description, EditLockCallback editLockCallback, final Shell parentShell, ProgressMonitor monitor)
 	{
+		EditLockHandle handle = new EditLockHandle(editLockTypeID, objectID, description, editLockCallback, parentShell);
+		acquireEditLock(handle, monitor);
+		return handle;
+	}
+	
+	private void acquireEditLock(EditLockHandle handle, ProgressMonitor monitor) {
+		EditLockTypeID editLockTypeID = handle.getEditLockTypeID();
+		ObjectID objectID = handle.getObjectID();
+		String description = handle.getDescription();
+		EditLockCallback editLockCallback = handle.getEditLockCallback();
+		final Shell parentShell = handle.getShell();		
+		
 		if (editLockTypeID == null)
 			throw new IllegalArgumentException("editLockTypeID must not be null!"); //$NON-NLS-1$
 
@@ -390,7 +413,11 @@ public class EditLockMan
 	 *
 	 * @param objectID The ID of the JDO object which has been locked.
 	 * @see #releaseEditLock(ObjectID, IProgressMonitor)
+	 * 
+	 * @deprecated This method will be made protected soon. Use {@link EditLockHandle#release()} instead on the
+	 * 	{@link EditLockHandle} acquired by the <code>acquireLock</code> methods of this class.
 	 */
+	@Deprecated
 	public void releaseEditLock(ObjectID objectID)
 	{
 		ArrayList<ObjectID> objectIDs = new ArrayList<ObjectID>(1);
@@ -404,7 +431,11 @@ public class EditLockMan
 	 *
 	 * @param objectID The ID of the JDO object which has been locked.
 	 * @see #releaseEditLock(ObjectID)
+	 * 
+	 * @deprecated This method will be made protected soon. Use {@link EditLockHandle#release(ProgressMonitor)} instead on the
+	 * 	{@link EditLockHandle} acquired by the <code>acquireLock</code> methods of this class.
 	 */
+	@Deprecated
 	public void releaseEditLock(ObjectID objectID, ProgressMonitor monitor)
 	{
 		ArrayList<ObjectID> objectIDs = new ArrayList<ObjectID>(1);
@@ -432,6 +463,33 @@ public class EditLockMan
 			}
 
 			editLockDAO.releaseEditLock(objectID, ReleaseReason.normal, monitor);
+		}
+	}
+	
+	void processEditLockAction(EditLockCarrier carrier, ProcessLockAction action) {
+		EditLockCallback callback = carrier.getEditLockCallbackListener();
+		callCallbackMethod(action, callback);
+		
+		if (action == ProcessLockAction.RELEASE_AND_DISCARD || action == ProcessLockAction.RELEASE_AND_SAVE)
+			releaseEditLock(carrier.getEditLock().getLockedObjectID());
+		else if (action == ProcessLockAction.REFRESH_AND_CONTINUE)
+			carrier.getEditLock().setLastAcquireDT();
+	}
+	
+	private void callCallbackMethod(ProcessLockAction action, EditLockCallback callback) {
+		if (callback == null)
+			return;
+		
+		switch (action) {
+		case REFRESH_AND_CONTINUE:
+			callback.doContinueAndRefresh();
+			break;
+		case RELEASE_AND_DISCARD:
+			callback.doDiscardAndRelease();
+			break;
+		case RELEASE_AND_SAVE:
+			callback.doSaveAndRelease();
+			break;
 		}
 	}
 }

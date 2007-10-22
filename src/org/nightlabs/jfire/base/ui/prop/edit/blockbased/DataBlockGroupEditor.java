@@ -73,10 +73,8 @@ implements DataBlockEditorChangedListener
 			Composite parent 
 	) {
 		super(parent, SWT.NONE);		
-		this.blockGroup = blockGroup;
-		
-		
-		
+		this.blockGroup = blockGroup;		
+				
 		scrolledComposite = new ScrolledComposite(this, SWT.V_SCROLL);
 		scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));		
 		content = new XComposite(scrolledComposite, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
@@ -119,7 +117,8 @@ implements DataBlockEditorChangedListener
 //				throw ill;
 //			}
 //		}
-		scrolledComposite.layout(true, true);
+		content.layout(true, true);
+//		scrolledComposite.layout(true, true);		
 	}
 	
 //	private SelectionListener addListener = new SelectionListener() {

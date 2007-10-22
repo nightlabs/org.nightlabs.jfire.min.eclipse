@@ -45,7 +45,9 @@ extends CenteredDialog
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editLockMan.softReleaseEditLockOnUserInactivity(editLockCarriers);
+				for (EditLockCarrier carrier : editLockCarriers) {
+					editLockMan.processEditLockAction(carrier, ProcessLockAction.RELEASE_AND_DISCARD);
+				}
 
 				setReturnCode(OK);
 				close();
