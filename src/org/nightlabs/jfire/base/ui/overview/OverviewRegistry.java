@@ -28,7 +28,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 public abstract class OverviewRegistry 
 extends AbstractEPProcessor 
 {
-	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.overview"; //$NON-NLS-1$
+//	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.overview"; //$NON-NLS-1$
 	public static final String ELEMENT_CATEGORY = "categoryFactory"; //$NON-NLS-1$
 	public static final String ELEMENT_CATEGORY_ENTRY = "entryFactory"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
