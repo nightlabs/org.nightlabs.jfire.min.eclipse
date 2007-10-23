@@ -56,12 +56,14 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.job.Job;
+import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.inheritance.FieldMetaData;
 import org.nightlabs.inheritance.InheritanceManager;
 import org.nightlabs.jfire.base.JFireBaseEAR;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.ui.editlock.EditLockHandle;
 import org.nightlabs.jfire.base.ui.editlock.EditLockMan;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.preferences.LSDPreferencePage;
@@ -378,6 +380,8 @@ extends LSDPreferencePage
 	 */
 	protected boolean doSetControl = false;
 	
+	private EditLockHandle lockHandle = null;
+	
 	@Implement
 	public void createPartContents(Composite parent) 
 	{
@@ -409,7 +413,7 @@ extends LSDPreferencePage
 					public void run() {
 						if (currentConfigModuleIsEditable) {
 							if (doSetControl) {
-								EditLockMan.sharedInstance().acquireEditLock(JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG_MODULE, 
+								lockHandle = EditLockMan.sharedInstance().acquireEditLock(JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG_MODULE, 
 										(ConfigModuleID) JDOHelper.getObjectId(getConfigModuleController().getConfigModule()), 
 										Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.editLockWarning"), //$NON-NLS-1$
 										null, getShell(), getSubProgressMonitorWrapper(1));								
@@ -451,8 +455,7 @@ extends LSDPreferencePage
 			setControl(fadableWrapper);
 			fadableWrapper.addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent e) {
-					EditLockMan.sharedInstance().releaseEditLock(
-							(ConfigModuleID) JDOHelper.getObjectId(getConfigModuleController().getConfigModule()));
+					lockHandle.release();
 				}
 			});
 		}
@@ -818,6 +821,24 @@ extends LSDPreferencePage
 	{
 		if(configChangedListeners.contains(listener))
 			configChangedListeners.remove(listener);
+	}
+	
+	/**
+	 * Returns an {@link IDirtyStateManager} that may be handed over to embedded controls.
+	 * @return An {@link IDirtyStateManager} that may be handed over to embedded controls.
+	 */
+	public IDirtyStateManager getPageDirtyStateManager() {
+		return new IDirtyStateManager() {
+			public void markUndirty() {
+				setConfigChanged(false);
+			}
+			public void markDirty() {
+				setConfigChanged(true);
+			}
+			public boolean isDirty() {
+				return false;
+			}
+		};
 	}
 	
 }

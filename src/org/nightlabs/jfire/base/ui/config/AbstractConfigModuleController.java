@@ -18,7 +18,7 @@ import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
-import org.nightlabs.util.Utils;
+import org.nightlabs.util.Util;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
@@ -128,7 +128,7 @@ implements IConfigModuleController
 	 * Subclasses are intended to create a new set from this one and extend it with the fetch groups 
 	 * covering the fields their class extended {@link ConfigModule} with. <p>
 	 * 
-	 * Note: To omit the growth of this set, as it is being used in different contexts, the returned set is 
+	 * Note: To prevent the growth of this set, as it is being used in different contexts, the returned set is 
 	 * unmodifiable! 
 	 * 
 	 * @return an unmodifiable Set of Strings containing the default ConfigModule fetch groups ({@value #CONFIG_MODULE_FETCH_GROUPS}.
@@ -170,7 +170,7 @@ implements IConfigModuleController
 		if (getConfigID() == null)
 			throw new RuntimeException("The configID of the Config for which the ConfigModule should be fetched is not set!"); //$NON-NLS-1$
 		
-		return Utils.cloneSerializable((ConfigModule) ConfigModuleDAO.sharedInstance().getConfigModule(
+		return Util.cloneSerializable((ConfigModule) ConfigModuleDAO.sharedInstance().getConfigModule(
 				getConfigID(), 
 				getConfigModuleClass(),
 				configModuleID,
