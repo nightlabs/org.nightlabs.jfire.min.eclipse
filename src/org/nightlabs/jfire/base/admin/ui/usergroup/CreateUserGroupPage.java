@@ -26,14 +26,15 @@
 
 package org.nightlabs.jfire.base.admin.ui.usergroup;
 
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.Formular;
 import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -45,10 +46,9 @@ import org.nightlabs.jfire.security.id.UserID;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateUserGroupPage extends WizardPage implements FormularChangeListener
+public class CreateUserGroupPage extends DynamicPathWizardPage implements FormularChangeListener
 {
 	private Text userGroupID;
-	private Text name;
 	private Text description;
 
 	public CreateUserGroupPage() 
@@ -62,15 +62,17 @@ public class CreateUserGroupPage extends WizardPage implements FormularChangeLis
 		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.description")); //$NON-NLS-1$
 	}
 
-	public void createControl(Composite parent) 
+	@Override
+	public Control createPageContents(Composite parent) 
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
 		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$
-		name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.name.labelText"), null); //$NON-NLS-1$
 		description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.description.labelText"), null); //$NON-NLS-1$
 
 		verifyInput();
 		setControl(f);
+		
+		return f;
 	}
 
 	private void verifyInput()
@@ -90,12 +92,6 @@ public class CreateUserGroupPage extends WizardPage implements FormularChangeLis
 		}
 	}
 
-	private void updateStatus(String message) 
-	{
-		setErrorMessage(message);
-		setPageComplete(message == null);
-	}
-
 	/**
 	 * @return Returns the userGroupID.
 	 */
@@ -110,13 +106,6 @@ public class CreateUserGroupPage extends WizardPage implements FormularChangeLis
 	public String getUserGroupDescription()
 	{
 		return description.getText();
-	}
-	/**
-	 * @return Returns the name.
-	 */
-	public String getUserGroupName()
-	{
-		return name.getText();
 	}
 
 	/* (non-Javadoc)

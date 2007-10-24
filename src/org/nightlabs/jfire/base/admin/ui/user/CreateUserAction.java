@@ -27,8 +27,9 @@
 package org.nightlabs.jfire.base.admin.ui.user;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 
 /**
  * An action that opens the {@link CreateUserWizard}.
@@ -44,7 +45,14 @@ public class CreateUserAction extends WorkbenchWindowAndViewActionDelegate
 	{
 		try
 		{
-			new WizardDialog(getShell(), new CreateUserWizard()).open();
+			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(getShell(), new CreateUserWizard()) {
+				@Override
+				protected void configureShell(Shell newShell) {
+					newShell.setSize(500,300);
+					super.configureShell(newShell);
+				}
+			};
+			dynamicPathWizardDialog.open();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

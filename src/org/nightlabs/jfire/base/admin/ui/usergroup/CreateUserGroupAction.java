@@ -28,7 +28,10 @@ package org.nightlabs.jfire.base.admin.ui.usergroup;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard;
 
 /**
  * An action that opens a {@link CreateUserGroupWizard}.
@@ -43,8 +46,14 @@ public class CreateUserGroupAction extends WorkbenchWindowAndViewActionDelegate
 	public void run(IAction action)
 	{
 		try {
-			WizardDialog wzd = new WizardDialog(getShell(), new CreateUserGroupWizard());
-			wzd.open();
+			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(getShell(), new CreateUserGroupWizard()) {
+				@Override
+				protected void configureShell(Shell newShell) {
+					newShell.setSize(500,300);
+					super.configureShell(newShell);
+				}
+			};
+			dynamicPathWizardDialog.open();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

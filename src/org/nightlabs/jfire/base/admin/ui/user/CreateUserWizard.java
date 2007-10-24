@@ -26,20 +26,29 @@
 
 package org.nightlabs.jfire.base.admin.ui.user;
 
-import org.eclipse.jface.wizard.Wizard;
+import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedPropertySetEditorWizardHop;
+import org.nightlabs.jfire.idgenerator.IDGenerator;
+import org.nightlabs.jfire.person.Person;
+import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.StructLocal;
+import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserManager;
 import org.nightlabs.jfire.security.UserManagerUtil;
+import org.nightlabs.progress.NullProgressMonitor;
 
 /**
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marco Schulze - Marco at NightLabs dot de
  */
-public class CreateUserWizard extends Wizard
+public class CreateUserWizard extends DynamicPathWizard
 {
 	private CreateUserPage cuPage;
+	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
+	private boolean canFinish = false;
 
 	public CreateUserWizard()
 	{
@@ -49,16 +58,32 @@ public class CreateUserWizard extends Wizard
 
 	public void addPages() 
 	{
-		cuPage = new CreateUserPage();
+		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
+		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());
+		person.inflate(personStruct);
+		
+		cuPage = new CreateUserPage() {
+			@Override
+			public void onHide() {
+				canFinish = true;
+			}
+		};
 		addPage(cuPage);
+		
+		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
+		String msg = "Here you can edit all information for the selected contact";
+		propertySetEditorWizardHop.addWizardPage(null, "RemainingData", "Remaining data", msg);
+		addPage(propertySetEditorWizardHop.getEntryPage());
 	}
 
 	public boolean performFinish()
 	{
 		try {
 			User newUser = new User(Login.getLogin().getOrganisationID(), cuPage.getUserID());
-			newUser.setName(cuPage.getUserName());
 			newUser.setDescription(cuPage.getUserDescription());
+			
+			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
+			newUser.getPerson().deflate();
 
 			UserManager userManager = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			userManager.saveUser(newUser, cuPage.getPassword1());
@@ -72,5 +97,10 @@ public class CreateUserWizard extends Wizard
 		{
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public boolean canFinish() {
+		return canFinish && super.canFinish();
 	}
 }

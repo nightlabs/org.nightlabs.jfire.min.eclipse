@@ -29,11 +29,13 @@ package org.nightlabs.jfire.base.admin.ui.user;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.Formular;
 import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -46,12 +48,11 @@ import org.nightlabs.jfire.security.id.UserID;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateUserPage extends WizardPage implements FormularChangeListener
+public class CreateUserPage extends DynamicPathWizardPage implements FormularChangeListener
 {
   private Text userID;
   private Text password0;
   private Text password1;
-  private Text name;
   private Text description;
 
   public CreateUserPage() 
@@ -64,22 +65,23 @@ public class CreateUserPage extends WizardPage implements FormularChangeListener
     setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.description")); //$NON-NLS-1$
   }
 
-  public void createControl(Composite parent) 
-  {
+  @Override
+  public Control createPageContents(Composite parent) {
   	Formular f = new Formular(parent, SWT.NONE, this);
   	
   	userID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.userID.labelText"), null); //$NON-NLS-1$
-  	name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.name.labelText"), null); //$NON-NLS-1$
   	description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.description.labelText"), null); //$NON-NLS-1$
   	password0 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.password.labelText"), null); //$NON-NLS-1$
   	password0.setEchoChar('*');
   	password1 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.passwordConfirmation.labelText"), null); //$NON-NLS-1$
-    password1.setEchoChar('*');
-
-    verifyInput();
-    setControl(f);
+  	password1.setEchoChar('*');
+  	
+  	verifyInput();
+  	setControl(f);
+  	
+  	return f;
   }
-
+  
   private void verifyInput() 
   {
     try
@@ -108,12 +110,6 @@ public class CreateUserPage extends WizardPage implements FormularChangeListener
     }
   }
 
-  private void updateStatus(String message) 
-  {
-    setErrorMessage(message);
-    setPageComplete(message == null);
-  }
-
 	/**
 	 * Get the user description.
 	 * @return the user description
@@ -121,15 +117,6 @@ public class CreateUserPage extends WizardPage implements FormularChangeListener
 	public String getUserDescription()
 	{
 		return description.getText();
-	}
-
-	/**
-	 * Get the user name.
-	 * @return the user name
-	 */
-	public String getUserName()
-	{
-		return name.getText();
 	}
 
 	/**
@@ -166,4 +153,6 @@ public class CreateUserPage extends WizardPage implements FormularChangeListener
 	{
 		verifyInput();
 	}
+	
+	
 }
