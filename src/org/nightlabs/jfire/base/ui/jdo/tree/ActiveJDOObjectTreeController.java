@@ -125,7 +125,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * 
 	 * @return The {@link Class} (type) of the JDO object this controller is for.
 	 */
-	protected abstract Class<JDOObject> getJDOObjectClass();
+	protected abstract Class<? extends JDOObject> getJDOObjectClass();
 
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
