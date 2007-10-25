@@ -3,6 +3,8 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import java.util.LinkedList;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -12,18 +14,23 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.nightlabs.base.ui.composite.XComboComposite;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.language.LanguageChooserCombo;
+import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.base.ui.language.LanguageChooserCombo.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.id.StructID;
 import org.nightlabs.jfire.prop.id.StructLocalID;
 
 public class StructEditorComposite extends XComposite {
 
+	
 	private StructTree structTree;
 	private StructEditor structEditor;
 	
+	private I18nTextEditor structNameEditor;
 	private Composite partEditorComposite;
 	private LanguageChooserCombo languageChooser;	
 	protected XComboComposite<StructLocalID> structIDComposite;
@@ -70,7 +77,7 @@ public class StructEditorComposite extends XComposite {
 
 	public StructEditorComposite(
 			Composite parent, int style, 
-			StructEditor structEditor, StructTree structTree, boolean createStructIDCombo
+			final StructEditor structEditor, StructTree structTree, boolean createStructIDCombo
 		) {
 		super(parent, style);
 		this.setLayout(new GridLayout(2, false));
@@ -90,14 +97,26 @@ public class StructEditorComposite extends XComposite {
 			gd.horizontalSpan = 2;
 			new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(gd);
 		}
-
+		XComposite topLine = new XComposite(this, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
+		topLine.getGridLayout().numColumns = 2;
+		topLine.getGridData().horizontalSpan = 2;
+		XComposite nameWrapper = new XComposite(topLine, SWT.NONE, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
+		
 		gd = new GridData();
-		gd.horizontalSpan = 2;
+//		gd.horizontalSpan = 2;
 		gd.horizontalAlignment = SWT.RIGHT;
 
-		languageChooser = new LanguageChooserCombo(this, Mode.iconAndText);
+		languageChooser = new LanguageChooserCombo(topLine, Mode.iconAndText);
 		languageChooser.setLayoutData(gd);
 
+		structNameEditor = new I18nTextEditor(nameWrapper, languageChooser);
+		structNameEditor.addModifyListener(new ModifyListener() {			
+			public void modifyText(ModifyEvent e) {
+				structEditor.setChanged(true);
+			}
+		});
+		
+		
 		this.structTree = structTree;
 		structTree.createComposite(this, style, languageChooser);
 		gd = new GridData(GridData.FILL_VERTICAL);
@@ -118,6 +137,12 @@ public class StructEditorComposite extends XComposite {
 	public void setLoadingText() {
 		structTree.setInput(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditorComposite.structTree.input_loadingStructure")); //$NON-NLS-1$
 	}
+	
+	public void setStruct(IStruct struct) {
+		structTree.setInput(struct);
+		structNameEditor.setI18nText(struct.getName(), EditMode.DIRECT);
+	}
+	
 	
 	public void setPartEditor(StructPartEditor structPartEditor) {
 		if (partEditorComposite != null) {

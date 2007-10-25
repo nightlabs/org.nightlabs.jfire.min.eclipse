@@ -5,11 +5,9 @@ import java.util.Set;
 
 import javax.jdo.JDOHelper;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -204,7 +202,8 @@ public class StructEditor {
 	 */
 	public void setStruct(IStruct struct) {
 		currentStruct = Util.cloneSerializable(struct);
-		structTree.setInput(currentStruct);						
+		structEditorComposite.setStruct(currentStruct);
+//		structTree.setInput(currentStruct);
 	}
 	
 	/**
@@ -220,7 +219,8 @@ public class StructEditor {
 	 */
 	public void setStruct(IStruct struct, boolean doCloneSerializable) {
 		currentStruct = doCloneSerializable ? Util.cloneSerializable(struct) : struct;  
-		structTree.setInput(currentStruct);						
+		structEditorComposite.setStruct(currentStruct);
+//		structTree.setInput(currentStruct);				
 	}
 	
 	/**
