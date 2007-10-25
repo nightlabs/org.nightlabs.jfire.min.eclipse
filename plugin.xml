@@ -166,12 +166,6 @@
             class="org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderPreferencePage"
             id="org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderPreferencePage">
       </page>  
-      <page
-            name="Feature Set"
-            category=""
-            class="org.nightlabs.jfire.base.ui.workstation.WorkstationFeaturesPreferencePage"
-            id="org.nightlabs.jfire.base.ui.workstation.WorkstationFeaturesPreferencePage">
-      </page>  
 	</extension>
 
 	
