@@ -100,7 +100,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 	private void createPropEditors() {
 		propEditors.clear();
 		for (int i=0; i<numColumns; i++) {
-			propEditors.add(new BlockBasedEditor());
+			propEditors.add(new BlockBasedEditor(true));
 		}
 	}
 	

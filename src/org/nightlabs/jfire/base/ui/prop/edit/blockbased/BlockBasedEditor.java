@@ -31,13 +31,27 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentComposite;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentProvider;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataBlockGroup;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.progress.NullProgressMonitor;
@@ -54,6 +68,10 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public static final String EDITORTYPE_BLOCK_BASED = "block-based"; //$NON-NLS-1$
 	
 	private GroupedContentComposite groupedContentComposite;
+	private XComposite displayNameComp;
+	private Text displayNameText;
+	private Button autogenerateNameCheckbox;
+	private boolean showDisplayNameComposite;
 	
 	private class ContentProvider implements GroupedContentProvider {
 		private DataBlockGroupEditor groupEditor;
@@ -74,8 +92,8 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 		public Composite createGroupContent(Composite parent) {
 			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent);
-			if (changeListener != null)
-				groupEditor.addPropDataBlockEditorChangedListener(changeListener);
+			if (changeListenerProxy.getChangeListenerProxy() != null)
+				groupEditor.addPropDataBlockEditorChangedListener(changeListenerProxy.getChangeListenerProxy());
 			return groupEditor;
 		}
 		public void refresh(DataBlockGroup blockGroup) {
@@ -91,16 +109,29 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 	}
 	
-	public BlockBasedEditor() {
-		super (null, null);
+	/**
+	 * Creates a new {@link BlockBasedEditor}.
+	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
+	 */
+	public BlockBasedEditor(boolean showDisplayNameComp) {
+		this(null, null, showDisplayNameComp);
 	}
 	
-	public BlockBasedEditor(PropertySet propSet, IStruct propStruct) {
+	/**
+	 * Creates a new {@link BlockBasedEditor}.
+	 * @param propSet The {@link PropertySet} to be managed.
+	 * @param propStruct The {@link IStruct} of the {@link PropertySet} to be managed.
+	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
+	 */
+	public BlockBasedEditor(PropertySet propSet, IStruct propStruct, boolean showDisplayNameComp) {
 		super(propSet, propStruct);
+		this.showDisplayNameComposite = showDisplayNameComp;
 	}
 	
 	private Map<String, ContentProvider> groupContentProvider = new HashMap<String, ContentProvider>();
 	
+	
+	private boolean refreshing = false;
 	/**
 	 * Refreshes the UI-Representation of the given Property.
 	 * 
@@ -111,8 +142,11 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		Display.getDefault().asyncExec( 
 			new Runnable() {
 				public void run() {
+					refreshing = true;
 					if (groupedContentComposite == null || groupedContentComposite.isDisposed())
 						return;
+					
+					refreshDisplayNameComp();						
 					
 					if (!propertySet.isInflated())
 						propertySet.inflate(getPropStructure(new NullProgressMonitor()));
@@ -133,28 +167,95 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 						} // if (shouldDisplayStructBlock(blockGroup)) {
 					}		
 					groupedContentComposite.layout();
+					refreshing = false;
 				}
 			}
 		);
 	}
 
-	private DataBlockEditorChangedListener changeListener;
+//	private DataBlockEditorChangedListener changeListener;
 	
 	public Control createControl(Composite parent, DataBlockEditorChangedListener changeListener, boolean refresh) {
-		this.changeListener = changeListener;
+		setChangeListener(changeListener);
 		return createControl(parent, refresh);
 	}
+	
+	private class ChangeListenerProxy implements DataBlockEditorChangedListener {
+		private DataBlockEditorChangedListener changeListener;
+		
+		public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+			if (!refreshing) {
+				updatePropertySet();
+				refreshDisplayNameComp();
+				
+				if (changeListener != null)
+					changeListener.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
+			}
+		}
+		
+		public void setChangeListener(DataBlockEditorChangedListener changeListener) {
+			this.changeListener = changeListener;
+		}
+		
+		public ChangeListenerProxy getChangeListenerProxy() {
+			return changeListenerProxy;
+		}
+	}	
+	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
+	private DisplayNameChangedListener displayNameChangedListener;
 	
 	/**
 	 * @param changeListener The changeListener to set.
 	 */
-	public void setChangeListener(
-			DataBlockEditorChangedListener changeListener) {
-		this.changeListener = changeListener;
+	public void setChangeListener(final DataBlockEditorChangedListener changeListener) {
+		changeListenerProxy.setChangeListener(changeListener);
+	}
+	
+	public void setDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
+		this.displayNameChangedListener = displayNameChangedListener;
+	}
+	
+	protected void fireDataBlockEditorChangedEvent(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+		changeListenerProxy.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
+		
+		if (!refreshing)
+			refreshControl();
 	}
 
 	public Control createControl(Composite parent, boolean refresh) {
 		if (groupedContentComposite == null) {
+			if (showDisplayNameComposite) {
+				displayNameComp = new XComposite(parent, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
+				displayNameComp.getGridLayout().numColumns = 3;
+				
+				Label label = new Label(displayNameComp, SWT.NONE);
+				label.setText("Name");
+				GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+				gd.horizontalSpan = 3;
+				label.setLayoutData(gd);
+				
+				displayNameText = new Text(displayNameComp, XComposite.getBorderStyle(displayNameComp));
+				displayNameText.addModifyListener(new ModifyListener() {
+					public void modifyText(ModifyEvent e) {
+						if (displayNameChangedListener != null)
+							displayNameChangedListener.displayNameChanged(displayNameText.getText());
+						fireDataBlockEditorChangedEvent(null, null);
+					}
+				});				
+				displayNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				autogenerateNameCheckbox = new Button(displayNameComp, SWT.CHECK);
+				new Label(displayNameComp, SWT.NONE).setText("Autogenerate");
+				
+				autogenerateNameCheckbox.addSelectionListener(new SelectionListener() {
+					public void widgetSelected(SelectionEvent e) {
+						if (displayNameChangedListener != null)
+							displayNameChangedListener.displayNameChanged(displayNameText.getText());
+						fireDataBlockEditorChangedEvent(null, null);
+					}
+					public void widgetDefaultSelected(SelectionEvent e) {}
+				});
+			}
+			
 			groupedContentComposite = new GroupedContentComposite(parent, SWT.NONE, true);
 			groupedContentComposite.setGroupTitle("propTail"); //$NON-NLS-1$
 		}
@@ -164,16 +265,35 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	}
 
 	public void disposeControl() {
-		if (groupedContentComposite != null)
-			if (!groupedContentComposite.isDisposed())
+		if (groupedContentComposite != null && !groupedContentComposite.isDisposed())
 				groupedContentComposite.dispose();
+		
+		if (displayNameComp != null && !displayNameComp.isDisposed())
+			displayNameComp.dispose();
+		
 		groupedContentComposite = null;
+		displayNameComp = null;
 	}
 
 	public void updatePropertySet() {
 		for (ContentProvider contentProvider : groupContentProvider.values()) {
 			contentProvider.updateProp();
 		}
+		if (displayNameComp != null) {
+			String displayName = autogenerateNameCheckbox.getSelection() ? null : displayNameText.getText();			
+			getPropertySet().setAutoGenerateDisplayName(autogenerateNameCheckbox.getSelection());
+			getPropertySet().setDisplayName(displayName);
+		}
 	}
-	
+
+	private void refreshDisplayNameComp() {
+		refreshing = true;
+		if (displayNameComp != null) {
+			if (propertySet.getDisplayName() != null)
+				displayNameText.setText(propertySet.getDisplayName());
+			autogenerateNameCheckbox.setSelection(propertySet.isAutoGenerateDisplayName());
+			displayNameText.setEnabled(!autogenerateNameCheckbox.getSelection());
+		}
+		refreshing = false;
+	}
 }

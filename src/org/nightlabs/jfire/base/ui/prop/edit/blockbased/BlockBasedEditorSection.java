@@ -79,7 +79,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		createDescriptionControl(section, toolkit, sectionDescriptionText);
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
-		blockBasedPersonEditor = new BlockBasedEditor();
+		blockBasedPersonEditor = new BlockBasedEditor(true);
 		blockBasedPersonEditorControl = blockBasedPersonEditor.createControl(container, false);
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 		blockBasedPersonEditor.setChangeListener(new DataBlockEditorChangedListener() {
@@ -105,5 +105,9 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 			return;
 
 		section.setText(sectionDescriptionText);
+	}
+	
+	public void setDisplayNameChangedListener(DisplayNameChangedListener listener) {
+		blockBasedPersonEditor.setDisplayNameChangedListener(listener);
 	}
 }
