@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.nightlabs.jfire.base.ui.config.ConfigSetupRegistry;
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.config.ConfigSetup;
 import org.nightlabs.jfire.config.dao.ConfigSetupDAO;

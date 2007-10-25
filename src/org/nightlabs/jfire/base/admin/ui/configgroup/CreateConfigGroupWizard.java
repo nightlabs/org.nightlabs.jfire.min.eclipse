@@ -49,6 +49,7 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		try {
 			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();

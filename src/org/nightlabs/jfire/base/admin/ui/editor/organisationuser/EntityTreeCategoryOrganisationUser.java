@@ -32,7 +32,6 @@ import javax.jdo.FetchPlan;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.ui.IEditorInput;
-import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditorInput;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
@@ -79,6 +78,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 		return new LabelProvider();
 	}
 
+	@Override
 	protected Class getJDOObjectClass()
 	{
 		return User.class;
@@ -101,6 +101,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 		FetchPlan.DEFAULT
 		};
 
+	@Override
 	protected Collection<User> retrieveJDOObjects(Set<UserID> userIDs, ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsers(userIDs,
@@ -109,6 +110,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 			monitor);
 	}
 
+	@Override
 	protected Collection<User> retrieveJDOObjects(ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsersByType(User.USERTYPE_ORGANISATION,
@@ -117,6 +119,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 				monitor);
 	}
 
+	@Override
 	protected void sortJDOObjects(List<User> users)
 	{
 		Collections.sort(users); // User implements Comparable - no Comparator needed

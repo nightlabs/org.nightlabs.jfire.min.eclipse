@@ -145,7 +145,7 @@ public class SecurityPreferencesController extends EntityEditorPageController
 				// load user groups
 				Collection<UserGroup> userGroups = UserDAO.sharedInstance().getUserGroups(
 						new String[] {
-								UserGroup.FETCH_GROUP_THIS_USER },
+								User.FETCH_GROUP_THIS_USER },
 //								FetchGroupsPerson.FETCH_GROUP_PERSON_FULL_DATA },
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								pMonitor);

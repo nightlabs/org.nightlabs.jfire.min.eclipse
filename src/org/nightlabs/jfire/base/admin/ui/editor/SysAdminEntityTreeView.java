@@ -32,6 +32,7 @@ extends EntityTreeView
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.part.ControllablePart#canDisplayPart()
 	 */
+	@Override
 	public boolean canDisplayPart() {
 		return Login.isLoggedIn();
 	}

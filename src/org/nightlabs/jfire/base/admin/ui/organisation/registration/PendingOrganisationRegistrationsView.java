@@ -81,6 +81,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	}
 
 	protected SelectionListener acceptButton_selectionListener = new SelectionAdapter() {
+		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
@@ -109,6 +110,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	};
 
 	protected SelectionListener cancelButton_selectionListener = new SelectionAdapter() {
+		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
@@ -137,6 +139,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	};
 	
 	protected SelectionListener rejectButton_selectionListener = new SelectionAdapter() {
+		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
@@ -165,6 +168,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	};
 	
 	protected SelectionListener ackButton_selectionListener = new SelectionAdapter() {
+		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
@@ -191,6 +195,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	};
 
 	protected SelectionListener reloadButton_selectionListener = new SelectionAdapter() {
+		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
@@ -252,6 +257,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	/**
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createPartControl(Composite parent)
 	{
 		try {
@@ -329,6 +335,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	/**
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
+	@Override
 	public void setFocus()
 	{
 	}

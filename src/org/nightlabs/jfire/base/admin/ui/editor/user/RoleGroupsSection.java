@@ -165,6 +165,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 */
 	private static class RoleGroupsLabelProvider extends TableLabelProvider
 	{
+		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
 			if(columnIndex == 0)
@@ -257,6 +258,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 		Button fAddButton = toolkit.createButton(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.toRight"), SWT.PUSH); //$NON-NLS-1$
 		fAddButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fAddButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				roleGroupsAdd();
 			}
@@ -267,6 +269,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 		Button fRemoveButton = toolkit.createButton(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.toLeft"), SWT.PUSH); //$NON-NLS-1$
 		fRemoveButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fRemoveButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				roleGroupsRemove();
 			}

@@ -27,11 +27,8 @@
 package org.nightlabs.jfire.base.admin.ui.usergroup;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
-import org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard;
 
 /**
  * An action that opens a {@link CreateUserGroupWizard}.

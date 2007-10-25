@@ -52,7 +52,6 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.rolegroup.RoleGroupContainer;
-import org.nightlabs.jfire.base.ui.config.ConfigSetupRegistry;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.config.ConfigManager;

@@ -68,6 +68,7 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 			this.configGroupWizard = configGroupWizard;
 		}
 
+		@Override
 		public Control createPageContents(Composite parent) {
 			wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 			
@@ -81,6 +82,7 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 			return wrapper;
 		}
 
+		@Override
 		public boolean isPageComplete() {
 			return (!"".equals(groupIDText.getTextControl().getText())) && //$NON-NLS-1$
 						 (!"".equals(groupNameText.getTextControl().getText()));  //$NON-NLS-1$
@@ -101,11 +103,13 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 
 	private EntryPage entryPage;
 	
+	@Override
 	public IDynamicPathWizardPage createWizardEntryPage() {
 		entryPage = new EntryPage(this, Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.AddConfigGroupWizard.entryPage.title"));  //$NON-NLS-1$
 		return entryPage;
 	}
 
+	@Override
 	public boolean performFinish() {
 		try {
 			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();

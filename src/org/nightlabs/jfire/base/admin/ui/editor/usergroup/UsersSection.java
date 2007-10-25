@@ -148,6 +148,7 @@ public class UsersSection extends RestorableSectionPart
 		Button fAddButton = toolkit.createButton(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.toRight"), SWT.PUSH); //$NON-NLS-1$
 		fAddButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fAddButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				usersAdd();
 			}
@@ -156,6 +157,7 @@ public class UsersSection extends RestorableSectionPart
 		Button fRemoveButton = toolkit.createButton(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.toLeft"), SWT.PUSH); //$NON-NLS-1$
 		fRemoveButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fRemoveButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				usersRemove();
 			}
@@ -202,6 +204,7 @@ public class UsersSection extends RestorableSectionPart
 	 */
 	private static class UsersLabelProvider extends TableLabelProvider
 	{
+		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
 			if(columnIndex == 0)

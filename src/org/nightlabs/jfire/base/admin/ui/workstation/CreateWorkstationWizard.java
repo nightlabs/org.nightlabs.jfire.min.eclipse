@@ -51,6 +51,7 @@ public class CreateWorkstationWizard extends DynamicPathWizard {
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		Workstation workstation;
 		try {

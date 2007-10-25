@@ -66,6 +66,7 @@ extends LSDViewPart
 		}
 	};
 
+	@Override
 	public void setFocus()
 	{
 	}

@@ -196,6 +196,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_TaskType
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			int res = getCollator().compare(t1.getTaskTypeID(), t2.getTaskTypeID());
@@ -212,6 +213,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_UserName
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			return getCollator().compare(t1.getUser().getName(),
@@ -222,6 +224,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_TaskName
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			return getCollator().compare(
@@ -233,6 +236,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_TaskDescription
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			return getCollator().compare(
@@ -244,6 +248,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_LastExecDT
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			if (t1.getLastExecDT() == null)
@@ -259,6 +264,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_Duration
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			long d1 = t1.getLastExecDurationMSec();
@@ -271,6 +277,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_LastExecMessage
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			return getCollator().compare(
@@ -282,6 +289,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_Enabled
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			int v1 = t1.isEnabled() ? 1 : 0;
@@ -294,6 +302,7 @@ public class TaskListComposite
 	protected static class TaskViewerSorter_NextExecDT
 			extends AbstractInvertableTableSorter<Task>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			if (t1.getNextExecDT() == null)
@@ -317,6 +326,7 @@ public class TaskListComposite
 			return task.getActiveExecID() == null ? 0 : 1;
 		}
 
+		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 			int v1 = getStatusInt(t1);

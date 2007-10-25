@@ -71,12 +71,14 @@ public class CreateOrganisationWizard extends Wizard
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard.windowTitle")); //$NON-NLS-1$
 	}
 
+	@Override
 	public void addPages() 
 	{
 		coPage = new CreateOrganisationPage();
 		addPage(coPage);
 	}
 
+	@Override
 	public boolean performFinish()
 	{
 		final String organisationID = coPage.getOrganisationID(); 
@@ -89,6 +91,7 @@ public class CreateOrganisationWizard extends Wizard
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard.createOrganisationJob.name"), //$NON-NLS-1$
 				new Object[] { organisationID, organisationDisplayName });
 		Job job = new Job(createOrganisationJobName) {
+			@Override
 			@Implement
 			protected IStatus run(IProgressMonitor monitor)
 			{

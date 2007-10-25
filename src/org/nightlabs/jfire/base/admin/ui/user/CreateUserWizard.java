@@ -56,6 +56,7 @@ public class CreateUserWizard extends DynamicPathWizard
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.windowTitle")); //$NON-NLS-1$
 	}
 
+	@Override
 	public void addPages() 
 	{
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
@@ -76,6 +77,7 @@ public class CreateUserWizard extends DynamicPathWizard
 		addPage(propertySetEditorWizardHop.getEntryPage());
 	}
 
+	@Override
 	public boolean performFinish()
 	{
 		try {

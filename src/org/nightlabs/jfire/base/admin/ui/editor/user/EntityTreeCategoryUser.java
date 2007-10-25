@@ -83,6 +83,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 		return new LabelProvider();
 	}
 
+	@Override
 	protected Class getJDOObjectClass()
 	{
 		return User.class;
@@ -105,6 +106,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 		FetchPlan.DEFAULT
 		};
 
+	@Override
 	protected Collection<User> retrieveJDOObjects(Set<UserID> userIDs, ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsers(userIDs,
@@ -113,6 +115,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 			monitor);
 	}
 
+	@Override
 	protected Collection<User> retrieveJDOObjects(ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsers(
@@ -121,6 +124,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 				monitor);
 	}
 
+	@Override
 	protected void sortJDOObjects(List<User> users)
 	{
 		Collections.sort(users); // User implements Comparable - no Comparator needed

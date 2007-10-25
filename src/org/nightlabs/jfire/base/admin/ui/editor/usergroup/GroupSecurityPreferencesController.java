@@ -141,7 +141,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				UserGroup userGroup = UserDAO.sharedInstance().getUserGroup(
 						userGroupID,
 						new String[] {
-								UserGroup.FETCH_GROUP_THIS_USER,
+								User.FETCH_GROUP_THIS_USER,
 								UserGroup.FETCH_GROUP_USERS,
 //								PropertySet.FETCH_GROUP_FULL_DATA 
 								},

@@ -87,7 +87,8 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 	private TableContentProvider organisationTableContentProvider = new TableContentProvider() {
 		private Organisation[] organisations = null;
 		private String[] messages = null;
-		@SuppressWarnings("unchecked") //$NON-NLS-1$
+		@Override
+		@SuppressWarnings("unchecked") 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 		{
 			organisations = null;
@@ -98,6 +99,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 				organisations = CollectionUtil.collection2TypedArray((Collection<Organisation>) newInput, Organisation.class);
 			}
 		}
+		@Override
 		public Object[] getElements(Object inputElement)
 		{
 			if (messages != null)
@@ -139,6 +141,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 	protected static class OrganisationViewerSorter_PersonName
 	extends AbstractInvertableTableSorter<Organisation>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Organisation orga1, Organisation orga2)
 		{
 			if (orga1 == UNKNOWN_ORGANISATION)
@@ -156,6 +159,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 	protected static class OrganisationViewerSorter_OrganisationID
 	extends AbstractInvertableTableSorter<Organisation>
 	{
+		@Override
 		protected int _compare(Viewer viewer, Organisation orga1, Organisation orga2)
 		{
 			if (orga1 == UNKNOWN_ORGANISATION)
@@ -200,7 +204,8 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 		organisationTable.setSelection(new StructuredSelection(new Organisation[0]));
 
 		new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.RegisterOrganisationPage.loadOrganisationsJob.name")) { //$NON-NLS-1$
-			@SuppressWarnings("unchecked") //$NON-NLS-1$
+			@Override
+			@SuppressWarnings("unchecked") 
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				try {
@@ -248,6 +253,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 
 	private static final String[] FETCH_GROUPS_ORGANISATION = new String[]{ FetchPlan.ALL }; // TODO fix this!
 
+	@Override
 	public Control createPageContents(Composite parent)
 	{
 		XComposite page = new XComposite(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER);

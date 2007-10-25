@@ -76,6 +76,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 		return new LabelProvider();
 	}
 
+	@Override
 	protected Class getJDOObjectClass()
 	{
 		return UserGroup.class;
@@ -93,6 +94,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 				User.USERTYPE_USERGROUP, new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
 
+	@Override
 	protected Collection<UserGroup> retrieveJDOObjects(Set<UserID> objectIDs, ProgressMonitor monitor)
 	{
 		return CollectionUtil.castCollection(
@@ -114,6 +116,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 				monitor);
 	}
 
+	@Override
 	protected void sortJDOObjects(List<UserGroup> objects)
 	{
 		Collections.sort(objects); // User implements Comparable - no Comparator needed

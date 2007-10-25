@@ -51,6 +51,7 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 	/**
 	 * This method is called upon plug-in activation
 	 */
+	@Override
 	public void start(BundleContext context) 
 	throws Exception 
 	{
@@ -68,6 +69,7 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
+	@Override
 	public void stop(BundleContext context) 
 	throws Exception 
 	{

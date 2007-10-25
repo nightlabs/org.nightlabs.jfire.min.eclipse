@@ -46,6 +46,7 @@ public class RegisterOrganisationWizard extends Wizard
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
+	@Override
 	public void addPages()
 	{
 		registerOrganisationPage = new RegisterOrganisationPage();
@@ -55,6 +56,7 @@ public class RegisterOrganisationWizard extends Wizard
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish()
 	{
 		try {

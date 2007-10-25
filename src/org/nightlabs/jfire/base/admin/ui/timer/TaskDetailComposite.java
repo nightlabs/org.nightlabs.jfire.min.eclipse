@@ -140,6 +140,7 @@ implements ISelectionProvider // needed for updating ViewActions
 	public void setTaskID(final TaskID taskID)
 	{
 		currentJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.setTaskID.job.name")) { //$NON-NLS-1$
+			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				Display.getDefault().syncExec(new Runnable()
@@ -231,6 +232,7 @@ implements ISelectionProvider // needed for updating ViewActions
 
 		final Task _task = this.task;
 		Job currentJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.submit.job.name")) { //$NON-NLS-1$
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.submit.monitor.taskName_storing"), 2); //$NON-NLS-1$
 
