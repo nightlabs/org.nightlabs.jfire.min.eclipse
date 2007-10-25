@@ -23,47 +23,57 @@
  ******************************************************************************/
 package org.nightlabs.jfire.base.admin.ui.editor.prop;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.jdo.FetchPlan;
+import javax.jdo.JDOHelper;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
-import org.nightlabs.base.ui.entity.tree.EntityTreeCategory;
-import org.nightlabs.base.ui.entity.tree.IEntityTreeCategoryContentConsumer;
 import org.nightlabs.base.ui.table.TableLabelProvider;
-import org.nightlabs.base.ui.tree.TreeContentProvider;
+import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditorUtil;
+import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
+import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
+import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.StructLocal;
+import org.nightlabs.jfire.prop.StructLocalLifecycleListenerFilter;
+import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.jfire.security.User;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * Entity tree category for {@link User}s.
+ * Entity tree category for {@link StructLocal}s.
  * 
  * @version $Revision: 5032 $ - $Date: 2006-11-20 18:46:17 +0100 (Mo, 20 Nov 2006) $
- * @author Marc Klinger - marc[at]nightlabs[dot]de
- * @author marco schulze - marco at nightlabs dot de
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class EntityTreeCategoryPropertyStructLocal
-extends EntityTreeCategory
+extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 {
 	protected class LabelProvider extends TableLabelProvider {
-
-		public String getColumnText(Object o, int columnIndex) {
-			// check for string first, so we don't need to be logged in when dsplaying a simple string
-			if(o instanceof String) {
-				return (String)o;
-			} else if(o instanceof StructLocalID) {
-				StructLocalID structID = (StructLocalID) o;
-				return structID.linkClass.substring(structID.linkClass.lastIndexOf(".")+1); //$NON-NLS-1$
-			} else {
-				return ""; //$NON-NLS-1$
+			public String getColumnText(Object o, int columnIndex) {
+				if (o instanceof String) {
+					return (String)o;
+				} else if(o instanceof StructLocal) {
+					StructLocal struct = (StructLocal) o;
+					return struct.getName().getText();
+				} else {
+					return ""; //$NON-NLS-1$
+				}
 			}
+			
 		}
-		
-	}
 
 	public IEditorInput createEditorInput(Object o)
 	{
-		StructLocalID structLocalID = (StructLocalID)o;
+		StructLocalID structLocalID = (StructLocalID) JDOHelper.getObjectId(o);
 		return new JDOObjectEditorInput<StructLocalID>(structLocalID);
 	}
 
@@ -71,12 +81,44 @@ extends EntityTreeCategory
 		return new LabelProvider();
 	}
 
+	protected Class getJDOObjectClass()
+	{
+		return StructLocal.class;
+	}
+
+	/**
+	 * We override the default implementation in order to suppress subclasses
+	 * of {@link User} (i.e. <code>UserGroup</code> instances) and to
+	 * filter for the correct user-type on the server.
+	 */
 	@Override
-	protected ITreeContentProvider _createContentProvider(IEntityTreeCategoryContentConsumer contentConsumer) {
-		return new TreeContentProvider() {
-			public Object[] getElements(Object inputElement) {
-				return StructEditorUtil.getAvailableStructLocalIDs().toArray();
-			}
-		};
+	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
+	{
+		return new StructLocalLifecycleListenerFilter(new JDOLifecycleState[] { JDOLifecycleState.NEW });
+	}
+
+	public static final String[] FETCH_GROUPS_STRUCT_LOCAL = {
+		FetchPlan.DEFAULT,
+		IStruct.FETCH_GROUP_ISTRUCT_FULL_DATA
+	};
+
+	protected Collection<StructLocal> retrieveJDOObjects(Set<StructLocalID> structLocalIDs, ProgressMonitor monitor)
+	{
+		List<StructLocal> structLocals = new ArrayList<StructLocal>(structLocalIDs.size());
+		for (StructLocalID structLocalID : structLocalIDs) {
+			structLocals.add(StructLocalDAO.sharedInstance().getStructLocal(structLocalID, monitor));
+		}
+		return structLocals;
+	}
+
+	protected Collection<StructLocal> retrieveJDOObjects(ProgressMonitor monitor)
+	{
+		Collection<StructLocalID> structLocalIDs = StructEditorUtil.getAvailableStructLocalIDs();
+		return retrieveJDOObjects(new HashSet<StructLocalID>(structLocalIDs), monitor);
+	}
+
+	protected void sortJDOObjects(List<StructLocal> structLocals)
+	{
+		// TODO: Implement sorting.
 	}
 }
