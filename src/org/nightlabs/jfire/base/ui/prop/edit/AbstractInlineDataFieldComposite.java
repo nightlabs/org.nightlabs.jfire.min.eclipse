@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui.prop.edit;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -55,6 +56,7 @@ public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldE
 		this.editor = editor;
 		setLayout(getDefaultLayout());		
 		title = new Label(this, SWT.NONE);
+		title.setLayoutData(createTitleLayoutData());
 	}
 	
 	/**
@@ -71,6 +73,13 @@ public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldE
 	
 	protected Editor getEditor() {
 		return this.editor;
+	}
+	
+	
+	protected Object createTitleLayoutData() {
+		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
+		nameData.grabExcessHorizontalSpace = true;
+		return nameData;
 	}
 	
 	/**

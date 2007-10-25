@@ -89,12 +89,6 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		this(editor, parent, style, modListener, null);
 	}
 	
-	protected Object createLabelLayoutData() {
-		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
-		nameData.grabExcessHorizontalSpace = true;
-		return nameData;
-	}
-
 	protected Object createTextLayoutData() {
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;

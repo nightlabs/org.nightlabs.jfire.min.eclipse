@@ -3,8 +3,11 @@
  */
 package org.nightlabs.jfire.base.ui.person.search;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -87,6 +90,15 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		searchComposite.getResultTable().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				getContainer().updateButtons();
+			}
+		});
+		searchComposite.getResultTable().getTableViewer().addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				if (getContainer() instanceof WizardDialog) {
+					if (getWizard().performFinish()) {
+						((WizardDialog) getContainer()).close();
+					}
+				}
 			}
 		});
 		return searchComposite;
