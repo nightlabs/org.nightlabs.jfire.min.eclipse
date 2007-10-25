@@ -138,7 +138,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 		
 		for (Iterator iter = preferenceNodesByIDs.values().iterator(); iter.hasNext();) {
 			ConfigPreferenceNode node = (ConfigPreferenceNode) iter.next();
-			ConfigPreferenceNode parentNode = (ConfigPreferenceNode)preferenceNodesByIDs.get(node.getCategoryID());			
+			ConfigPreferenceNode parentNode = preferenceNodesByIDs.get(node.getCategoryID());			
 			if (parentNode != null)
 				parentNode.addChild(node);
 			else

@@ -114,6 +114,7 @@ extends SearchEntryViewer
 	private class AdvancedQuickSearchEntryFactory
 	extends AbstractQuickSearchEntryFactory
 	{
+		@Override
 		public String getName() {
 			return Messages.getString("org.nightlabs.jfire.base.ui.overview.search.JDOQuerySearchEntryViewer.advancedEntry.name"); //$NON-NLS-1$
 		}

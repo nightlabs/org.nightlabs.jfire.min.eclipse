@@ -32,6 +32,7 @@ public class DefaultCategoryComposite extends AbstractTableComposite<Entry> {
 	
 	private class ContentProvider extends TableContentProvider {
 		
+		@Override
 		public Object[] getElements(Object inputElement) 
 		{
 			if (inputElement instanceof List) {
@@ -51,6 +52,7 @@ public class DefaultCategoryComposite extends AbstractTableComposite<Entry> {
 			return null;
 		}
 
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) 
 		{
 			if (columnIndex == 0) {

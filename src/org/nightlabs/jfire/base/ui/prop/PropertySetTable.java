@@ -101,6 +101,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * and applies a table layout {@link #applyTableLayout(Table)}.
 	 * </p>
 	 */
+	@Override
 	protected void createTableColumns(TableViewer tableViewer, Table table) {
 		createStructFieldColumns(tableViewer, table);
 		applyTableLayout(table);
@@ -113,6 +114,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * the internal {@link LabelProvider}.
 	 * </p>
 	 */
+	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
 		tableViewer.setContentProvider(new TableContentProvider());
 		tableViewer.setLabelProvider(new LabelProvider());

@@ -38,6 +38,7 @@ public class StructFieldMetaData
 			return fieldName;
 	}	
 	
+	@Override
 	public String toString()
 	{
 		return getFieldName();

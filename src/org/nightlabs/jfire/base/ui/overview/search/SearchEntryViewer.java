@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
@@ -88,7 +89,7 @@ extends AbstractEntryViewer
 		searchWrapper.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		createToolBar(searchWrapper);
 		IToolkit toolkit = new NightlabsFormsToolkit(Display.getDefault());
-		searchCriteriaSection = toolkit.createSection(searchWrapper, Section.TITLE_BAR | Section.TWISTIE);
+		searchCriteriaSection = toolkit.createSection(searchWrapper, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
 		searchCriteriaSection.setLayout(new GridLayout());
 		searchCriteriaSection.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchCriteriaSection.text")); //$NON-NLS-1$
 		searchCriteriaSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));	

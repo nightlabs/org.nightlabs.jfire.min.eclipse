@@ -33,12 +33,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.nightlabs.jfire.base.jdo.cache.Cache;
+import org.nightlabs.util.Util;
 import org.nightlabs.util.Utils;
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de
  * @deprecated Please use {@link JDOObjectDAO} for future client development
  */
+@Deprecated
 public abstract class JDOObjectProvider
 {
 	private Cache cache = Cache.sharedInstance();
@@ -88,7 +90,7 @@ public abstract class JDOObjectProvider
 
 		inRetrieveJDOObject_Set = true;
 		try {
-			return retrieveJDOObject(scope, objectID, (String[])Utils.collection2TypedArray(fetchGroups, String.class), maxFetchDepth);
+			return retrieveJDOObject(scope, objectID, (String[])Util.collection2TypedArray(fetchGroups, String.class), maxFetchDepth);
 		} finally {
 			inRetrieveJDOObject_Set = false;
 		}
@@ -103,7 +105,7 @@ public abstract class JDOObjectProvider
 
 		inRetrieveJDOObjects_StringArray_StringArray = true;
 		try {
-			return retrieveJDOObjects(scope, Utils.array2HashSet(objectIDs), Utils.array2HashSet(fetchGroups), maxFetchDepth);
+			return retrieveJDOObjects(scope, Util.array2HashSet(objectIDs), Util.array2HashSet(fetchGroups), maxFetchDepth);
 		} finally {
 			inRetrieveJDOObjects_StringArray_StringArray = false;
 		}
@@ -118,7 +120,7 @@ public abstract class JDOObjectProvider
 
 		inRetrieveJDOObjects_Set_Set = true;
 		try {
-			return retrieveJDOObjects(scope, objectIDs, (String[])Utils.collection2TypedArray(fetchGroups, String.class), maxFetchDepth);
+			return retrieveJDOObjects(scope, objectIDs, (String[])Util.collection2TypedArray(fetchGroups, String.class), maxFetchDepth);
 		} finally {
 			inRetrieveJDOObjects_Set_Set = false;
 		}
@@ -142,7 +144,7 @@ public abstract class JDOObjectProvider
 	protected synchronized Object getJDOObject(
 			String scope, Object objectID, Set fetchGroups, int maxFetchDepth)
 	{
-		return getJDOObject(scope, objectID, (String[])Utils.collection2TypedArray(fetchGroups, String.class), maxFetchDepth);
+		return getJDOObject(scope, objectID, (String[])Util.collection2TypedArray(fetchGroups, String.class), maxFetchDepth);
 	}
 
 	protected synchronized Object getJDOObject(
@@ -162,12 +164,12 @@ public abstract class JDOObjectProvider
 
 	protected synchronized Collection getJDOObjects(String scope, Object[] objectIDs, String[] fetchGroups, int maxFetchDepth)
 	{
-		return getJDOObjects(scope, Utils.array2HashSet(objectIDs), Utils.array2HashSet(fetchGroups), maxFetchDepth);
+		return getJDOObjects(scope, Util.array2HashSet(objectIDs), Util.array2HashSet(fetchGroups), maxFetchDepth);
 	}
 
 	protected synchronized Collection getJDOObjects(String scope, Collection objectIDs, String[] fetchGroups, int maxFetchDepth)
 	{
-		return getJDOObjects(scope, objectIDs, Utils.array2HashSet(fetchGroups), maxFetchDepth);
+		return getJDOObjects(scope, objectIDs, Util.array2HashSet(fetchGroups), maxFetchDepth);
 	}
 
 	protected synchronized Collection getJDOObjects(String scope, Collection objectIDs, Set fetchGroups, int maxFetchDepth)

@@ -226,7 +226,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * that will search using the {@link PropertyManager}.
 	 */
 	private SearchResultFetcher resultFetcher = new SearchResultFetcher() {
-		@SuppressWarnings("unchecked") //$NON-NLS-1$
+		@SuppressWarnings("unchecked") 
 		public void searchTriggered(final SearchFilterProvider filterProvider) {
 			logger.debug("Search triggered, getting PersonManager"); //$NON-NLS-1$
 			Display.getDefault().asyncExec(new Runnable() {

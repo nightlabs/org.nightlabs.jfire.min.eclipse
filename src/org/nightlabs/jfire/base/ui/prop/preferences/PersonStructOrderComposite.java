@@ -58,6 +58,7 @@ import org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderConfigMod
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @deprecated Is this class still used? Shouldn't it either be renamed or put into a different package? If it is still used, please externalise the strings! I've marked them with NON-NLS.
  */
+@Deprecated
 public class PersonStructOrderComposite extends Composite {
 	private Composite titleComposite;
 	private Label labelTitle;

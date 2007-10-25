@@ -39,6 +39,7 @@ import org.nightlabs.util.CollectionUtil;
  *		glue some data input into a TableViewer/TreeViewer (or other UI document). That's why
  *		there's now {@link ActiveJDOObjectController} existing.
  */
+@Deprecated
 public abstract class ActiveTreeContentProvider<JDOObjectID, JDOObject>
 extends TreeContentProvider
 {
@@ -218,6 +219,7 @@ extends TreeContentProvider
 			return jdoObjects;
 
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.tree.ActiveTreeContentProvider.loadingDataJob")) { //$NON-NLS-1$
+			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				Collection<JDOObject> jdoObjects = getAllJDOObjects(monitor);

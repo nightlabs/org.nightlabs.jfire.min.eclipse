@@ -330,6 +330,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 			return jdoObjects;
 
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController.loadingDataJob")) { //$NON-NLS-1$
+			@Override
 			protected IStatus run(ProgressMonitor monitor)
 			{
 				final Collection<JDOObject> jdoObjects = retrieveJDOObjects(monitor);
@@ -356,7 +357,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				return Status.OK_STATUS;
 			}
 		};
-		job.setPriority(Job.SHORT);
+		job.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 		job.schedule();
 
 		return null;

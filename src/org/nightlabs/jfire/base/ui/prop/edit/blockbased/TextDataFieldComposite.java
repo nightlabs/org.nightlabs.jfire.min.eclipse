@@ -102,6 +102,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
 	 */
+	@Override
 	public void _refresh() {
 //		StructField field = getEditor().getStructField();
 //		fieldText.setCaption(field.getName().getText());
@@ -124,6 +125,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		return fieldText.getText();
 	}
 	
+	@Override
 	public void dispose() {
 		fieldText.removeModifyListener(modifyListener);
 		super.dispose();

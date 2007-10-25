@@ -217,7 +217,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 				return Status.OK_STATUS;
 			}
 		};
-		lockJob.setPriority(Job.SHORT);
+		lockJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 //		lockJob.setUser(true);
 		lockJob.schedule();
 

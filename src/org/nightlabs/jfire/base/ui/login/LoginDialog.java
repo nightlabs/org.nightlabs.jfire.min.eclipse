@@ -150,6 +150,7 @@ public class LoginDialog extends TitleAreaDialog
 	/**
 	 * @deprecated What is this constructor used for?
 	 */
+	@Deprecated
 	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule)
 	{
 		this(parent);
@@ -476,6 +477,7 @@ public class LoginDialog extends TitleAreaDialog
 //	return;
 //	checkLogin();
 //	}
+	@Override
 	protected void okPressed() 
 	{
 		if(!checkUserInput())

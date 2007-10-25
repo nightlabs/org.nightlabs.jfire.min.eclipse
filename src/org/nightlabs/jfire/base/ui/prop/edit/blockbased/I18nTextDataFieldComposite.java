@@ -35,7 +35,6 @@ import org.nightlabs.base.ui.language.I18nTextEditorMultiLine;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
-import org.nightlabs.jfire.prop.datafield.I18nTextDataField;
 import org.nightlabs.jfire.prop.structfield.I18nTextStructField;
 
 /**
@@ -97,6 +96,7 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
 	 */
+	@Override
 	public void _refresh() {
 		if (i18nTextEditor != null)
 			i18nTextEditor.dispose();
@@ -115,6 +115,7 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 		i18nTextEditor.getI18nText().copyTo(fieldText);
 	}
 	
+	@Override
 	public void dispose() {
 		i18nTextEditor.removeModifyListener(modifyListener);
 		super.dispose();

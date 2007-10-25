@@ -194,6 +194,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
 	 */
+	@Override
 	public String getExtensionPointID() {
 		return EXTENSION_POINT_ID;
 	}
@@ -201,6 +202,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#processElement(IExtension, org.eclipse.core.runtime.IConfigurationElement)
 	 */
+	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception {
 		try
 		{

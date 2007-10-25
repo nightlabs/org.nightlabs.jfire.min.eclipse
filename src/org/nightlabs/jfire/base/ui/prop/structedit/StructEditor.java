@@ -104,7 +104,7 @@ public class StructEditor {
 			});
 			
 			structTree.addSelectionChangedListener(new ISelectionChangedListener() {				
-				@SuppressWarnings("unchecked") //$NON-NLS-1$
+				@SuppressWarnings("unchecked") 
 				public void selectionChanged(SelectionChangedEvent event) {
 					if (ignoreChangeEvent)
 						return;

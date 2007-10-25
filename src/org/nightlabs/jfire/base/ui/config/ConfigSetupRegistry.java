@@ -208,7 +208,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	 * configSetupType or null if none can be found.
 	 */
 	public ConfigSetupVisualiser getVisualiser(String configSetupType) {
-		return (ConfigSetupVisualiser)setupVisualiserByType.get(configSetupType);
+		return setupVisualiserByType.get(configSetupType);
 	}
 	
 	/**
@@ -236,10 +236,12 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 		return sharedInstance;
 	}
 
+	@Override
 	public String getExtensionPointID() {
 		return EXTENSION_POINT_ID;
 	}
 
+	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception {
 		if (element.getName().equals(VISUALISER_ELEMENT)) {
 			String configSetupType = element.getAttribute(CONFIG_SETUP_TYPE_ELEMENT);

@@ -50,6 +50,7 @@ extends AbstractEPProcessor
 		return EXTENSION_POINT_ID;
 	}
 
+	@Override
 	public void processElement(IExtension extension, IConfigurationElement element)
 	throws Exception 
 	{

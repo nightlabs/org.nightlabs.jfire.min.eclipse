@@ -50,10 +50,12 @@ extends AbstractWorkbenchAdvisor
 	 * By now JFireWelcomePerspective is initial perspective
 	 * @see org.eclipse.ui.application.WorkbenchAdvisor
 	 */
+	@Override
 	public String getInitialWindowPerspectiveId() {
 		return JFireWelcomePerspective.ID_PERSPECTIVE;
 	}
 				
+	@Override
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		return new JFireWorkbenchWindowAdvisor(configurer);
 	}

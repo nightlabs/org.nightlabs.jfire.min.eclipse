@@ -47,6 +47,7 @@ import org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderConfigMod
  * {@link org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderPreferencePage} is used).
  * TODO @Carnage please decide which of these is still used (or whether both are necessary) If this class is used, please externalize the strings! I've marked them NON-NLS!
  */
+@Deprecated
 public class PersonStructOrderPreferencePage 
 extends 
 	PreferencePage 
@@ -61,7 +62,8 @@ implements
 		System.out.println("Constructor of PersonStructOrderPreferencePage called"); //$NON-NLS-1$
 	}
 	
-  protected Control createContents(Composite parent) {
+  @Override
+	protected Control createContents(Composite parent) {
   	createWrapperComposite(parent);
   	
 		Login login;
@@ -90,6 +92,7 @@ implements
 	}
 	
 
+	@Override
 	protected void performApply() {
 		super.performApply();
 		PersonStructOrderConfigModule.sharedInstance().setStructBlockDisplayOrder(

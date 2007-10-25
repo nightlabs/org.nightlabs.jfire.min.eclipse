@@ -59,6 +59,7 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected PropertySetTable<Person> createResultTable(Composite parent) {
 		return new PersonResultTable(parent, SWT.NONE);
 	}
@@ -66,12 +67,14 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected SearchFilterProvider createStaticSearchFilterProvider(SearchResultFetcher resultFetcher) {
 		return new StaticPersonSearchFilterProvider(resultFetcher, false);
 	}
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected SearchFilterProvider createDynamicSearchFilterProvider(SearchResultFetcher resultFetcher) {
 		return new DynamicPersonSearchFilterProvider(new PropertySetSearchFilterItemListMutator(), resultFetcher);
 	}

@@ -93,6 +93,7 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	/**
 	 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.AbstractDataBlockEditor#refresh(org.nightlabs.jfire.base.ui.person.DataBlock)
 	 */
+	@Override
 	public void refresh(IStruct struct, DataBlock block) {
 		this.dataBlock = block;
 		try {
@@ -198,6 +199,7 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 			notifyChangeListeners(this);
 	}
 	
+	@Override
 	protected synchronized void notifyChangeListeners(DataFieldEditor dataFieldEditor) {
 		if (refreshing)
 			return;

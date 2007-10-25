@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.util.Util;
 import org.nightlabs.util.Utils;
 
 /**
@@ -114,7 +115,7 @@ extends AbstractTreeComposite<JDOObject>
 		 * 
 		 * The {@link LoadListener} created here recurses into this method. 
 		 */
-		@SuppressWarnings("unchecked") //$NON-NLS-1$
+		@SuppressWarnings("unchecked") 
 		private void internalExpand(Object root, Object elementOrTreePath, int level, int totalLevel, Set<LoadListener> listenerStack) {
 			LoadListener listener = new LoadListener(root, elementOrTreePath, level, totalLevel, listenerStack);
 			getJDOObjectTreeController().addJDOTreeNodesChangedListener(listener);
@@ -173,7 +174,7 @@ extends AbstractTreeComposite<JDOObject>
 		public void handleLoad(final List<TreeNode> children) {
 			getJDOObjectTreeController().removeJDOTreeNodesChangedListener(this);
 			if (expandLevel + 1 <= totalLevel) {
-				logger.info(Utils.addLeadingChars(element.toString(), element.toString().length() + expandLevel + 1, ' '));
+				logger.info(Util.addLeadingChars(element.toString(), element.toString().length() + expandLevel + 1, ' '));
 				for (TreeNode childNode : children) {
 					getActiveTreeViewer().internalExpand(root, childNode, expandLevel+1, totalLevel, listenerStack);
 				}

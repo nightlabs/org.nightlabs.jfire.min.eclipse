@@ -106,6 +106,7 @@ extends AbstractApplication
 		}
 	}
 	
+	@Override
 	public AbstractWorkbenchAdvisor initWorkbenchAdvisor(Display display) {
 		return new JFireWorkbenchAdvisor();
 	}

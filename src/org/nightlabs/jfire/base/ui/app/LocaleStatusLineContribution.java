@@ -52,7 +52,7 @@ extends AbstractContributionItem
 		wrapper.getGridLayout().numColumns = 2;
 		wrapper.getGridLayout().makeColumnsEqualWidth = false;
 		image = new Label(wrapper, SWT.ICON);
-		image.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage())); //$NON-NLS-1$
+		image.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage())); 
 		image.setLayoutData(new GridData());
 		text = new Label(wrapper, SWT.NONE);		
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

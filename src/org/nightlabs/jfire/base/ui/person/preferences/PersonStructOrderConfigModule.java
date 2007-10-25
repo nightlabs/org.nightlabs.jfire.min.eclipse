@@ -73,6 +73,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		super();
 	}
 	
+	@Override
 	public void init() throws InitException {
 		super.init();
 	}

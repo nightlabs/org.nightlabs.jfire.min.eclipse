@@ -130,6 +130,7 @@ public class ConfigLinkSelectionNotificationProxy extends
 		}
 	}
 	
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) 
 	{
 		// first do the notification of the selected object itself

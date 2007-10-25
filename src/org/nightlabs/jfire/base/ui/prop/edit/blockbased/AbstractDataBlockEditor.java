@@ -80,7 +80,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 	}
 	
 	protected DataFieldEditor<? extends DataField> getFieldEditor(DataField dataField) {
-		return (DataFieldEditor<? extends DataField>)fieldEditors.get(dataField.getPropRelativePK());
+		return fieldEditors.get(dataField.getPropRelativePK());
 	}
 	
 	protected boolean hasFieldEditorFor(DataField dataField) {
@@ -121,12 +121,12 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		notifyChangeListeners(editor);
 	}
 	
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked") 
 	public Iterator<DataField> getOrderedPropDataFieldsIterator() {
 		List<DataField> result = new LinkedList<DataField>();
 		Map<String, Integer> structFieldOrder = getStructFieldDisplayOrder();
 		for (Iterator<DataField> it = dataBlock.getDataFields().iterator(); it.hasNext(); ) {
-			DataField dataField = (DataField)it.next();
+			DataField dataField = it.next();
 			if (structFieldOrder.containsKey(dataField.getStructFieldPK())) {
 				Integer index = structFieldOrder.get(dataField.getStructFieldPK());
 				dataField.setPriority(index.intValue());
@@ -145,6 +145,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		this.struct = struct;
 	}
 	
+	@Override
 	public void dispose() {
 		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {
 			editor.removeDataFieldEditorChangedListener(this);

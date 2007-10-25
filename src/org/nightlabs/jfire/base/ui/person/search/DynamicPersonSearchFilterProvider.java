@@ -59,6 +59,7 @@ public class DynamicPersonSearchFilterProvider extends DynamicPropertySetSearchF
 
 	
 	
+	@Override
 	protected SearchFilter createSearchFilter() {
 		return new PropSearchFilter();
 	}

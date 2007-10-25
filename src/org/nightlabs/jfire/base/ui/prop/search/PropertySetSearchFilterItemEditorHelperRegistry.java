@@ -78,7 +78,7 @@ public class PropertySetSearchFilterItemEditorHelperRegistry {
 	 */
 	public PropertySetSearchFilterItemEditorHelper createEditorHelper(Class structFieldClass) 
 	throws PropertySetSearchFilterItemEditorHelperNotFoundException {
-		PropertySetSearchFilterItemEditorHelperFactory<? extends PropertySetSearchFilterItemEditorHelper> factory = (PropertySetSearchFilterItemEditorHelperFactory<?>) helperFactories.get(structFieldClass);
+		PropertySetSearchFilterItemEditorHelperFactory<? extends PropertySetSearchFilterItemEditorHelper> factory = helperFactories.get(structFieldClass);
 		if (factory != null)
 			return factory.createHelper();
 		else

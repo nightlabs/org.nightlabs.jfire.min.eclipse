@@ -67,6 +67,7 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
  */
 public class LSDPartController extends PartController implements LoginStateListener {
 
+	@Override
 	protected Composite createNewConditionUnsatisfiedComposite(Composite parent) {
 		return new NeedLoginComposite(parent, SWT.BORDER);
 	}
@@ -74,6 +75,7 @@ public class LSDPartController extends PartController implements LoginStateListe
 	/**
 	 * @see org.nightlabs.base.ui.part.PartController#registerPart(org.nightlabs.base.ui.part.ControllablePart)
 	 */
+	@Override
 	public void registerPart(ControllablePart part) {		
 		super.registerPart(part);
 		Login.loginAsynchronously();

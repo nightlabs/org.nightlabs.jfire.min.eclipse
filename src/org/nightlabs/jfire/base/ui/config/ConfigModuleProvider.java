@@ -43,6 +43,7 @@ import org.nightlabs.jfire.config.id.ConfigModuleID;
  * @author marius
  *
  */
+@Deprecated
 public class ConfigModuleProvider extends JDOObjectProvider {
 
 	public ConfigModuleProvider() {
@@ -52,6 +53,7 @@ public class ConfigModuleProvider extends JDOObjectProvider {
 	/**
 	 * @see org.nightlabs.jfire.base.ui.jdo.JDOObjectProvider#retrieveJDOObject(java.lang.String, java.lang.Object, java.lang.String[])
 	 */
+	@Override
 	protected Object retrieveJDOObject(String scope, Object objectID, String[] fetchGroups, int maxFetchDepth) throws Exception {
 		if (!(objectID instanceof ConfigModuleID))
 			throw new IllegalArgumentException("Expected ConfigModuleID as objectID-parameter but found "+objectID.getClass().getName()+": "+objectID); //$NON-NLS-1$ //$NON-NLS-2$

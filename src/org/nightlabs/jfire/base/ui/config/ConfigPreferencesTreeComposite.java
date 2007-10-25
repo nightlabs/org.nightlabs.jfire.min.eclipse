@@ -85,12 +85,14 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 	
 	private static class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 
+		@Override
 		public Image getImage(Object element) {
 			if (element instanceof ConfigPreferenceNode)
 				return ((ConfigPreferenceNode)element).getIcon();
 			return super.getImage(element);
 		}
 
+		@Override
 		public String getText(Object element) {
 			if (element instanceof ConfigPreferenceNode)
 				return ((ConfigPreferenceNode)element).getConfigPreferenceName();

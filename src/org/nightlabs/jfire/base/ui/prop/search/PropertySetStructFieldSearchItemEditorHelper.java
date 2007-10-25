@@ -77,7 +77,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	public PropertySetSearchFilterItemEditorHelper newInstance() {
 		PropertySetStructFieldSearchItemEditorHelper result;
 		try {
-			result = (PropertySetStructFieldSearchItemEditorHelper)this.getClass().newInstance();
+			result = this.getClass().newInstance();
 		} catch (Throwable t) {
 			IllegalStateException ill = new IllegalStateException("Error instatiating new StructFieldSearchItemEditorHelper "+this); //$NON-NLS-1$
 			ill.initCause(t);

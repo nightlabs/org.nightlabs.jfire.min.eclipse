@@ -58,6 +58,7 @@ public class DynamicPropertySetSearchFilterProvider extends
 	/**
 	 * @see org.nightlabs.jdo.ui.search.ItemBasedSearchFilterProvider#createSearchFilter()
 	 */
+	@Override
 	protected SearchFilter createSearchFilter() {
 		return new PropSearchFilter(SearchFilter.CONJUNCTION_DEFAULT);
 	}	

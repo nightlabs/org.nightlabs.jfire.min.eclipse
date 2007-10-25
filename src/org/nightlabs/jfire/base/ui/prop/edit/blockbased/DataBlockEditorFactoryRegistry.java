@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
@@ -72,7 +71,7 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 	) {
 		checkProcessing();
 		StructBlockID blockID = StructBlockID.create(dataBlock.getStructBlockOrganisationID(),dataBlock.getStructBlockID());
-		DataBlockEditorFactory provider = (DataBlockEditorFactory)providerRegistry.get(blockID);
+		DataBlockEditorFactory provider = providerRegistry.get(blockID);
 		if (provider != null)
 			return provider.createPropDataBlockEditor(struct, dataBlock, parent, style);
 		else
@@ -90,6 +89,7 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
 	 */
+	@Override
 	public String getExtensionPointID() {
 		return EXTENSION_POINT_ID;
 	}
@@ -97,6 +97,7 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#processElement(IExtension, org.eclipse.core.runtime.IConfigurationElement)
 	 */
+	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception {
 		try
 		{

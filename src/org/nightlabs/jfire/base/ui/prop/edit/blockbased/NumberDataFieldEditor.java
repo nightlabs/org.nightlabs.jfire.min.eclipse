@@ -183,6 +183,7 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
 	 */
+	@Override
 	public void _refresh() {
 		NumberDataField numberDataField = getEditor().getDataField();
 		NumberStructField numberStructField = (NumberStructField) getEditor().getStructField();
@@ -204,6 +205,7 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 		return valueSpinner.getSelection();
 	}
 	
+	@Override
 	public void dispose() {
 		valueSpinner.removeModifyListener(modifyListener);
 		super.dispose();

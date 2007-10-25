@@ -70,6 +70,7 @@ extends AbstractConfigModulePreferencePage
 	 *  
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 		try {
 			Login login = Login.getLogin();

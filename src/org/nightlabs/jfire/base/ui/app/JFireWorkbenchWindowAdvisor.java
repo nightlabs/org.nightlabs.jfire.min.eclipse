@@ -62,6 +62,7 @@ extends WorkbenchWindowAdvisor
 	/**
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
 	 */
+	@Override
 	public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
 		return new JFireActionBuilder(configurer);
 	}
@@ -69,6 +70,7 @@ extends WorkbenchWindowAdvisor
 	/**
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#postWindowCreate()
 	 */
+	@Override
 	public void postWindowCreate() {
 		super.postWindowCreate();
 		PartVisibilityTracker.sharedInstance().initialize();
@@ -97,6 +99,7 @@ extends WorkbenchWindowAdvisor
 	/**
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
 	 */
+	@Override
 	public void preWindowOpen() {
 		super.preWindowOpen();
 		// TODO: dont forget JobErrorNotificationManager

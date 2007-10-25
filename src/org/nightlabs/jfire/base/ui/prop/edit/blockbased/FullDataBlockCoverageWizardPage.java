@@ -58,11 +58,13 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	/**
 	 * @see org.nightlabs.base.ui.wizard.DynamicPathWizardPage#createPageContents(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Control createPageContents(Composite parent) {
 		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry);
 		return fullDataBlockCoverageComposite;
 	}
 
+	@Override
 	public boolean isPageComplete() {
 		return super.isPageComplete();
 	}

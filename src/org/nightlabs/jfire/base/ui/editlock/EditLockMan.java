@@ -150,6 +150,7 @@ public class EditLockMan
 			}
 		}
 
+		@Override
 		@Implement
 		protected IStatus run(ProgressMonitor monitor) throws Exception
 		{
@@ -277,7 +278,7 @@ public class EditLockMan
 			}
 		};
 		
-		lockJob.setPriority(Job.SHORT);
+		lockJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 //		lockJob.setUser(true); // notify user of checking locks?
 		lockJob.schedule();
 		
@@ -398,6 +399,7 @@ public class EditLockMan
 	private void releaseEditLockWithJob(final List<ObjectID> objectIDs, final ReleaseReason releaseReason)
 	{
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockMan.releaseLockJob")) { //$NON-NLS-1$
+			@Override
 			@Implement
 			protected IStatus run(ProgressMonitor monitor) throws Exception
 			{
@@ -456,7 +458,7 @@ public class EditLockMan
 			if (editLockCarrier != null) {
 				Job job;
 				synchronized (editLockID2Job) {
-					job = editLockID2Job.remove((EditLockID)JDOHelper.getObjectId(editLockCarrier.getEditLock()));
+					job = editLockID2Job.remove(JDOHelper.getObjectId(editLockCarrier.getEditLock()));
 				}
 				if (job != null)
 					job.cancel();

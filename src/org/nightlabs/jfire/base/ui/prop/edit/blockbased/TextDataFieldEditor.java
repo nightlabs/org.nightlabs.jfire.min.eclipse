@@ -49,6 +49,7 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 		/**
 		 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory#getPropDataFieldType()
 		 */
+		@Override
 		public Class<TextDataField> getPropDataFieldType() {
 			return TextDataField.class;
 		}
@@ -62,6 +63,7 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 		/**
 		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
 		 */
+		@Override
 		public Class<TextDataFieldEditor> getDataFieldEditorClass() {
 			return TextDataFieldEditor.class;
 		}
@@ -78,6 +80,7 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Control createControl(Composite parent) {
 		if (composite == null) {
 			composite = new TextDataFieldComposite<TextDataField>(this, parent, SWT.NONE, this);
@@ -116,6 +119,7 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#refresh()
 	 */
+	@Override
 	public void doRefresh() {
 		if (composite != null)
 			composite.refresh();

@@ -159,7 +159,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 						messageBoxImageExceedsMaxSizeKB.setMessage(
 								String.format(
 										Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.message"), //$NON-NLS-1$
-										new Object[] { new Long(imageStructField.getMaxSizeKB()), new Long((long)(file.length() / 1024)) })
+										new Object[] { new Long(imageStructField.getMaxSizeKB()), new Long((file.length() / 1024)) })
 						);
 						messageBoxImageExceedsMaxSizeKB.open();
 						return;

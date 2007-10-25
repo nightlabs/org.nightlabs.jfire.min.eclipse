@@ -164,13 +164,13 @@ implements IConfigModuleController
 	 * @return the ConfigModule of the Config with ID = <code>configID</code> and the parameter as set
 	 * 	by the abstract getters (e.g. <code>getPreferencePage().getConfigModuleClassName()</code>).
 	 */	
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked") 
 	public ConfigModule retrieveConfigModule(ProgressMonitor monitor) 
 	{
 		if (getConfigID() == null)
 			throw new RuntimeException("The configID of the Config for which the ConfigModule should be fetched is not set!"); //$NON-NLS-1$
 		
-		return Util.cloneSerializable((ConfigModule) ConfigModuleDAO.sharedInstance().getConfigModule(
+		return Util.cloneSerializable(ConfigModuleDAO.sharedInstance().getConfigModule(
 				getConfigID(), 
 				getConfigModuleClass(),
 				configModuleID,

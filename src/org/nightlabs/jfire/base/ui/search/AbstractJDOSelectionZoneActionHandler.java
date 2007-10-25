@@ -18,6 +18,7 @@ import org.nightlabs.notification.NotificationEvent;
 public abstract class AbstractJDOSelectionZoneActionHandler 
 extends AbstractSelectionZoneActionHandler 
 {
+	@Override
 	public void run() {
 		Collection selectedObjects = getSearchResultProvider().getSelectedObjects();
 		if (selectedObjects != null) {

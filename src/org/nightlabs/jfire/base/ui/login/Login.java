@@ -35,6 +35,7 @@ import java.util.Properties;
 
 import javax.ejb.EJBException;
 import javax.naming.CommunicationException;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
@@ -447,6 +448,7 @@ implements InitialContextProvider
 			PlatformUI.getWorkbench().restart();
 		else { // too early!
 			new org.eclipse.core.runtime.jobs.Job("Restart") { //$NON-NLS-1$
+				@Override
 				protected IStatus run(IProgressMonitor monitor)
 				{
 					try {
@@ -666,7 +668,7 @@ implements InitialContextProvider
 				return Status.OK_STATUS;
 			}
 		};
-		job.setPriority(Job.SHORT);
+		job.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 		job.schedule();
 	}
 
@@ -802,11 +804,11 @@ implements InitialContextProvider
 			copyPropertiesFrom(loginContext);
 			copyPropertiesFromConfig();
 			Properties props = new Properties();
-			props.put(InitialContext.INITIAL_CONTEXT_FACTORY,contextFactory);
-			props.put(InitialContext.PROVIDER_URL, serverURL);
-			props.put(InitialContext.SECURITY_PRINCIPAL, loginName);
-			props.put(InitialContext.SECURITY_CREDENTIALS, password);
-			props.put(InitialContext.SECURITY_PROTOCOL, securityProtocol);
+			props.put(Context.INITIAL_CONTEXT_FACTORY,contextFactory);
+			props.put(Context.PROVIDER_URL, serverURL);
+			props.put(Context.SECURITY_PRINCIPAL, loginName);
+			props.put(Context.SECURITY_CREDENTIALS, password);
+			props.put(Context.SECURITY_PROTOCOL, securityProtocol);
 			initialContextProperties = props;
 		}
 		return initialContextProperties;
@@ -824,6 +826,7 @@ implements InitialContextProvider
 	/**
 	 * @deprecated Do not use anymore! Use 
 	 */
+	@Deprecated
 	public InitialContext getInitialContext() throws NamingException, LoginException
 	{
 		logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
@@ -875,6 +878,7 @@ implements InitialContextProvider
 			this.checkActionOnEquals = checkActionOnEquals;
 		}
 
+		@Override
 		public boolean equals(Object o) {
 			if (o instanceof LoginStateListenerRegistryItem) {
 				if ( ((LoginStateListenerRegistryItem)o).getLoginStateListener().equals(this.loginStateListener)) {
@@ -1015,6 +1019,7 @@ implements InitialContextProvider
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
 	 */
+	@Override
 	public String getExtensionPointID()
 	{
 		return "org.nightlabs.jfire.base.ui.loginstatelistener"; //$NON-NLS-1$
@@ -1023,6 +1028,7 @@ implements InitialContextProvider
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#processElement(IExtension, org.eclipse.core.runtime.IConfigurationElement)
 	 */
+	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception
 	{
 		if (LOGIN_STATE_LISTENER_ELEMENT.equals(element.getName())) {

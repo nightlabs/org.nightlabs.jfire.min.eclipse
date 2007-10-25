@@ -382,6 +382,7 @@ extends LSDPreferencePage
 	
 	private EditLockHandle lockHandle = null;
 	
+	@Override
 	@Implement
 	public void createPartContents(Composite parent) 
 	{
@@ -433,7 +434,7 @@ extends LSDPreferencePage
 				return Status.OK_STATUS;
 			}
 		};
-		fetchJob.setPriority(Job.SHORT);
+		fetchJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 		fetchJob.schedule();
 	
 		if (logger.isDebugEnabled())
@@ -537,6 +538,7 @@ extends LSDPreferencePage
 		checkBoxAllowOverwrite.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.WhetherGroupAllowsConfigOverwrite")); //$NON-NLS-1$
 
 		checkBoxAllowOverwrite.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (getConfigModuleController().getConfigModule() == null || ! getConfigModuleController().getConfigModule().isGroupConfigModule())
 					return;
@@ -616,7 +618,7 @@ extends LSDPreferencePage
 							return Status.OK_STATUS;
 						}
 					};
-					fetchJob.setPriority(Job.SHORT);
+					fetchJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 					fetchJob.schedule();
 				}	else {
 					setConfigChanged(true); // <-- causes the ToggleButton to be reset.
@@ -696,6 +698,7 @@ extends LSDPreferencePage
 	 *  
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 		super.init(workbench);
 	}
@@ -743,7 +746,7 @@ extends LSDPreferencePage
 		ConfigManager configManager = null;
 		try {
 			configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			ConfigModule storedConfigModule = (ConfigModule) configManager.storeConfigModule(
+			ConfigModule storedConfigModule = configManager.storeConfigModule(
 					getConfigModuleController().getConfigModule(), true, getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[] {}), 
 					getConfigModuleController().getConfigModuleMaxFetchDepth()
 			);
@@ -766,6 +769,7 @@ extends LSDPreferencePage
 		}
 	}
 
+	@Override
 	public boolean performOk() {
 		Job storeJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.storeJob.name")) { //$NON-NLS-1$
 			@Override
@@ -775,12 +779,13 @@ extends LSDPreferencePage
 			}			
 		};
 		
-		storeJob.setPriority(Job.SHORT);		
+		storeJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);		
 		storeJob.schedule();
 		
 		return true;
 	}
 
+	@Override
 	protected void updateApplyButton() {
 		updateConfigModule();
 		storeConfigModule(true);

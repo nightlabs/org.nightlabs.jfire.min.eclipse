@@ -18,6 +18,7 @@ extends SecurityReflector
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(SecurityReflectorClient.class);
 
+	@Override
 	public UserDescriptor _getUserDescriptor() {
 		if (logger.isDebugEnabled())
 			logger.debug("_getUserDescriptor: enter"); //$NON-NLS-1$
@@ -26,6 +27,7 @@ extends SecurityReflector
 		return new UserDescriptor(l.getOrganisationID(), l.getUserID(), l.getSessionID());
 	}
 
+	@Override
 	public InitialContext _createInitialContext() {
 		try {
 			return Login.getLogin().createInitialContext();
@@ -34,6 +36,7 @@ extends SecurityReflector
 		}
 	}
 
+	@Override
 	public Properties _getInitialContextProperties() {
 		try {
 			return Login.getLogin().getInitialContextProperties();

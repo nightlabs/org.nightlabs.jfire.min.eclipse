@@ -73,6 +73,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 					jobName = Messages.getString("org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManagerRCP.notificationJob"); //$NON-NLS-1$
 
 				job = new Job(jobName) {
+					@Override
 					protected IStatus run(IProgressMonitor monitor)
 					{
 						((NotificationListenerJob)listener).setProgressMonitor(monitor);
@@ -108,6 +109,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 			super.performNotification(notificationMode, listener, event);
 	}
 	
+	@Override
 	public void notify(Long filterID, final JDOLifecycleEvent event)
 	{
 		final JDOLifecycleListener listener = getLifecycleListener(filterID);
@@ -136,6 +138,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 					jobName = Messages.getString("org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManagerRCP.lifecycleJob"); //$NON-NLS-1$
 
 				job = new Job(jobName) {
+					@Override
 					protected IStatus run(IProgressMonitor monitor)
 					{
 						((JDOLifecycleListenerJob)listener).setProgressMonitor(monitor);

@@ -137,6 +137,7 @@ extends XComposite
 	{		
 		userTable.setInput(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.input_loading")); //$NON-NLS-1$
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.loadJob.name")) { //$NON-NLS-1$
+			@Override
 			protected IStatus run(ProgressMonitor monitor){
 				try {
 					UserManager um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();

@@ -50,7 +50,8 @@ extends LSDPreferencePage
 		System.out.println("Constructor of PersonStructOrderPreferencePage called"); //$NON-NLS-1$
 	}
 	
-  public void createPartContents(Composite parent) 
+  @Override
+	public void createPartContents(Composite parent) 
   {
   	createWrapperComposite(parent);
 		structOrderComposite = new PersonStructOrderComposite(wrapperComposite,SWT.NONE);	
@@ -65,10 +66,12 @@ extends LSDPreferencePage
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 		
 	}
 
+	@Override
 	protected void performApply() {
 		super.performApply();
 		PersonStructOrderConfigModule.sharedInstance().setStructBlockDisplayOrder(

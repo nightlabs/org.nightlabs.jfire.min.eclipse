@@ -74,6 +74,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	/**
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getControl(org.eclipse.swt.widgets.Composite, int)
 	 */
+	@Override
 	public Control getControl(Composite parent) {
 		if (wrapper == null) {
 			wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -151,6 +152,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	 * 
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getSearchFilterItem()
 	 */
+	@Override
 	public SearchFilterItem getSearchFilterItem() {
 		return getCurrentHelper().getSearchFilterItem();
 	}
@@ -204,6 +206,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	/**
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#close()
 	 */
+	@Override
 	public void close() {
 		comboSearchField.removeSelectionListener(this);
 	}

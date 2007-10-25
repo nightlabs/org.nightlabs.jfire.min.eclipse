@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.ListComposite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.language.LanguageChangeEvent;
@@ -56,6 +57,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 	private boolean ignoreModify;
 
 	private class MyLabelProvider extends LabelProvider {
+		@Override
 		public String getText(Object element) {
 			if (element instanceof StructFieldValueName) {
 				StructFieldValueName valueName = (StructFieldValueName) element;
@@ -78,7 +80,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 
 		XComposite wrapper = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
 		new Label(wrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.possibleValuesLabel.text")); //$NON-NLS-1$
-		valueList = new ListComposite<StructFieldValueName>(wrapper, ListComposite.getDefaultWidgetStyle(this));
+		valueList = new ListComposite<StructFieldValueName>(wrapper, AbstractListComposite.getDefaultWidgetStyle(this));
 		valueList.setLabelProvider(new MyLabelProvider());
 		valueList.setLayoutData(new GridData(GridData.FILL_BOTH));
 		valueList.getList().addSelectionListener(new SelectionListener() {

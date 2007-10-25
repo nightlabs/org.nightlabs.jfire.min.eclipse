@@ -69,6 +69,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 	 * 
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Control getControl(Composite parent) {
 		if (helper != null)
 			if (helperControl != null)
@@ -97,6 +98,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 	 * @see #getControl(Composite)	
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getSearchFilterItem()
 	 */
+	@Override
 	public SearchFilterItem getSearchFilterItem() {
 		if (helper == null)
 			throw new IllegalStateException("SearchItemEditorHelper is null and can not be asked for the SearchFilterItem"); //$NON-NLS-1$

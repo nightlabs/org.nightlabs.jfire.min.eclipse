@@ -55,7 +55,8 @@ implements
 		System.out.println("Constuctor of PersonManagementPreferencePage was called"); //$NON-NLS-1$
 	}
 	
-  protected Control createContents(Composite parent) {
+  @Override
+	protected Control createContents(Composite parent) {
   	createWrapperComposite(parent);
   	Label label = new Label(wrapperComposite,SWT.PUSH);
   	label.setText("Test label for person management pref page."); //$NON-NLS-1$

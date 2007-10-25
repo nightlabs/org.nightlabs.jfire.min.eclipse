@@ -52,7 +52,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 	private EditorStructBlockRegistry structBlockRegistry;
 	/**
 	 */
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked") 
 	public FullDataBlockCoverageComposite(
 			Composite parent, int style, 
 			PropertySet propertySet,

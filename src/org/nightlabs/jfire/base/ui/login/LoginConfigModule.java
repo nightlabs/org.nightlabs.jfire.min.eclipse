@@ -51,6 +51,7 @@ public class LoginConfigModule extends ConfigModule {
 	 */
 	private LoginConfiguration latestLoginConfiguration;
 
+	@Override
 	public void init() throws InitException {
 		super.init();
 

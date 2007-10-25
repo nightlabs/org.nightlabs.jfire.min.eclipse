@@ -80,7 +80,8 @@ public class UserGroupProvider extends JDOObjectProvider
   }
 
   
-  protected Object retrieveJDOObject( String scope, Object objectID, String[] fetchGroups, int maxFetchDepth)
+  @Override
+	protected Object retrieveJDOObject( String scope, Object objectID, String[] fetchGroups, int maxFetchDepth)
   throws Exception
   {
     Collection ret = retrieveJDOObjects(null, new Object[] {objectID}, fetchGroups, maxFetchDepth);
@@ -90,7 +91,8 @@ public class UserGroupProvider extends JDOObjectProvider
       return null;
   }
   
-  protected Collection retrieveJDOObjects(String scope, Set objectIDs, String[] fetchGroups, int maxFetchDepth)
+  @Override
+	protected Collection retrieveJDOObjects(String scope, Set objectIDs, String[] fetchGroups, int maxFetchDepth)
   throws Exception
   {
     return um.getUserGroups(objectIDs, fetchGroups, maxFetchDepth);

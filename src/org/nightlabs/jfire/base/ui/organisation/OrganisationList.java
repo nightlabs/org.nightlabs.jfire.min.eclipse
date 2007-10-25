@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.annotation.Implement;
+import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.ListComposite;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -52,7 +53,7 @@ public class OrganisationList
 	 */
 	public OrganisationList(Composite parent, OrganisationIDDataSource _organisationIDDataSource, OrganisationFilter _organisationFilter)
 	{
-		super(parent, ListComposite.getDefaultWidgetStyle(parent), (String) null, new LabelProvider() {
+		super(parent, AbstractListComposite.getDefaultWidgetStyle(parent), (String) null, new LabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
@@ -68,6 +69,7 @@ public class OrganisationList
 		this.organisationFilter = _organisationFilter;
 
 		new Job(Messages.getString("org.nightlabs.jfire.base.ui.organisation.OrganisationList.loadJob.name")) { //$NON-NLS-1$
+			@Override
 			@Implement
 			protected IStatus run(ProgressMonitor monitor) throws Exception
 			{

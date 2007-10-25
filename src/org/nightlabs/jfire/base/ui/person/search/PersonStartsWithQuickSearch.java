@@ -79,6 +79,7 @@ public class PersonStartsWithQuickSearch extends PropertySetQuickSearch {
 	 * 
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getPersonSearchFilter()
 	 */
+	@Override
 	public SearchFilter getSearchFilter() {
 		PropSearchFilter filter = createSearchFilter();
 		// add Name filter

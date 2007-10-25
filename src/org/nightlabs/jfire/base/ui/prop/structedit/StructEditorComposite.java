@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.XComboComposite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
@@ -89,7 +90,7 @@ public class StructEditorComposite extends XComposite {
 
 		if (createStructIDCombo) {
 			structIDComposite = new XComboComposite<StructLocalID>(this, 
-					XComboComposite.getDefaultWidgetStyle(this), (String) null, new StructLocalIDLabelProvider());
+					AbstractListComposite.getDefaultWidgetStyle(this), (String) null, new StructLocalIDLabelProvider());
 			structIDComposite.setLayoutData(gd);
 			structIDComposite.addSelectionListener(new StructIDComboSelectionListener());
 

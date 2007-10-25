@@ -21,10 +21,12 @@ public class RegexStructFieldEditor extends AbstractStructFieldEditor<RegexStruc
 	private RegexStructField regexField;
 	private RegexStructFieldEditComposite comp;
 
+	@Override
 	public boolean validateInput() {
 		return regexField.validateData(comp.regexTextField.getText());
 	}
 
+	@Override
 	public String getErrorMessage() {
 		return regexField.getValidationError();
 	}

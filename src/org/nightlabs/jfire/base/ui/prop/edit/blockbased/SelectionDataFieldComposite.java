@@ -8,7 +8,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.XComboComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
-import org.nightlabs.jfire.prop.datafield.SelectionDataField;
 import org.nightlabs.jfire.prop.exception.StructFieldValueNotFoundException;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
 import org.nightlabs.jfire.prop.structfield.StructFieldValue;
@@ -85,6 +84,7 @@ public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposit
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
 	 */
+	@Override
 	public void _refresh() {
 		SelectionStructField field = (SelectionStructField) getEditor().getStructField();
 //		fieldName.setText(field.getName().getText());
@@ -105,6 +105,7 @@ public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposit
 		return fieldValueCombo;
 	}
 	
+	@Override
 	public void dispose() {
 		fieldValueCombo.removeModifyListener(modifyListener);
 		super.dispose();

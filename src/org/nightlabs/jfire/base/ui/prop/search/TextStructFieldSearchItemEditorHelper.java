@@ -88,6 +88,7 @@ public class TextStructFieldSearchItemEditorHelper
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Control getControl(Composite parent) {
 		if (helperComposite == null) {
 			helperComposite = new Composite(parent,SWT.NONE);
@@ -124,6 +125,7 @@ public class TextStructFieldSearchItemEditorHelper
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getSearchFilterItem()
 	 */
+	@Override
 	public SearchFilterItem getSearchFilterItem() {
 		StructFieldID id = StructFieldID.create(
 			personStructField.getStructBlockOrganisationID(),

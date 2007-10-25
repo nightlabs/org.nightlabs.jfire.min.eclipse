@@ -8,6 +8,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.XComboComposite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.resource.Messages;
@@ -34,7 +35,7 @@ class DateStructFieldEditComposite extends XComposite {
 
 		this.dateStructFieldEditor = _dateStructFieldEditor;
 
-		dateFormatCombo = new XComboComposite<String>(this, XComboComposite.getDefaultWidgetStyle(this), (String) null);
+		dateFormatCombo = new XComboComposite<String>(this, AbstractListComposite.getDefaultWidgetStyle(this), (String) null);
 
 		comp = new XComposite(this, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 		exampleLabel = new Label(comp, SWT.NONE);

@@ -88,6 +88,7 @@ implements DataBlockEditorChangedListener
 			setText(blockGroup.getStructBlock(struct).getName().getText());
 		
 		addExpansionListener(new ExpansionAdapter() {
+			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
 				if (ExpandableDataBlockGroupEditor.this.owner != null)
 					ExpandableDataBlockGroupEditor.this.owner.reflow(true);

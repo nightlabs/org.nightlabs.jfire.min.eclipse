@@ -106,6 +106,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 * 
 	 * @param changeListener
 	 */
+	@Override
 	public void refreshControl() {
 		Display.getDefault().asyncExec( 
 			new Runnable() {
@@ -126,7 +127,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 								groupedContentComposite.addGroupedContentProvider(contentProvider);
 							}
 							else {			
-								ContentProvider contentProvider = (ContentProvider)groupContentProvider.get(blockGroup.getStructBlockKey());								
+								ContentProvider contentProvider = groupContentProvider.get(blockGroup.getStructBlockKey());								
 								contentProvider.refresh(blockGroup);
 							}
 						} // if (shouldDisplayStructBlock(blockGroup)) {

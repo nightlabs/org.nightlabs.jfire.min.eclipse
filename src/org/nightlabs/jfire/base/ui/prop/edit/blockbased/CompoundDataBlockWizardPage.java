@@ -202,6 +202,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	 * 
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Control createPageContents(Composite parent) {
 		createWrapper(parent);
 		createPropDataBlockEditors();

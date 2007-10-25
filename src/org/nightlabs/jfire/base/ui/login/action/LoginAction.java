@@ -64,6 +64,7 @@ extends LSDWorkbenchWindowActionDelegate
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
 	 */
+	@Override
 	public void init(IWorkbenchWindow window) {
 		super.init(window);
 		
@@ -88,6 +89,7 @@ extends LSDWorkbenchWindowActionDelegate
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		try {			
 			Login login = Login.getLogin(false);
@@ -109,6 +111,7 @@ extends LSDWorkbenchWindowActionDelegate
 		}
 	}
 
+	@Override
 	public void loginStateChanged(int loginState, IAction action)
 	{
 		super.loginStateChanged(loginState, action);
@@ -147,6 +150,7 @@ extends LSDWorkbenchWindowActionDelegate
 	}
 	
 	private IAction action = null;
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.action = action;
 		super.selectionChanged(action, selection);

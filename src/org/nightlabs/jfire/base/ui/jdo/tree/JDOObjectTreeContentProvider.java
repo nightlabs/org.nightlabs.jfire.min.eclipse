@@ -29,7 +29,7 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 		return getChildren(inputElement);
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked") 
 	@Override
 	public Object[] getChildren(Object parentElement)
 	{
@@ -58,7 +58,7 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 			return res.toArray();
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked") 
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof String)

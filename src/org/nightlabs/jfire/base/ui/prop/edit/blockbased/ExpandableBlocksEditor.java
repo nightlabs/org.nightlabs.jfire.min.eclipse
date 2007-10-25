@@ -170,7 +170,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 								groupEditors.put(blockGroup.getStructBlockKey(), groupEditor);
 							}
 							else {			
-								ExpandableDataBlockGroupEditor groupEditor = (ExpandableDataBlockGroupEditor)groupEditors.get(blockGroup.getStructBlockKey());								
+								ExpandableDataBlockGroupEditor groupEditor = groupEditors.get(blockGroup.getStructBlockKey());								
 								groupEditor.refresh(blockGroup);
 							}
 						} // if (shouldDisplayStructBlock(blockGroup)) {
@@ -352,11 +352,11 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		int unmentionedCount = 0;
 		// all datablocks of this propertySet
 		for (Iterator<DataBlockGroup> it = prop.getDataBlockGroups().iterator(); it.hasNext(); ) {
-			DataBlockGroup blockGroup = (DataBlockGroup)it.next();
+			DataBlockGroup blockGroup = it.next();
 //			boolean orderedAdd = false;
 			if (structBlockOrder.containsKey(blockGroup.getStructBlockKey())) {
 				// block mentioned in structBlockOrder
-				Integer index = (Integer)structBlockOrder.get(blockGroup.getStructBlockKey());
+				Integer index = structBlockOrder.get(blockGroup.getStructBlockKey());
 				blockGroup.setPriority(index.intValue());
 			}
 			else {

@@ -46,7 +46,8 @@ extends EditorActionBarContributor
 		return editor;
 	}
 	
-  public void setActiveEditor(IEditorPart targetEditor) 
+  @Override
+	public void setActiveEditor(IEditorPart targetEditor) 
   {
   	if (targetEditor instanceof OverviewEntryEditor) {
   		editor = (OverviewEntryEditor) targetEditor;
