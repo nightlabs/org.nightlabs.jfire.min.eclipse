@@ -93,7 +93,7 @@ public class UserPropertiesSection extends RestorableSectionPart
 
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
-		blockBasedPersonEditor = new BlockBasedEditor();
+		blockBasedPersonEditor = new BlockBasedEditor(false);
 		blockBasedPersonEditorControl = blockBasedPersonEditor.createControl(container, false);
 		//((GroupedContentComposite)blockBasedPersonEditorControl).addGroupedContentProvider(new WhateverGroupedContentProvider(), 0);
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));

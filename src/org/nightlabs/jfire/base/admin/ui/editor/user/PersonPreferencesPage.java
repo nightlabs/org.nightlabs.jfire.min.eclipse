@@ -96,13 +96,26 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 				if (user.getPerson() == null)
 					user.setPerson(new Person(user.getOrganisationID(), PropertySet.TEMPORARY_PROP_ID));
 				userPropertiesSection.setProperty(user.getPerson(), controller.getStructLocal());
+				updateGui(controller);
 				switchToContent();
 			}
 		});
 	}
 	
+	/**
+	 * This method is meant for extendors if this class to be able to update their GUI when {@link #asyncCallback()}
+	 * is called. The default implementation does nothing.
+	 */
+	protected void updateGui(PersonPreferencesController controller) {
+		
+	}
+	
 	@Override
 	protected String getPageFormTitle() {
 		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesPage.pageFormTitle"); //$NON-NLS-1$
+	}
+	
+	BlockBasedEditorSection getUserPropertiesSection() {
+		return userPropertiesSection;
 	}
 }

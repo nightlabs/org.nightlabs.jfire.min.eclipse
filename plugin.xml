@@ -220,7 +220,7 @@
                 indexHint="0" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
-            class="org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesPage$Factory"
+            class="org.nightlabs.jfire.base.admin.ui.editor.user.UserPersonPreferencePage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor" indexHint="1"/>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesPage$Factory"

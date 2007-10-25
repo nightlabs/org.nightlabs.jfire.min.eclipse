@@ -84,6 +84,7 @@ public class CreateUserWizard extends DynamicPathWizard
 			User newUser = new User(Login.getLogin().getOrganisationID(), cuPage.getUserID());
 			newUser.setName(cuPage.getUserName());
 			newUser.setDescription(cuPage.getUserDescription());
+			newUser.setAutogenerateName(cuPage.isAutogenerateName());
 			
 			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
 			newUser.getPerson().deflate();

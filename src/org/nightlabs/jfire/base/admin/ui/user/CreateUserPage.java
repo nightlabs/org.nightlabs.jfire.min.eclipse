@@ -27,6 +27,9 @@
 package org.nightlabs.jfire.base.admin.ui.user;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -55,6 +58,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   private Text password1;
   private Text description;
   private Text name;
+  private Button autogenerateNameCheckbox;
 
   public CreateUserPage() 
   {
@@ -71,12 +75,21 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   	Formular f = new Formular(parent, SWT.NONE, this);
   	
   	userID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.userID.labelText"), null); //$NON-NLS-1$
+  	autogenerateNameCheckbox = f.addCheckBox("Autogenerate name: ", false);
   	name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.name.labelText"), null); //$NON-NLS-1$
   	description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.description.labelText"), null); //$NON-NLS-1$
   	password0 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.password.labelText"), null); //$NON-NLS-1$
   	password0.setEchoChar('*');
   	password1 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.passwordConfirmation.labelText"), null); //$NON-NLS-1$
   	password1.setEchoChar('*');
+  	
+  	// listeners
+  	autogenerateNameCheckbox.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {}
+			public void widgetSelected(SelectionEvent e) {
+				name.setEnabled(!autogenerateNameCheckbox.getSelection());
+			}
+  	});
   	
   	verifyInput();
   	setControl(f);
@@ -154,6 +167,14 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 	public String getUserID()
 	{
 		return userID.getText();
+	}
+	
+	/**
+	 * Returns whether the user name should be generated automatically or not.
+	 * @return whether the user name should be generated automatically or not.
+	 */
+	public boolean isAutogenerateName() {
+		return autogenerateNameCheckbox.getSelection();
 	}
 
 	/* (non-Javadoc)
