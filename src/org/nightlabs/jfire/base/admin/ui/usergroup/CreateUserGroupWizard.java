@@ -32,12 +32,9 @@ import javax.ejb.CreateException;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
-import org.eclipse.jface.wizard.Wizard;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.admin.ui.user.CreateUserPage;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedPropertySetEditorWizardHop;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -56,8 +53,7 @@ import org.nightlabs.progress.NullProgressMonitor;
 public class CreateUserGroupWizard extends DynamicPathWizard
 {
 	private CreateUserGroupPage cugPage;
-	private boolean canFinish = false;
-	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
+//	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
 
 	public CreateUserGroupWizard()
 	throws LoginException, NamingException, RemoteException, CreateException
@@ -73,29 +69,25 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
 		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());
 		person.inflate(personStruct);
-		
-		cugPage = new CreateUserGroupPage() {
-			@Override
-			public void onHide() {
-				canFinish = true;
-			}
-		};
+		cugPage = new CreateUserGroupPage();
 		addPage(cugPage);
 		
-		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
-		String msg = "Here you can edit all information for the selected contact";
-		propertySetEditorWizardHop.addWizardPage(null, "RemainingData", "Remaining data", msg);
-		addPage(propertySetEditorWizardHop.getEntryPage());
+//		Tobias: We don't want a usergroup to have a person, thus we prohibit editing here :)
+//		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
+//		String msg = "Here you can edit all information for the selected contact";
+//		propertySetEditorWizardHop.addWizardPage(null, "RemainingData", "Remaining data", msg);
+//		addPage(propertySetEditorWizardHop.getEntryPage());
 	}
 
 	public boolean performFinish()
 	{
 		try {
 			UserGroup newGroup = new UserGroup(Login.getLogin().getOrganisationID(), User.USERID_PREFIX_TYPE_USERGROUP + cugPage.getUserGroupID());
+			newGroup.setName(cugPage.getUserName());
 			newGroup.setDescription(cugPage.getUserGroupDescription());
 			
-			newGroup.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
-			newGroup.getPerson().deflate();
+//			newGroup.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
+//			newGroup.getPerson().deflate();
 			
 			UserManager userManager = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			userManager.saveUser(newGroup, null);
@@ -107,10 +99,5 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	@Override
-	public boolean canFinish() {
-		return canFinish && super.canFinish();
 	}
 }

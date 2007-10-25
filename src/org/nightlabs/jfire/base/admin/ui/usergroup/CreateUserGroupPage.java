@@ -50,6 +50,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 {
 	private Text userGroupID;
 	private Text description;
+	private Text name;
 
 	public CreateUserGroupPage() 
 	{
@@ -67,6 +68,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
 		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$
+		name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.name.labelText"), null); //$NON-NLS-1$
 		description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.description.labelText"), null); //$NON-NLS-1$
 
 		verifyInput();
@@ -98,6 +100,14 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	public String getUserGroupID()
 	{
 		return userGroupID.getText();
+	}
+
+	/**
+	 * Get the user name.
+	 * @return the user name
+	 */
+	public String getUserName() {
+		return name.getText();
 	}
 
 	/**

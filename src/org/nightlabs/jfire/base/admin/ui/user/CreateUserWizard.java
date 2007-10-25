@@ -71,8 +71,8 @@ public class CreateUserWizard extends DynamicPathWizard
 		addPage(cuPage);
 		
 		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
-		String msg = "Here you can edit all information for the selected contact";
-		propertySetEditorWizardHop.addWizardPage(null, "RemainingData", "Remaining data", msg);
+		String msg = "Here you can enter additional information for the new user";
+		propertySetEditorWizardHop.addWizardPage(null, "RemainingData", "Additional data", msg);
 		addPage(propertySetEditorWizardHop.getEntryPage());
 	}
 
@@ -80,6 +80,7 @@ public class CreateUserWizard extends DynamicPathWizard
 	{
 		try {
 			User newUser = new User(Login.getLogin().getOrganisationID(), cuPage.getUserID());
+			newUser.setName(cuPage.getUserName());
 			newUser.setDescription(cuPage.getUserDescription());
 			
 			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());

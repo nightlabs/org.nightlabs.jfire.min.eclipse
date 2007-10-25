@@ -47,6 +47,7 @@ import org.nightlabs.jfire.security.id.UserID;
 /**
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class CreateUserPage extends DynamicPathWizardPage implements FormularChangeListener
 {
@@ -54,6 +55,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   private Text password0;
   private Text password1;
   private Text description;
+  private Text name;
 
   public CreateUserPage() 
   {
@@ -70,6 +72,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   	Formular f = new Formular(parent, SWT.NONE, this);
   	
   	userID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.userID.labelText"), null); //$NON-NLS-1$
+  	name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.name.labelText"), null); //$NON-NLS-1$
   	description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.description.labelText"), null); //$NON-NLS-1$
   	password0 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.password.labelText"), null); //$NON-NLS-1$
   	password0.setEchoChar('*');
@@ -108,6 +111,14 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  /**
+   * Get the user name
+   * @return the user name
+   */
+  public String getUserName() {
+  	return name.getText();
   }
 
 	/**
