@@ -36,8 +36,7 @@ extends EntityTreeCategory
 	protected class ActiveEntityTreeCategoryJDOObjectController
 	extends ActiveJDOObjectController<JDOObjectID, JDOObject>
 	{
-		@Override
-		protected Class getJDOObjectClass()
+		protected Class<JDOObject> getJDOObjectClass()
 		{
 			return ActiveJDOEntityTreeCategory.this.getJDOObjectClass();
 		}
@@ -58,19 +57,16 @@ extends EntityTreeCategory
 			fireEntityTreeCategoryChange();
 		}
 
-		@Override
 		protected Collection<JDOObject> retrieveJDOObjects(Set<JDOObjectID> objectIDs, ProgressMonitor monitor)
 		{
 			return ActiveJDOEntityTreeCategory.this.retrieveJDOObjects(objectIDs, monitor);
 		}
 
-		@Override
 		protected Collection<JDOObject> retrieveJDOObjects(ProgressMonitor monitor)
 		{
 			return ActiveJDOEntityTreeCategory.this.retrieveJDOObjects(monitor);
 		}
 
-		@Override
 		protected void sortJDOObjects(List<JDOObject> objects)
 		{
 			ActiveJDOEntityTreeCategory.this.sortJDOObjects(objects);
@@ -98,7 +94,7 @@ extends EntityTreeCategory
 	/**
 	 * @see ActiveJDOObjectController#getJDOObjectClass()
 	 */
-	protected abstract Class getJDOObjectClass();
+	protected abstract Class<JDOObject> getJDOObjectClass();
 	/**
 	 * @see ActiveJDOObjectController#retrieveJDOObjects(Set<JDOObjectID> objectIDs, IProgressMonitor monitor)
 	 */
@@ -123,7 +119,6 @@ extends EntityTreeCategory
 
 	private Set<IEntityTreeCategoryContentConsumer> contentConsumers = new HashSet<IEntityTreeCategoryContentConsumer>();
 
-	@Override
 	protected ITreeContentProvider _createContentProvider(final IEntityTreeCategoryContentConsumer contentConsumer)
 	{
 		contentConsumers.add(contentConsumer);

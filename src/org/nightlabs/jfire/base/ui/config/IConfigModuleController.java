@@ -7,7 +7,7 @@ import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.progress.ProgressMonitor;
-import org.nightlabs.util.Utils;
+import org.nightlabs.util.Util;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
@@ -19,7 +19,7 @@ public interface IConfigModuleController
 	/**
 	 * @return The Class of ConfigModule this controller and its associated page is designed for.  
 	 */
-	public abstract Class getConfigModuleClass();
+	public abstract Class<?> getConfigModuleClass();
 	
 	/**
 	 * This method should return all fetch groups necessary to display a detached {@link ConfigModule}
@@ -140,7 +140,7 @@ public interface IConfigModuleController
 	 * Sets the current version of the {@link ConfigModule} to display and updates the page 
 	 * accordingly. 
 	 * The given ConfigModule should be a copy of the one from the cache, otherwise changes to this 
-	 * module will corrupt the state of the one in the cache! Use {@link Utils#cloneSerializable(Object)}
+	 * module will corrupt the state of the one in the cache! Use {@link Util#cloneSerializable(Object)}
 	 * to create a copy.
 	 * 
 	 * @param configModule The {@link ConfigModule} to set.

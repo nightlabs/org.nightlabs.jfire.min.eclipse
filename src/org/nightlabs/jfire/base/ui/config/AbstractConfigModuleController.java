@@ -9,7 +9,6 @@ import javax.jdo.JDODetachedFieldAccessException;
 import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.eclipse.core.runtime.ListenerList;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.config.ConfigGroup;
@@ -89,7 +88,7 @@ implements IConfigModuleController
 	public boolean canEdit(ConfigModule configModule) { 
 		return
 				configModule.isGroupConfigModule() ||
-				configModule.getFieldMetaData(ConfigModule.class.getName()).isWritable()
+				configModule.getFieldMetaData(ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).isWritable()
 				|| ! checkIfIsGroupMember(configModule);
 	}
 	
@@ -164,13 +163,13 @@ implements IConfigModuleController
 	 * @return the ConfigModule of the Config with ID = <code>configID</code> and the parameter as set
 	 * 	by the abstract getters (e.g. <code>getPreferencePage().getConfigModuleClassName()</code>).
 	 */	
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public ConfigModule retrieveConfigModule(ProgressMonitor monitor) 
 	{
 		if (getConfigID() == null)
 			throw new RuntimeException("The configID of the Config for which the ConfigModule should be fetched is not set!"); //$NON-NLS-1$
 		
-		return Util.cloneSerializable(ConfigModuleDAO.sharedInstance().getConfigModule(
+		return Util.cloneSerializable((ConfigModule) ConfigModuleDAO.sharedInstance().getConfigModule(
 				getConfigID(), 
 				getConfigModuleClass(),
 				configModuleID,
@@ -204,8 +203,7 @@ implements IConfigModuleController
 			if (newConfigID != null && ! newConfigID.equals(getConfigID()))
 				throw new IllegalStateException("The given ConfigModule does not belong to the Config this page is editing!"); //$NON-NLS-1$
 		} catch (JDODetachedFieldAccessException e) {
-			if (logger.isEnabledFor(Priority.WARN))
-				logger.warn("The given ConfigModule has no Config detached with it! Module = "+configModule); //$NON-NLS-1$
+			logger.warn("The given ConfigModule has no Config detached with it! Module = "+configModule); //$NON-NLS-1$
 		} // if config is not in FetchGroups -> believe given configModule belongs to this config
 
 		setConfigModule(configModule);
