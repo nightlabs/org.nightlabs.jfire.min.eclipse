@@ -29,10 +29,12 @@ public class UserDataSection extends RestorableSectionPart {
 	private Button autogenerateNameCheckBox;
 	
 	private User user;
+	private boolean refreshing = false;
 	
 	ModifyListener dirtyListener = new ModifyListener() {
 		public void modifyText(ModifyEvent e) {
-			markDirty();
+			if (!refreshing)
+				markDirty();
 		}
 	};
 	private PersonPreferencesPage personPreferencesPage;
@@ -118,14 +120,16 @@ public class UserDataSection extends RestorableSectionPart {
 				autogenerateNameCheckBox.setSelection(user.isAutogenerateName());				
 				userNameText.setEnabled(autogenerateNameCheckBox.getSelection());
 				
-				userNameText.addModifyListener(dirtyListener);
-				userDescriptionText.addModifyListener(dirtyListener);
-				
 				personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
 					public void displayNameChanged(String displayName) {
+						refreshing = true;
 						updateDisplayName();
+						refreshing = false;
 					}
 				});
+				
+				userNameText.addModifyListener(dirtyListener);
+				userDescriptionText.addModifyListener(dirtyListener);
 			}
 		});		
 	}

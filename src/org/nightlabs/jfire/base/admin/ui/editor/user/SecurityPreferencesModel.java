@@ -24,6 +24,7 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.security.RoleGroup;
@@ -57,22 +58,22 @@ public class SecurityPreferencesModel
 	/**
 	 * The included user groups the users had before changes.
 	 */
-	private Collection<UserGroup> includedUserGroupsUnchanged;
+	private Collection<UserGroup> includedUserGroupsUnchanged = Collections.EMPTY_LIST;
 	
 	/**
 	 * The excluded user groups the users had before changes.
 	 */
-	private Collection<UserGroup> excludedUserGroupsUnchanged;
+	private Collection<UserGroup> excludedUserGroupsUnchanged = Collections.EMPTY_LIST;
 
 	/**
 	 * The included user groups.
 	 */
-	private Collection<UserGroup> includedUserGroups;
+	private Collection<UserGroup> includedUserGroups = Collections.EMPTY_LIST;
 	
 	/**
 	 * The excluded user groups.
 	 */
-	private Collection<UserGroup> excludedUserGroups;
+	private Collection<UserGroup> excludedUserGroups = Collections.EMPTY_LIST;
 
 //	/**
 //	 * The role groups the user belongs to.
@@ -82,17 +83,17 @@ public class SecurityPreferencesModel
 	/**
 	 * The included role groups.
 	 */
-	private Collection<RoleGroup> includedRoleGroups;
+	private Collection<RoleGroup> includedRoleGroups = Collections.EMPTY_LIST;
 
 	/**
 	 * The included role groups from the users user groups.
 	 */
-	private Collection<RoleGroup> includedRoleGroupsFromUserGroups;
+	private Collection<RoleGroup> includedRoleGroupsFromUserGroups = Collections.EMPTY_LIST;
 	
 	/**
 	 * The excluded role groups.
 	 */
-	private Collection<RoleGroup> excludedRoleGroups;
+	private Collection<RoleGroup> excludedRoleGroups = Collections.EMPTY_LIST;
 	
 	private Config userConfig;
 	

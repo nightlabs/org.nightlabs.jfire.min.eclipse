@@ -210,7 +210,8 @@
             default="false" icon="icons/setup.gif"
             id="org.nightlabs.jfire.base.admin.ui.prop.StructLocalEditor" name="%org.nightlabs.jfire.base.admin.ui.prop.StructLocalEditor.name"/>
     </extension>
-    <extension point="org.nightlabs.base.ui.entityEditor">
+    <extension
+          point="org.nightlabs.base.ui.entityEditor">
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.user.EntityTreeCategoryUser"
             icon="icons/editor/user/EntityTreeCategoryUser.16x16.png"
@@ -237,7 +238,7 @@
                 indexHint="10" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
-            class="org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesPage$Factory"
+            class="org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupPreferencePage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.usergroup.UserGroupEditor" indexHint="1"/>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.usergroup.GroupSecurityPreferencesPage$Factory"
@@ -254,13 +255,18 @@
             class="org.nightlabs.jfire.base.admin.ui.editor.workstation.EntityTreeCategoryWorkstation"
             icon="icons/editor/workstation/EntityTreeCategoryWorkstation.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.workstation.EntityTreeCategoryWorkstation" name="%entityEditor.category.workstation">
-            <viewBinding
+           <viewBinding
                 editorID="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor"
                 indexHint="20" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
+              class="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationGeneralPreferencesTabPage$Factory"
+              editorID="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor"
+              indexHint="1">
+        </pageFactory>
+        <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationFeaturePreferencesTabPage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor" indexHint="1"/>
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor" indexHint="2"/>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.EntityTreeCategoryWorkstationGroup"
             icon="icons/configgroup/WorkstationConfigGroup.16x16.png"
@@ -279,11 +285,21 @@
                 editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
+              class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage$Factory"
+              editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor"
+              indexHint="0">
+        </pageFactory>
+        <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesPage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" indexHint="1"/>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberPage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" indexHint="2"/>
+        <pageFactory
+              class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage$Factory"
+              editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor"
+              indexHint="1">
+        </pageFactory>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupMemberPage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" indexHint="2"/>

@@ -29,6 +29,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -108,16 +110,25 @@ public class UserGroupsSection extends RestorableSectionPart
 		createDescriptionControl(section, toolkit);
 
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
+		
+		ViewerComparator userGroupComparator = new ViewerComparator() {
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				return ((UserGroup)e1).getName().compareTo(((UserGroup)e2).getName());
+			}
+		};
 
 		excludedUserGroupsViewer = new TableViewer(createUserGroupsTable(toolkit, container));
 		excludedUserGroupsViewer.setContentProvider(new UserGroupsContentProvider());
 		excludedUserGroupsViewer.setLabelProvider(new UserGroupsLabelProvider());
+		excludedUserGroupsViewer.setComparator(userGroupComparator);
 
 		createUserGroupButtons(container, toolkit);
 
 		includedUserGroupsViewer = new TableViewer(createUserGroupsTable(toolkit, container));
 		includedUserGroupsViewer.setContentProvider(new UserGroupsContentProvider());
 		includedUserGroupsViewer.setLabelProvider(new UserGroupsLabelProvider());
+		includedUserGroupsViewer.setComparator(userGroupComparator);
 	}
 
 	public void setModel(final SecurityPreferencesModel model) {
@@ -222,6 +233,8 @@ public class UserGroupsSection extends RestorableSectionPart
 		model.getIncludedUserGroups().addAll(l);
 		includedUserGroupsViewer.add(a);
 		refreshUserGroupDirtyState();
+		includedUserGroupsViewer.setSelection(selection);
+		includedUserGroupsViewer.reveal(l.get(0));
 	}
 
 	private void userGroupsRemove()
@@ -237,6 +250,8 @@ public class UserGroupsSection extends RestorableSectionPart
 		model.getExcludedUserGroups().addAll(l);
 		excludedUserGroupsViewer.add(a);
 		refreshUserGroupDirtyState();
+		excludedUserGroupsViewer.setSelection(selection);
+		excludedUserGroupsViewer.reveal(l.get(0));
 	}
 
 	private void refreshUserGroupDirtyState()

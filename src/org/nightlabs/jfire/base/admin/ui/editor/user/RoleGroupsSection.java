@@ -32,6 +32,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -58,6 +60,7 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
+import org.nightlabs.jfire.security.User;
 
 /**
  * The section containing the role groups controls.
@@ -109,15 +112,24 @@ public class RoleGroupsSection extends RestorableSectionPart
 		
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
 
+		ViewerComparator roleGroupComparator = new ViewerComparator() {
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				return ((RoleGroup)e1).getName().getText().compareTo(((RoleGroup)e2).getName().getText());
+			}
+		};
+		
 		excludedRoleGroupsViewer = new TableViewer(createRoleGroupsTable(toolkit, container));
 		excludedRoleGroupsViewer.setContentProvider(new RoleGroupsContentProvider());
 		excludedRoleGroupsViewer.setLabelProvider(new RoleGroupsLabelProvider());
+		excludedRoleGroupsViewer.setComparator(roleGroupComparator);
 
 		createRoleGroupButtons(container, toolkit);
 
 		includedRoleGroupsViewer = new TableViewer(createRoleGroupsTable(toolkit, container));
 		includedRoleGroupsViewer.setContentProvider(new RoleGroupsContentProvider());
 		includedRoleGroupsViewer.setLabelProvider(new RoleGroupsLabelProvider());
+		includedRoleGroupsViewer.setComparator(roleGroupComparator);
 	}
 
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
@@ -220,6 +232,8 @@ public class RoleGroupsSection extends RestorableSectionPart
 		model.getIncludedRoleGroups().addAll(l);
 		includedRoleGroupsViewer.add(a);
 		refreshRoleGroupDirtyState();
+		includedRoleGroupsViewer.setSelection(selection);
+		includedRoleGroupsViewer.reveal(l.get(0));
 	}
 
 	private void roleGroupsRemove()
@@ -235,6 +249,8 @@ public class RoleGroupsSection extends RestorableSectionPart
 		model.getExcludedRoleGroups().addAll(l);
 		excludedRoleGroupsViewer.add(a);
 		refreshRoleGroupDirtyState();
+		excludedRoleGroupsViewer.setSelection(selection);
+		excludedRoleGroupsViewer.reveal(l.get(0));
 	}
 
 	private void refreshRoleGroupDirtyState()

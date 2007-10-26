@@ -31,6 +31,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -57,6 +59,7 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.User;
+import org.nightlabs.jfire.security.UserGroup;
 
 /**
  * The section containing the users controls.
@@ -109,16 +112,25 @@ public class UsersSection extends RestorableSectionPart
 		createDescriptionControl(section, toolkit);
 		
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
+		
+		ViewerComparator userComparator = new ViewerComparator() {
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				return ((User)e1).getName().compareTo(((User)e2).getName());
+			}
+		};
 
 		excludedUsersViewer = new TableViewer(createUsersTable(toolkit, container));
 		excludedUsersViewer.setContentProvider(new UsersContentProvider());
 		excludedUsersViewer.setLabelProvider(new UsersLabelProvider());
+		excludedUsersViewer.setComparator(userComparator);
 
 		createUserButtons(container, toolkit);
-//
+
 		includedUsersViewer = new TableViewer(createUsersTable(toolkit, container));
 		includedUsersViewer.setContentProvider(new UsersContentProvider());
 		includedUsersViewer.setLabelProvider(new UsersLabelProvider());
+		includedUsersViewer.setComparator(userComparator);
 	}
 
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
@@ -248,6 +260,8 @@ public class UsersSection extends RestorableSectionPart
 		model.getIncludedUsers().addAll(l);
 		includedUsersViewer.add(a);
 		refreshUsersDirtyState();
+		includedUsersViewer.setSelection(selection);
+		includedUsersViewer.reveal(l.get(0));
 	}
 
 	private void usersRemove()
@@ -263,6 +277,8 @@ public class UsersSection extends RestorableSectionPart
 		model.getExcludedUsers().addAll(l);
 		excludedUsersViewer.add(a);
 		refreshUsersDirtyState();
+		excludedUsersViewer.setSelection(selection);
+		excludedUsersViewer.reveal(l.get(0));
 	}
 
 	private void refreshUsersDirtyState()

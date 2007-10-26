@@ -63,7 +63,10 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 					return (String)o;
 				} else if(o instanceof StructLocal) {
 					StructLocal struct = (StructLocal) o;
-					return struct.getName().getText();
+					if (struct.getName() == null)
+						return "Noname";
+					else
+						return struct.getName().getText();
 				} else {
 					return ""; //$NON-NLS-1$
 				}
