@@ -42,7 +42,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	 */
 	public BlockBasedEditorSection(FormPage page, Composite parent, String sectionDescriptionText)
 	{
-		super(parent, page.getEditor().getToolkit(), ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+		super(parent, page.getEditor().getToolkit(), ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
 		createClient(getSection(), page.getEditor().getToolkit(), sectionDescriptionText);
 	}
 
@@ -84,6 +84,11 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 		blockBasedPersonEditor.setChangeListener(new DataBlockEditorChangedListener() {
 			public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+				markDirty();
+			}
+		});
+		blockBasedPersonEditor.setDisplayNameChangedListener(new DisplayNameChangedListener() {
+			public void displayNameChanged(String displayName) {
 				markDirty();
 			}
 		});

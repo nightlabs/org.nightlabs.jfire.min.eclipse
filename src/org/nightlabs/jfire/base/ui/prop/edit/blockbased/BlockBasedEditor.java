@@ -239,7 +239,6 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					public void modifyText(ModifyEvent e) {
 						if (displayNameChangedListener != null)
 							displayNameChangedListener.displayNameChanged(displayNameText.getText());
-						fireDataBlockEditorChangedEvent(null, null);
 					}
 				});				
 				displayNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -250,7 +249,6 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					public void widgetSelected(SelectionEvent e) {
 						if (displayNameChangedListener != null)
 							displayNameChangedListener.displayNameChanged(displayNameText.getText());
-						fireDataBlockEditorChangedEvent(null, null);
 					}
 					public void widgetDefaultSelected(SelectionEvent e) {}
 				});
