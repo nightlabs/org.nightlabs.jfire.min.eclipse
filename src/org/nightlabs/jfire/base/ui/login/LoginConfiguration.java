@@ -146,9 +146,9 @@ public class LoginConfiguration implements Serializable, Initializable, Cloneabl
 	}
 	
 	public void setName(String configurationName) {
-		if (configurationName == null || "".equals(configurationName)) //$NON-NLS-1$
-			throw new IllegalArgumentException("Configuration name must be non-null and non-empty."); //$NON-NLS-1$
-		
+//		if (configurationName == null || "".equals(configurationName)) //$NON-NLS-1$
+//			throw new IllegalArgumentException("Configuration name must be non-null and non-empty."); //$NON-NLS-1$
+//		
 		this.name = configurationName;
 	}
 

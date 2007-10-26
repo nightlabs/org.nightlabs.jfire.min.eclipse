@@ -112,10 +112,12 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	
 	@Override
 	public boolean isPageComplete() {
-		if (this.equals(getContainer().getCurrentPage())) {
-			return searchComposite.getResultTable().getFirstSelectedElement() != null;
-		}
-		return true;
+		return searchComposite != null && (searchComposite.getResultTable().getFirstSelectedElement() != null || !getWizardHop().getHopPages().isEmpty());
+		
+//		if (this.equals(getContainer().getCurrentPage())) {
+//			return searchComposite.getResultTable().getFirstSelectedElement() != null;
+//		}
+//		return true;
 	}
 	
 	/**
