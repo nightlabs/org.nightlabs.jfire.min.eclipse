@@ -14,6 +14,8 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -112,6 +114,12 @@ public class JMSQueueMessageList extends XComposite {
 		summaryComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		summaryLabel = new Label(summaryComposite, SWT.WRAP);
 		summaryLabel.setLayoutData(new GridData(GridData.FILL_BOTH));
+		addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e)
+			{
+				setAutoUpdate(false);
+			}
+		});
 	}
 	
 	private void loadQueueMessaged(final String queueName) {
@@ -142,6 +150,11 @@ public class JMSQueueMessageList extends XComposite {
 		public void run() {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
+					if (queuesCombo.isDisposed()) {
+						setAutoUpdate(false);
+						return;
+					}
+
 					if (queuesCombo.getSelectedElement() != null) 
 						loadQueueMessaged(queuesCombo.getSelectedElement());
 				}
