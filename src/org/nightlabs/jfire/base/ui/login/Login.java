@@ -35,7 +35,6 @@ import java.util.Properties;
 
 import javax.ejb.EJBException;
 import javax.naming.CommunicationException;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
@@ -65,11 +64,11 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.classloader.osgi.DelegatingClassLoaderOSGI;
 import org.nightlabs.config.Config;
 import org.nightlabs.j2ee.InitialContextProvider;
+import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
-import org.nightlabs.jfire.base.ui.password.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
 import org.nightlabs.jfire.classloader.JFireRCLBackend;
@@ -255,16 +254,18 @@ implements InitialContextProvider
 		createLogin();
 	}
 
-	private String sessionID;
-
 	public String getSessionID()
 	{
-		if (sessionID == null) {
-			Base62Coder coder = Base62Coder.sharedInstance();
-			sessionID = coder.encode(System.currentTimeMillis(), 1) + '-' + coder.encode((long)(Math.random() * 10000), 1);
+		if (loginData != null) {
+			if (loginData.getSessionID() == null) {
+				Base62Coder coder = Base62Coder.sharedInstance();
+				loginData.setSessionID(
+						coder.encode(System.currentTimeMillis(), 1) + '-' +
+						coder.encode((long)(Math.random() * 14776335), 1)); // 14776335 is the highest value encoded in 4 digits ("zzzz")
+			}
+			return loginData.getSessionID();
 		}
-
-		return sessionID;
+		return null;
 	}
 
 	/**
@@ -299,8 +300,8 @@ implements InitialContextProvider
 		// remove class loader delegate
 		JFireRCDLDelegate.sharedInstance().unregister(DelegatingClassLoaderOSGI.getSharedInstance());
 		// logout
-		loginContext = null;
-		nullUserMembers();
+//		loginContext = null;
+		loginData = null;
 //		sessionID = null;
 		Exception ex = null;
 		try {
@@ -327,22 +328,6 @@ implements InitialContextProvider
 		}
 		
 	}
-
-	/**
-	 * Nulls all members associated to a login.
-	 */
-	private void nullUserMembers() {
-		organisationID = null;
-		userID = null;
-		sessionID = null;
-		loginName = null;
-		password = null;
-		serverURL = null;
-		contextFactory = null;
-		securityProtocol = null;
-		workstationID = null;
-	}
-
 
 	private volatile boolean handlingLogin = false;
 	private AsyncLoginResult loginResult = new AsyncLoginResult();
@@ -378,23 +363,24 @@ implements InitialContextProvider
 
 					loginResult.reset();
 					// create a loginContext
-					loginContext = new JFireLoginContext("jfire", new LoginCallbackHandler()); //$NON-NLS-1$
-
+//					loginContext = new LoginContext("jfire", new LoginCallbackHandler()); //$NON-NLS-1$
+					LoginData lData = new LoginData();
 					ILoginHandler lHandler = getLoginHandler();
 					if (lHandler == null)
 						throw new LoginException("Cannot login, loginHandler is not set!"); //$NON-NLS-1$
 
 					logger.debug("Calling login handler"); //$NON-NLS-1$
-					lHandler.handleLogin(loginContext,sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
+					lHandler.handleLogin(lData, sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
 
 
 					if ((!loginResult.isSuccess()) || (loginResult.getException() != null)) {
-						loginContext = null;
+//						loginData = null;
 						return;
 					}
 
 					// copy properties
-					sharedInstanceLogin.copyPropertiesFrom(loginContext);
+					loginData = new LoginData(lData);
+//					sharedInstanceLogin.copyBasicLoginData(loginContext);
 					// done should be logged in by now
 
 					// at the end, we register the JFireRCDLDelegate
@@ -424,7 +410,7 @@ implements InitialContextProvider
 					forceLogin = false;
 					currLoginState = LOGINSTATE_LOGGED_IN;
 				} catch(Throwable t){
-					loginContext = null;
+//					loginContext = null;
 					logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
 					loginResult.setException(t);
 				}
@@ -489,7 +475,7 @@ implements InitialContextProvider
 
 	/**
 	 * Actually performs the login procedure.
-	 * To do so it calls {@link ILoginHandler#handleLogin(JFireLoginContext, LoginConfigModule, Login.AsyncLoginResult)}
+	 * To do so it calls {@link ILoginHandler#handleLogin(LoginData, LoginConfigModule, Login.AsyncLoginResult)}
 	 * of the LoginHandler defined with {@link #setLoginHandler(ILoginHandler)}.
 	 * 
 	 * @param forceLogoutFirst Defines weather to logout first
@@ -673,21 +659,27 @@ implements InitialContextProvider
 		job.schedule();
 	}
 
-	private String organisationID;
-	private String userID;
-	// loginName is the concated product of userID, organisationID and sessionID (userID@organisationID:sessionID)
-	private String loginName;
-	private String password;
-	private String serverURL;
-	private String contextFactory;
-	private String securityProtocol;
-	private String workstationID;
+	private LoginData loginData;
+	
+	protected LoginData getLoginData() {
+		return loginData;
+	}
+	
+//	private String organisationID;
+//	private String userID;
+//	// loginName is the concated product of userID, organisationID and sessionID (userID@organisationID:sessionID)
+//	private String loginName;
+//	private String password;
+//	private String serverURL;
+//	private String contextFactory;
+//	private String securityProtocol;
+//	private String workstationID;
 
 //	private LoginConfigModule _loginConfigModule;
 	private LoginConfigModule _runtimeConfigModule = null; // new LoginConfigModule();
 
 	// LoginContext instantiated to perform the login
-	private JFireLoginContext loginContext = null;
+//	private LoginContext loginContext = null;
 
 	// ILoginHandler to handle the user interaction
 	private ILoginHandler loginHandler = null;
@@ -710,9 +702,9 @@ implements InitialContextProvider
 	 */
 	protected Login() 
 	{
-		if (loginContext != null){
-			copyPropertiesFrom(loginContext);
-		}
+//		if (loginContext != null){
+//			copyBasicLoginData(loginContext);
+//		}
 
 //		try {
 //			loginConfigModule = ((LoginConfigModule)Config.sharedInstance().createConfigModule(LoginConfigModule.class));
@@ -729,63 +721,72 @@ implements InitialContextProvider
 	 * @return Returns the organisationID.
 	 */
 	public String getOrganisationID() {		
-		return organisationID;
+		return loginData.getOrganisationID();
 	}
 	/**
 	 * @return Returns the userID.
 	 */
 	public String getUserID() {
-		return userID;
+		return loginData.getUserID();
 	}
+	
+	public String getPrincipalName() {
+		return loginData.getPrincipalName();
+	}
+	
 	/**
 	 * @return Returns the password.
 	 */
 	public String getPassword() {
-		return password;
+		return loginData.getPassword();
 	}
-	/**
+	
+		/**
 	 * Set the new password. This method should normally not be called! It's only purpose is to switch to a new password
 	 * after the user changed his password (see {@link ChangePasswordDialog})
 	 *
 	 * @param password
 	 */
 	public void setPassword(String password) {
-		this.password = password;
+		this.loginData.setPassword(password);
 	}
+	
 	/**
 	 * @return Returns the workstationID.
 	 */
 	public String getWorkstationID() {
-		return workstationID;
+		return loginData.getAdditionalParams().get(LoginData.WORKSTATION_ID);
 	}
 
 	public User getUser(String fetchGroups[], int maxFetchDepth, IProgressMonitor monitor) {
 		return UserDAO.sharedInstance().getUser(
-				UserID.create(organisationID, userID), 
+				UserID.create(loginData.getOrganisationID(), loginData.getUserID()), 
 				fetchGroups, maxFetchDepth, new ProgressMonitorWrapper(monitor)
 			);
 	}
 	
 
-	public JFireLoginContext getLoginContext() {
-		return loginContext;
-	}
-
 	protected static final char SESSION_SEPARATOR = '/';
 
-	public void copyPropertiesFrom(JFireLoginContext _loginContext){
-		this.organisationID = _loginContext.getOrganisationID();
-		this.userID = _loginContext.getUserID();
-		this.password = _loginContext.getPassword();
-		this.loginName = _loginContext.getUsername() + SESSION_SEPARATOR + getSessionID();
-	}
+//	public void copyBasicLoginData(LoginData _loginData) {
+//		this.loginData = new LoginData();
+//		this.loginData.setOrganisationID(_loginData.getOrganisationID());
+//		this.loginData.setUserID(_loginData.getUserID());
+//		this.loginData.setPassword(_loginData.getPassword());
+////		this.loginName = _loginData.getUsername() + SESSION_SEPARATOR + getSessionID();
+//	}
 
-	private void copyPropertiesFromConfig(){
+	private void copyLoginDataFromConfig() {
 		LoginConfiguration currentConfig = getRuntimeConfigModule().getLatestLoginConfiguration();
-		this.serverURL = currentConfig.getServerURL();
-		this.contextFactory = currentConfig.getInitialContextFactory();
-		this.securityProtocol = currentConfig.getSecurityProtocol();
-		this.workstationID = currentConfig.getWorkstationID();
+		if (loginData == null) {
+			loginData = new LoginData();
+		}
+		this.loginData.setProviderURL(currentConfig.getServerURL());
+		this.loginData.setInitialContextFactory(currentConfig.getInitialContextFactory());
+		this.loginData.setSecurityProtocol(currentConfig.getSecurityProtocol());
+		this.loginData.getAdditionalParams().clear();
+		this.loginData.getAdditionalParams().put(LoginData.WORKSTATION_ID, currentConfig.getWorkstationID());
+		// TODO: Extend LoginConfigModule to have additional params map (that can be copied here)
 	}
 
 	protected transient Properties initialContextProperties = null;
@@ -810,16 +811,10 @@ implements InitialContextProvider
 
 //		LOGGER.debug("getInitialContextProperties(): generating props");
 //		}
-		if (initialContextProperties == null){
-			copyPropertiesFrom(loginContext);
-			copyPropertiesFromConfig();
-			Properties props = new Properties();
-			props.put(Context.INITIAL_CONTEXT_FACTORY,contextFactory);
-			props.put(Context.PROVIDER_URL, serverURL);
-			props.put(Context.SECURITY_PRINCIPAL, loginName);
-			props.put(Context.SECURITY_CREDENTIALS, password);
-			props.put(Context.SECURITY_PROTOCOL, securityProtocol);
-			initialContextProperties = props;
+		if (initialContextProperties == null) {
+//			copyBasicLoginData(loginData);
+//			copyLoginDataFromConfig();
+			initialContextProperties = loginData.getInitialContextProperties();
 		}
 		return initialContextProperties;
 	}
@@ -1051,42 +1046,42 @@ implements InitialContextProvider
 		}
 	}
 
-	public static Login.AsyncLoginResult testLogin(JFireLoginContext loginContext) {
+	public static Login.AsyncLoginResult testLogin(LoginData _loginData) {
 		Login.AsyncLoginResult loginResult = new Login.AsyncLoginResult();
 
-		Login login = null;
-		try {
-			login = Login.getLogin(false);
-		} catch (LoginException e) {
-			logger.error("Obtaining shared instance of Login failed!", e); //$NON-NLS-1$
-		}
-
-		if ( login != null)
-			login.copyPropertiesFrom(loginContext);
-		else
-			throw new IllegalStateException("Shared instance of Login must not be null"); //$NON-NLS-1$
+//		Login login = null;
+//		try {
+//			login = Login.getLogin(false);
+//		} catch (LoginException e) {
+//			logger.error("Obtaining shared instance of Login failed!", e); //$NON-NLS-1$
+//		}
+//
+//		if ( login != null)
+//			login.copyBasicLoginData(_loginData);
+//		else
+//			throw new IllegalStateException("Shared instance of Login must not be null"); //$NON-NLS-1$
 
 		loginResult.setSuccess(false);
 		loginResult.setMessage(null);
 		loginResult.setException(null);
-		login.flushInitialContextProperties();
+//		login.flushInitialContextProperties();
 
 		// verify login
 		JFireRCLBackend jfireCLBackend = null;
 //		LanguageManager languageManager = null;
 		if (jfireCLBackend == null) {
 			try {
-				System.out.println(Thread.currentThread().getContextClassLoader());
-				System.out.println(JFireBasePlugin.class.getClassLoader());
+				logger.debug(Thread.currentThread().getContextClassLoader());
+				logger.debug(JFireBasePlugin.class.getClassLoader());
 //				Class.forName("org.jboss.security.jndi.LoginInitialContextFactory");
 //				RMIClassLoader.loadClass("org.jboss.security.jndi.LoginInitialContextFactory");
 //				RMIClassLoader.getDefaultProviderInstance().loadClass(codebase, name, defaultLoader));
 //				Thread.currentThread().setContextClassLoader(Login.class.getClass().getClassLoader());
-				System.out.println("**********************************************************"); //$NON-NLS-1$
-				System.out.println("Create testing login"); //$NON-NLS-1$
+				logger.info("**********************************************************"); //$NON-NLS-1$
+				logger.info("Create testing login"); //$NON-NLS-1$
 				jfireCLBackend = JFireRCLBackendUtil.getHome(
-						login.getInitialContextProperties()).create();
-				System.out.println("**********************************************************"); //$NON-NLS-1$
+						_loginData.getInitialContextProperties()).create();
+				logger.info("**********************************************************"); //$NON-NLS-1$
 //				languageManager = LanguageManagerUtil.getHome(
 //				login.getInitialContextProperties()).create();
 				loginResult.setSuccess(true);
@@ -1127,7 +1122,7 @@ implements InitialContextProvider
 					loginResult.setWasSocketTimeout(true);
 				}
 				// cant create local bean stub
-				logger.warn("Login failed!", x); //$NON-NLS-1$
+				logger.error("Login failed!", x); //$NON-NLS-1$
 				LoginException loginE = new LoginException(x.getMessage());
 				loginE.initCause(x);
 				loginResult.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.Login.errorUnhandledExceptionMessage")); //$NON-NLS-1$

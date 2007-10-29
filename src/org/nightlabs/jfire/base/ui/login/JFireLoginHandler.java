@@ -32,6 +32,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.NLBasePlugin;
+import org.nightlabs.j2ee.LoginData;
+import org.nightlabs.math.Base62Coder;
 
 /**
  * @see org.nightlabs.jfire.base.ui.login.ILoginHandler
@@ -55,17 +57,17 @@ public class JFireLoginHandler implements ILoginHandler {
 	 * @see org.nightlabs.jfire.base.ui.login.ILoginHandler#handleLogin(org.nightlabs.jfire.base.ui.login.JFireLoginContext)
 	 * @see LoginDialog
 	 */
-	public void handleLogin(JFireLoginContext loginContext, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult)
+	public void handleLogin(LoginData loginData, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult)
 	throws LoginException
 	{
 		// if the user specified the necessary parameters and the login succeeds, we don't show any login dialog
 		try {
-			String userID = null;
-			String password = null;
-			String organisationID = null;
-			String initialContextFactory = null;
-			String serverURL = null;
-			String workstationID = null;
+//			String userID = null;
+//			String password = null;
+//			String organisationID = null;
+//			String initialContextFactory = null;
+//			String serverURL = null;
+//			String workstationID = null;
 
 			if (autoLoginWithParams) {
 				String[] args = NLBasePlugin.getDefault().getApplication().getArguments();
@@ -74,23 +76,31 @@ public class JFireLoginHandler implements ILoginHandler {
 					String val = i + 1 < args.length ? args[i + 1] : null;
 
 					if ("--login.userID".equals(arg)) //$NON-NLS-1$
-						userID = val;
+						loginData.setUserID(val);
 					else if ("--login.password".equals(arg)) //$NON-NLS-1$
-						password = val;
+						loginData.setPassword(val);
 					else if ("--login.organisationID".equals(arg)) //$NON-NLS-1$
-						organisationID = val;
+						loginData.setOrganisationID(val);
 					else if ("--login.workstationID".equals(arg)) //$NON-NLS-1$
-						workstationID = val;
+						loginData.setWorkstationID(val);
 					else if ("--login.initialContextFactory".equals(arg)) //$NON-NLS-1$
-						initialContextFactory = val;
+						loginData.setInitialContextFactory(val);
 					else if ("--login.serverURL".equals(arg)) //$NON-NLS-1$
-						serverURL = val;
+						loginData.setProviderURL(val);
 				}
 
 				autoLoginWithParams = false;
 			}
 
-			if (password != null) {
+			if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol()))
+				loginData.setSecurityProtocol("jfire");
+			
+			Base62Coder coder = Base62Coder.sharedInstance();
+			loginData.setSessionID(
+					coder.encode(System.currentTimeMillis(), 1) + '-' +
+					coder.encode((long)(Math.random() * 14776335), 1)); // 14776335 is the highest value encoded in 4 digits ("zzzz")
+			
+			if (loginData.getPassword() != null) {
 				LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
 				
 				if (latestConfig == null) {
@@ -98,37 +108,31 @@ public class JFireLoginHandler implements ILoginHandler {
 					latestConfig.init();
 				}
 				
-//				if (workstationID != null)
-//					loginConfigModule.setWorkstationID(workstationID);
+				if (loginData.getWorkstationID() == null)
+					loginData.setWorkstationID(latestConfig.getWorkstationID());
+
+				if (loginData.getUserID() == null)
+					loginData.setUserID(latestConfig.getUserID());
+
+				if (loginData.getOrganisationID() == null)
+					loginData.setOrganisationID(latestConfig.getOrganisationID());
+
+				if (loginData.getInitialContextFactory() == null)
+					loginData.setInitialContextFactory(latestConfig.getInitialContextFactory());
+
+				if (loginData.getProviderURL() == null)
+					loginData.setProviderURL(latestConfig.getServerURL());
 				
-				if (workstationID == null)
-					workstationID = latestConfig.getWorkstationID();
-
-				if (userID == null)
-					userID = latestConfig.getUserID();
-//				else
-//					loginConfigModule.setUserID(userID);
-
-				if (organisationID == null)
-					organisationID = latestConfig.getOrganisationID();
-//				else
-//					loginConfigModule.setOrganisationID(organisationID);
-
-				if (initialContextFactory == null)
-					initialContextFactory = latestConfig.getInitialContextFactory();
-//				else
-//					loginConfigModule.setInitialContextFactory(initialContextFactory);
-
-				if (serverURL == null)
-					serverURL = latestConfig.getServerURL();
-//				else
-//					loginConfigModule.setServerURL(serverURL);
-				
-				loginConfigModule.setLatestLoginConfiguration(userID, workstationID, organisationID, serverURL, initialContextFactory, null, null);				
+				loginConfigModule.setLatestLoginConfiguration(
+						loginData.getUserID(), 
+						loginData.getWorkstationID(), 
+						loginData.getOrganisationID(),
+						loginData.getProviderURL(), 
+						loginData.getInitialContextFactory(), 
+						null, null);				
 
 				// perform a test login
-				loginContext.setCredentials(userID, organisationID, password);
-				Login.AsyncLoginResult res = Login.testLogin(loginContext);
+				Login.AsyncLoginResult res = Login.testLogin(loginData);
 				if (res.isSuccess()) {
 					BeanUtils.copyProperties(loginResult, res);
 					return;
@@ -147,15 +151,15 @@ public class JFireLoginHandler implements ILoginHandler {
 			logger.error("Could not login using the specified program arguments!", x); //$NON-NLS-1$
 		}
 
-		handleSWTLogin(loginContext, loginConfigModule, loginResult);
+		handleSWTLogin(loginData, loginConfigModule, loginResult);
 	}
 
 	// TODO: should the creation and registration of login dialog be synchronized?? 
-	protected void handleSWTLogin(JFireLoginContext loginContext, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult) 
+	protected void handleSWTLogin(LoginData loginData, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult) 
 	throws LoginException 
 	{		
 //		LoginDialog loginDialog = new LoginDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), loginResult, loginConfigModule, loginContext);
-		LoginDialog loginDialog = new LoginDialog(Display.getDefault().getActiveShell(), loginResult, loginConfigModule, loginContext);
+		LoginDialog loginDialog = new LoginDialog(Display.getDefault().getActiveShell(), loginResult, loginConfigModule, loginData);
 		// LoginDialog does all the work
 		loginDialog.open();
 	}

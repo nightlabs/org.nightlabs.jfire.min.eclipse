@@ -27,6 +27,8 @@
 package org.nightlabs.jfire.base.ui.login;
 
 import javax.security.auth.login.LoginException;
+
+import org.nightlabs.j2ee.LoginData;
 /**
  * Interface to handle client logins. This interface is used instead of 
  * {@link javax.security.auth.callback.CallbackHandler} to do the user interaction.
@@ -51,5 +53,5 @@ public interface ILoginHandler {
 	 * @see LoginConfigModule
 	 * @see Login.AsyncLoginResult
 	 */
-	public void handleLogin(JFireLoginContext loginContext, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult) throws LoginException;
+	public void handleLogin(LoginData loginData, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult) throws LoginException;
 }

@@ -63,6 +63,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.resource.SharedImages.ImageDimension;
 import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
+import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.app.JFireWorkbenchWindowAdvisor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
@@ -88,7 +89,7 @@ public class LoginDialog extends TitleAreaDialog
 	private LoginConfigModule persistentLoginModule = null;
 	private LoginConfigModule runtimeLoginModule = null;
 	private Login.AsyncLoginResult loginResult = null;	
-	private JFireLoginContext loginContext = null;
+	private LoginData loginData = null;
 
 	protected static final int DETAILS_ID = IDialogConstants.CLIENT_ID + 1;
 	private static final int DELETE_ID = IDialogConstants.CLIENT_ID+2;
@@ -161,12 +162,12 @@ public class LoginDialog extends TitleAreaDialog
 //		setLoginModule(loginModule);
 	}
 
-	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule, JFireLoginContext loginContext)
+	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule, LoginData loginData)
 	{
 		this(parent);
 		this.loginResult = loginResult;
 		this.runtimeLoginModule = loginModule;
-		this.loginContext = loginContext;
+		this.loginData = loginData;
 	}
 
 	/* (non-Javadoc)
@@ -444,12 +445,14 @@ public class LoginDialog extends TitleAreaDialog
 
 	public void storeUserInput()
 	{
-		loginContext.setCredentials(
-				textUserID.getText(),
-				textOrganisationID.getText(),
-				textPassword.getText()
-		);
-
+		loginData.setUserID(textUserID.getText());
+		loginData.setOrganisationID(textOrganisationID.getText());
+		loginData.setPassword(textPassword.getText());
+		loginData.setProviderURL(textServerURL.getText());
+		loginData.setInitialContextFactory(textInitialContextFactory.getText());
+		loginData.getAdditionalParams().put(LoginData.WORKSTATION_ID, textWorkstationID.getText());
+		// TODO: set jfire as static const 
+		
 		runtimeLoginModule.setLatestLoginConfiguration(textUserID.getText(), textWorkstationID.getText(), textOrganisationID.getText(),
 				textServerURL.getText(), textInitialContextFactory.getText(), null, textIdentityName.getText());
 	}
@@ -572,7 +575,7 @@ public class LoginDialog extends TitleAreaDialog
 				@Override
 				protected IStatus run(IProgressMonitor arg0)
 				{
-					Login.AsyncLoginResult testResult = Login.testLogin(loginContext);
+					Login.AsyncLoginResult testResult = Login.testLogin(loginData);
 					testResult.copyValuesTo(loginResult);
 
 					try {
@@ -767,7 +770,7 @@ public class LoginDialog extends TitleAreaDialog
 	
 	private boolean doCheckLogin(boolean saveSettings, IProgressMonitor monitor)
 	{
-		Login.AsyncLoginResult testResult = Login.testLogin(loginContext);
+		Login.AsyncLoginResult testResult = Login.testLogin(loginData);
 		monitor.worked(1);
 		testResult.copyValuesTo(loginResult);
 		monitor.worked(1);

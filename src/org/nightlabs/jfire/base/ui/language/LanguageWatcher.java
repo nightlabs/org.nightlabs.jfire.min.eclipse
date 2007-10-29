@@ -60,7 +60,7 @@ public class LanguageWatcher implements LoginStateListener {
 	 */
 	private static final Logger logger = Logger.getLogger(LanguageWatcher.class);
 	
-	private Map languageChecks = new HashMap();
+	private Map<String, Boolean> languageChecks = new HashMap<String, Boolean>();
 	private static LanguageWatcher sharedInstance;
 	
 	private boolean isLanguageChecked(String userName) {
@@ -81,7 +81,7 @@ public class LanguageWatcher implements LoginStateListener {
 		switch (loginState) {
 			case Login.LOGINSTATE_LOGGED_IN:
 				logger.debug("loginStateChanged(..): syncing languages"); //$NON-NLS-1$
-				String userName = Login.sharedInstance().getLoginContext().getUsername();
+				String userName = Login.sharedInstance().getPrincipalName();
 				if (!isLanguageChecked(userName)) {
 					syncLanguages();
 					checkUserLanguage();
