@@ -19,6 +19,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -67,12 +68,12 @@ public class UserDataSection extends RestorableSectionPart {
 		layout.numColumns = 3;
 		
 		createLabel(container, "User ID", 3);		
-		userIdText = new Text(container, SWT.NONE);
+		userIdText = new Text(container, XComposite.getBorderStyle(container));
 		userIdText.setEditable(false);
 		userIdText.setLayoutData(getGridData(3));		
 		
 		createLabel(container,	"User name", 3);
-		userNameText = new Text(container, SWT.NONE);
+		userNameText = new Text(container, XComposite.getBorderStyle(container));
 		userNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		autogenerateNameCheckBox = new Button(container, SWT.CHECK);
@@ -87,16 +88,16 @@ public class UserDataSection extends RestorableSectionPart {
 		});
 		
 		createLabel(container, "User description", 3);
-		userDescriptionText = new Text(container, SWT.NONE);
+		userDescriptionText = new Text(container, XComposite.getBorderStyle(container));
 		userDescriptionText.setLayoutData(getGridData(3));
 		
 		createLabel(container, "Password", 3);
-		password0Text = new Text(container, SWT.NONE);
+		password0Text = new Text(container, XComposite.getBorderStyle(container));
 		password0Text.setLayoutData(getGridData(3));
 		password0Text.setEchoChar('*');
 		
 		createLabel(container, "Password confirm", 3);
-		password1Text = new Text(container, SWT.NONE);
+		password1Text = new Text(container, XComposite.getBorderStyle(container));
 		password1Text.setLayoutData(getGridData(3));
 		password1Text.setEchoChar('*');
 		
