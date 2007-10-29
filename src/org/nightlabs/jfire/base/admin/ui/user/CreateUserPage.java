@@ -111,7 +111,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
       	// TODO we should ask for a list of all userIDs and cache it here - so we don't need to ask the server again and again
       	// especially, all expensive work should be done asynchronously - not on the UI thread!
       	UserManager userManager = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-      	if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getLoginContext().getOrganisationID(), getUserID())) == true)
+      	if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserID())) == true)
       		updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDCollision")); //$NON-NLS-1$
       	else if("".equals(getPassword0()) || "".equals(getPassword1())) //$NON-NLS-1$ //$NON-NLS-2$
       		updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorPasswordMissing")); //$NON-NLS-1$
