@@ -69,6 +69,7 @@ import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.password.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
 import org.nightlabs.jfire.classloader.JFireRCLBackend;
@@ -741,6 +742,15 @@ implements InitialContextProvider
 	 */
 	public String getPassword() {
 		return password;
+	}
+	/**
+	 * Set the new password. This method should normally not be called! It's only purpose is to switch to a new password
+	 * after the user changed his password (see {@link ChangePasswordDialog})
+	 *
+	 * @param password
+	 */
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	/**
 	 * @return Returns the workstationID.

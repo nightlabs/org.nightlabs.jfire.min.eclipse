@@ -138,6 +138,14 @@
                tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip">
          </action>
          <action
+               class="org.nightlabs.jfire.base.ui.password.ChangePasswordAction"
+               icon="icons/password/ChangePasswortAction.16x16.gif"
+               id="org.nightlabs.jfire.base.ui.password.ChangePasswortAction"
+               label="Change password"
+               menubarPath="loginMenu/loginGroup"
+               tooltip="Change the password of the user currently logged in">
+         </action>
+         <action
                class="org.nightlabs.jfire.base.ui.login.action.LoginAction"
                icon="icons/login/action/LoginAction-Login.16x16.png"
                id="org.nightlabs.jfire.base.ui.login.action.LoginAction#menu"
