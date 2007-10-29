@@ -52,6 +52,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 
 	public static final String[] FETCH_GROUPS = new String[] {
 		FetchPlan.DEFAULT,
+		User.FETCH_GROUP_USER_LOCAL,
 		User.FETCH_GROUP_PERSON,
 		PropertySet.FETCH_GROUP_FULL_DATA}
 	;
