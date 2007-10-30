@@ -72,6 +72,7 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.password.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
+import org.nightlabs.jfire.classloader.JFireRCLBackend;
 import org.nightlabs.jfire.classloader.JFireRCLBackendUtil;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -297,15 +298,14 @@ implements InitialContextProvider
 	 * user information (logs out).
 	 */
 	private void logout(boolean doNotify) {
-		// remove class loader delegate
-		JFireRCDLDelegate.sharedInstance().unregister(DelegatingClassLoaderOSGI.getSharedInstance());
-		// logout
-//		loginContext = null;
-		loginData = null;
-//		sessionID = null;
 		Exception ex = null;
 		try {
-			Cache.sharedInstance().close();
+			Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
+			// remove class loader delegate
+			JFireRCDLDelegate.sharedInstance().unregister(DelegatingClassLoaderOSGI.getSharedInstance());
+			// logout
+			loginData = null;
+			flushInitialContextProperties();
 		} catch (Exception e) {
 			ex = e;
 		}
@@ -349,6 +349,9 @@ implements InitialContextProvider
 		return _runtimeConfigModule;
 	}
 
+	/**
+	 * The runnable that calls the {@link ILoginHandler}.
+	 */
 	private Runnable loginHandlerRunnable = new Runnable() {
 		private boolean logoutFirst = false;
 
@@ -362,22 +365,28 @@ implements InitialContextProvider
 						createLogin();
 
 					loginResult.reset();
-					// retrieve the login information via the registered loginHandler
+					// create the temporary login data
 					LoginData lData = new LoginData();
+					// find a login handler
 					ILoginHandler lHandler = getLoginHandler();
 					if (lHandler == null)
 						throw new LoginException("Cannot login, loginHandler is not set!"); //$NON-NLS-1$
 
 					logger.debug("Calling login handler"); //$NON-NLS-1$
+					// let the handler populate the login data
 					lHandler.handleLogin(lData, sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
 
 
 					if ((!loginResult.isSuccess()) || (loginResult.getException() != null)) {
+//						loginData = null;
+						// login unsuccessful
 						return;
 					}
 
-					// copy properties
+					// set the login data
+					flushInitialContextProperties(); // should be done by logout() but it doesn't hurt
 					loginData = new LoginData(lData);
+					// done should be logged in by now
 
 					// at the end, we register the JFireRCDLDelegate
 					JFireRCDLDelegate.sharedInstance().register(DelegatingClassLoaderOSGI.getSharedInstance()); // this method does nothing, if already registered.
@@ -650,13 +659,27 @@ implements InitialContextProvider
 		job.schedule();
 	}
 
-	private LoginData loginData;
+	private volatile LoginData loginData;
 	
 	protected LoginData getLoginData() {
 		return loginData;
 	}
 	
+//	private String organisationID;
+//	private String userID;
+//	// loginName is the concated product of userID, organisationID and sessionID (userID@organisationID:sessionID)
+//	private String loginName;
+//	private String password;
+//	private String serverURL;
+//	private String contextFactory;
+//	private String securityProtocol;
+//	private String workstationID;
+
+//	private LoginConfigModule _loginConfigModule;
 	private LoginConfigModule _runtimeConfigModule = null; // new LoginConfigModule();
+
+	// LoginContext instantiated to perform the login
+//	private LoginContext loginContext = null;
 
 	// ILoginHandler to handle the user interaction
 	private ILoginHandler loginHandler = null;
@@ -672,7 +695,9 @@ implements InitialContextProvider
 	}
 
 	/**
-	 * Creates a new Login.   
+	 * Creates a new Login. 
+	 * 
+	 * @throws NamingException
 	 */
 	protected Login() {}
 
@@ -965,56 +990,59 @@ implements InitialContextProvider
 
 	public static Login.AsyncLoginResult testLogin(LoginData _loginData) {
 		Login.AsyncLoginResult loginResult = new Login.AsyncLoginResult();
-
 		loginResult.setSuccess(false);
 		loginResult.setMessage(null);
 		loginResult.setException(null);
 
 		// verify login
-		try {
-			logger.debug(Thread.currentThread().getContextClassLoader());
-			logger.debug(JFireBasePlugin.class.getClassLoader());
-			logger.info("**********************************************************"); //$NON-NLS-1$
-			logger.info("Create testing login"); //$NON-NLS-1$
-			JFireRCLBackendUtil.getHome( _loginData.getInitialContextProperties() ).create();
-			logger.info("**********************************************************"); //$NON-NLS-1$
-			loginResult.setSuccess(true);
-		} catch (RemoteException remoteException) {
-			Throwable cause = remoteException.getCause();
-			if (cause != null && cause.getCause() instanceof EJBException) {
-				EJBException ejbE = (EJBException)cause.getCause();
-				if (ejbE != null) {
-					if (ejbE.getCausedByException() instanceof SecurityException)
-						// SecurityException authentication failure
-						loginResult.setWasAuthenticationErr(true);
+		JFireRCLBackend jfireCLBackend = null;
+		if (jfireCLBackend == null) {
+			try {
+				logger.debug(Thread.currentThread().getContextClassLoader());
+				logger.debug(JFireBasePlugin.class.getClassLoader());
+				logger.info("**********************************************************"); //$NON-NLS-1$
+				logger.info("Create testing login"); //$NON-NLS-1$
+				jfireCLBackend = JFireRCLBackendUtil.getHome(
+						_loginData.getInitialContextProperties()).create();
+				logger.info("**********************************************************"); //$NON-NLS-1$
+				loginResult.setSuccess(true);
+			} catch (RemoteException remoteException) {
+				Throwable cause = remoteException.getCause();
+				if (cause != null && cause.getCause() instanceof EJBException) {
+					EJBException ejbE = (EJBException)cause.getCause();
+					if (ejbE != null) {
+						if (ejbE.getCausedByException() instanceof SecurityException)
+							// SecurityException authentication failure
+							loginResult.setWasAuthenticationErr(true);
+					}
 				}
-			}
-			else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
-				loginResult.setWasAuthenticationErr(true);
-			}
-			else {
-				if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
-					loginResult.setWasAuthenticationErr(true);				
-					loginResult.setSuccess(false);
+				else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
+					loginResult.setWasAuthenticationErr(true);
 				}
 				else {
-					loginResult.setException(remoteException);
-					loginResult.setSuccess(false);
+					if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
+						loginResult.setWasAuthenticationErr(true);				
+						loginResult.setSuccess(false);
+					}
+					else {
+						loginResult.setException(remoteException);
+						loginResult.setSuccess(false);
+					}
 				}
+			} catch (Exception x) {
+				if (x instanceof CommunicationException) {
+					loginResult.setWasCommunicationErr(true);
+				}
+				if (x instanceof SocketTimeoutException) {
+					loginResult.setWasSocketTimeout(true);
+				}
+				// cant create local bean stub
+				logger.error("Login failed!", x); //$NON-NLS-1$
+				LoginException loginE = new LoginException(x.getMessage());
+				loginE.initCause(x);
+				loginResult.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.Login.errorUnhandledExceptionMessage")); //$NON-NLS-1$
+				loginResult.setException(loginE);
 			}
-		} catch (Exception x) {
-			if (x instanceof CommunicationException) {
-				loginResult.setWasCommunicationErr(true);
-			}
-			if (x instanceof SocketTimeoutException) {
-				loginResult.setWasSocketTimeout(true);
-			}
-			// cant create local bean stub
-			logger.error("Login failed!", x); //$NON-NLS-1$
-			LoginException loginE = new LoginException(x.getMessage());
-			loginE.initCause(x);
-			loginResult.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.Login.errorUnhandledExceptionMessage")); //$NON-NLS-1$
-			loginResult.setException(loginE);
 		}
 
 		return loginResult;

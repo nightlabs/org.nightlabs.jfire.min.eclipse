@@ -40,6 +40,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -339,8 +340,11 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 */
 	protected Control init(Composite parent) {
 		createWrapper(parent);
-		filterProviderFolder = new TabFolder(getWrapper(), SWT.NONE);
-		filterProviderFolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		SashForm sash = new SashForm(getWrapper(), SWT.VERTICAL);
+		sash.setLayoutData(new GridData(GridData.FILL_BOTH));
+		XComposite topWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+		filterProviderFolder = new TabFolder(topWrapper, SWT.NONE);
+		filterProviderFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 		staticTab = new StaticProviderTabItem(filterProviderFolder, resultFetcher);
 		staticTab.getTabItem().setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.staticTab.text")); //$NON-NLS-1$
 		staticTab.setQuickSearchText(earlySearchText);
@@ -348,10 +352,10 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		dynamicTab = new DynamicProviderTabItem(filterProviderFolder, resultFetcher);
 		dynamicTab.getTabItem().setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.dynamicTab.text")); //$NON-NLS-1$
 		
-		buttonBar = new XComposite(getWrapper(), SWT.NONE, XComposite.LayoutMode.LEFT_RIGHT_WRAPPER, XComposite.LayoutDataMode.GRID_DATA_HORIZONTAL);
+		buttonBar = new XComposite(topWrapper, SWT.NONE, XComposite.LayoutMode.LEFT_RIGHT_WRAPPER, XComposite.LayoutDataMode.GRID_DATA_HORIZONTAL);
 		
-		
-		resultLabelWrapper = new XComposite(getWrapper(), SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+		XComposite resultWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER); 
+		resultLabelWrapper = new XComposite(resultWrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		resultLabelWrapper.getGridData().verticalIndent = 5;
 		resultLabelWrapper.getGridData().horizontalIndent = 5;
 		resultLabelWrapper.getGridData().verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
@@ -360,7 +364,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		resultLabel.setLayoutData(new GridData());
 		resultLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.resultLabel.text")); //$NON-NLS-1$
 		
-		resultTable = createResultTable(parent);
+		resultTable = createResultTable(resultWrapper);
 		resultTable.getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent arg0) {
 //				selectedLegalEntity = resultTable.getSelectedLegalEntity();
@@ -373,6 +377,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		if (earlySearchText != null && !"".equals(earlySearchText)) { //$NON-NLS-1$
 			resultFetcher.searchTriggered(staticTab.getFilterProvider());
 		}
+		sash.setWeights(new int[] {3, 5});
 		return getWrapper();
 	}
 

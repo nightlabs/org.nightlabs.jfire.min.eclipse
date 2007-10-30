@@ -91,7 +91,8 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getDisplayName()
 	 */
 	public String getDisplayName() {
-		return personStructField.getStructBlockID()+": "+personStructField.getStructFieldKey(); //$NON-NLS-1$
+		return personStructField.getName().getText();
+//		return personStructField.getStructBlockID()+": "+personStructField.getStructFieldKey(); //$NON-NLS-1$
 	}
 
 }
