@@ -62,13 +62,6 @@ public class JFireLoginHandler implements ILoginHandler {
 	{
 		// if the user specified the necessary parameters and the login succeeds, we don't show any login dialog
 		try {
-//			String userID = null;
-//			String password = null;
-//			String organisationID = null;
-//			String initialContextFactory = null;
-//			String serverURL = null;
-//			String workstationID = null;
-
 			if (autoLoginWithParams) {
 				String[] args = NLBasePlugin.getDefault().getApplication().getArguments();
 				for (int i = 0; i < args.length; i++) {
@@ -92,44 +85,48 @@ public class JFireLoginHandler implements ILoginHandler {
 				autoLoginWithParams = false;
 			}
 
-			if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol()))
-				loginData.setSecurityProtocol("jfire");
-			
+			// generate new SessionID (this has to be done everytime some logs in)
 			Base62Coder coder = Base62Coder.sharedInstance();
 			loginData.setSessionID(
 					coder.encode(System.currentTimeMillis(), 1) + '-' +
 					coder.encode((long)(Math.random() * 14776335), 1)); // 14776335 is the highest value encoded in 4 digits ("zzzz")
 			
 			if (loginData.getPassword() != null) {
+				// login parameters were given via startup parameters 
+				//  -> initialise to last used configuration values if none were given
+				
 				LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
 				
 				if (latestConfig == null) {
+					// there is no last configuration -> initialise with default values (describe local JBoss server)
 					latestConfig = new LoginConfiguration();
-					latestConfig.init();
+					LoginData defaultData = latestConfig.getLoginData();
+					defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
+					defaultData.setProviderURL(LoginData.DEFAULT_SERVER_URL);
+					defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
 				}
 				
-				if (loginData.getWorkstationID() == null)
-					loginData.setWorkstationID(latestConfig.getWorkstationID());
-
+				LoginData lastUsed = latestConfig.getLoginData();
+				
 				if (loginData.getUserID() == null)
-					loginData.setUserID(latestConfig.getUserID());
-
+					loginData.setUserID(lastUsed.getUserID());
+				
 				if (loginData.getOrganisationID() == null)
-					loginData.setOrganisationID(latestConfig.getOrganisationID());
+					loginData.setOrganisationID(lastUsed.getOrganisationID());
+				
+				if (loginData.getWorkstationID() == null)
+					loginData.setWorkstationID(lastUsed.getWorkstationID());
 
 				if (loginData.getInitialContextFactory() == null)
-					loginData.setInitialContextFactory(latestConfig.getInitialContextFactory());
+					loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
 
 				if (loginData.getProviderURL() == null)
-					loginData.setProviderURL(latestConfig.getServerURL());
+					loginData.setProviderURL(lastUsed.getProviderURL());
 				
-				loginConfigModule.setLatestLoginConfiguration(
-						loginData.getUserID(), 
-						loginData.getWorkstationID(), 
-						loginData.getOrganisationID(),
-						loginData.getProviderURL(), 
-						loginData.getInitialContextFactory(), 
-						null, null);				
+				if (loginData.getSecurityProtocol() == null)
+					loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
+				
+				loginConfigModule.setLatestLoginConfiguration(loginData, null);				
 
 				// perform a test login
 				Login.AsyncLoginResult res = Login.testLogin(loginData);

@@ -69,9 +69,9 @@ import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.password.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
-import org.nightlabs.jfire.classloader.JFireRCLBackend;
 import org.nightlabs.jfire.classloader.JFireRCLBackendUtil;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -362,8 +362,7 @@ implements InitialContextProvider
 						createLogin();
 
 					loginResult.reset();
-					// create a loginContext
-//					loginContext = new LoginContext("jfire", new LoginCallbackHandler()); //$NON-NLS-1$
+					// retrieve the login information via the registered loginHandler
 					LoginData lData = new LoginData();
 					ILoginHandler lHandler = getLoginHandler();
 					if (lHandler == null)
@@ -374,21 +373,14 @@ implements InitialContextProvider
 
 
 					if ((!loginResult.isSuccess()) || (loginResult.getException() != null)) {
-//						loginData = null;
 						return;
 					}
 
 					// copy properties
 					loginData = new LoginData(lData);
-//					sharedInstanceLogin.copyBasicLoginData(loginContext);
-					// done should be logged in by now
 
 					// at the end, we register the JFireRCDLDelegate
 					JFireRCDLDelegate.sharedInstance().register(DelegatingClassLoaderOSGI.getSharedInstance()); // this method does nothing, if already registered.
-//					Set<String> test = JFireRCDLDelegate.sharedInstance().getPublishedRemotePackages();
-//					for (String pkg : test) {
-//						System.out.println(" "+pkg+","); //$NON-NLS-1$ //$NON-NLS-2$
-//					}
 					boolean needRestart = JFireJ2EEPlugin.getDefault().updateManifest();
 					if (needRestart) {
 						// Set the exception-handler mode to bypass
@@ -410,7 +402,6 @@ implements InitialContextProvider
 					forceLogin = false;
 					currLoginState = LOGINSTATE_LOGGED_IN;
 				} catch(Throwable t){
-//					loginContext = null;
 					logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
 					loginResult.setException(t);
 				}
@@ -665,21 +656,7 @@ implements InitialContextProvider
 		return loginData;
 	}
 	
-//	private String organisationID;
-//	private String userID;
-//	// loginName is the concated product of userID, organisationID and sessionID (userID@organisationID:sessionID)
-//	private String loginName;
-//	private String password;
-//	private String serverURL;
-//	private String contextFactory;
-//	private String securityProtocol;
-//	private String workstationID;
-
-//	private LoginConfigModule _loginConfigModule;
 	private LoginConfigModule _runtimeConfigModule = null; // new LoginConfigModule();
-
-	// LoginContext instantiated to perform the login
-//	private LoginContext loginContext = null;
 
 	// ILoginHandler to handle the user interaction
 	private ILoginHandler loginHandler = null;
@@ -695,27 +672,9 @@ implements InitialContextProvider
 	}
 
 	/**
-	 * Creates a new Login. It takes properties from the static {@link JFireLoginContext} 
-	 * field of this class (if ). Thats why it does not take organisationID, loginName and password parameters.  
-	 * 
-	 * @throws NamingException
+	 * Creates a new Login.   
 	 */
-	protected Login() 
-	{
-//		if (loginContext != null){
-//			copyBasicLoginData(loginContext);
-//		}
-
-//		try {
-//			loginConfigModule = ((LoginConfigModule)Config.sharedInstance().createConfigModule(LoginConfigModule.class));
-//			if (loginConfigModule != null) {
-//				BeanUtils.copyProperties(runtimeConfigModule,loginConfigModule);
-//			}
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-	}
-
+	protected Login() {}
 
 	/**
 	 * @return Returns the organisationID.
@@ -741,7 +700,7 @@ implements InitialContextProvider
 		return loginData.getPassword();
 	}
 	
-		/**
+	/**
 	 * Set the new password. This method should normally not be called! It's only purpose is to switch to a new password
 	 * after the user changed his password (see {@link ChangePasswordDialog})
 	 *
@@ -765,30 +724,6 @@ implements InitialContextProvider
 			);
 	}
 	
-
-	protected static final char SESSION_SEPARATOR = '/';
-
-//	public void copyBasicLoginData(LoginData _loginData) {
-//		this.loginData = new LoginData();
-//		this.loginData.setOrganisationID(_loginData.getOrganisationID());
-//		this.loginData.setUserID(_loginData.getUserID());
-//		this.loginData.setPassword(_loginData.getPassword());
-////		this.loginName = _loginData.getUsername() + SESSION_SEPARATOR + getSessionID();
-//	}
-
-	private void copyLoginDataFromConfig() {
-		LoginConfiguration currentConfig = getRuntimeConfigModule().getLatestLoginConfiguration();
-		if (loginData == null) {
-			loginData = new LoginData();
-		}
-		this.loginData.setProviderURL(currentConfig.getServerURL());
-		this.loginData.setInitialContextFactory(currentConfig.getInitialContextFactory());
-		this.loginData.setSecurityProtocol(currentConfig.getSecurityProtocol());
-		this.loginData.getAdditionalParams().clear();
-		this.loginData.getAdditionalParams().put(LoginData.WORKSTATION_ID, currentConfig.getWorkstationID());
-		// TODO: Extend LoginConfigModule to have additional params map (that can be copied here)
-	}
-
 	protected transient Properties initialContextProperties = null;
 	protected transient InitialContext initialContext = null;
 
@@ -801,19 +736,7 @@ implements InitialContextProvider
 	 */
 	public Properties getInitialContextProperties() // throws LoginException
 	{
-//		boolean doReload;
-
-//		if (getLoginState() != LOGINSTATE_LOGGED_IN) {
-//		LOGGER.debug("getInitialContextProperties(): begin");
-//		doLogin();
-
-//		LOGGER.debug("getInitialContextProperties(): logged in");
-
-//		LOGGER.debug("getInitialContextProperties(): generating props");
-//		}
 		if (initialContextProperties == null) {
-//			copyBasicLoginData(loginData);
-//			copyLoginDataFromConfig();
 			initialContextProperties = loginData.getInitialContextProperties();
 		}
 		return initialContextProperties;
@@ -854,7 +777,6 @@ implements InitialContextProvider
 	public LoginConfigModule getLoginConfigModule() {
 		return getRuntimeConfigModule();
 	}
-
 
 	/**
 	 * Simple class to hold {@link LoginStateListener} 
@@ -991,9 +913,6 @@ implements InitialContextProvider
 					objectID2PCClassNotificationInterceptor = null;
 				}
 
-//				// WORKAROUND: For classloading deadlock (give the Cache some time to do its own classloading first)
-//				Thread.sleep(3000); This is now done in Cache.NotificationThread#run where it is much more effective (and more user-friendly). Marco.
-
 				for (Iterator it = new LinkedList(loginStateListenerRegistry).iterator(); it.hasNext();) {
 					try {
 						LoginStateListenerRegistryItem item = (LoginStateListenerRegistryItem)it.next();
@@ -1001,8 +920,6 @@ implements InitialContextProvider
 					} catch (Throwable t) {
 						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
 					}
-//					// WORKAROUND: For classloading deadlock
-//					Thread.sleep(200);
 				}
 			} catch (Throwable t) {
 				logger.warn("Cought exception while notifying LoginStateListener. Abort.", t); //$NON-NLS-1$
@@ -1049,85 +966,55 @@ implements InitialContextProvider
 	public static Login.AsyncLoginResult testLogin(LoginData _loginData) {
 		Login.AsyncLoginResult loginResult = new Login.AsyncLoginResult();
 
-//		Login login = null;
-//		try {
-//			login = Login.getLogin(false);
-//		} catch (LoginException e) {
-//			logger.error("Obtaining shared instance of Login failed!", e); //$NON-NLS-1$
-//		}
-//
-//		if ( login != null)
-//			login.copyBasicLoginData(_loginData);
-//		else
-//			throw new IllegalStateException("Shared instance of Login must not be null"); //$NON-NLS-1$
-
 		loginResult.setSuccess(false);
 		loginResult.setMessage(null);
 		loginResult.setException(null);
-//		login.flushInitialContextProperties();
 
 		// verify login
-		JFireRCLBackend jfireCLBackend = null;
-//		LanguageManager languageManager = null;
-		if (jfireCLBackend == null) {
-			try {
-				logger.debug(Thread.currentThread().getContextClassLoader());
-				logger.debug(JFireBasePlugin.class.getClassLoader());
-//				Class.forName("org.jboss.security.jndi.LoginInitialContextFactory");
-//				RMIClassLoader.loadClass("org.jboss.security.jndi.LoginInitialContextFactory");
-//				RMIClassLoader.getDefaultProviderInstance().loadClass(codebase, name, defaultLoader));
-//				Thread.currentThread().setContextClassLoader(Login.class.getClass().getClassLoader());
-				logger.info("**********************************************************"); //$NON-NLS-1$
-				logger.info("Create testing login"); //$NON-NLS-1$
-				jfireCLBackend = JFireRCLBackendUtil.getHome(
-						_loginData.getInitialContextProperties()).create();
-				logger.info("**********************************************************"); //$NON-NLS-1$
-//				languageManager = LanguageManagerUtil.getHome(
-//				login.getInitialContextProperties()).create();
-				loginResult.setSuccess(true);
-			} catch (RemoteException remoteException) {
-				Throwable cause = remoteException.getCause();
-				if (cause != null && cause.getCause() instanceof EJBException) {
-					EJBException ejbE = (EJBException)cause.getCause();
-					if (ejbE != null) {
-						if (ejbE.getCausedByException() instanceof SecurityException)
-							// SecurityException authentication failure
-							loginResult.setWasAuthenticationErr(true);
-					}
+		try {
+			logger.debug(Thread.currentThread().getContextClassLoader());
+			logger.debug(JFireBasePlugin.class.getClassLoader());
+			logger.info("**********************************************************"); //$NON-NLS-1$
+			logger.info("Create testing login"); //$NON-NLS-1$
+			JFireRCLBackendUtil.getHome( _loginData.getInitialContextProperties() ).create();
+			logger.info("**********************************************************"); //$NON-NLS-1$
+			loginResult.setSuccess(true);
+		} catch (RemoteException remoteException) {
+			Throwable cause = remoteException.getCause();
+			if (cause != null && cause.getCause() instanceof EJBException) {
+				EJBException ejbE = (EJBException)cause.getCause();
+				if (ejbE != null) {
+					if (ejbE.getCausedByException() instanceof SecurityException)
+						// SecurityException authentication failure
+						loginResult.setWasAuthenticationErr(true);
 				}
-				else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
-					loginResult.setWasAuthenticationErr(true);
+			}
+			else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
+				loginResult.setWasAuthenticationErr(true);
+			}
+			else {
+				if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
+					loginResult.setWasAuthenticationErr(true);				
+					loginResult.setSuccess(false);
 				}
 				else {
-					if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
-						loginResult.setWasAuthenticationErr(true);				
-						loginResult.setSuccess(false);
-					}
-					else {
-						loginResult.setException(remoteException);
-						loginResult.setSuccess(false);
-					}
+					loginResult.setException(remoteException);
+					loginResult.setSuccess(false);
 				}
-//			} catch (LoginException x) {
-//				logger.warn("Login failed with a very weird LoginException!", x);
-//				// something went very wrong as we are in the login procedure
-//				IllegalStateException ill = new IllegalStateException("Caught LoginException although getLogin(FALSE) was executed. "+x.getMessage());
-//				ill.initCause(x);
-//				throw ill;
-			} catch (Exception x) {
-				if (x instanceof CommunicationException) {
-					loginResult.setWasCommunicationErr(true);
-				}
-				if (x instanceof SocketTimeoutException) {
-					loginResult.setWasSocketTimeout(true);
-				}
-				// cant create local bean stub
-				logger.error("Login failed!", x); //$NON-NLS-1$
-				LoginException loginE = new LoginException(x.getMessage());
-				loginE.initCause(x);
-				loginResult.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.Login.errorUnhandledExceptionMessage")); //$NON-NLS-1$
-				loginResult.setException(loginE);
 			}
+		} catch (Exception x) {
+			if (x instanceof CommunicationException) {
+				loginResult.setWasCommunicationErr(true);
+			}
+			if (x instanceof SocketTimeoutException) {
+				loginResult.setWasSocketTimeout(true);
+			}
+			// cant create local bean stub
+			logger.error("Login failed!", x); //$NON-NLS-1$
+			LoginException loginE = new LoginException(x.getMessage());
+			loginE.initCause(x);
+			loginResult.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.Login.errorUnhandledExceptionMessage")); //$NON-NLS-1$
+			loginResult.setException(loginE);
 		}
 
 		return loginResult;

@@ -236,14 +236,15 @@ public class LoginDialog extends TitleAreaDialog
 	private void updateUIWithLoginConfiguration(LoginConfiguration loginConfiguration) 
 	{
 		manuallyUpdating = true;
-		textUserID.setText(loginConfiguration.getUserID());
-		textOrganisationID.setText(loginConfiguration.getOrganisationID());
-		textServerURL.setText(loginConfiguration.getServerURL());
-		textInitialContextFactory.setText(loginConfiguration.getInitialContextFactory());
-		textWorkstationID.setText(loginConfiguration.getWorkstationID());
+		LoginData newLoginData = loginConfiguration.getLoginData();
+		textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID());
+		textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID());
+		textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL());
+		textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory());
+		textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID());
 		textPassword.setText(""); //$NON-NLS-1$
 		if (runtimeLoginModule.getLatestLoginConfiguration() != loginConfiguration) {
-			textIdentityName.setText(loginConfiguration.getName());
+			textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName());
 			deleteButton.setEnabled(true);
 		}	else {
 			textIdentityName.setText(""); //$NON-NLS-1$
@@ -413,7 +414,6 @@ public class LoginDialog extends TitleAreaDialog
 			updateUIWithLoginConfiguration(latestLoginConfiguration);
 		} else {
 			LoginConfiguration loginConfiguration = new LoginConfiguration();
-			loginConfiguration.init();
 			updateUIWithLoginConfiguration(loginConfiguration);
 		}
 	}
@@ -450,11 +450,10 @@ public class LoginDialog extends TitleAreaDialog
 		loginData.setPassword(textPassword.getText());
 		loginData.setProviderURL(textServerURL.getText());
 		loginData.setInitialContextFactory(textInitialContextFactory.getText());
-		loginData.getAdditionalParams().put(LoginData.WORKSTATION_ID, textWorkstationID.getText());
-		// TODO: set jfire as static const 
+		loginData.setWorkstationID(textWorkstationID.getText());
+		loginData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
 		
-		runtimeLoginModule.setLatestLoginConfiguration(textUserID.getText(), textWorkstationID.getText(), textOrganisationID.getText(),
-				textServerURL.getText(), textInitialContextFactory.getText(), null, textIdentityName.getText());
+		runtimeLoginModule.setLatestLoginConfiguration(loginData, textIdentityName.getText());
 	}
 
 	/* (non-Javadoc)
@@ -560,57 +559,57 @@ public class LoginDialog extends TitleAreaDialog
 		return true;
 	}
 
-	private void checkLogin()
-	{
-		boolean hadError = true;
-		setInfoMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.tryingLogin")); //$NON-NLS-1$
-		enableDialogUI(false);
-		try {
-
-			// use entries and log in
-			storeUserInput();
-			final boolean saveSettings = checkBoxSaveSettings.getSelection();
-
-			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
-				@Override
-				protected IStatus run(IProgressMonitor arg0)
-				{
-					Login.AsyncLoginResult testResult = Login.testLogin(loginData);
-					testResult.copyValuesTo(loginResult);
-
-					try {
-						if (testResult.isSuccess()) {
-							runtimeLoginModule.makeLatestFirst();
-
-							if (saveSettings)
-								runtimeLoginModule.saveLatestConfiguration();
-						}
-
-						BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule);
-						persistentLoginModule.setChanged();
-					} catch (Exception e) {
-						logger.error(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorSaveConfig"), e); //$NON-NLS-1$
-					}
-
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run()
-						{
-							enableDialogUI(true);
-							updateUIAfterLogin();
-						}
-					});
-
-					return Status.OK_STATUS;
-				}
-			};
-			job.schedule();
-
-			hadError = false;
-		} finally {
-			if (hadError)
-				enableDialogUI(true);
-		}
-	}
+//	private void checkLogin()
+//	{
+//		boolean hadError = true;
+//		setInfoMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.tryingLogin")); //$NON-NLS-1$
+//		enableDialogUI(false);
+//		try {
+//
+//			// use entries and log in
+//			storeUserInput();
+//			final boolean saveSettings = checkBoxSaveSettings.getSelection();
+//
+//			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
+//				@Override
+//				protected IStatus run(IProgressMonitor arg0)
+//				{
+//					Login.AsyncLoginResult testResult = Login.testLogin(loginData);
+//					testResult.copyValuesTo(loginResult);
+//
+//					try {
+//						if (testResult.isSuccess()) {
+//							runtimeLoginModule.makeLatestFirst();
+//
+//							if (saveSettings)
+//								runtimeLoginModule.saveLatestConfiguration();
+//						}
+//
+//						BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule);
+//						persistentLoginModule.setChanged();
+//					} catch (Exception e) {
+//						logger.error(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorSaveConfig"), e); //$NON-NLS-1$
+//					}
+//
+//					Display.getDefault().asyncExec(new Runnable() {
+//						public void run()
+//						{
+//							enableDialogUI(true);
+//							updateUIAfterLogin();
+//						}
+//					});
+//
+//					return Status.OK_STATUS;
+//				}
+//			};
+//			job.schedule();
+//
+//			hadError = false;
+//		} finally {
+//			if (hadError)
+//				enableDialogUI(true);
+//		}
+//	}
 
 	/**
 	 * Helper methods that make the use of JFace message methods consistent. 
@@ -744,7 +743,7 @@ public class LoginDialog extends TitleAreaDialog
 			storeUserInput();
 			monitor.worked(1);
 			final boolean saveSettings = checkBoxSaveSettings.getSelection();			
-			System.err.println("******************* async = "+async+" ********************");
+			logger.debug("******************* async = "+async+" ********************");
 			if (async) {
 				Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
 					@Override

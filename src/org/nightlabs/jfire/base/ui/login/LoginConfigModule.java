@@ -30,9 +30,10 @@ import java.util.LinkedList;
 
 import org.nightlabs.config.ConfigModule;
 import org.nightlabs.config.InitException;
+import org.nightlabs.j2ee.LoginData;
 
 /**
- * This class holds all user specific data relevant for login in into JFIre. It holds a list of
+ * This class holds all user specific data relevant for login in into JFire. It holds a list of
  * {@link LoginConfiguration}s that may be presented to the user upon login to reuse. 
  * 
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -57,18 +58,14 @@ public class LoginConfigModule extends ConfigModule {
 
 		if (savedLoginConfigurations == null)
 			setSavedLoginConfigurations(new LinkedList<LoginConfiguration>());
-
-		for (LoginConfiguration loginConfiguration : savedLoginConfigurations)
-			loginConfiguration.init();
 	}
 
-	public void setLatestLoginConfiguration(String userID, String workstationID, String organisationID, String serverURL, String initialContextFactory,
-			String securityProtocol, String configurationName) {
+	public void setLatestLoginConfiguration(LoginData loginData, String configurationName) 
+	{
 		acquireReadLock();
 
-		LoginConfiguration loginConfiguration = new LoginConfiguration(userID, workstationID, organisationID, serverURL, initialContextFactory,
-				securityProtocol, configurationName);
-		loginConfiguration.init();
+		LoginConfiguration loginConfiguration = new LoginConfiguration(loginData);
+		loginConfiguration.setName(configurationName);
 		setLatestLoginConfiguration(loginConfiguration);
 
 		releaseLock();
