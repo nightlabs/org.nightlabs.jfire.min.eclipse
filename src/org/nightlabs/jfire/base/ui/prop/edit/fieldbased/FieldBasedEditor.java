@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.composite.SelectableComposite;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
@@ -224,7 +225,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 			
 			editorWrapper.setLayout(gridLayout);			
 			
-			editorComposite = new XComposite(editorWrapper, SWT.NONE);
+			editorComposite = new XComposite(editorWrapper, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
 //			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 //			GridLayout layout = new GridLayout();
 ////			layout.horizontalSpacing = 0;
