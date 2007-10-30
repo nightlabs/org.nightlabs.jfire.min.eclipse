@@ -102,7 +102,7 @@ public class JFireLoginHandler implements ILoginHandler {
 					latestConfig = new LoginConfiguration();
 					LoginData defaultData = latestConfig.getLoginData();
 					defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
-					defaultData.setProviderURL(LoginData.DEFAULT_SERVER_URL);
+					defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
 					defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
 				}
 				
