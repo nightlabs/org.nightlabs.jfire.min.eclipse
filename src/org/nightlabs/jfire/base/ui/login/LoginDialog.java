@@ -414,10 +414,10 @@ public class LoginDialog extends TitleAreaDialog
 			updateUIWithLoginConfiguration(latestLoginConfiguration);
 		} else {
 			LoginConfiguration loginConfiguration = new LoginConfiguration();
+			loginConfiguration.getLoginData().setDefaultValues();
 			updateUIWithLoginConfiguration(loginConfiguration);
 		}
 	}
-
 
 	private void setSmartFocus()
 	{
@@ -469,23 +469,13 @@ public class LoginDialog extends TitleAreaDialog
 			deletePressed();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-	 */
-//	@Override
-//	protected void okPressed() 
-//	{
-//	if(!checkUserInput())
-//	return;
-//	checkLogin();
-//	}
 	@Override
 	protected void okPressed() 
 	{
 		if(!checkUserInput())
 			return;
 		// execute login asynchronously only if parent shell is not null - i.e. when at least the workbench window is existent.
-		System.out.println("parent shell: "+parentShell);
+		logger.debug("parent shell: "+parentShell);
 //		boolean async = parentShell != null;
 		boolean async = JFireWorkbenchWindowAdvisor.isWorkbenchCreated();
 		checkLogin(async, new org.eclipse.core.runtime.NullProgressMonitor(), new LoginStateListener() {
@@ -558,58 +548,6 @@ public class LoginDialog extends TitleAreaDialog
 		}
 		return true;
 	}
-
-//	private void checkLogin()
-//	{
-//		boolean hadError = true;
-//		setInfoMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.tryingLogin")); //$NON-NLS-1$
-//		enableDialogUI(false);
-//		try {
-//
-//			// use entries and log in
-//			storeUserInput();
-//			final boolean saveSettings = checkBoxSaveSettings.getSelection();
-//
-//			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
-//				@Override
-//				protected IStatus run(IProgressMonitor arg0)
-//				{
-//					Login.AsyncLoginResult testResult = Login.testLogin(loginData);
-//					testResult.copyValuesTo(loginResult);
-//
-//					try {
-//						if (testResult.isSuccess()) {
-//							runtimeLoginModule.makeLatestFirst();
-//
-//							if (saveSettings)
-//								runtimeLoginModule.saveLatestConfiguration();
-//						}
-//
-//						BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule);
-//						persistentLoginModule.setChanged();
-//					} catch (Exception e) {
-//						logger.error(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorSaveConfig"), e); //$NON-NLS-1$
-//					}
-//
-//					Display.getDefault().asyncExec(new Runnable() {
-//						public void run()
-//						{
-//							enableDialogUI(true);
-//							updateUIAfterLogin();
-//						}
-//					});
-//
-//					return Status.OK_STATUS;
-//				}
-//			};
-//			job.schedule();
-//
-//			hadError = false;
-//		} finally {
-//			if (hadError)
-//				enableDialogUI(true);
-//		}
-//	}
 
 	/**
 	 * Helper methods that make the use of JFace message methods consistent. 
@@ -685,13 +623,13 @@ public class LoginDialog extends TitleAreaDialog
 	 */
 	protected void showDetails(boolean visible) 
 	{
-		System.out.println("show details"); //$NON-NLS-1$
+		logger.debug("show details"); //$NON-NLS-1$
 		if(!contentCreated) {
-			System.out.println("show details: content is not yet created"); //$NON-NLS-1$
+			logger.debug("show details: content is not yet created"); //$NON-NLS-1$
 			initiallyShowDetails = true;
 			return;
 		}
-		System.out.println("show details: content is already created"); //$NON-NLS-1$
+		logger.debug("show details: content is already created"); //$NON-NLS-1$
 		Point windowSize = getShell().getSize();
 		Point oldSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		Button detailsButton = getButton(DETAILS_ID);
