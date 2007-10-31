@@ -65,7 +65,6 @@ import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
-import org.nightlabs.jfire.base.ui.app.JFireWorkbenchWindowAdvisor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
@@ -103,7 +102,6 @@ public class LoginDialog extends TitleAreaDialog
 	private Text textWorkstationID = null;
 	private Text textIdentityName = null;
 	private Button deleteButton = null;
-	private Shell parentShell = null;
 
 	/**
 	 * Used to set the details area visible or invisible 
@@ -131,6 +129,27 @@ public class LoginDialog extends TitleAreaDialog
 		}
 	};
 
+	private static volatile boolean workbenchIsCompletelyUp = false;
+
+	static {
+		Job job = new Job("Testing job manager") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor)
+			{
+				Display.getDefault().syncExec(new Runnable() { // we use syncExec here, because we want to test exactly what we need below in asynchronous logins (and that's not asyncExec, but syncExec)
+					public void run()
+					{
+						workbenchIsCompletelyUp = true;
+						logger.info("Workbench seems to be completely up and running! Switching to asynchronous mode.");
+					}
+				});
+				return Status.OK_STATUS;
+			}
+		};
+		job.setPriority(Job.INTERACTIVE);
+		job.schedule();
+	}
+
 	/**
 	 * Create a new LoginDialog.
 	 * @param parent The dialogs parent
@@ -138,7 +157,6 @@ public class LoginDialog extends TitleAreaDialog
 	public LoginDialog(Shell parent) 
 	{
 		super(parent);
-		this.parentShell = parent;
 		setShellStyle(getShellStyle()|SWT.RESIZE);
 		setTitleImage(SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginDialog.class, null, ImageDimension._75x70).createImage());
 		try {
@@ -475,9 +493,14 @@ public class LoginDialog extends TitleAreaDialog
 		if(!checkUserInput())
 			return;
 		// execute login asynchronously only if parent shell is not null - i.e. when at least the workbench window is existent.
-		logger.debug("parent shell: "+parentShell);
+//		logger.debug("parent shell: "+parentShell);
 //		boolean async = parentShell != null;
-		boolean async = JFireWorkbenchWindowAdvisor.isWorkbenchCreated();
+//		boolean async = JFireWorkbenchWindowAdvisor.isWorkbenchCreated(); // this all is unfortunately reliable :-(
+
+		// During start-up, the Runnables passed to Display.[a]syncExec(...) are not yet executed. They would be executed only
+		// after the workbench is completely set-up, but since the login blocks the boot-process, this never happens and we stick
+		// in a dead-lock. There is no chance to find out, whether 
+		boolean async = workbenchIsCompletelyUp;
 		checkLogin(async, new org.eclipse.core.runtime.NullProgressMonitor(), new LoginStateListener() {
 			public void loginStateChanged(int loginState, IAction action) {
 				if (loginState == Login.LOGINSTATE_LOGGED_IN) {
@@ -681,7 +704,7 @@ public class LoginDialog extends TitleAreaDialog
 			storeUserInput();
 			monitor.worked(1);
 			final boolean saveSettings = checkBoxSaveSettings.getSelection();			
-			logger.debug("******************* async = "+async+" ********************");
+			logger.info("******************* async = "+async+" ********************");
 			if (async) {
 				Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
 					@Override

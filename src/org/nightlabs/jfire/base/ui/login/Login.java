@@ -473,6 +473,17 @@ implements InitialContextProvider
 		doLogin(false);
 	}
 
+	private synchronized boolean acquireHandlingLogin()
+	{
+		if (handlingLogin)
+			return false;
+
+		handlingLogin = true;
+		return true;
+	}
+
+	private volatile boolean loginHandlerRunnablePending = false;
+
 	/**
 	 * Actually performs the login procedure.
 	 * To do so it calls {@link ILoginHandler#handleLogin(LoginData, LoginConfigModule, Login.AsyncLoginResult)}
@@ -505,25 +516,59 @@ implements InitialContextProvider
 			if (forceLogin) forceLogin = false;
 			return;
 		}
-		if (!handlingLogin) {
-			handlingLogin = true;
-//			Display.getDefault().asyncExec(loginHandlerRunnable);
-			Display.getDefault().syncExec(loginHandlerRunnable);
-		}
+		boolean iAmHandlingLogin = acquireHandlingLogin();
 		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
-			logger.debug("Login requestor-thread "+Thread.currentThread()+" waiting for login handler");		 //$NON-NLS-1$ //$NON-NLS-2$
-			synchronized (loginResult) {
-				while (handlingLogin) {
-					try {
-						loginResult.wait(5000);
-					} catch (InterruptedException e) { }
+			if (iAmHandlingLogin) {
+				logger.info("Non-UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Delegating loginHandlerRunnable to UI thread.");
+
+//				Display.getDefault().asyncExec(loginHandlerRunnable);
+//				UISynchronizer.startupThread.set(Boolean.TRUE); // without this, the following syncExec will not be executed before the workbench-startup finished => causing it to hang forever!
+//				Display.getDefault().syncExec(loginHandlerRunnable);
+
+				loginHandlerRunnablePending = true;
+				Display.getDefault().syncExec(new Runnable() {
+					public void run()
+					{
+						if (loginHandlerRunnablePending) {
+							loginHandlerRunnablePending = false;
+							loginHandlerRunnable.run();
+						}
+					}
+				});
+
+				logger.info("... syncExec for loginHandlerRunnable returned.");
+			}
+			else {
+				logger.debug("Login requestor-thread "+Thread.currentThread()+" waiting for login handler");		 //$NON-NLS-1$ //$NON-NLS-2$
+				synchronized (loginResult) {
+					while (handlingLogin) {
+						try {
+							loginResult.wait(5000);
+						} catch (InterruptedException e) { }
+					}
 				}
 			}
+
 			logger.debug("Login requestor-thread "+Thread.currentThread()+" returned");		 //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else {
-			while (handlingLogin) {
-				Display.getCurrent().readAndDispatch();
+			if (iAmHandlingLogin) {
+				logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()...");
+				loginHandlerRunnable.run();
+				logger.info("...loginHandlerRunnable.run() returned.");
+			}
+			else {
+				Display display = Display.getCurrent();
+				while (handlingLogin) {
+					display.readAndDispatch();
+
+					// During start-up, the syncExecs are *not* executed, because this obviously is deferred till the workbench is completely up.
+					// Hence, we must take over the login-process here in order to prevent dead-lock.
+					if (loginHandlerRunnablePending) {
+						loginHandlerRunnablePending = false;
+						loginHandlerRunnable.run();
+					}
+				}
 			}
 		}
 		// exception throwing
