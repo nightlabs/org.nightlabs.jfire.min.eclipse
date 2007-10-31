@@ -60,7 +60,6 @@ public class LoginCallbackHandler implements CallbackHandler {
 		} catch (LoginException x) {
 			throw new RuntimeException("Login.getLogin(false) should never throw this exception!", x); //$NON-NLS-1$
 		}
-			// TODO Maybe more data has to be set ??
 	}
 
 }

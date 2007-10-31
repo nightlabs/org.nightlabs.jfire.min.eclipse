@@ -63,6 +63,7 @@ import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.classloader.osgi.DelegatingClassLoaderOSGI;
 import org.nightlabs.config.Config;
+import org.nightlabs.config.ConfigException;
 import org.nightlabs.j2ee.InitialContextProvider;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
@@ -342,6 +343,8 @@ implements InitialContextProvider
 					BeanUtils.copyProperties(_runtimeConfigModule, _loginConfigModule);
 //					BeanUtils.copyProperties(_runtimeConfigModule, _loginConfigModule);
 				}
+			} catch (ConfigException e) {
+				// no previously stored ConfigModule was found -> do nothing.
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -706,25 +709,15 @@ implements InitialContextProvider
 
 	private volatile LoginData loginData;
 	
+	public LoginData getLoginDataCopy() {
+		return new LoginData(loginData);
+	}
+	
 	protected LoginData getLoginData() {
 		return loginData;
 	}
 	
-//	private String organisationID;
-//	private String userID;
-//	// loginName is the concated product of userID, organisationID and sessionID (userID@organisationID:sessionID)
-//	private String loginName;
-//	private String password;
-//	private String serverURL;
-//	private String contextFactory;
-//	private String securityProtocol;
-//	private String workstationID;
-
-//	private LoginConfigModule _loginConfigModule;
 	private LoginConfigModule _runtimeConfigModule = null; // new LoginConfigModule();
-
-	// LoginContext instantiated to perform the login
-//	private LoginContext loginContext = null;
 
 	// ILoginHandler to handle the user interaction
 	private ILoginHandler loginHandler = null;
@@ -1045,11 +1038,11 @@ implements InitialContextProvider
 			try {
 				logger.debug(Thread.currentThread().getContextClassLoader());
 				logger.debug(JFireBasePlugin.class.getClassLoader());
-				logger.info("**********************************************************"); //$NON-NLS-1$
-				logger.info("Create testing login"); //$NON-NLS-1$
+				logger.debug("**********************************************************"); //$NON-NLS-1$
+				logger.debug("Create testing login"); //$NON-NLS-1$
 				jfireCLBackend = JFireRCLBackendUtil.getHome(
 						_loginData.getInitialContextProperties()).create();
-				logger.info("**********************************************************"); //$NON-NLS-1$
+				logger.debug("**********************************************************"); //$NON-NLS-1$
 				loginResult.setSuccess(true);
 			} catch (RemoteException remoteException) {
 				Throwable cause = remoteException.getCause();
