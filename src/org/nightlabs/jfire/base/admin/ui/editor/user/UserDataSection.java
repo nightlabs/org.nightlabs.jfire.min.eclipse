@@ -149,13 +149,16 @@ public class UserDataSection extends RestorableSectionPart {
 					userNameText.setText(user.getName());
 				if (user.getDescription() != null)
 					userDescriptionText.setText(user.getDescription());
-				
-				password0Text.setText(user.getUserLocal().getPassword());
-				password1Text.setText(user.getUserLocal().getPassword());
-				
+
+				String pw = user.getUserLocal().getPassword();
+				password0Text.setEnabled(pw != null);
+				password1Text.setEnabled(pw != null);
+				password0Text.setText(pw == null ? "" : pw);
+				password1Text.setText(pw == null ? "" : pw);
+
 				autogenerateNameCheckBox.setSelection(user.isAutogenerateName());				
 				userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
-				
+
 				personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
 					public void displayNameChanged(String displayName) {
 						refreshing = true;
