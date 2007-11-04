@@ -144,7 +144,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	 * @see LoginStateListener#loginStateChanged(int, IAction)
 	 */
 	public void loginStateChanged(int loginState, IAction action) {	
-		logger.info("loginStateChanged to "+loginState+" for action "+action.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+//		logger.info("loginStateChanged to "+loginState+" for action "+action.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }
