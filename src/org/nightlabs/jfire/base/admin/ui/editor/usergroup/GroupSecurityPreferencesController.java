@@ -38,7 +38,8 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesModel;
+import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
@@ -57,6 +58,8 @@ import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
+
+import com.sun.media.sound.HsbParser;
 
 /**
  * Controller class for the security preferences of a user.
@@ -95,7 +98,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	/**
 	 * The editor rolegroup model.
 	 */
-	SecurityPreferencesModel roleGroupModel;
+	RoleGroupSecurityPreferencesModel roleGroupModel;
 
 	/**
 	 * Create an instance of this controller for
@@ -107,7 +110,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 		this.userGroupID = ((UserGroupEditorInput)editor.getEditorInput()).getJDOObjectID();
 		this.editor = editor;
 		this.userGroupModel = new GroupSecurityPreferencesModel(userGroupID);
-		this.roleGroupModel = new SecurityPreferencesModel(userGroupID);
+		this.roleGroupModel = new RoleGroupSecurityPreferencesModel();
 		JDOLifecycleManager.sharedInstance().addNotificationListener(UserGroup.class, userGroupChangedListener);
 	}
 
@@ -134,7 +137,6 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.loadingUsers"), 4); //$NON-NLS-1$
 		try {
 			ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
-			Thread.sleep(1000);
 			if(userGroupID != null) {
 				logger.info("Loading usergroup "+userGroupID.userID); //$NON-NLS-1$
 				// load user with person data
@@ -176,6 +178,8 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				roleGroupModel.setIncludedRoleGroups(roleGroups.assigned);
 				roleGroupModel.setIncludedRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
 				roleGroupModel.setExcludedRoleGroups(roleGroups.excluded);
+				
+				
 				Set<RoleGroup> allRoleGroups = new HashSet<RoleGroup>(
 						roleGroups.assigned.size() + 
 						roleGroups.assignedByUserGroup.size() + 
@@ -283,7 +287,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	 * Get the rolegroup model.
 	 * @return the rolegroup model
 	 */
-	public SecurityPreferencesModel getRoleGroupModel()
+	public RoleGroupSecurityPreferencesModel getRoleGroupModel()
 	{
 		if (!isLoaded())
 			throw new IllegalStateException("Cannot access model if controller not loaded."); //$NON-NLS-1$

@@ -50,10 +50,6 @@ public class GroupSecurityPreferencesModel
 	 */
 	private UserGroup userGroup;
 	
-//	/**
-//	 * The user groups the user belongs to.
-//	 */
-//	Collection<UserGroup> userGroups;
 	
 	/**
 	 * The included users the users had before changes.

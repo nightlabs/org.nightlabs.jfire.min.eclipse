@@ -31,9 +31,10 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection;
-import org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesModel;
-import org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesPage;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesModel;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesPage;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
@@ -53,7 +54,7 @@ public class GroupSecurityPreferencesPage extends EntityEditorPageWithProgress
 	
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link SecurityPreferencesPage}. 
+	 * new instances of {@link UserSecurityPreferencesPage}. 
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 
@@ -95,7 +96,7 @@ public class GroupSecurityPreferencesPage extends EntityEditorPageWithProgress
 	protected void asyncCallback() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				SecurityPreferencesModel roleGroupModel = ((GroupSecurityPreferencesController)getPageController()).getRoleGroupModel();
+				RoleGroupSecurityPreferencesModel roleGroupModel = ((GroupSecurityPreferencesController)getPageController()).getRoleGroupModel();
 				GroupSecurityPreferencesModel userGroupModel = ((GroupSecurityPreferencesController)getPageController()).getUserGroupModel();
 				
 				usersSection.setModel(userGroupModel);

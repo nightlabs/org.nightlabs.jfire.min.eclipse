@@ -43,6 +43,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -73,7 +74,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 	/**
 	 * The editor model.
 	 */
-	SecurityPreferencesModel model;
+	RoleGroupSecurityPreferencesModel model;
 
 	/**
 	 * The viewer for included role groups.
@@ -119,6 +120,12 @@ public class RoleGroupsSection extends RestorableSectionPart
 			}
 		};
 		
+		Label l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.notAssigned")); //$NON-NLS-1$
+		l = toolkit.createLabel(container, ""); //$NON-NLS-1$
+		l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.assigned")); //$NON-NLS-1$
+
+		section.setExpanded(true);
+		
 		excludedRoleGroupsViewer = new TableViewer(createRoleGroupsTable(toolkit, container));
 		excludedRoleGroupsViewer.setContentProvider(new RoleGroupsContentProvider());
 		excludedRoleGroupsViewer.setLabelProvider(new RoleGroupsLabelProvider());
@@ -149,7 +156,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 		section.setDescriptionControl(text);
 	}	
 	
-	public void setModel(final SecurityPreferencesModel model) {
+	public void setModel(final RoleGroupSecurityPreferencesModel model) {
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -182,7 +189,6 @@ public class RoleGroupsSection extends RestorableSectionPart
 		{
 			if(columnIndex == 0)
 				return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), RoleGroupsLabelProvider.class);
-//				ImageDescriptor.createFromURL(BaseAdminPlugin.getDefault().getBundle().getEntry(BaseAdminPlugin.getResourceString("icon.usergroup"))).createImage(); //$NON-NLS-1$
 			return null;
 		}
 
@@ -231,9 +237,9 @@ public class RoleGroupsSection extends RestorableSectionPart
 		excludedRoleGroupsViewer.remove(a);
 		model.getIncludedRoleGroups().addAll(l);
 		includedRoleGroupsViewer.add(a);
-		refreshRoleGroupDirtyState();
 		includedRoleGroupsViewer.setSelection(selection);
 		includedRoleGroupsViewer.reveal(l.get(0));
+		markDirty();
 	}
 
 	private void roleGroupsRemove()
@@ -248,19 +254,9 @@ public class RoleGroupsSection extends RestorableSectionPart
 		includedRoleGroupsViewer.remove(a);
 		model.getExcludedRoleGroups().addAll(l);
 		excludedRoleGroupsViewer.add(a);
-		refreshRoleGroupDirtyState();
 		excludedRoleGroupsViewer.setSelection(selection);
 		excludedRoleGroupsViewer.reveal(l.get(0));
-	}
-
-	private void refreshRoleGroupDirtyState()
-	{
-		// TODO: FIXME!
-		Collection userRoleGroups = model.getIncludedUserGroupsUnchanged();
-		if(model.getIncludedRoleGroups().size() == userRoleGroups.size() && model.getIncludedRoleGroups().containsAll(userRoleGroups))
-			markUndirty();
-		else
-			markDirty();
+		markDirty();
 	}
 
 	private void createRoleGroupButtons(Composite client, FormToolkit toolkit)

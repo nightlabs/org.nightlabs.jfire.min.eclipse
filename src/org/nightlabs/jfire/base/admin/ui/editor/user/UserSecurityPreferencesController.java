@@ -64,7 +64,7 @@ import org.nightlabs.progress.SubProgressMonitor;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Niklas Schiffler <nick@nightlabs.de>
  */
-public class SecurityPreferencesController extends EntityEditorPageController
+public class UserSecurityPreferencesController extends EntityEditorPageController
 {
 	/**
 	 * 
@@ -74,7 +74,7 @@ public class SecurityPreferencesController extends EntityEditorPageController
 	/**
 	 * LOG4J logger used by this class
 	 */
-	private static final Logger logger = Logger.getLogger(SecurityPreferencesController.class);
+	private static final Logger logger = Logger.getLogger(UserSecurityPreferencesController.class);
 
 	/**
 	 * The user id.
@@ -87,20 +87,26 @@ public class SecurityPreferencesController extends EntityEditorPageController
 	EntityEditor editor;
 
 	/**
-	 * The editor model.
+	 * The user security preference model.
 	 */
-	SecurityPreferencesModel model;
+	UserSecurityPreferencesModel userModel;
+
+	/**
+	 * The user security preference model.
+	 */
+	RoleGroupSecurityPreferencesModel roleGroupModel;
 
 	/**
 	 * Create an instance of this controller for
 	 * an {@link UserEditor} and load the data.
 	 */
-	public SecurityPreferencesController(EntityEditor editor)
+	public UserSecurityPreferencesController(EntityEditor editor)
 	{
 		super(editor, true);
 		this.userID = ((UserEditorInput)editor.getEditorInput()).getJDOObjectID();
 		this.editor = editor;
-		this.model = new SecurityPreferencesModel(userID);
+		this.userModel = new UserSecurityPreferencesModel(userID);
+		this.roleGroupModel = new RoleGroupSecurityPreferencesModel();
 		JDOLifecycleManager.sharedInstance().addNotificationListener(User.class, userChangedListener);
 	}
 
@@ -127,7 +133,6 @@ public class SecurityPreferencesController extends EntityEditorPageController
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.loadingUserPerson"), 4); //$NON-NLS-1$
 		try {
 			ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
-			Thread.sleep(1000);
 			if(userID != null) {
 				logger.info("Loading user "+userID.userID); //$NON-NLS-1$
 				// load user with person data
@@ -140,7 +145,7 @@ public class SecurityPreferencesController extends EntityEditorPageController
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								pMonitor);
 				monitor.worked(1);
-				model.setUser(user);
+				userModel.setUser(user);
 
 				// load user groups
 				Collection<UserGroup> userGroups = UserDAO.sharedInstance().getUserGroups(
@@ -153,12 +158,10 @@ public class SecurityPreferencesController extends EntityEditorPageController
 
 				Collection<UserGroup> excludedUserGroups = new HashSet<UserGroup>(userGroups);
 				excludedUserGroups.removeAll(user.getUserGroups());
-				model.setExcludedUserGroups(excludedUserGroups);
-				model.setExcludedUserGroupsUnchanged(new ArrayList<UserGroup>(excludedUserGroups));
+				userModel.setExcludedUserGroups(excludedUserGroups);
 
 				Collection<UserGroup> includedUserGroups = new HashSet<UserGroup>(user.getUserGroups());
-				model.setIncludedUserGroups(includedUserGroups);
-				model.setIncludedUserGroupsUnchanged(new ArrayList<UserGroup>(includedUserGroups));
+				userModel.setIncludedUserGroups(includedUserGroups);
 
 				// load role groups
 				RoleGroupListCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroups(
@@ -167,27 +170,12 @@ public class SecurityPreferencesController extends EntityEditorPageController
 						new String[] {RoleGroup.FETCH_GROUP_THIS}, 
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
 						pMonitor);
-				model.setIncludedRoleGroups(roleGroups.assigned);
-				model.setIncludedRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
-				model.setExcludedRoleGroups(roleGroups.excluded);
-				Set<RoleGroup> allRoleGroups = new HashSet<RoleGroup>(
-						roleGroups.assigned.size() + 
-						roleGroups.assignedByUserGroup.size() + 
-						roleGroups.excluded.size());
-//				allRoleGroups.addAll(roleGroups.assigned);
-//				allRoleGroups.addAll(roleGroups.assignedByUserGroup);				
-//				allRoleGroups.addAll(roleGroups.excluded);				
-
-				// load config
-//				Config config = ConfigDAO.sharedInstance().getConfig(
-//				ConfigID.create(userID.organisationID, user), 
-//				new String[] { Config.FETCH_GROUP_THIS_CONFIG, Config.FETCH_GROUP_CONFIG_GROUP, Config.FETCH_GROUP_CONFIG_MODULES  }, 
-//				NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
-//				monitor);
-//				model.setUserConfig(config);
-
+				roleGroupModel.setIncludedRoleGroups(roleGroups.assigned);
+				roleGroupModel.setIncludedRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
+				roleGroupModel.setExcludedRoleGroups(roleGroups.excluded);
+				
 				logger.info("Loading user "+userID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
-				fireModifyEvent(null, model);
+				fireModifyEvent(null, user);
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
@@ -214,12 +202,12 @@ public class SecurityPreferencesController extends EntityEditorPageController
 		}
 		logger.info("Saving user "+userID.userID); //$NON-NLS-1$
 		ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
-		int taskTicks = model.getIncludedRoleGroups().size() + model.getExcludedRoleGroups().size() +
-						model.getIncludedUserGroups().size() + model.getExcludedUserGroups().size();
+		int taskTicks = roleGroupModel.getIncludedRoleGroups().size() + roleGroupModel.getExcludedRoleGroups().size() +
+						userModel.getIncludedUserGroups().size() + userModel.getExcludedUserGroups().size();
 		pMonitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.doSave.monitor.taskName"), taskTicks); //$NON-NLS-1$
 		try	{
-			User user = model.getUser();
-			Collection<UserGroup> includedUserGroups = model.getIncludedUserGroups();
+			User user = userModel.getUser();
+			Collection<UserGroup> includedUserGroups = userModel.getIncludedUserGroups();
 			if(includedUserGroups != null) {
 				for (UserGroup userGroup : includedUserGroups) {
 					if(!user.getUserGroups().contains(userGroup))
@@ -227,7 +215,7 @@ public class SecurityPreferencesController extends EntityEditorPageController
 				}
 			}
 
-			Collection<UserGroup> excludedUserGroups = model.getExcludedUserGroups();
+			Collection<UserGroup> excludedUserGroups = userModel.getExcludedUserGroups();
 			if(excludedUserGroups != null) {
 				for (UserGroup userGroup : excludedUserGroups) {
 					if(user.getUserGroups().contains(userGroup))
@@ -235,7 +223,7 @@ public class SecurityPreferencesController extends EntityEditorPageController
 				}
 			}
 
-			Collection<RoleGroup> includedRoleGroups = model.getIncludedRoleGroups();
+			Collection<RoleGroup> includedRoleGroups = roleGroupModel.getIncludedRoleGroups();
 			if (includedRoleGroups != null) {
 				for (RoleGroup roleGroup : includedRoleGroups) {
 					UserDAO.sharedInstance().addUserToRoleGroup(
@@ -245,7 +233,7 @@ public class SecurityPreferencesController extends EntityEditorPageController
 				}
 			}
 
-			Collection<RoleGroup> excludedRoleGroups = model.getExcludedRoleGroups();
+			Collection<RoleGroup> excludedRoleGroups = roleGroupModel.getExcludedRoleGroups();
 			if (excludedRoleGroups != null) {
 				for (RoleGroup roleGroup : excludedRoleGroups) {
 					UserDAO.sharedInstance().removeUserFromRoleGroup(
@@ -275,14 +263,25 @@ public class SecurityPreferencesController extends EntityEditorPageController
 	}
 
 	/**
-	 * Get the model.
-	 * @return the model
+	 * Get the user model.
+	 * @return the user model
 	 */
-	public SecurityPreferencesModel getModel()
+	public UserSecurityPreferencesModel getUserModel()
 	{
 		if (!isLoaded())
 			throw new IllegalStateException("Cannot access model if controller not loaded."); //$NON-NLS-1$
-		return model;
+		return userModel;
+	}
+
+	/**
+	 * Get the role group model.
+	 * @return the role group model
+	 */
+	public RoleGroupSecurityPreferencesModel getRoleGroupModel()
+	{
+		if (!isLoaded())
+			throw new IllegalStateException("Cannot access model if controller not loaded."); //$NON-NLS-1$
+		return roleGroupModel;
 	}
 
 	/**

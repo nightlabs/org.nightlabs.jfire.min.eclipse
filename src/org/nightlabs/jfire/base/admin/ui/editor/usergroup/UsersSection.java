@@ -42,6 +42,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -120,6 +121,10 @@ public class UsersSection extends RestorableSectionPart
 			}
 		};
 
+		Label l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroups.UsersSection.notAssigned")); //$NON-NLS-1$
+		l = toolkit.createLabel(container, ""); //$NON-NLS-1$
+		l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroups.UsersSection.assigned")); //$NON-NLS-1$
+		
 		excludedUsersViewer = new TableViewer(createUsersTable(toolkit, container));
 		excludedUsersViewer.setContentProvider(new UsersContentProvider());
 		excludedUsersViewer.setLabelProvider(new UsersLabelProvider());
@@ -259,9 +264,9 @@ public class UsersSection extends RestorableSectionPart
 		excludedUsersViewer.remove(a);
 		model.getIncludedUsers().addAll(l);
 		includedUsersViewer.add(a);
-		refreshUsersDirtyState();
 		includedUsersViewer.setSelection(selection);
 		includedUsersViewer.reveal(l.get(0));
+		markDirty();
 	}
 
 	private void usersRemove()
@@ -276,18 +281,8 @@ public class UsersSection extends RestorableSectionPart
 		includedUsersViewer.remove(a);
 		model.getExcludedUsers().addAll(l);
 		excludedUsersViewer.add(a);
-		refreshUsersDirtyState();
 		excludedUsersViewer.setSelection(selection);
 		excludedUsersViewer.reveal(l.get(0));
+		markDirty();
 	}
-
-	private void refreshUsersDirtyState()
-	{
-		Collection users = model.getIncludedUsersUnchanged();
-		if(model.getIncludedUsers().size() == users.size() && model.getIncludedUsers().containsAll(users))
-			markUndirty();
-		else
-			markDirty();
-	}
-
 }

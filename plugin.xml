@@ -224,7 +224,7 @@
             class="org.nightlabs.jfire.base.admin.ui.editor.user.UserPersonPreferencePage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor" indexHint="1"/>
         <pageFactory
-            class="org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesPage$Factory"
+            class="org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesPage$Factory"
             editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor" indexHint="2"/>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesPage$Factory"

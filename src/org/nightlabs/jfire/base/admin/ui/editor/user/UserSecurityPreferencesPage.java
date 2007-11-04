@@ -39,25 +39,26 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
  * 
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
+ * @author Niklas Schiffler <nick@nightlabs.de>
  */
-public class SecurityPreferencesPage extends EntityEditorPageWithProgress
+public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 {
 	/**
 	 * The id of this page.
 	 */
-	public static final String ID_PAGE = SecurityPreferencesPage.class.getName();
+	public static final String ID_PAGE = UserSecurityPreferencesPage.class.getName();
 	
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link SecurityPreferencesPage}. 
+	 * new instances of {@link UserSecurityPreferencesPage}. 
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 
 		public IFormPage createPage(FormEditor formEditor) {
-			return new SecurityPreferencesPage(formEditor);
+			return new UserSecurityPreferencesPage(formEditor);
 		}
 		public IEntityEditorPageController createPageController(EntityEditor editor) {
-			return new SecurityPreferencesController(editor);
+			return new UserSecurityPreferencesController(editor);
 		}
 		
 	}
@@ -74,7 +75,7 @@ public class SecurityPreferencesPage extends EntityEditorPageWithProgress
 	 * @param editor The editor for which to create this
 	 * 		form page. 
 	 */
-	public SecurityPreferencesPage(FormEditor editor)
+	public UserSecurityPreferencesPage(FormEditor editor)
 	{
 		super(editor, ID_PAGE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesPage.pageTitle")); //$NON-NLS-1$
 	}
@@ -91,9 +92,10 @@ public class SecurityPreferencesPage extends EntityEditorPageWithProgress
 	protected void asyncCallback() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				SecurityPreferencesModel model = ((SecurityPreferencesController)getPageController()).getModel();
-				userGroupsSection.setModel(model);
-				roleGroupsSection.setModel(model);
+				UserSecurityPreferencesModel userModel = ((UserSecurityPreferencesController)getPageController()).getUserModel();
+				RoleGroupSecurityPreferencesModel rgModel = ((UserSecurityPreferencesController)getPageController()).getRoleGroupModel();
+				userGroupsSection.setModel(userModel);
+				roleGroupsSection.setModel(rgModel);
 				switchToContent();
 			}
 		});

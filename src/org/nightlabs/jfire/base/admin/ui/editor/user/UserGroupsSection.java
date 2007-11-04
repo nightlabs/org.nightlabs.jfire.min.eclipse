@@ -40,6 +40,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -72,7 +73,7 @@ public class UserGroupsSection extends RestorableSectionPart
 	/**
 	 * The editor model.
 	 */
-	SecurityPreferencesModel model;
+	UserSecurityPreferencesModel model;
 
 	/**
 	 * Included user groups viewer.
@@ -118,6 +119,11 @@ public class UserGroupsSection extends RestorableSectionPart
 			}
 		};
 
+		Label l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.notAssigned")); //$NON-NLS-1$
+		l = toolkit.createLabel(container, ""); //$NON-NLS-1$
+		l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.assigned")); //$NON-NLS-1$
+
+		
 		excludedUserGroupsViewer = new TableViewer(createUserGroupsTable(toolkit, container));
 		excludedUserGroupsViewer.setContentProvider(new UserGroupsContentProvider());
 		excludedUserGroupsViewer.setLabelProvider(new UserGroupsLabelProvider());
@@ -131,7 +137,7 @@ public class UserGroupsSection extends RestorableSectionPart
 		includedUserGroupsViewer.setComparator(userGroupComparator);
 	}
 
-	public void setModel(final SecurityPreferencesModel model) {
+	public void setModel(final UserSecurityPreferencesModel model) {
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -232,9 +238,9 @@ public class UserGroupsSection extends RestorableSectionPart
 		excludedUserGroupsViewer.remove(a);
 		model.getIncludedUserGroups().addAll(l);
 		includedUserGroupsViewer.add(a);
-		refreshUserGroupDirtyState();
 		includedUserGroupsViewer.setSelection(selection);
 		includedUserGroupsViewer.reveal(l.get(0));
+		markDirty();
 	}
 
 	private void userGroupsRemove()
@@ -249,18 +255,9 @@ public class UserGroupsSection extends RestorableSectionPart
 		includedUserGroupsViewer.remove(a);
 		model.getExcludedUserGroups().addAll(l);
 		excludedUserGroupsViewer.add(a);
-		refreshUserGroupDirtyState();
 		excludedUserGroupsViewer.setSelection(selection);
 		excludedUserGroupsViewer.reveal(l.get(0));
-	}
-
-	private void refreshUserGroupDirtyState()
-	{
-		Collection userUserGroups = model.getUser().getUserGroups();
-		if(model.getIncludedUserGroups().size() == userUserGroups.size() && model.getIncludedUserGroups().containsAll(userUserGroups))
-			markUndirty();
-		else
-			markDirty();
+		markDirty();
 	}
 
 	private void createUserGroupButtons(Composite client, FormToolkit toolkit)
