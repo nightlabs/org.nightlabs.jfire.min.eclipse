@@ -720,7 +720,9 @@ extends LSDPreferencePage
 		if (isConfigChanged()) {
 			Display.getDefault().syncExec( new Runnable() {
 				public void run() {
-					updateConfigModule();
+					if (getControl() != null && !getControl().isDisposed()) {
+						updateConfigModule();
+					}
 				}
 			});
 
@@ -771,6 +773,9 @@ extends LSDPreferencePage
 
 	@Override
 	public boolean performOk() {
+		if (isConfigChanged()) {
+			updateConfigModule();
+		}
 		Job storeJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.storeJob.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
