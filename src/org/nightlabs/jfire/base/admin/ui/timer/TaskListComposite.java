@@ -78,7 +78,7 @@ public class TaskListComposite
 			case 0:
 				return task.getTaskTypeID();
 			case 1:
-				return task.getUser().getName();
+				return task.getUser().getName() != null ? task.getUser().getName() : task.getUser().getUserID();
 			case 2:
 				return task.getName().getText(Locale.getDefault().getLanguage());
 			case 3:
@@ -201,10 +201,12 @@ public class TaskListComposite
 		{
 			int res = getCollator().compare(t1.getTaskTypeID(), t2.getTaskTypeID());
 
-			if (res == 0) // sort additionally by name - that's nicer as most tasks
+			if (res == 0) { // sort additionally by name - that's nicer as most tasks
 										// probably have the same type
-				return getCollator().compare(t1.getUser().getName(),
-						t2.getUser().getName());
+				String u1Name = t1.getUser().getName() != null ? t1.getUser().getName() : "";
+				String u2Name = t2.getUser().getName() != null ? t2.getUser().getName() : "";
+				return getCollator().compare(u1Name, u2Name);
+			}
 
 			return res;
 		}
