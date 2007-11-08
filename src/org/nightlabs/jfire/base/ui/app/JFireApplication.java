@@ -27,15 +27,19 @@
 package org.nightlabs.jfire.base.ui.app;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.app.AbstractApplication;
 import org.nightlabs.base.ui.app.AbstractWorkbenchAdvisor;
+import org.nightlabs.j2ee.InitialContextProvider;
 import org.nightlabs.jfire.base.j2ee.RemoteResourceFilterRegistry;
 import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
@@ -115,12 +119,26 @@ extends AbstractApplication
 	{
 		// create log directory if not existent
 		AbstractApplication.getLogDir();
-		try {	
-			org.nightlabs.jfire.classloader.JFireRCDLDelegate.
-					createSharedInstance(Login.getLogin(false), new File(AbstractApplication.getRootDir(), "classloader.cache")) //$NON-NLS-1$
-					.setFilter(RemoteResourceFilterRegistry.sharedInstance());
-		} catch (LoginException e) {
-			throw e;
+		try {
+			InitialContextProvider icp = new InitialContextProvider() {
+				public InitialContext getInitialContext()
+				throws LoginException, NamingException
+				{
+					return new InitialContext(getInitialContextProperties());
+				}
+				public Hashtable getInitialContextProperties()
+				throws LoginException
+				{
+					return Login.sharedInstance().getInitialContextProperties();
+				}
+			};
+
+			File classLoaderCacheDir = new File(AbstractApplication.getRootDir(), "classloader.cache"); //$NON-NLS-1$
+			org.nightlabs.jfire.classloader.JFireRCDLDelegate.createSharedInstance(
+					icp,
+					classLoaderCacheDir).setFilter(RemoteResourceFilterRegistry.sharedInstance());
+//		} catch (LoginException e) {
+//			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

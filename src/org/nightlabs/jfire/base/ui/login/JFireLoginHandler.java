@@ -95,53 +95,59 @@ public class JFireLoginHandler implements ILoginHandler {
 				// login parameters were given via startup parameters 
 				//  -> initialise to last used configuration values if none were given
 				
-				LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
-				
-				if (latestConfig == null) {
-					// there is no last configuration -> initialise with default values (describe local JBoss server)
-					latestConfig = new LoginConfiguration();
-					LoginData defaultData = latestConfig.getLoginData();
-					defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
-					defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
-					defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
+				loginConfigModule.acquireWriteLock();
+				try {
+					LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
+
+					if (latestConfig == null) {
+						// there is no last configuration -> initialise with default values (describe local JBoss server)
+						latestConfig = new LoginConfiguration();
+						latestConfig.setLoginConfigModule(loginConfigModule);
+						LoginData defaultData = latestConfig.getLoginData();
+						defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
+						defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
+						defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
+					}
+
+					LoginData lastUsed = latestConfig.getLoginData();
+
+					if (loginData.getUserID() == null)
+						loginData.setUserID(lastUsed.getUserID());
+
+					if (loginData.getOrganisationID() == null)
+						loginData.setOrganisationID(lastUsed.getOrganisationID());
+
+					if (loginData.getWorkstationID() == null)
+						loginData.setWorkstationID(lastUsed.getWorkstationID());
+
+					if (loginData.getInitialContextFactory() == null)
+						loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
+
+					if (loginData.getProviderURL() == null)
+						loginData.setProviderURL(lastUsed.getProviderURL());
+
+					if (loginData.getSecurityProtocol() == null)
+						loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
+
+					loginConfigModule.setLatestLoginConfiguration(loginData, null);				
+
+					// perform a test login
+					Login.AsyncLoginResult res = Login.testLogin(loginData);
+					if (res.isSuccess()) {
+						BeanUtils.copyProperties(loginResult, res);
+						return;
+					}
+					else if (res.isWasAuthenticationErr())
+						throw new LoginException("Authentication error"); //$NON-NLS-1$
+					else if (res.getException() != null)
+						throw res.getException();
+					else if ((res.getMessage() != null))
+						throw new LoginException(res.getMessage());
+					else
+						throw new LoginException("Login failed and I have no idea, why!!!"); //$NON-NLS-1$
+				} finally {
+					loginConfigModule.releaseLock();
 				}
-				
-				LoginData lastUsed = latestConfig.getLoginData();
-				
-				if (loginData.getUserID() == null)
-					loginData.setUserID(lastUsed.getUserID());
-				
-				if (loginData.getOrganisationID() == null)
-					loginData.setOrganisationID(lastUsed.getOrganisationID());
-				
-				if (loginData.getWorkstationID() == null)
-					loginData.setWorkstationID(lastUsed.getWorkstationID());
-
-				if (loginData.getInitialContextFactory() == null)
-					loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
-
-				if (loginData.getProviderURL() == null)
-					loginData.setProviderURL(lastUsed.getProviderURL());
-				
-				if (loginData.getSecurityProtocol() == null)
-					loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
-				
-				loginConfigModule.setLatestLoginConfiguration(loginData, null);				
-
-				// perform a test login
-				Login.AsyncLoginResult res = Login.testLogin(loginData);
-				if (res.isSuccess()) {
-					BeanUtils.copyProperties(loginResult, res);
-					return;
-				}
-				else if (res.isWasAuthenticationErr())
-					throw new LoginException("Authentication error"); //$NON-NLS-1$
-				else if (res.getException() != null)
-					throw res.getException();
-				else if ((res.getMessage() != null))
-					throw new LoginException(res.getMessage());
-				else
-					throw new LoginException("Login failed and I have no idea, why!!!"); //$NON-NLS-1$
 			}
 		} catch (Throwable x) {
 			// sth. went wrong => log and show normal login dialog

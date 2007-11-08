@@ -74,7 +74,7 @@ public class LanguageWatcher implements LoginStateListener {
 		languageChecks.put(userName,new Boolean(checked));
 	}
 
-	/**
+	/* non javadoc
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
 	public void loginStateChanged(int loginState, IAction action) {
@@ -83,8 +83,9 @@ public class LanguageWatcher implements LoginStateListener {
 				logger.debug("loginStateChanged(..): syncing languages"); //$NON-NLS-1$
 				String userName = Login.sharedInstance().getPrincipalName();
 				if (!isLanguageChecked(userName)) {
-					syncLanguages();
-					checkUserLanguage();
+					Delegate delegate = new Delegate();
+					delegate.syncLanguages();
+					delegate.checkUserLanguage();
 					setLanguageChecked(userName,true);
 				}
 				break;
@@ -92,86 +93,91 @@ public class LanguageWatcher implements LoginStateListener {
 				break;
 		}
 	}
-	
-	/**
-	 * Download all languages from the server and upload all the client's
-	 * languages that are missing on the server.
-	 */
-	protected void syncLanguages() {
-		org.nightlabs.jfire.language.LanguageManager remoteLanguageManager = null;		
-		try {
-			LanguageManager localLanguageManager = LanguageManager.sharedInstance();
-			
-			remoteLanguageManager = LanguageManagerUtil.getHome(
-					Login.getLogin().getInitialContextProperties()
-			).create();
 
-			// download all languages known to the organisation on the server
-			Collection languages = remoteLanguageManager.getLanguages();
-			Set<String> languageIDs = new HashSet<String>();
-			Set remoteLanguageIDSet = new HashSet(languages.size());
-			for (Iterator it = languages.iterator(); it.hasNext(); ) {
-				Language language = (Language) it.next();
-				String languageID = language.getLanguageID();
-				remoteLanguageIDSet.add(languageID);
-				LanguageCf langCf = localLanguageManager.getLanguage(language.getLanguageID(), false);
-				if (langCf == null) {
-					// language does not exist in the client => create it and copy all properties.
-//					langCf = new LanguageCf(languageID);
-//					langCf.setNativeName(language.getNativeName());
-					langCf = language.createLanguageCf();
-					localLanguageManager.addLanguage(langCf);
-				}
-				else {
-					// copy properties
-					if (!langCf.getNativeName().equals(language.getNativeName())) {
-						langCf.setNativeName(language.getNativeName());
-						localLanguageManager.makeDirty(langCf);
+	/**
+	 * This delegate is used due to class-loading problems. Since LanguageWatcher is a LoginStateListener, it is triggered whenever a login-state-changes -
+	 * i.e. when the user does <b>not</b> login, but decides to work offline. In this case, the remote-classes are not available. If the delegate is not used,
+	 * this causes the whole LanguageWatcher to fail class-loading when being offline.
+	 */
+	private static class Delegate {
+
+		/**
+		 * Download all languages from the server and upload all the client's
+		 * languages that are missing on the server.
+		 */
+		protected void syncLanguages() {
+			org.nightlabs.jfire.language.LanguageManager remoteLanguageManager = null;		
+			try {
+				LanguageManager localLanguageManager = LanguageManager.sharedInstance();
+
+				remoteLanguageManager = LanguageManagerUtil.getHome(
+						Login.getLogin().getInitialContextProperties()
+				).create();
+
+				// download all languages known to the organisation on the server
+				Collection languages = remoteLanguageManager.getLanguages();
+				Set<String> languageIDs = new HashSet<String>();
+				Set remoteLanguageIDSet = new HashSet(languages.size());
+				for (Iterator it = languages.iterator(); it.hasNext(); ) {
+					Language language = (Language) it.next();
+					String languageID = language.getLanguageID();
+					remoteLanguageIDSet.add(languageID);
+					LanguageCf langCf = localLanguageManager.getLanguage(language.getLanguageID(), false);
+					if (langCf == null) {
+						// language does not exist in the client => create it and copy all properties.
+//						langCf = new LanguageCf(languageID);
+//						langCf.setNativeName(language.getNativeName());
+						langCf = language.createLanguageCf();
+						localLanguageManager.addLanguage(langCf);
 					}
-					if (langCf.getName().copyFrom(language.getName()))
-						localLanguageManager.makeDirty(langCf);
-				}
-			}
-
-			for (Iterator it = localLanguageManager.getLanguages().iterator(); it.hasNext(); ) {
-				LanguageCf langCf = (LanguageCf) it.next();
-				languageIDs.add(langCf.getLanguageID());
-			}
-
-			// check client's languages and create the ones which are missing on the server
-			for (Iterator it = localLanguageManager.getLanguages().iterator(); it.hasNext(); ) {
-				LanguageCf langCf = (LanguageCf) it.next();
-
-				{ // init langCf again
-					int namesCount = langCf.getName().getTexts().size();
-					langCf.init(languageIDs);
-					if (namesCount != langCf.getName().getTexts().size())
-						localLanguageManager.makeDirty(langCf);
+					else {
+						// copy properties
+						if (!langCf.getNativeName().equals(language.getNativeName())) {
+							langCf.setNativeName(language.getNativeName());
+							localLanguageManager.makeDirty(langCf);
+						}
+						if (langCf.getName().copyFrom(language.getName()))
+							localLanguageManager.makeDirty(langCf);
+					}
 				}
 
-				String languageID = langCf.getLanguageID();
-				if (!remoteLanguageIDSet.contains(languageID)) {
-					// language does not exist in the organisation on the server => create it
-					remoteLanguageManager.createLanguage(langCf); // TODO we should add additional translations of the language name to the server
+				for (Iterator it = localLanguageManager.getLanguages().iterator(); it.hasNext(); ) {
+					LanguageCf langCf = (LanguageCf) it.next();
+					languageIDs.add(langCf.getLanguageID());
 				}
+
+				// check client's languages and create the ones which are missing on the server
+				for (Iterator it = localLanguageManager.getLanguages().iterator(); it.hasNext(); ) {
+					LanguageCf langCf = (LanguageCf) it.next();
+
+					{ // init langCf again
+						int namesCount = langCf.getName().getTexts().size();
+						langCf.init(languageIDs);
+						if (namesCount != langCf.getName().getTexts().size())
+							localLanguageManager.makeDirty(langCf);
+					}
+
+					String languageID = langCf.getLanguageID();
+					if (!remoteLanguageIDSet.contains(languageID)) {
+						// language does not exist in the organisation on the server => create it
+						remoteLanguageManager.createLanguage(langCf); // TODO we should add additional translations of the language name to the server
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Failed syncing languages: ",e); //$NON-NLS-1$
 			}
-		} catch (Exception e) {
-			logger.error("Failed syncing languages: ",e); //$NON-NLS-1$
 		}
+
+		/**
+		 * Checks if Locale has the users prefered language and 
+		 * asks to restart if not
+		 */
+		protected void checkUserLanguage() {
+			// TODO: implement language check and restart dialog
+		}
+
 	}
-	
-	/**
-	 * Checks if Locale has the users prefered language and 
-	 * asks to restart if not
-	 */
-	protected void checkUserLanguage() {
-		// TODO: implement language check and restart dialog
-	}
-	
-	
-	public static void showRestartDialog() {
-		
-	}
+
 	
 	public static LanguageWatcher sharedInstance() {
 		if (sharedInstance == null) {

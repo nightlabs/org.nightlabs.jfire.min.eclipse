@@ -119,10 +119,10 @@ public class LoginDialog extends TitleAreaDialog
 	private boolean initiallyShowDetails = false;
 
 
-	private boolean manuallyUpdating = false;
+	private boolean internallyModifying_suppressModifyEvents = false;
 	private ModifyListener loginDataModifyListener = new ModifyListener() {
 		public void modifyText(ModifyEvent e) {
-			if (!manuallyUpdating) {
+			if (!internallyModifying_suppressModifyEvents) {
 				recentLoginConfigs.setSelection(-1);
 				deleteButton.setEnabled(false);
 			}
@@ -166,19 +166,19 @@ public class LoginDialog extends TitleAreaDialog
 		}
 	}
 
-	/**
-	 * @deprecated What is this constructor used for?
-	 */
-	@Deprecated
-	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule)
-	{
-		this(parent);
-		loginResult.reset();
-		this.loginResult = loginResult;
-		this.runtimeLoginModule = loginModule;
-//		setLoginResult(loginResult);
-//		setLoginModule(loginModule);
-	}
+//	/**
+//	 * @deprecated What is this constructor used for?
+//	 */
+//	@Deprecated
+//	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule)
+//	{
+//		this(parent);
+//		loginResult.reset();
+//		this.loginResult = loginResult;
+//		this.runtimeLoginModule = loginModule;
+////		setLoginResult(loginResult);
+////		setLoginModule(loginModule);
+//	}
 
 	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule, LoginData loginData)
 	{
@@ -253,23 +253,27 @@ public class LoginDialog extends TitleAreaDialog
 
 	private void updateUIWithLoginConfiguration(LoginConfiguration loginConfiguration) 
 	{
-		manuallyUpdating = true;
-		LoginData newLoginData = loginConfiguration.getLoginData();
-		textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID());
-		textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID());
-		textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL());
-		textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory());
-		textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID());
-		textPassword.setText(""); //$NON-NLS-1$
-		if (runtimeLoginModule.getLatestLoginConfiguration() != loginConfiguration) {
-			textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName());
-			deleteButton.setEnabled(true);
-		}	else {
-			textIdentityName.setText(""); //$NON-NLS-1$
-			deleteButton.setEnabled(false);
-		}
+		internallyModifying_suppressModifyEvents = true;
+		try {
+			LoginData newLoginData = loginConfiguration.getLoginData();
+			textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID());
+			textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID());
+			textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL());
+			textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory());
+			textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID());
+			textPassword.setText(""); //$NON-NLS-1$
+			if (runtimeLoginModule.getLatestLoginConfiguration() != loginConfiguration) {
+				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName());
+				deleteButton.setEnabled(true);
+			}	else {
+//				textIdentityName.setText(""); //$NON-NLS-1$
+				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName());
+				deleteButton.setEnabled(false);
+			}
 
-		manuallyUpdating = false;
+		} finally {
+			internallyModifying_suppressModifyEvents = false;
+		}
 	}
 
 	protected Control createDetailsArea(Composite parent)
@@ -432,6 +436,8 @@ public class LoginDialog extends TitleAreaDialog
 			updateUIWithLoginConfiguration(latestLoginConfiguration);
 		} else {
 			LoginConfiguration loginConfiguration = new LoginConfiguration();
+			// LoginConfiguration.getLoginData() locks => we need to assign the config-module in order to make locking possible
+			loginConfiguration.setLoginConfigModule(runtimeLoginModule);
 			loginConfiguration.getLoginData().setDefaultValues();
 			updateUIWithLoginConfiguration(loginConfiguration);
 		}
@@ -463,6 +469,7 @@ public class LoginDialog extends TitleAreaDialog
 
 	public void storeUserInput()
 	{
+//		loginData = new LoginData(loginData); // was missing - need to copy this! Marco.
 		loginData.setUserID(textUserID.getText());
 		loginData.setOrganisationID(textOrganisationID.getText());
 		loginData.setPassword(textPassword.getText());
@@ -470,8 +477,12 @@ public class LoginDialog extends TitleAreaDialog
 		loginData.setInitialContextFactory(textInitialContextFactory.getText());
 		loginData.setWorkstationID(textWorkstationID.getText());
 		loginData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
-		
-		runtimeLoginModule.setLatestLoginConfiguration(loginData, textIdentityName.getText());
+
+		String identityName = textIdentityName.getText();
+		if (!checkBoxSaveSettings.getSelection() && recentLoginConfigs.getSelectionIndex() < 0)
+			identityName = "";
+
+		runtimeLoginModule.setLatestLoginConfiguration(loginData, identityName);
 	}
 
 	/* (non-Javadoc)
@@ -499,13 +510,14 @@ public class LoginDialog extends TitleAreaDialog
 
 		// During start-up, the Runnables passed to Display.[a]syncExec(...) are not yet executed. They would be executed only
 		// after the workbench is completely set-up, but since the login blocks the boot-process, this never happens and we stick
-		// in a dead-lock. There is no chance to find out, whether 
+		// in a dead-lock. There is no API to find out, whether the workbench is really up-and-running, hence we try it out and set the flag 'workbenchIsCompletelyUp'.
 		boolean async = workbenchIsCompletelyUp;
 		checkLogin(async, new org.eclipse.core.runtime.NullProgressMonitor(), new LoginStateListener() {
 			public void loginStateChanged(int loginState, IAction action) {
 				if (loginState == Login.LOGINSTATE_LOGGED_IN) {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
+							cancelled = false;
 							close();
 						}
 					});
@@ -513,15 +525,27 @@ public class LoginDialog extends TitleAreaDialog
 			}
 		});
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
-	 */
+
+// There is no difference between cancel and work offline anymore => moved this code into close()
+//	@Override
+//	protected void cancelPressed() 
+//	{
+//		loginResult.setSuccess(false);
+//		loginResult.setWorkOffline(true);
+//		close();
+//	}
+
+	private boolean cancelled = true;
+
 	@Override
-	protected void cancelPressed() 
+	public boolean close()
 	{
-		loginResult.setSuccess(false);
-		loginResult.setWorkOffline(true);
-		close();
+		if (cancelled) {
+			loginResult.setSuccess(false);
+			loginResult.setWorkOffline(true);
+		}
+
+		return super.close();
 	}
 
 	/**
@@ -538,7 +562,7 @@ public class LoginDialog extends TitleAreaDialog
 		if (toBeDeleted != null) {
 			runtimeLoginModule.deleteSavedLoginConfiguration(toBeDeleted);
 			try {
-				BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule);
+				BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule.clone()); // BeanUtils.copyProperties(...) sets the back-references from the LoginConfigurations to their ConfigModule. Thus, we need to clone().
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				throw new RuntimeException(e1);
@@ -597,7 +621,7 @@ public class LoginDialog extends TitleAreaDialog
 	{
 		// verify login done 
 		if ((!loginResult.isWasAuthenticationErr()) && (loginResult.isSuccess())) {
-			close();
+//			close(); // close is done by the loginstatelistener declared in okPressed()
 		} else {
 			// login failed
 			if (loginResult.isWasAuthenticationErr()) {
@@ -692,7 +716,7 @@ public class LoginDialog extends TitleAreaDialog
 	 * @param loginStateListener the optional {@link LoginStateListener} to get notified about the login result
 	 * @return true if the login was a success or false if not
 	 */
-	public boolean checkLogin(boolean async, final IProgressMonitor monitor,
+	public void checkLogin(boolean async, final IProgressMonitor monitor,
 			final LoginStateListener loginStateListener)
 	{
 		boolean hadError = true;
@@ -710,25 +734,32 @@ public class LoginDialog extends TitleAreaDialog
 					@Override
 					protected IStatus run(IProgressMonitor arg0)
 					{
-						doCheckLogin(saveSettings, monitor);
+						doCheckLogin(saveSettings, monitor, loginStateListener);
 						return Status.OK_STATUS;
 					}
 				};
 				job.schedule();
-				hadError = false;
-				return false;
+//				hadError = false;
+//				return false;
 			} else {
-				hadError = false;
-				return doCheckLogin(saveSettings, monitor);
+//				hadError = false;
+//				return 
+				doCheckLogin(saveSettings, monitor, loginStateListener);
 			}
+
+			hadError = false;
 		} finally {
 			if (hadError)
 				enableDialogUI(true);
 			monitor.done();
 		}           
 	}     
-	
-	private boolean doCheckLogin(boolean saveSettings, IProgressMonitor monitor)
+
+	/**
+	 * @param loginStateListener optional, can be null
+	 * @return
+	 */
+	private void doCheckLogin(boolean saveSettings, IProgressMonitor monitor, final LoginStateListener loginStateListener)
 	{
 		Login.AsyncLoginResult testResult = Login.testLogin(loginData);
 		monitor.worked(1);
@@ -741,7 +772,7 @@ public class LoginDialog extends TitleAreaDialog
 					runtimeLoginModule.saveLatestConfiguration();
 			}
 
-			BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule);
+			BeanUtils.copyProperties(persistentLoginModule, runtimeLoginModule.clone()); // BeanUtils.copyProperties(...) sets the back-references from the LoginConfigurations to their ConfigModule. Thus, we need to clone().
 			persistentLoginModule.setChanged();
 		} catch (Exception e) {
 			logger.error(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorSaveConfig"), e); //$NON-NLS-1$
@@ -754,6 +785,14 @@ public class LoginDialog extends TitleAreaDialog
 			}
 		});
 		monitor.worked(1);
-		return testResult.isSuccess();
+//		return testResult.isSuccess();
+
+		if (loginStateListener != null) {
+			if (testResult.isSuccess())
+				loginStateListener.loginStateChanged(Login.LOGINSTATE_LOGGED_IN, null);
+			else
+				loginStateListener.loginStateChanged(Login.LOGINSTATE_LOGGED_OUT, null);
+		}
+
 	} 	
 }

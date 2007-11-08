@@ -39,7 +39,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -64,7 +63,6 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.classloader.osgi.DelegatingClassLoaderOSGI;
 import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
-import org.nightlabs.j2ee.InitialContextProvider;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
@@ -103,7 +101,7 @@ import org.nightlabs.progress.ProgressMonitor;
  */
 public class Login
 extends AbstractEPProcessor
-implements InitialContextProvider
+//implements InitialContextProvider
 {
 	private static final String CLASS_ELEMENT = "class"; //$NON-NLS-1$
 	private static final String LOGIN_STATE_LISTENER_ELEMENT = "loginStateListener"; //$NON-NLS-1$
@@ -243,11 +241,9 @@ implements InitialContextProvider
 	}
 
 	/**
-	 * Used internally within static block, to be able
-	 * to provide a {@link InitialContextProvider}
-	 * for {@link JFireCLDelegate} without logging in. 
+	 * Used internally within static block, in order to create the shared instance as soon as the class is loaded. 
 	 */
-	protected static void createLogin(){
+	protected static void createLogin() {
 		sharedInstanceLogin = new Login();
 		org.nightlabs.base.ui.login.Login.sharedInstance(); // force processing of extension point
 	}
@@ -339,9 +335,7 @@ implements InitialContextProvider
 			try {
 				LoginConfigModule _loginConfigModule = ((LoginConfigModule)Config.sharedInstance().createConfigModule(LoginConfigModule.class));
 				if (_loginConfigModule != null) {
-					_runtimeConfigModule = new LoginConfigModule();
-					BeanUtils.copyProperties(_runtimeConfigModule, _loginConfigModule);
-//					BeanUtils.copyProperties(_runtimeConfigModule, _loginConfigModule);
+					_runtimeConfigModule = (LoginConfigModule) _loginConfigModule.clone();
 				}
 			} catch (ConfigException e) {
 				// no previously stored ConfigModule was found -> do nothing.
@@ -360,9 +354,10 @@ implements InitialContextProvider
 
 		public void run() {
 			handlingLogin = true;
-			if (logoutFirst)
-				logout();
 			try {
+				if (logoutFirst)
+					logout();
+
 				try{
 					if (sharedInstanceLogin == null)
 						createLogin();
@@ -709,9 +704,9 @@ implements InitialContextProvider
 
 	private volatile LoginData loginData;
 	
-	public LoginData getLoginDataCopy() {
-		return new LoginData(loginData);
-	}
+//	public LoginData getLoginDataCopy() {
+//		return new LoginData(loginData);
+//	}
 	
 	protected LoginData getLoginData() {
 		return loginData;
@@ -742,17 +737,26 @@ implements InitialContextProvider
 	/**
 	 * @return Returns the organisationID.
 	 */
-	public String getOrganisationID() {		
+	public String getOrganisationID() {
+		if (loginData == null)
+			return null;
+
 		return loginData.getOrganisationID();
 	}
 	/**
 	 * @return Returns the userID.
 	 */
 	public String getUserID() {
+		if (loginData == null)
+			return null;
+
 		return loginData.getUserID();
 	}
 	
 	public String getPrincipalName() {
+		if (loginData == null)
+			return null;
+
 		return loginData.getPrincipalName();
 	}
 	
@@ -760,6 +764,9 @@ implements InitialContextProvider
 	 * @return Returns the password.
 	 */
 	public String getPassword() {
+		if (loginData == null)
+			return null;
+
 		return loginData.getPassword();
 	}
 	
@@ -777,6 +784,9 @@ implements InitialContextProvider
 	 * @return Returns the workstationID.
 	 */
 	public String getWorkstationID() {
+		if (loginData == null)
+			return null;
+
 		return loginData.getAdditionalParams().get(LoginData.WORKSTATION_ID);
 	}
 
@@ -814,22 +824,22 @@ implements InitialContextProvider
 		}
 	}
 
-	/**
-	 * @deprecated Do not use anymore! Use 
-	 */
-	@Deprecated
-	public InitialContext getInitialContext() throws NamingException, LoginException
-	{
-		logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
-		doLogin();
-		logger.debug("getInitialContext(): logged in"); //$NON-NLS-1$
-		if (initialContext != null)
-			return initialContext;
-
-		logger.debug("getInitialContext(): creating new initctx."); //$NON-NLS-1$
-		initialContext = new InitialContext(getInitialContextProperties());
-		return initialContext;
-	}
+//	/**
+//	 * @deprecated Do not use anymore! Use 
+//	 */
+//	@Deprecated
+//	public InitialContext getInitialContext() throws NamingException, LoginException
+//	{
+////		logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
+////		doLogin();
+////		logger.debug("getInitialContext(): logged in"); //$NON-NLS-1$
+////		if (initialContext != null)
+////			return initialContext;
+////
+////		logger.debug("getInitialContext(): creating new initctx."); //$NON-NLS-1$
+////		initialContext = new InitialContext(getInitialContextProperties());
+////		return initialContext;
+//	}
 
 	/**
 	 * Returns the runtime (not the persitent) LoginConfigModule. The persistent

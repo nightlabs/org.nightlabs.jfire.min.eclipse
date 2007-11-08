@@ -26,11 +26,14 @@
 
 package org.nightlabs.jfire.base.ui.login;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.nightlabs.config.ConfigModule;
 import org.nightlabs.config.InitException;
 import org.nightlabs.j2ee.LoginData;
+import org.nightlabs.util.RWLock;
 
 /**
  * This class holds all user specific data relevant for login in into JFire. It holds a list of
@@ -39,7 +42,8 @@ import org.nightlabs.j2ee.LoginData;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class LoginConfigModule extends ConfigModule {
+public class LoginConfigModule extends ConfigModule implements Cloneable
+{
 	private static final long serialVersionUID = 3L;
 
 	/**
@@ -58,31 +62,49 @@ public class LoginConfigModule extends ConfigModule {
 
 		if (savedLoginConfigurations == null)
 			setSavedLoginConfigurations(new LinkedList<LoginConfiguration>());
+
+		for (LoginConfiguration loginConfiguration : getAllLoginConfigurations())
+			loginConfiguration.setLoginConfigModule(this);
 	}
 
 	public void setLatestLoginConfiguration(LoginData loginData, String configurationName) 
 	{
-		acquireReadLock();
+		acquireWriteLock();
+		try {
+			LoginConfiguration loginConfiguration = null;
 
-		LoginConfiguration loginConfiguration = new LoginConfiguration(loginData);
-		loginConfiguration.setName(configurationName);
-		setLatestLoginConfiguration(loginConfiguration);
+//			// we search for the same loginData - not very efficient to iterate, but there are not many instances in the list anyway
+//			if (savedLoginConfigurations != null) {
+//			for (LoginConfiguration lc : savedLoginConfigurations) {
+//			if (lc._getLoginData() == loginData) {
+//			loginConfiguration = lc;
+//			break;
+//			}
+//			}
+//			}
+//			the LoginData + LoginConfiguration instances are cloned a few times along the way => we don't try to deduplicate - it's not really necessary.
 
-		releaseLock();
+			loginConfiguration = new LoginConfiguration(loginData, this);
+			loginConfiguration.setName(configurationName);
+			setLatestLoginConfiguration(loginConfiguration);
+
+		} finally {
+			releaseLock();
+		}
 	}
 
 	public void saveLatestConfiguration() {
-		acquireReadLock();
-
+		acquireWriteLock();
 		try {
+
 			LoginConfiguration copy = (LoginConfiguration) latestLoginConfiguration.clone();
 			savedLoginConfigurations.remove(copy);
 			savedLoginConfigurations.addFirst(copy);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+
+			setChanged();
+		} finally {
+			releaseLock();
 		}
-		setChanged();
-		releaseLock();
 	}
 
 	public LinkedList<LoginConfiguration> getSavedLoginConfigurations() {
@@ -90,8 +112,18 @@ public class LoginConfigModule extends ConfigModule {
 	}
 
 	public void setSavedLoginConfigurations(LinkedList<LoginConfiguration> loginConfigurations) {
-		this.savedLoginConfigurations = loginConfigurations;
-		setChanged();
+		acquireWriteLock();
+		try {
+			this.savedLoginConfigurations = loginConfigurations;
+			if (this.savedLoginConfigurations != null) {
+				for (LoginConfiguration loginConfiguration : this.savedLoginConfigurations) {
+					loginConfiguration.setLoginConfigModule(this);
+				}
+			}
+			setChanged();
+		} finally {
+			releaseLock();
+		}
 	}
 
 	public LoginConfiguration getLatestLoginConfiguration() {
@@ -99,36 +131,107 @@ public class LoginConfigModule extends ConfigModule {
 	}
 
 	public void setLatestLoginConfiguration(LoginConfiguration currentLoginConfiguration) {
-		this.latestLoginConfiguration = currentLoginConfiguration;
-		setChanged();
+		acquireWriteLock();
+		try {
+			this.latestLoginConfiguration = currentLoginConfiguration;
+
+			if (this.latestLoginConfiguration != null)
+				this.latestLoginConfiguration.setLoginConfigModule(this);
+
+			setChanged();
+		} finally {
+			releaseLock();
+		}
 	}
 
 	public boolean hasConfigWithName(String name) {
-		for (LoginConfiguration conf : savedLoginConfigurations)
-			if (conf.getName().equals(name))
-				return true;
-		return false;
+		acquireReadLock();
+		try {
+			for (LoginConfiguration conf : savedLoginConfigurations)
+				if (conf.getName().equals(name))
+					return true;
+			return false;
+		} finally {
+			releaseLock();
+		}
 	}
 
 	public LoginConfiguration getLastSavedLoginConfiguration() {
-		if (savedLoginConfigurations.isEmpty())
-			return null;
-		else
-			return savedLoginConfigurations.getFirst();
+		acquireReadLock();
+		try {
+			if (savedLoginConfigurations.isEmpty())
+				return null;
+			else
+				return savedLoginConfigurations.getFirst();
+		} finally {
+			releaseLock();
+		}
 	}
 
 	public void makeLatestFirst() {
-		for (LoginConfiguration cfg : savedLoginConfigurations) {
-			if (cfg.equals(latestLoginConfiguration)) {
-				savedLoginConfigurations.remove(cfg);
-				savedLoginConfigurations.addFirst(cfg);
-				return;
+		acquireWriteLock();
+		try {
+			for (LoginConfiguration cfg : savedLoginConfigurations) {
+				if (cfg.equals(latestLoginConfiguration)) {
+					savedLoginConfigurations.remove(cfg);
+					savedLoginConfigurations.addFirst(cfg);
+					return;
+				}
 			}
+		} finally {
+			releaseLock();
 		}
 	}
 
 	public void deleteSavedLoginConfiguration(LoginConfiguration toBeDeleted) {
 		savedLoginConfigurations.remove(toBeDeleted);
 		setChanged();
+	}
+
+	private Set<LoginConfiguration> getAllLoginConfigurations()
+	{
+		// Since we cannot be sure that the latestLoginConfiguration is part of the
+		// savedLoginConfigurations (currently, it never is but this might change again),
+		// we simply put all in a Set.
+		Set<LoginConfiguration> loginConfigurations = new HashSet<LoginConfiguration>(savedLoginConfigurations != null ? savedLoginConfigurations.size() + 1 : 5);
+		if (latestLoginConfiguration != null)
+			loginConfigurations.add(latestLoginConfiguration);
+
+		if (savedLoginConfigurations != null) {
+			for (LoginConfiguration loginConfiguration : savedLoginConfigurations)
+				loginConfigurations.add(loginConfiguration);
+		}
+		return loginConfigurations;
+	}
+
+	@Override
+	protected void beforeSave()
+	{
+		// we modify ourselves => need write-lock (which is released in this.afterSave(...))
+		acquireWriteLock();
+
+		for (LoginConfiguration loginConfiguration : getAllLoginConfigurations()) {
+			loginConfiguration.setLoginConfigModule(this);
+			loginConfiguration.beforeSave();
+		}
+	}
+
+	@Override
+	protected void afterSave(boolean successful)
+	{
+		try {
+
+			for (LoginConfiguration loginConfiguration : getAllLoginConfigurations())
+				loginConfiguration.afterSave();
+
+		} finally {
+			// we acquired a write-lock in beforeSave() => need to release it
+			releaseLock();
+		}
+	}
+
+	protected RWLock getRWLock()
+	{
+		return rwLock;
 	}
 }
