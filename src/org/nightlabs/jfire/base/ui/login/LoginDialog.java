@@ -469,7 +469,6 @@ public class LoginDialog extends TitleAreaDialog
 
 	public void storeUserInput()
 	{
-//		loginData = new LoginData(loginData); // was missing - need to copy this! Marco.
 		loginData.setUserID(textUserID.getText());
 		loginData.setOrganisationID(textOrganisationID.getText());
 		loginData.setPassword(textPassword.getText());
