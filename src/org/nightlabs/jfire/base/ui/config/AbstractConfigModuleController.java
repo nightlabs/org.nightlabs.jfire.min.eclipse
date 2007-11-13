@@ -168,15 +168,32 @@ implements IConfigModuleController
 	{
 		if (getConfigID() == null)
 			throw new RuntimeException("The configID of the Config for which the ConfigModule should be fetched is not set!"); //$NON-NLS-1$
+
+		ConfigModule res;
+
+		try {
+			res = ConfigModuleDAO.sharedInstance().getConfigModule(
+					getConfigID(), 
+					getConfigModuleClass(),
+					configModuleID,
+					getConfigModuleFetchGroups().toArray(new String[] {}),
+					getConfigModuleMaxFetchDepth(), 
+					monitor
+					);
+		} catch (Exception x) {
+			// silently ignore and retry
+
+			res = ConfigModuleDAO.sharedInstance().getConfigModule(
+					getConfigID(), 
+					getConfigModuleClass(),
+					configModuleID,
+					getConfigModuleFetchGroups().toArray(new String[] {}),
+					getConfigModuleMaxFetchDepth(), 
+					monitor
+					);
+		}
 		
-		return Util.cloneSerializable((ConfigModule) ConfigModuleDAO.sharedInstance().getConfigModule(
-				getConfigID(), 
-				getConfigModuleClass(),
-				configModuleID,
-				getConfigModuleFetchGroups().toArray(new String[] {}),
-				getConfigModuleMaxFetchDepth(), 
-				monitor
-				));
+		return Util.cloneSerializable(res); 
 	}
 	
 	private AbstractConfigModulePreferencePage preferencePage = null;
@@ -188,7 +205,7 @@ implements IConfigModuleController
 	 * Sets the current version of the {@link ConfigModule} to display and updates the page 
 	 * accordingly. 
 	 * The given ConfigModule should be a copy of the one from the cache, otherwise changes to this 
-	 * module will corrupt the state of the one in the cache! Use {@link Utils#cloneSerializable(Object)}
+	 * module will corrupt the state of the one in the cache! Use {@link Util#cloneSerializable(Object)}
 	 * to create a copy.
 	 * 
 	 * @param configModule The {@link ConfigModule} to set.

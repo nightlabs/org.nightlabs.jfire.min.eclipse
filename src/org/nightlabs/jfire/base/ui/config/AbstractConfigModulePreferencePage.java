@@ -456,7 +456,8 @@ extends LSDPreferencePage
 			setControl(fadableWrapper);
 			fadableWrapper.addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent e) {
-					lockHandle.release();
+					if (lockHandle != null)
+						lockHandle.release();
 				}
 			});
 		}

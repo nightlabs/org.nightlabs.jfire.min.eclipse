@@ -102,7 +102,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public Control createControl(Composite parent) {
+	public Control createControl(final Composite parent) {
 		// Border looks ugly and is unecessary as group already has a border
 //		group = new Group(parent, SWT.BORDER);
 		group = new Group(parent, SWT.NONE);
@@ -167,11 +167,15 @@ extends AbstractDataFieldEditor<ImageDataField>
 					
 					try {
 						ImageData data = new ImageData(path);
-						setChanged(true);
 						filenameTextbox.setText(path);					
 						fileDialog.setFilterPath(file.getParent());
+						setChanged(true);
 						
 						displayImage(data);
+						Composite top = parent;
+						while (top.getParent() != null)
+							top = top.getParent();
+						top.layout(true, true); // this is necessary, because otherwise a bigger image doesn't cause the widgets to grow and is therefore cut
 					} catch(SWTException swtex) {
 						MessageBox messageBoxInvalidImageFile = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_ERROR | SWT.OK);
 						messageBoxInvalidImageFile.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxInvalidImageFile.text")); //$NON-NLS-1$
