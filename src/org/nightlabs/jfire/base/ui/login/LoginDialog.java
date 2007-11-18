@@ -514,12 +514,16 @@ public class LoginDialog extends TitleAreaDialog
 		checkLogin(async, new org.eclipse.core.runtime.NullProgressMonitor(), new LoginStateListener() {
 			public void loginStateChanged(int loginState, IAction action) {
 				if (loginState == Login.LOGINSTATE_LOGGED_IN) {
-					Display.getDefault().asyncExec(new Runnable() {
+					Runnable runnable = new Runnable() {
 						public void run() {
 							cancelled = false;
 							close();
 						}
-					});
+					};
+					if (Display.getCurrent() != null)
+						runnable.run();
+					else
+						Display.getDefault().asyncExec(runnable);
 				}
 			}
 		});
@@ -776,13 +780,20 @@ public class LoginDialog extends TitleAreaDialog
 		} catch (Exception e) {
 			logger.error(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorSaveConfig"), e); //$NON-NLS-1$
 		}
-		Display.getDefault().syncExec(new Runnable() {
+
+		Runnable runnable = new Runnable() {
 			public void run()
 			{
 				enableDialogUI(true);
 				updateUIAfterLogin();
 			}
-		});
+		};
+
+		if (Display.getCurrent() != null)
+			runnable.run();
+		else
+			Display.getDefault().syncExec(runnable);
+
 		monitor.worked(1);
 //		return testResult.isSuccess();
 
