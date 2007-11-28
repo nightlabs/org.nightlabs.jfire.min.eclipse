@@ -53,6 +53,12 @@
                 menubarPath="administrationMenu/organisationGroup"
                 style="push" tooltip="%actions.registerOrganisation.tooltip"/>
             <action
+                class="org.nightlabs.jfire.base.admin.ui.organisation.registration.RegisterInRootOrganisationAction"
+                id="org.nightlabs.jfire.base.admin.ui.organisation.registration.RegisterInRootOrganisationAction"
+                label="Register in root organisation"
+                menubarPath="administrationMenu/organisationGroup"
+                style="push"/>
+            <action
                 class="org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationAction"
                 icon="icons/organisation/create/CreateOrganisationAction.16x16.png"
                 id="org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationAction"
