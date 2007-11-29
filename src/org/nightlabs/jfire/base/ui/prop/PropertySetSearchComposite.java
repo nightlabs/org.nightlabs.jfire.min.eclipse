@@ -64,7 +64,7 @@ import org.nightlabs.jfire.prop.PropertyManagerHome;
 import org.nightlabs.jfire.prop.PropertyManagerUtil;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.dao.PropertySetDAO;
-import org.nightlabs.jfire.prop.id.PropertyID;
+import org.nightlabs.jfire.prop.id.PropertySetID;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
@@ -257,7 +257,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 				long start = System.currentTimeMillis();
 				Collection<?> input;
 				if (doIDSearchAndUsePropertySetCache) {
-					Set<PropertyID> propIDs = new HashSet<PropertyID>(propertyManager.searchPropertySetIDs(searchFilter));
+					Set<PropertySetID> propIDs = new HashSet<PropertySetID>(propertyManager.searchPropertySetIDs(searchFilter));
 					logger.debug("ID search for "+propIDs.size()+" entries took " + Util.getTimeDiffString(start)); //$NON-NLS-1$ //$NON-NLS-2$
 					start = System.currentTimeMillis();
 					input = PropertySetDAO.sharedInstance().getPropertySets(
