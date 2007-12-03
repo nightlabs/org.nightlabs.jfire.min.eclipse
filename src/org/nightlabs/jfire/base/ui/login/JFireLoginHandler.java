@@ -111,22 +111,22 @@ public class JFireLoginHandler implements ILoginHandler {
 
 					LoginData lastUsed = latestConfig.getLoginData();
 
-					if (loginData.getUserID() == null)
+					if (loginData.getUserID() == null || "".equals(loginData.getUserID()))
 						loginData.setUserID(lastUsed.getUserID());
 
-					if (loginData.getOrganisationID() == null)
+					if (loginData.getOrganisationID() == null || "".equals(loginData.getOrganisationID()))
 						loginData.setOrganisationID(lastUsed.getOrganisationID());
 
-					if (loginData.getWorkstationID() == null)
+					if (loginData.getWorkstationID() == null || "".equals(loginData.getWorkstationID()))
 						loginData.setWorkstationID(lastUsed.getWorkstationID());
 
-					if (loginData.getInitialContextFactory() == null)
+					if (loginData.getInitialContextFactory() == null || "".equals(loginData.getInitialContextFactory()))
 						loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
 
-					if (loginData.getProviderURL() == null)
+					if (loginData.getProviderURL() == null || "".equals(loginData.getProviderURL()))
 						loginData.setProviderURL(lastUsed.getProviderURL());
 
-					if (loginData.getSecurityProtocol() == null)
+					if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol()))
 						loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
 
 					loginConfigModule.setLatestLoginConfiguration(loginData, null);				
