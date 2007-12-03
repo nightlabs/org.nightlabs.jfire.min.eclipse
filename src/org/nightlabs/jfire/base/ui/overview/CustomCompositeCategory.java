@@ -23,56 +23,41 @@
  **********************************************************************/
 package org.nightlabs.jfire.base.ui.overview;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.forms.ManagedForm;
-import org.eclipse.ui.forms.widgets.Form;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
-import org.nightlabs.base.ui.form.NightlabsFormsToolkit;
-import org.nightlabs.jfire.base.ui.overview.CategoryFactory;
-import org.nightlabs.jfire.base.ui.overview.DefaultCategory;
-import org.nightlabs.jfire.base.ui.overview.Entry;
 
 /**
  * A category that will not display its items in a table, but rather will 
  * ask all its entries to create a Composite for itself.
  * See {@link Entry#createComposite(Composite)}.
  * <p>
- * The custom Composites are placed inside a {@link Form}.
+ * The custom Composites are placed inside a {@link Composite}.
  * </p>
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class CustomFormCompositeCategory extends DefaultCategory {
+public class CustomCompositeCategory extends DefaultCategory {
 
 	/**
 	 * @param categoryFactory
 	 */
-	public CustomFormCompositeCategory(CategoryFactory categoryFactory) {
+	public CustomCompositeCategory(CategoryFactory categoryFactory) {
 		super(categoryFactory);
 	}
 	
 	@Override
 	public Composite createComposite(Composite composite) {
-		ManagedForm managedForm = new ManagedForm(composite);
-		GridLayout gl = new GridLayout();
-		XComposite.configureLayout(LayoutMode.ORDINARY_WRAPPER, gl);
-		managedForm.getForm().getBody().setLayout(gl);
-		managedForm.getForm().getBody().setLayoutData(new GridData(GridData.FILL_BOTH));
+		XComposite wrapper = new XComposite(composite, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		for (Entry entry : getEntries()) {
-			Composite comp = entry.createComposite(managedForm.getForm().getBody());
+			Composite comp = entry.createComposite(wrapper);
 			if (comp.getLayoutData() == null) {
 				comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			}			
-			if (comp instanceof XComposite) {
-				((XComposite)comp).setToolkit(new NightlabsFormsToolkit(Display.getDefault()));
-				((XComposite)comp).adaptToToolkit();
-			}
 		}
-		return managedForm.getForm().getBody();
+		return wrapper;
 	}
 
 }
