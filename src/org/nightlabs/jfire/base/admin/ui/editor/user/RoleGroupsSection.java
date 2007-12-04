@@ -61,7 +61,6 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
-import org.nightlabs.jfire.security.User;
 
 /**
  * The section containing the role groups controls.
@@ -160,6 +159,12 @@ public class RoleGroupsSection extends RestorableSectionPart
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
+				if (excludedRoleGroupsViewer == null)
+					return;
+
+				if (excludedRoleGroupsViewer.getTable().isDisposed())
+					return;
+
 				excludedRoleGroupsViewer.setInput(model.getExcludedRoleGroups());
 				includedRoleGroupsViewer.setInput(model.getIncludedRoleGroups());
 			}
