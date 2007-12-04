@@ -27,7 +27,7 @@
 package org.nightlabs.jfire.base.admin.ui.user;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.graphics.Point;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 
@@ -47,9 +47,8 @@ public class CreateUserAction extends WorkbenchWindowAndViewActionDelegate
 		{
 			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(getShell(), new CreateUserWizard()) {
 				@Override
-				protected void configureShell(Shell newShell) {
-					newShell.setSize(500,300);
-					super.configureShell(newShell);
+				protected Point getInitialSize() {
+					return new Point(780,650);
 				}
 			};
 			dynamicPathWizardDialog.open();
