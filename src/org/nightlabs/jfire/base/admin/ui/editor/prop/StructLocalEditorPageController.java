@@ -23,8 +23,12 @@ extends EntityEditorPageController
 	}
 
 	public void doLoad(IProgressMonitor monitor) {
-		monitor.beginTask("Loading structure members", 1); //$NON-NLS-1$ // this doesn't take long and is therefore probably never displayed => no externalisation necessary. Marco.
-		monitor.worked(1);
+		try {
+			monitor.beginTask("Loading structure members", 1); //$NON-NLS-1$ // this doesn't take long and is therefore probably never displayed => no externalisation necessary. Marco.
+			monitor.worked(1);
+		} finally {
+			monitor.done();
+		}
 	}
 
 	public void doSave(IProgressMonitor monitor) 
