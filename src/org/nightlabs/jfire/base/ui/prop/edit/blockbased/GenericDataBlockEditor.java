@@ -38,8 +38,8 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
-import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.DataBlock;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**

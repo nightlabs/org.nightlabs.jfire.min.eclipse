@@ -32,9 +32,6 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.form.NightlabsFormsToolkit;
-import org.nightlabs.jfire.base.ui.overview.CategoryFactory;
-import org.nightlabs.jfire.base.ui.overview.DefaultCategory;
-import org.nightlabs.jfire.base.ui.overview.Entry;
 
 /**
  * A category that will not display its items in a table, but rather will 

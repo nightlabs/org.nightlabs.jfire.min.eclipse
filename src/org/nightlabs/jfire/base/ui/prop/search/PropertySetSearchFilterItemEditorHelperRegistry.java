@@ -29,8 +29,6 @@ package org.nightlabs.jfire.base.ui.prop.search;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelperFactory;
-
 /**
  * This registry holds PropertySetSearchFilterItemEditorHelper 
  * linked to classes of PersonStructFields.

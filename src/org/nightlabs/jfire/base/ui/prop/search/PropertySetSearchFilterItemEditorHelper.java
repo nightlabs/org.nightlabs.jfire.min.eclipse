@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.prop.search;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
 import org.nightlabs.jdo.search.SearchFilterItem;
 
 /**

@@ -34,7 +34,6 @@ import java.util.Set;
 
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.util.Util;
-import org.nightlabs.util.Utils;
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de

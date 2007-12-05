@@ -38,8 +38,8 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
-import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.DataBlock;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
 

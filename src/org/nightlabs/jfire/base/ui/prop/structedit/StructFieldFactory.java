@@ -3,8 +3,8 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.jface.wizard.WizardPage;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
-import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructBlock;
+import org.nightlabs.jfire.prop.StructField;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de --> 
