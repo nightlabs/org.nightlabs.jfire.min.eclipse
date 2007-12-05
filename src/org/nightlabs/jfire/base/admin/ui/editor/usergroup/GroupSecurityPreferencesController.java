@@ -39,7 +39,6 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
@@ -58,8 +57,6 @@ import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
-
-import com.sun.media.sound.HsbParser;
 
 /**
  * Controller class for the security preferences of a user.

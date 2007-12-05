@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.nightlabs.jfire.config.Config;
-import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.jfire.security.id.UserID;

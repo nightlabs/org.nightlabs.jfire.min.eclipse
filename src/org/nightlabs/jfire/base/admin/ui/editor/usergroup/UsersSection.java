@@ -60,7 +60,6 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
 
 /**
  * The section containing the users controls.

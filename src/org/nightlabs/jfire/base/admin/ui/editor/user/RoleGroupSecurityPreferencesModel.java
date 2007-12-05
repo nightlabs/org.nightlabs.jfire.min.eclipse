@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.nightlabs.jfire.security.RoleGroup;
-import org.nightlabs.jfire.security.UserGroup;
 
 /**
  * @author nick
