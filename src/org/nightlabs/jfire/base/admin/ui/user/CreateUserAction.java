@@ -35,6 +35,7 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
  * An action that opens the {@link CreateUserWizard}.
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class CreateUserAction extends WorkbenchWindowAndViewActionDelegate
 {
