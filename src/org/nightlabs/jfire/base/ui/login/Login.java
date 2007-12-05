@@ -510,7 +510,7 @@ extends AbstractEPProcessor
 		}
 
 		if (getLoginState() == LOGINSTATE_LOGGED_IN) {
-			logger.debug("Already logged in, returnning. Thread "+Thread.currentThread()); //$NON-NLS-1$
+			logger.debug("Already logged in, returning. Thread "+Thread.currentThread()); //$NON-NLS-1$
 			if (forceLogin) forceLogin = false;
 			return;
 		}
