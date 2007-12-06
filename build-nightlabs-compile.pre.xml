@@ -1,12 +1,13 @@
 <project>
 	<target name="compile.pre">
-	    <mkdir dir="${project.dir}/${lib.dir}"/>
+		<mkdir dir="${project.dir}/${lib.dir}"/>
 
-	   	<delete file="${project.dir}/${lib.dir}/NightLabsCascadedAuthenticationJBoss.jar"/>
-			<delete dir="${project.dir}/${dist.dir}"/>
-			<mkdir dir="${project.dir}/${dist.dir}"/>
+		<delete file="${project.dir}/${lib.dir}/NightLabsCascadedAuthenticationJBoss.jar"/>
+		<delete dir="${project.dir}/${dist.dir}"/>
+		<mkdir dir="${project.dir}/${dist.dir}"/>
 
-	    <copy file="../JFireIntegrationJBoss/dist/JFireIntegrationJBoss.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+		<copy file="../JFireIntegrationJBoss/dist/JFireIntegrationJBoss.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+<!--
 		<jarlib-resolve property="JFireIntegrationJBoss.library" failonerror="true" checkextension="false">
 			<extension extensionname="JFireIntegrationJBoss"/>
 			<location location="${project.dir}/${lib.dir}/JFireIntegrationJBoss.jar"/>
@@ -14,8 +15,10 @@
 				url="http://jfire.nightlabs.org/~nightly/NightLabs/JFireIntegrationJBoss.jar"
 				destdir="${project.dir}/${lib.dir}"/>
 		</jarlib-resolve>
+-->
 
-	    <copy file="../JFireRCLBackend/dist/JFireRCLBackend.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+		<copy file="../JFireRCLBackend/dist/JFireRCLBackend.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+<!--
 		<jarlib-resolve property="JFireRCLBackend.library" failonerror="true" checkextension="false">
 			<extension extensionname="JFireRCLBackend"/>
 			<location location="${project.dir}/${lib.dir}/JFireRCLBackend.jar"/>
@@ -23,8 +26,9 @@
 				url="http://jfire.nightlabs.org/~nightly/JFire/JFireRCLBackend.jar"
 				destdir="${project.dir}/${lib.dir}"/>
 		</jarlib-resolve>
-
-	    <copy file="../JFireRCLBackendBean/dist/JFireRCLBackendBean.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+-->
+		<copy file="../JFireRCLBackendBean/dist/JFireRCLBackendBean.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+<!--
 		<jarlib-resolve property="JFireRCLBackendBean.library" failonerror="true" checkextension="false">
 			<extension extensionname="JFireRCLBackendBean"/>
 			<location location="${project.dir}/${lib.dir}/JFireRCLBackendBean.jar"/>
@@ -32,8 +36,9 @@
 				url="http://jfire.nightlabs.org/~nightly/JFire/JFireRCLBackendBean.jar"
 				destdir="${project.dir}/${lib.dir}"/>
 		</jarlib-resolve>
-
-	    <copy file="../JFireRemoteClassLoader/dist/JFireRemoteClassLoader.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+-->
+		<copy file="../JFireRemoteClassLoader/dist/JFireRemoteClassLoader.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
+<!--
 		<jarlib-resolve property="JFireRemoteClassLoader.library" failonerror="true" checkextension="false">
 			<extension extensionname="JFireRemoteClassLoader"/>
 			<location location="${project.dir}/${lib.dir}/JFireRemoteClassLoader.jar"/>
@@ -41,6 +46,8 @@
 				url="http://jfire.nightlabs.org/~nightly/NightLabsClient/JFireRemoteClassLoader.jar"
 				destdir="${project.dir}/${lib.dir}"/>
 		</jarlib-resolve>
+-->
 
+		<copy file="../org.nightlabs.rmissl/dist/org.nightlabs.rmissl.jar" todir="${project.dir}/${lib.dir}" failonerror="false" verbose="true"/>
 	</target>
 </project>

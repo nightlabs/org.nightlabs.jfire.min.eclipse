@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: J2ee Classloading Plug-in
 Bundle-SymbolicName: org.nightlabs.jfire.base.j2ee;singleton:=true
-Bundle-Version: 0.9.2
+Bundle-Version: 0.9.3
 Bundle-ClassPath: org.nightlabs.jfire.base.j2ee.jar,
  lib/jbossall-client.jar,
  lib/JFireRCLBackend.jar,
  lib/JFireRCLBackendBean.jar,
  lib/JFireRemoteClassLoader.jar,
- lib/JFireIntegrationJBoss.jar
+ lib/JFireIntegrationJBoss.jar,
+ lib/org.nightlabs.rmissl.jar
 Bundle-Activator: org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -325,5 +326,10 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.nightlabs.jfire.jboss.authentication,
  org.nightlabs.jfire.jboss.cascadedauthentication,
  org.nightlabs.jfire.jboss.j2ee,
+ org.nightlabs.jfire.jboss.j2ee.monitor,
+ org.nightlabs.jfire.jboss.jndi.rmissl,
  org.nightlabs.jfire.jboss.serverconfigurator,
+ org.nightlabs.rmissl,
+ org.nightlabs.rmissl.client,
+ org.nightlabs.rmissl.socket,
  org.omg.stub.javax.ejb

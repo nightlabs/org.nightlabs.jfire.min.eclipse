@@ -13,6 +13,7 @@
 	<requires path="/JFireRCLBackend"/>
 	<requires path="/JFireRCLBackendBean"/>
 	<requires path="/JFireRemoteClassLoader"/>
+	<requires path="/org.nightlabs.rmissl"/>
 
     <provides/>
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireIntegrationJBoss.jar"/>
@@ -22,7 +23,7 @@
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/jbossall-client.jar"/>
 
-    <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_0.9.2.jar"/>
+    <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_0.9.3.jar"/>
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
   </project>
 
