@@ -5,59 +5,65 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 import org.nightlabs.jfire.security.RoleGroup;
 
 /**
  * @author nick
- *
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class RoleGroupSecurityPreferencesModel
+public class RoleGroupSecurityPreferencesModel extends BaseModel
 {
 	/**
 	 * The included role groups.
 	 */
-	private Collection<RoleGroup> includedRoleGroups = Collections.EMPTY_LIST;
+	private Collection<RoleGroup> roleGroups = Collections.emptySet();
 
 	/**
 	 * The included role groups inherited from UserGroups.
 	 */
-	private Collection<RoleGroup> includedRoleGroupsFromUserGroups = Collections.EMPTY_LIST;
+	private Collection<RoleGroup> roleGroupsFromUserGroups = Collections.emptySet();
 
 	/**
-	 * The excluded role groups.
+	 * All available role groups
 	 */
-	private Collection<RoleGroup> excludedRoleGroups = Collections.EMPTY_LIST;
-
-	public Collection<RoleGroup> getIncludedRoleGroups()
-	{
-		return includedRoleGroups;
+	private Collection<RoleGroup> availableRoleGroups = Collections.emptySet();
+	
+	public Collection<RoleGroup> getRoleGroups() {
+		return Collections.unmodifiableCollection(roleGroups);
 	}
 
-	public void setIncludedRoleGroups(Collection<RoleGroup> includedRoleGroups)
-	{
-		this.includedRoleGroups = includedRoleGroups;
+	public void setRoleGroups(Collection<RoleGroup> roleGroups) {
+		this.roleGroups = new HashSet<RoleGroup>(roleGroups);
+		modelChanged();
+	}
+	
+	public void addRoleGroup(RoleGroup roleGroup) {
+		this.roleGroups.add(roleGroup);
+		modelChanged();
+	}
+	
+	public void removeRoleGroup(RoleGroup roleGroup) {
+		this.roleGroups.remove(roleGroup);
+		modelChanged();
 	}
 
-	public Collection<RoleGroup> getIncludedRoleGroupsFromUserGroups()
-	{
-		return includedRoleGroupsFromUserGroups;
+	public Collection<RoleGroup> getRoleGroupsFromUserGroups() {
+		return Collections.unmodifiableCollection(roleGroupsFromUserGroups);
 	}
 
-	public void setIncludedRoleGroupsFromUserGroups(
-			Collection<RoleGroup> includedRoleGroupsFromUserGroups)
-	{
-		this.includedRoleGroupsFromUserGroups = includedRoleGroupsFromUserGroups;
+	public void setRoleGroupsFromUserGroups(Collection<RoleGroup> roleGroupsFromUserGroups) {
+		this.roleGroupsFromUserGroups = new HashSet<RoleGroup>(roleGroupsFromUserGroups);
+		modelChanged();
+	}	
+	
+	public void setAvailableRoleGroups(Collection<RoleGroup> availableRoleGroups) {
+		this.availableRoleGroups = new HashSet<RoleGroup>(availableRoleGroups);
+		modelChanged();
 	}
-
-	public Collection<RoleGroup> getExcludedRoleGroups()
-	{
-		return excludedRoleGroups;
+	
+	public Collection<RoleGroup> getAvailableRoleGroups() {
+		return Collections.unmodifiableCollection(availableRoleGroups);
 	}
-
-	public void setExcludedRoleGroups(Collection<RoleGroup> excludedRoleGroups)
-	{
-		this.excludedRoleGroups = excludedRoleGroups;
-	}
-
 }

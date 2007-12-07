@@ -84,7 +84,7 @@ public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 	protected void addSections(Composite parent) {
 		userGroupsSection = new UserGroupsSection(this, parent);
  		getManagedForm().addPart(userGroupsSection);
- 		roleGroupsSection = new RoleGroupsSection(this, parent);
+ 		roleGroupsSection = new RoleGroupsSection(this, parent, true);
  		getManagedForm().addPart(roleGroupsSection);
 	}
 

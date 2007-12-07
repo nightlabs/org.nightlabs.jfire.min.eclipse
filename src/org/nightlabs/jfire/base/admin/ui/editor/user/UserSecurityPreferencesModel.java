@@ -25,6 +25,8 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.security.User;
@@ -36,84 +38,69 @@ import org.nightlabs.jfire.security.id.UserID;
  * 
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
- * @author Niklas Schiffler <nick@nightlabs.de> 
+ * @author Niklas Schiffler <nick@nightlabs.de>
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de --> 
  */
-
-public class UserSecurityPreferencesModel
-{
+public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	/**
 	 * The user id.
 	 */
 	private UserID userID;
-	
+
 	/**
 	 * The user
 	 */
 	private User user;
-	
-	/**
-	 * The included user groups.
-	 */
-	private Collection<UserGroup> includedUserGroups = Collections.EMPTY_LIST;
-	
-	/**
-	 * The excluded user groups.
-	 */
-	private Collection<UserGroup> excludedUserGroups = Collections.EMPTY_LIST;
 
 	private Config userConfig;
-	
+
+	private Set<UserGroup> availableUserGroups;
+
 	/**
 	 * Create an instance of SecurityPreferencesModel.
 	 * @param userID The user id.
 	 */
-	public UserSecurityPreferencesModel(UserID userID)
-	{
+	public UserSecurityPreferencesModel(UserID userID) {
 		this.userID = userID;
 	}
 
 	/**
-	 * Get included user groups.
-	 * @return the addedUserGroups
+	 * Adds the given user group to the model.
+	 * @param userGroup The {@link UserGroup} to be added.
 	 */
-	public Collection<UserGroup> getIncludedUserGroups()
-	{
-		return includedUserGroups;
+	public void addUserGroup(UserGroup userGroup) {
+		addElement(userGroup);
 	}
 
 	/**
-	 * Set included user groups.
-	 * @param addedUserGroups the addedUserGroups to set
+	 * Removes the given user group from the model if it exists.
+	 * @param userGroup The {@link UserGroup} to be removed.
 	 */
-	public void setIncludedUserGroups(Collection<UserGroup> includedUserGroups)
-	{
-		this.includedUserGroups = includedUserGroups;
+	public void removeUserGroup(UserGroup userGroup) {
+		removeElement(userGroup);
 	}
 
 	/**
-	 * Get excluded user groups.
-	 * @return the removedUserGroups
+	 * Returns an unmodifiable set of the {@link UserGroup}s of this model.
+	 * @return all {@link UserGroup}s of this model.
 	 */
-	public Collection<UserGroup> getExcludedUserGroups()
-	{
-		return excludedUserGroups;
+	public Collection<UserGroup> getUserGroups() {
+		return getElements();
 	}
 
 	/**
-	 * Set excluded user groups.
-	 * @param removedUserGroups the removedUserGroups to set
+	 * Sets the {@link UserGroup}s of this model
+	 * @param userGroups The {@link UserGroup}s to be set.
 	 */
-	public void setExcludedUserGroups(Collection<UserGroup> excludedUserGroups)
-	{
-		this.excludedUserGroups = excludedUserGroups;
+	public void setUserGroups(Collection<UserGroup> userGroups) {
+		setElements(userGroups);
 	}
 
 	/**
 	 * Get the user.
 	 * @return the user
 	 */
-	public User getUser()
-	{
+	public User getUser() {
 		return user;
 	}
 
@@ -121,17 +108,16 @@ public class UserSecurityPreferencesModel
 	 * Set the user.
 	 * @param user the user to set
 	 */
-	public void setUser(User user)
-	{
+	public void setUser(User user) {
 		this.user = user;
+		modelChanged();
 	}
 
 	/**
 	 * Get the userID.
 	 * @return the userID
 	 */
-	public UserID getUserID()
-	{
+	public UserID getUserID() {
 		return userID;
 	}
 
@@ -139,8 +125,7 @@ public class UserSecurityPreferencesModel
 	 * Get the userConfig.
 	 * @return the userConfig
 	 */
-	public Config getUserConfig()
-	{
+	public Config getUserConfig() {
 		return userConfig;
 	}
 
@@ -148,8 +133,25 @@ public class UserSecurityPreferencesModel
 	 * Set the userConfig.
 	 * @param userConfig the userConfig to set
 	 */
-	public void setUserConfig(Config userConfig)
-	{
+	public void setUserConfig(Config userConfig) {
 		this.userConfig = userConfig;
+		modelChanged();
+	}
+
+	/**
+	 * Sets the user groups currently available
+	 * @param availableUserGroups A collection of the available user groups
+	 */
+	public void setAvailableUserGroups(Collection<UserGroup> availableUserGroups) {
+		this.availableUserGroups = new HashSet<UserGroup>(availableUserGroups);
+		modelChanged();
+	}
+
+	/**
+	 * Returns an unmodifiable collection of the available user groups of this model
+	 * @return an unmodifiable collection of the available user groups of this model
+	 */
+	public Collection<UserGroup> getAvailableUserGroups() {
+		return Collections.unmodifiableSet(availableUserGroups);
 	}
 }

@@ -155,32 +155,37 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 								User.FETCH_GROUP_THIS_USER},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								pMonitor);
+				
+				userGroupModel.setAvailableUsers(users);
+				userGroupModel.setUsers(userGroup.getUsers());
 
-				Collection<User> excludedUsers = new HashSet<User>(users);
-				excludedUsers.removeAll(userGroup.getUsers());
-				userGroupModel.setExcludedUsers(excludedUsers);
-				userGroupModel.setExcludedUsersUnchanged(new ArrayList<User>(excludedUsers));
-
-				Collection<User> includedUsers = new HashSet<User>(userGroup.getUsers());
-				userGroupModel.setIncludedUsers(includedUsers);
-				userGroupModel.setIncludedUsersUnchanged(new ArrayList<User>(includedUsers));
+//				Collection<User> excludedUsers = new HashSet<User>(users);
+//				excludedUsers.removeAll(userGroup.getUsers());
+//				userGroupModel.setExcludedUsers(excludedUsers);
+//				userGroupModel.setExcludedUsersUnchanged(new ArrayList<User>(excludedUsers));
+//
+//				Collection<User> includedUsers = new HashSet<User>(userGroup.getUsers());
+//				userGroupModel.setIncludedUsers(includedUsers);
+//				userGroupModel.setIncludedUsersUnchanged(new ArrayList<User>(includedUsers));
 
 				// load role groups
 				RoleGroupListCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroups(
-						userGroupID, 
+						userGroupID,
 						Authority.AUTHORITY_ID_ORGANISATION, 
 						new String[] {RoleGroup.FETCH_GROUP_THIS}, 
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
 						pMonitor);
-				roleGroupModel.setIncludedRoleGroups(roleGroups.assigned);
-				roleGroupModel.setIncludedRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
-				roleGroupModel.setExcludedRoleGroups(roleGroups.excluded);
 				
+				roleGroupModel.setRoleGroups(roleGroups.assigned);
+				roleGroupModel.setRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
 				
-				Set<RoleGroup> allRoleGroups = new HashSet<RoleGroup>(
-						roleGroups.assigned.size() + 
-						roleGroups.assignedByUserGroup.size() + 
-						roleGroups.excluded.size());
+				Set<RoleGroup> availableGroups = new HashSet<RoleGroup>(roleGroups.assigned.size() + roleGroups.assignedByUserGroup.size() + roleGroups.excluded.size());
+				availableGroups.addAll(roleGroups.assigned);
+				availableGroups.addAll(roleGroups.assignedByUserGroup);
+				availableGroups.addAll(roleGroups.excluded);
+				
+				roleGroupModel.setAvailableRoleGroups(availableGroups);
+				
 				logger.info("Loading usergroup "+userGroupID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				fireModifyEvent(null, userGroup);
 			}
@@ -209,12 +214,20 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 		}
 		logger.info("Saving usergroup "+userGroupID.userID); //$NON-NLS-1$
 		ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
-		int taskTicks = roleGroupModel.getIncludedRoleGroups().size() + roleGroupModel.getExcludedRoleGroups().size() +
-						userGroupModel.getIncludedUsers().size() + userGroupModel.getExcludedUsers().size();
+		
+		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroups();
+		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAvailableRoleGroups());
+		excludedRoleGroups.removeAll(includedRoleGroups);
+		
+		Collection<User> includedUsers = userGroupModel.getIncludedUsers();
+		Collection<User> excludedUsers = new HashSet<User>(userGroupModel.getAvailableUsers());
+		excludedUsers.removeAll(includedUsers);
+		
+		int taskTicks = roleGroupModel.getAvailableRoleGroups().size() + userGroupModel.getAvailableUsers().size();
+		
 		pMonitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.doSave.monitor.taskName"), taskTicks); //$NON-NLS-1$
 		try	{
 			UserGroup userGroup = userGroupModel.getUserGroup();
-			Collection<User> includedUsers = userGroupModel.getIncludedUsers();
 			if(includedUsers != null) {
 				for (User user : includedUsers) {
 					if(!userGroup.getUsers().contains(user))
@@ -222,7 +235,6 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				}
 			}
 
-			Collection<User> excludedUsers = userGroupModel.getExcludedUsers();
 			if(excludedUsers != null) {
 				for (User user : excludedUsers) {
 					if(userGroup.getUsers().contains(user))
@@ -230,7 +242,6 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				}
 			}
 
-			Collection<RoleGroup> includedRoleGroups = roleGroupModel.getIncludedRoleGroups();
 			if (includedRoleGroups != null) {
 				for (RoleGroup roleGroup : includedRoleGroups) {
 					UserDAO.sharedInstance().addUserToRoleGroup(
@@ -240,7 +251,6 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				}
 			}
 
-			Collection<RoleGroup> excludedRoleGroups = roleGroupModel.getExcludedRoleGroups();
 			if (excludedRoleGroups != null) {
 				for (RoleGroup roleGroup : excludedRoleGroups) {
 					UserDAO.sharedInstance().removeUserFromRoleGroup(

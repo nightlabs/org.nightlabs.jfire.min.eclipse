@@ -25,6 +25,8 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import javax.jdo.JDODetachedFieldAccessException;
 
+import org.nightlabs.base.ui.editor.RestorableSectionPart;
+import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.security.User;
@@ -65,5 +67,24 @@ public class UserUtil
 			return String.format(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil.userFullDisplayName"), user.getUserID(), displayName); //$NON-NLS-1$
 		else
 			return user.getUserID();
+	}
+	
+	/**
+	 * Returns an {@link IDirtyStateManager} that delegates markDirty/markUndirty events to the given section.
+	 * @param section The section to which the events should be delegated.
+	 * @return an {@link IDirtyStateManager} that delegates markDirty/markUndirty events to the given section.
+	 */
+	public static IDirtyStateManager getSectionDirtyStateManager(final RestorableSectionPart section) {
+		return new IDirtyStateManager() {
+			public boolean isDirty() {
+				throw new RuntimeException("isDirty() must not be called.");
+			}
+			public void markDirty() {
+				section.markDirty();
+			}
+			public void markUndirty() {
+				section.markUndirty();
+			}
+		};
 	}
 }

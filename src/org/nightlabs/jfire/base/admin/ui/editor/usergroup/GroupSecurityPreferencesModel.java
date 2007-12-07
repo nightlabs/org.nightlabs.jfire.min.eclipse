@@ -24,7 +24,14 @@
 package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
+import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
+import org.nightlabs.jfire.base.admin.ui.editor.user.BaseModel;
+import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.User;
@@ -38,218 +45,236 @@ import org.nightlabs.jfire.security.id.UserID;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Niklas Schiffler <nick@nightlabs.de>
  */
-public class GroupSecurityPreferencesModel
+public class GroupSecurityPreferencesModel extends BaseModel
 {
 	/**
 	 * The user group id.
 	 */
 	private UserID userID;
-	
+
 	/**
 	 * The user
 	 */
 	private UserGroup userGroup;
-	
-	
-	/**
-	 * The included users the users had before changes.
-	 */
-	private Collection<User> includedUsersUnchanged;
-	
-	/**
-	 * The excluded users the group had before changes.
-	 */
-	private Collection<User> excludedUsersUnchanged;
 
-	/**
-	 * The included users.
-	 */
-	private Collection<User> includedUsers;
-	
-	/**
-	 * The excluded users.
-	 */
-	private Collection<User> excludedUsers;
+	//	/**
+	//	 * The included users the users had before changes.
+	//	 */
+	//	private Collection<User> includedUsersUnchanged;
+	//	
+	//	/**
+	//	 * The excluded users the group had before changes.
+	//	 */
+	//	private Collection<User> excludedUsersUnchanged;
+	//
+	//	/**
+	//	 * The included users.
+	//	 */
+	//	private Collection<User> includedUsers;
+	//	
+	//	/**
+	//	 * The excluded users.
+	//	 */
+	//	private Collection<User> excludedUsers;
+	//
+	//	/**
+	//	 * The included role groups.
+	//	 */
+	//	private Collection<RoleGroup> roleGroups;
+	//
+	//	/**
+	//	 * The included role groups from the users user groups.
+	//	 */
+	//	private Collection<RoleGroup> includedRoleGroupsFromUserGroups;
+	//	
+	//	/**
+	//	 * The excluded role groups.
+	//	 */
+	//	private Collection<RoleGroup> availableRoleGroups;
 
-	/**
-	 * The included role groups.
-	 */
-	private Collection<RoleGroup> includedRoleGroups;
+//	private RoleGroupSecurityPreferencesModel roleGroupModel;
 
-	/**
-	 * The included role groups from the users user groups.
-	 */
-	private Collection<RoleGroup> includedRoleGroupsFromUserGroups;
-	
-	/**
-	 * The excluded role groups.
-	 */
-	private Collection<RoleGroup> excludedRoleGroups;
-	
+	//	private CollectionModel<User> userModel = new CollectionModel<User>();
+
+	private Set<User> users = Collections.emptySet();
+
+	private Set<User> availableUsers = Collections.emptySet();
+
 	private Config userConfig;
-	
+
 	/**
 	 * Create an instance of SecurityPreferencesModel.
 	 * @param userID The user id.
 	 */
-	public GroupSecurityPreferencesModel(UserID userID)
-	{
-		this.userID = userID;
+	public GroupSecurityPreferencesModel(UserID userID) {
+		ModelChangeListener listener = new ModelChangeListener() {
+			public void modelChanged(ModelChangeEvent event) {
+				GroupSecurityPreferencesModel.this.modelChanged();
+			}
+		};
 	}
 
 	/**
 	 * Get included users.
 	 * @return the added Users
 	 */
-	public Collection<User> getIncludedUsers()
-	{
-		return includedUsers;
+	public Collection<User> getIncludedUsers() {
+		return Collections.unmodifiableSet(users);
 	}
 
 	/**
 	 * Set included users.
 	 * @param includedUsers the added Users to set
 	 */
-	public void setIncludedUsers(Collection<User> includedUsers)
-	{
-		this.includedUsers = includedUsers;
+	public void setUsers(Collection<User> includedUsers) {
+		this.users = new HashSet<User>(includedUsers);
+		modelChanged();
+	}
+	
+	public void addUser(User user) {
+		this.users.add(user);
+	}
+	
+	public void removeUser(User user) {
+		this.users.remove(user);
+	}
+	
+	public Set<User> getAvailableUsers() {
+		return Collections.unmodifiableSet(availableUsers);
+	}
+	
+	public void setAvailableUsers(Collection<User> availableUsers) {
+		this.availableUsers = new HashSet<User>(availableUsers);
+		modelChanged();
 	}
 
-	/**
-	 * Get excluded users.
-	 * @return the removed Users
-	 */
-	public Collection<User> getExcludedUsers()
-	{
-		return excludedUsers;
-	}
-
-	/**
-	 * Set excluded users.
-	 * @param excludedUsers the removed Users to set
-	 */
-	public void setExcludedUsers(Collection<User> excludedUsers)
-	{
-		this.excludedUsers = excludedUsers;
-	}
+	//	/**
+	//	 * Get excluded users.
+	//	 * @return the removed Users
+	//	 */
+	//	public Collection<User> getExcludedUsers()
+	//	{
+	//		return excludedUsers;
+	//	}
+	//
+	//	/**
+	//	 * Set excluded users.
+	//	 * @param excludedUsers the removed Users to set
+	//	 */
+	//	public void setExcludedUsers(Collection<User> excludedUsers)
+	//	{
+	//		this.excludedUsers = excludedUsers;
+	//	}
 
 	/**
 	 * Get the usergroup.
 	 * @return the usergroup
 	 */
-	public UserGroup getUserGroup()
-	{
+	public UserGroup getUserGroup() {
 		return userGroup;
 	}
 
 	/**
 	 * Set the usergroup.
-	 * @param user the user to set
+	 * @param userGroup the user group to set
 	 */
-	public void setUserGroup(UserGroup userGroup)
-	{
+	public void setUserGroup(UserGroup userGroup) {
 		this.userGroup = userGroup;
+		modelChanged();
 	}
 
-	/**
-	 * Get the excluded role groups.
-	 * @return the excludedRoleGroups
-	 */
-	public Collection<RoleGroup> getExcludedRoleGroups()
-	{
-		return excludedRoleGroups;
-	}
-
-	/**
-	 * Set the excluded role groups.
-	 * @param excludedRoleGroups the excludedRoleGroups to set
-	 */
-	public void setExcludedRoleGroups(Collection<RoleGroup> excludedRoleGroups)
-	{
-		this.excludedRoleGroups = excludedRoleGroups;
-	}
-
-	/**
-	 * Get the included role groups.
-	 * @return the includedRoleGroups
-	 */
-	public Collection<RoleGroup> getIncludedRoleGroups()
-	{
-		return includedRoleGroups;
-	}
-
-	/**
-	 * Set the included role groups.
-	 * @param includedRoleGroups the includedRoleGroups to set
-	 */
-	public void setIncludedRoleGroups(Collection<RoleGroup> includedRoleGroups)
-	{
-		this.includedRoleGroups = includedRoleGroups;
-	}
-
-	/**
-	 * Get the included role groups from the users user groups.
-	 * @return the included role groups from the users user groups
-	 */
-	public Collection<RoleGroup> getIncludedRoleGroupsFromUserGroups()
-	{
-		return includedRoleGroupsFromUserGroups;
-	}
-
-	/**
-	 * Set the included role groups from the users user groups.
-	 * @param includedRoleGroupsFromUserGroups the included role groups from the users user groups to set
-	 */
-	public void setIncludedRoleGroupsFromUserGroups(
-			Collection<RoleGroup> includedRoleGroupsFromUserGroups)
-	{
-		this.includedRoleGroupsFromUserGroups = includedRoleGroupsFromUserGroups;
-	}
-
-	/**
-	 * Get the excludedUsersUnchanged.
-	 * @return the excludedUsersUnchanged
-	 */
-	public Collection<User> getExcludedUsersUnchanged()
-	{
-		return excludedUsersUnchanged;
-	}
-
-	/**
-	 * Set the excludedUsersUnchanged.
-	 * @param excludedUsersUnchanged the excludedUsersUnchanged to set
-	 */
-	public void setExcludedUsersUnchanged(
-			Collection<User> excludedUsersUnchanged)
-	{
-		this.excludedUsersUnchanged = excludedUsersUnchanged;
-	}
-
-	/**
-	 * Get the included users the group had before changes.
-	 * @return the included users the group had before changes
-	 */
-	public Collection<User> getIncludedUsersUnchanged()
-	{
-		return includedUsersUnchanged;
-	}
-
-	/**
-	 * Set the included users the group had before changes.
-	 * @param includedUsersUnchanged the included users the group had before changes
-	 */
-	public void setIncludedUsersUnchanged(
-			Collection<User> includedUsersUnchanged)
-	{
-		this.includedUsersUnchanged = includedUsersUnchanged;
-	}
+//	/**
+//	 * Get the excluded role groups.
+//	 * @return the availableRoleGroups
+//	 */
+//	public Collection<RoleGroup> getAvailableRoleGroups() {
+//		return this.roleGroupModel.getAvailableRoleGroups();
+//	}
+//
+//	/**
+//	 * Set the excluded role groups.
+//	 * @param availableRoleGroups the availableRoleGroups to set
+//	 */
+//	public void setAvailableRoleGroups(Collection<RoleGroup> availableRoleGroups) {
+//		this.roleGroupModel.setAvailableRoleGroups(availableRoleGroups);
+//		modelChanged();
+//	}
+//
+//	/**
+//	 * Get the included role groups.
+//	 * @return the roleGroups
+//	 */
+//	public Collection<RoleGroup> getRoleGroups() {
+//		return this.roleGroupModel.getRoleGroups();
+//	}
+//
+//	/**
+//	 * Set the included role groups.
+//	 * @param roleGroups the roleGroups to set
+//	 */
+//	public void setRoleGroups(Collection<RoleGroup> roleGroups) {
+//		this.roleGroupModel.setRoleGroups(roleGroups);
+//	}
+//
+//	/**
+//	 * Get the included role groups from the users user groups.
+//	 * @return the included role groups from the users user groups
+//	 */
+//	public Collection<RoleGroup> getRoleGroupsFromUserGroups() {
+//		return this.roleGroupModel.getRoleGroupsFromUserGroups();
+//	}
+//
+//	/**
+//	 * Set the included role groups from the users user groups.
+//	 * @param roleGroupsFromUserGroups the included role groups from the users user groups to set
+//	 */
+//	public void setRoleGroupsFromUserGroups(Collection<RoleGroup> roleGroupsFromUserGroups) {
+//		this.roleGroupModel.setRoleGroupsFromUserGroups(roleGroupsFromUserGroups);
+//	}
+	
+	//	/**
+	//	 * Get the excludedUsersUnchanged.
+	//	 * @return the excludedUsersUnchanged
+	//	 */
+	//	public Collection<User> getExcludedUsersUnchanged()
+	//	{
+	//		return excludedUsersUnchanged;
+	//	}
+	//
+	//	/**
+	//	 * Set the excludedUsersUnchanged.
+	//	 * @param excludedUsersUnchanged the excludedUsersUnchanged to set
+	//	 */
+	//	public void setExcludedUsersUnchanged(
+	//			Collection<User> excludedUsersUnchanged)
+	//	{
+	//		this.excludedUsersUnchanged = excludedUsersUnchanged;
+	//	}
+	//
+	//	/**
+	//	 * Get the included users the group had before changes.
+	//	 * @return the included users the group had before changes
+	//	 */
+	//	public Collection<User> getIncludedUsersUnchanged()
+	//	{
+	//		return includedUsersUnchanged;
+	//	}
+	//
+	//	/**
+	//	 * Set the included users the group had before changes.
+	//	 * @param includedUsersUnchanged the included users the group had before changes
+	//	 */
+	//	public void setIncludedUsersUnchanged(
+	//			Collection<User> includedUsersUnchanged)
+	//	{
+	//		this.includedUsersUnchanged = includedUsersUnchanged;
+	//	}
 
 	/**
 	 * Get the userID.
 	 * @return the userID
 	 */
-	public UserID getUserID()
-	{
+	public UserID getUserID() {
 		return userID;
 	}
 
@@ -257,8 +282,7 @@ public class GroupSecurityPreferencesModel
 	 * Get the userConfig.
 	 * @return the userConfig
 	 */
-	public Config getUserConfig()
-	{
+	public Config getUserConfig() {
 		return userConfig;
 	}
 
@@ -266,8 +290,8 @@ public class GroupSecurityPreferencesModel
 	 * Set the userConfig.
 	 * @param userConfig the userConfig to set
 	 */
-	public void setUserConfig(Config userConfig)
-	{
+	public void setUserConfig(Config userConfig) {
 		this.userConfig = userConfig;
+		modelChanged();
 	}
 }
