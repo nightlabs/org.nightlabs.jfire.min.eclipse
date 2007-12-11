@@ -42,7 +42,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 			}
 			return input.toArray();
 		}
-		public void setInput(List<JDOObject> inp) {
+		public void setInput(Collection<JDOObject> inp) {
 			this.input = new ArrayList<JDOObject>(inp);
 		}
 		public boolean isInputSet() {
@@ -110,6 +110,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (!getContentProvider().isInputSet()) {
+								getContentProvider().setInput(loadedObjects);
 								getTableViewer().setInput(loadedObjects);
 							} else {
 								for (JDOObject loadedObject : loadedObjects) {
