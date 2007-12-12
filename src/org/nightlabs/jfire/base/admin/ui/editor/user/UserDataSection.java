@@ -65,19 +65,19 @@ public class UserDataSection extends RestorableSectionPart {
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 		GridLayout layout = (GridLayout) container.getLayout();
 		layout.horizontalSpacing = 10;
-		layout.numColumns = 3;
+		layout.numColumns = 2;
 		
-		createLabel(container, "User ID", 3);		
+		createLabel(container, "User ID", 2);		
 		userIdText = new Text(container, XComposite.getBorderStyle(container));
 		userIdText.setEditable(false);
-		userIdText.setLayoutData(getGridData(3));		
+		userIdText.setLayoutData(getGridData(2));		
 		
-		createLabel(container,	"User name", 3);
+		createLabel(container,	"User name", 2);
 		userNameText = new Text(container, XComposite.getBorderStyle(container));
 		userNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		autogenerateNameCheckBox = new Button(container, SWT.CHECK);
-		new Label(container, SWT.NONE).setText("Autogenerate");
+		autogenerateNameCheckBox.setText("Autogenerate");
 		autogenerateNameCheckBox.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
@@ -87,18 +87,18 @@ public class UserDataSection extends RestorableSectionPart {
 			}
 		});
 		
-		createLabel(container, "User description", 3);
+		createLabel(container, "User description", 2);
 		userDescriptionText = new Text(container, XComposite.getBorderStyle(container));
 		userDescriptionText.setLayoutData(getGridData(3));
 		
-		createLabel(container, "Password", 3);
+		createLabel(container, "Password", 2);
 		password0Text = new Text(container, XComposite.getBorderStyle(container));
-		password0Text.setLayoutData(getGridData(3));
+		password0Text.setLayoutData(getGridData(2));
 		password0Text.setEchoChar('*');
 		
-		createLabel(container, "Password confirm", 3);
+		createLabel(container, "Password confirm", 2);
 		password1Text = new Text(container, XComposite.getBorderStyle(container));
-		password1Text.setLayoutData(getGridData(3));
+		password1Text.setLayoutData(getGridData(2));
 		password1Text.setEchoChar('*');
 		
 		ModifyListener passwordModifyListener = new ModifyListener() {
