@@ -166,6 +166,7 @@ public class UserDataSection extends RestorableSectionPart {
 						refreshing = false;
 					}
 				});
+				passwordChanged = false;
 				refreshing = false;
 			}
 		});		
