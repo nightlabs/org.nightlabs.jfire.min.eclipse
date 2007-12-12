@@ -150,6 +150,8 @@ extends RestorableSectionPart
 	private Task task;
 	
 	public void setTask(final Task task) {
+		if (timePatternSetComposite == null || timePatternSetComposite.isDisposed())
+			return;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 //				detailComposite.setTask(task);
