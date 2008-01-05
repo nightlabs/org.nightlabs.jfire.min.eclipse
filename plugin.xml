@@ -7,20 +7,20 @@
       <intro
             class="org.eclipse.ui.intro.config.CustomizableIntroPart"
             icon="icons/CustomizableIntroPart.16x16.png"
-            id="org.nightlabs.jfire.base.intro.introID"
+            id="org.nightlabs.jfire.base.intro.ui.introID"
             label="%intro.label">
       </intro>
       <introProductBinding
-            introId="org.nightlabs.jfire.base.intro.introID"
+            introId="org.nightlabs.jfire.base.intro.ui.introID"
             productId="org.nightlabs.jfire.base.ui.product">
       </introProductBinding>
    </extension>
    <extension
          point="org.eclipse.ui.intro.config">
       <config
-            introId="org.nightlabs.jfire.base.intro.introID"
+            introId="org.nightlabs.jfire.base.intro.ui.introID"
             content="introContent.xml"
-            id="org.nightlabs.jfire.base.intro.configID">
+            id="org.nightlabs.jfire.base.intro.ui.configID">
          <presentation
                home-page-id="root">
             <implementation
@@ -35,42 +35,42 @@
          point="org.eclipse.ui.intro.configExtension">
       <action
             name="switchToOverviewPerspective"
-            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro&amp;class=org.nightlabs.jfire.intro.SwitchToOverviewPerspectiveAction">
+            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro.ui&amp;class=org.nightlabs.jfire.intro.ui.SwitchToOverviewPerspectiveAction">
       </action>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <action
             name="switchToTradePerspective"
-            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro&amp;class=org.nightlabs.jfire.intro.SwitchToTradePerspectiveAction">
+            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro.ui&amp;class=org.nightlabs.jfire.intro.ui.SwitchToTradePerspectiveAction">
       </action>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <action
             name="switchToTradeAdminPerspective"
-            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro&amp;class=org.nightlabs.jfire.intro.SwitchToTradeAdminPerspectiveAction">
+            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro.ui&amp;class=org.nightlabs.jfire.intro.ui.SwitchToTradeAdminPerspectiveAction">
       </action>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <action
             name="switchToBaseAdminPerspective"
-            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro&amp;class=org.nightlabs.jfire.intro.SwitchToBaseAdminPerspectiveAction">
+            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro.ui&amp;class=org.nightlabs.jfire.intro.ui.SwitchToBaseAdminPerspectiveAction">
       </action>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <action
             name="switchToReportingPerspective"
-            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro&amp;class=org.nightlabs.jfire.intro.SwitchToReportingPerspectiveAction">
+            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro.ui&amp;class=org.nightlabs.jfire.intro.ui.SwitchToReportingPerspectiveAction">
       </action>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <action
             name="switchToReportingAdminPerspective"
-            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro&amp;class=org.nightlabs.jfire.intro.SwitchToReportingAdminPerspectiveAction">
+            replaces="runAction?pluginId=org.nightlabs.jfire.base.intro.ui&amp;class=org.nightlabs.jfire.intro.ui.SwitchToReportingAdminPerspectiveAction">
       </action>
    </extension>
  </plugin>

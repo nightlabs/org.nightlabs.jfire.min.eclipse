@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.intro;
+package org.nightlabs.jfire.intro.ui;
 
 
 /**

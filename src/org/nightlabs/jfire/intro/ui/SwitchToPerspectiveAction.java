@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.intro;
+package org.nightlabs.jfire.intro.ui;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IPerspectiveDescriptor;

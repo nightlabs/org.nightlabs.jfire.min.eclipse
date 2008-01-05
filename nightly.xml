@@ -3,12 +3,12 @@
 
 <nightlybuild>
 
-  <project name="org.nightlabs.jfire.base.intro">
-    <ant path="org.nightlabs.jfire.base.intro" file="build-nightlabs.xml" target="deploy"/>
+  <project name="org.nightlabs.jfire.base.intro.ui">
+    <ant path="org.nightlabs.jfire.base.intro.ui" file="build-nightlabs.xml" target="deploy"/>
     <requires/>
     <provides/>
-    <publishes description="..." location="org.nightlabs.jfire.base.intro/dist/org.nightlabs.jfire.base.intro_0.9.3.jar"/>
-    <javadoc path="org.nightlabs.jfire.base.intro/src"/>
+    <publishes description="..." location="org.nightlabs.jfire.base.intro.ui/dist/org.nightlabs.jfire.base.intro.ui_0.9.3.jar"/>
+    <javadoc path="org.nightlabs.jfire.base.intro.ui/src"/>
   </project>
 
 </nightlybuild>

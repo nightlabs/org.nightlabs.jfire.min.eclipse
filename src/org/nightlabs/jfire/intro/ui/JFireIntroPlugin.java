@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.intro;
+package org.nightlabs.jfire.intro.ui;
 
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -52,6 +52,6 @@ public class JFireIntroPlugin extends Plugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.intro", path);		
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.intro.ui", path);		
 	}
 }
