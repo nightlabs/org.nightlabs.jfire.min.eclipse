@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JFire Base Intro Plug-in
+Bundle-SymbolicName: org.nightlabs.jfire.base.intro.ui;singleton:=true
+Bundle-Version: 0.9.3
+Bundle-ClassPath: org.nightlabs.jfire.base.intro.jar
+Bundle-Activator: org.nightlabs.jfire.intro.JFireIntroPlugin
+Bundle-Vendor: NightLabs.org
+Bundle-Localization: plugin
+Export-Package: org.nightlabs.jfire.intro
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.intro
+Eclipse-LazyStart: true
