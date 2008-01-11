@@ -2,6 +2,8 @@ package org.nightlabs.jfire.base.ui.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,8 +15,11 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -41,18 +46,56 @@ import org.nightlabs.progress.ProgressMonitor;
 public class UserSearchComposite 
 extends XComposite 
 {
+	public static final int FLAG_MULTI_SELECTION = 1;
+	public static final int FLAG_TYPES_ALL = 2;
+	public static final int FLAG_TYPE_USER = 4;
+	public static final int FLAG_TYPE_USER_GROUP = 8;
+	public static final int FLAG_TYPE_ORGANISATION = 16;
+	public static final int FLAG_SEARCH_BUTTON = 32;
+	
+	
+	private int flags = 0;
+	
 	public UserSearchComposite(Composite parent, int style) {
+		this(parent, style, FLAG_TYPES_ALL);
+	}
+	
+	public UserSearchComposite(Composite parent, int style, int flags) {
 		super(parent, style);
+		this.flags = flags;
 		createComposite(this);
+	}
+	
+	protected boolean _useAllTypes() {
+		return (flags & FLAG_TYPES_ALL) > 0;
+	}
+	protected boolean useAllTypes() {
+		return 
+			 _useAllTypes()
+			|| 
+			(
+				!useTypeUser() && !useTypeUserGroup() && !useTypeOrganisation()
+			);
+	}	
+	protected boolean useTypeUser() {
+		return (flags & FLAG_TYPE_USER) > 0 || _useAllTypes();
+	}
+	protected boolean useTypeUserGroup() {
+		return (flags & FLAG_TYPE_USER_GROUP) > 0 || _useAllTypes();
+	}
+	protected boolean useTypeOrganisation() {
+		return (flags & FLAG_TYPE_ORGANISATION) > 0 || _useAllTypes();
+	}
+	protected boolean isMultiSelelect() {
+		return (flags & FLAG_MULTI_SELECTION) > 0;
+	}
+	protected boolean isShowSearchButton() {
+		return (flags & FLAG_SEARCH_BUTTON) > 0;	
 	}
 
-	public UserSearchComposite(Composite parent, int style,
-			LayoutMode layoutMode, LayoutDataMode layoutDataMode) {
-		super(parent, style, layoutMode, layoutDataMode);
-		createComposite(this);
-	}
- 
-	private Text userIDText = null;
+	
+
+ 	private Text userIDText = null;
 	public Text getUserIDText() {
 		return userIDText;
 	}
@@ -82,10 +125,15 @@ extends XComposite
 		return selectedUser;
 	}
 	
+	public Collection<User> getSelectedUsers() {
+		return userTable.getSelectedElements();
+	}
+	
 	protected void createComposite(Composite parent) 
 	{
 		Composite searchComp = new XComposite(parent, SWT.NONE, LayoutMode.TOTAL_WRAPPER);
-		searchComp.setLayout(new GridLayout(3, true));
+		int numColumns = isShowSearchButton() ? 4 : 3;
+		searchComp.setLayout(new GridLayout(numColumns, false));
 		searchComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		userIDText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.userID")); //$NON-NLS-1$
@@ -96,9 +144,35 @@ extends XComposite
 		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.userType")); //$NON-NLS-1$
 		userTypeCombo = new Combo(wrapper, SWT.BORDER);
 		userTypeCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		userTypeCombo.setItems(new String[] {"User", "UserGroup", "Organisation"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if (useAllTypes()) {
+			userTypeCombo.setItems(new String[] {"User", "UserGroup", "Organisation"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		} else {
+			List<String> types = new ArrayList<String>();
+			if (useTypeUser())
+				types.add("User"); //$NON-NLS-1$
+			if (useTypeUserGroup())
+				types.add("UserGroup"); //$NON-NLS-1$
+			if (useTypeOrganisation())
+				types.add("Organisation"); //$NON-NLS-1$
+			userTypeCombo.setItems(types.toArray(new String[types.size()]));
+			if (types.size() == 1) {
+				userTypeCombo.select(0);
+			}
+		}
+		
+		if (isShowSearchButton()) {
+			Button searchButton = new Button(searchComp, SWT.PUSH);
+			searchButton.setLayoutData(new GridData());
+			searchButton.setText("Search");
+			searchButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					searchPressed();
+				}
+			});
+		}
 				
-		userTable = new UserTable(parent, SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
+		userTable = new UserTable(parent, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI : AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		userTable.getTableViewer().getTable().setLinesVisible(true);
 		userTable.getTableViewer().getTable().setHeaderVisible(true);
 		userTable.addSelectionChangedListener(userTableSelectionListener);
@@ -128,7 +202,14 @@ extends XComposite
 //			userQuery.setUserType(userTypeText.getText());
 		
 		if (userTypeCombo.getSelectionIndex() != -1 && !userTypeCombo.getText().trim().equals("")) //$NON-NLS-1$
-			userQuery.setUserType(userTypeCombo.getText());
+			userQuery.setUserTypes(Collections.singleton(userTypeCombo.getText()));
+		else if (!useAllTypes()) {
+			Collection<String> types = new HashSet<String>();
+			for (String type : userTypeCombo.getItems()) {
+				types.add(type);
+			}
+			userQuery.setUserTypes(types);
+		}
 		
 		return userQuery;
 	}
@@ -178,5 +259,14 @@ extends XComposite
 			}
 		}
 	};
+
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		userTable.addSelectionChangedListener(listener);
+	}
+
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		userTable.removeSelectionChangedListener(listener);
+	}
 	
 }
