@@ -7,6 +7,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.nightlabs.base.ui.composite.NumberSpinnerComposite;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -57,15 +58,27 @@ extends XComposite
 		group.setText(text);
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		group.setLayout(new GridLayout());
-		
+
 		activeButton = new Button(group, SWT.CHECK);
 		activeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SpinnerSearchEntry.activeButton.text")); //$NON-NLS-1$
 		activeButton.addSelectionListener(activeButtonListener);
-		
+
 		spinnerComposite = new NumberSpinnerComposite(group, SWT.NONE, SWT.BORDER, 2, -Double.MAX_VALUE, Double.MAX_VALUE, 0.1, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA);
 //		spinner = new Spinner(group, SWT.BORDER);
 //		spinner.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		spinner.setDigits(2);		
+//		spinner.setDigits(2);
+//		spinnerComposite.setEnabled(activeButton.getSelection());
+
+		// TODO remove this SWT workaround: If we do it directly, the spinner remains grey - even if it is enabled.
+		// this way, it remains white. that's not perfect, but better than grey background.
+		// making read-only and changing the font colour works fine - only background colours are buggy.
+		Display.getDefault().asyncExec(new Runnable()
+		{
+			public void run()
+			{
+				spinnerComposite.setEnabled(activeButton.getSelection());
+			}
+		});
 	}
 	
 	private SelectionListener activeButtonListener = new SelectionListener(){	
