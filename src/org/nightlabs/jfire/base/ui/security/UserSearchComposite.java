@@ -131,15 +131,15 @@ extends XComposite
 	
 	protected void createComposite(Composite parent) 
 	{
-		Composite searchComp = new XComposite(parent, SWT.NONE, LayoutMode.TOTAL_WRAPPER);
-		int numColumns = isShowSearchButton() ? 4 : 3;
-		searchComp.setLayout(new GridLayout(numColumns, false));
+		XComposite searchComp = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+		searchComp.getGridLayout().numColumns = isShowSearchButton() ? 4 : 3;
+		searchComp.getGridLayout().makeColumnsEqualWidth = false;
 		searchComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		userIDText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.userID")); //$NON-NLS-1$
 		nameText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.name")); //$NON-NLS-1$
 //		userTypeText = createTextSearchEntry(searchComp, Messages.getString("security.UserSearchComposite.userType")); //$NON-NLS-1$
-		Composite wrapper = new XComposite(searchComp, SWT.NONE, LayoutMode.TOTAL_WRAPPER);
+		Composite wrapper = new XComposite(searchComp, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		Label label = new Label(wrapper, SWT.NONE);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.userType")); //$NON-NLS-1$
 		userTypeCombo = new Combo(wrapper, SWT.BORDER);
@@ -162,8 +162,8 @@ extends XComposite
 		
 		if (isShowSearchButton()) {
 			Button searchButton = new Button(searchComp, SWT.PUSH);
-			searchButton.setLayoutData(new GridData());
-			searchButton.setText("Search");
+			searchButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
+			searchButton.setText("&Search");
 			searchButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -172,7 +172,7 @@ extends XComposite
 			});
 		}
 				
-		userTable = new UserTable(parent, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI : AbstractTableComposite.DEFAULT_STYLE_SINGLE);
+		userTable = new UserTable(parent, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER : AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 		userTable.getTableViewer().getTable().setLinesVisible(true);
 		userTable.getTableViewer().getTable().setHeaderVisible(true);
 		userTable.addSelectionChangedListener(userTableSelectionListener);
@@ -180,7 +180,7 @@ extends XComposite
 	
 	protected Text createTextSearchEntry(Composite parent, String labelString) 
 	{
-		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TOTAL_WRAPPER);
+		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		Label label = new Label(wrapper, SWT.NONE);
 		label.setText(labelString);
 		Text text = new Text(wrapper, SWT.BORDER);

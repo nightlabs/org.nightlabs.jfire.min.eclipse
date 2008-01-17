@@ -57,4 +57,5 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.search,
  org.nightlabs.jfire.base.ui.security,
  org.nightlabs.jfire.base.ui.tree,
- org.nightlabs.jfire.base.ui.update
+ org.nightlabs.jfire.base.ui.update,
+ org.nightlabs.jfire.base.ui.workstation
