@@ -181,4 +181,16 @@ extends AbstractEPProcessor
 			return c1.getIndex() - c2.getIndex();
 		}	
 	};
+	
+	public EntryFactory getEntryFactory(String id) {
+		for (CategoryFactory catFactory : categoryID2CategoryFactory.values()) {
+			for (EntryFactory entryFactory : catFactory.getEntryFactories()) {
+				if (entryFactory.getID().equals(id)) {
+					return entryFactory;
+				}
+			}
+		}
+		
+		return null;
+	}
 }
