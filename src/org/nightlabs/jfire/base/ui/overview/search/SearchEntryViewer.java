@@ -432,4 +432,10 @@ extends AbstractEntryViewer
 		section.setTextClient(activeButton);
 	}	
 	
+	public void expand() {
+		if (searchCriteriaSection.isExpanded())
+			return;
+		searchCriteriaSection.setExpanded(true);
+		doExpand();
+	}
 }
