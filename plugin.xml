@@ -34,6 +34,10 @@
             class="org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView"
             icon="icons/j2ee/ListJMSQueuesView.16x16.gif"
             id="org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView" name="%org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView.name"/>
+        <view category="org.nightlabs.jfire.base.admin.ui"
+            class="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView"
+            icon="icons/asyncinvoke/FailedAsyncInvokeEnvelopeView.16x16.png"
+            id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView" name="AsyncInvokeProblemView"/>
     </extension>
     <extension point="org.eclipse.ui.actionSets">
         <actionSet id="org.nightlabs.jfire.base.admin.ui.actions"
@@ -168,6 +172,22 @@
                 enablesFor="+"
                 id="org.nightlabs.jfire.base.admin.ui.timer.action.CreateTimePatternViewAction"
                 label="%org.nightlabs.jfire.base.admin.ui.timer.action.CreateTimePatternViewAction.label"
+                style="push" toolbarPath="additions"/>
+        </viewContribution>
+
+		<viewContribution
+            id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView" targetID="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView">
+            <action
+                class="org.nightlabs.jfire.base.admin.ui.asyncinvoke.DeleteViewAction"
+                enablesFor="+"
+                id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.DeleteViewAction"
+                label="%org.nightlabs.jfire.base.admin.ui.asyncinvoke.DeleteViewAction.label"
+                style="push" toolbarPath="additions"/>
+            <action
+                class="org.nightlabs.jfire.base.admin.ui.asyncinvoke.RetryViewAction"
+                enablesFor="+"
+                id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.RetryViewAction"
+                label="%org.nightlabs.jfire.base.admin.ui.asyncinvoke.RetryViewAction.label"
                 style="push" toolbarPath="additions"/>
         </viewContribution>
     </extension>
