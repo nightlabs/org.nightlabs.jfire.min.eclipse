@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
@@ -88,27 +90,32 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
 		tableViewer.setContentProvider(new ContentProvider());
-		tableViewer.setLabelProvider(createLabelProvider());
+		ITableLabelProvider labelProvider = createLabelProvider();
+		if (labelProvider != null)
+			tableViewer.setLabelProvider(labelProvider);
 	}
 
 	private ContentProvider getContentProvider() {
 		return (ContentProvider) getTableViewer().getContentProvider();
 	}
-	
+
 	/**
 	 * Initializes the controller for this table and adds a listener to react to 
 	 * changed and deleted objects.
 	 */
 	private void initController() {
-		ActiveJDOObjectController<JDOObjectID, JDOObject> controller = getActiveJDOObjectController();
+		final ActiveJDOObjectController<JDOObjectID, JDOObject> controller = getActiveJDOObjectController();
 		// add the listener.
-		controller.addJDOObjectsChangedListener(new JDOObjectsChangedListener<JDOObjectID, JDOObject>() {
+		final JDOObjectsChangedListener<JDOObjectID, JDOObject> jdoObjectsChangedListener = new JDOObjectsChangedListener<JDOObjectID, JDOObject>() {
 			public void onJDOObjectsChanged(JDOObjectsChangedEvent<JDOObjectID, JDOObject> event) {
 				// refresh changed and new objects				
 				final Collection<JDOObject> loadedObjects = event.getLoadedJDOObjects();
 				if (loadedObjects != null) {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
+							if (isDisposed())
+								return;
+
 							if (!getContentProvider().isInputSet()) {
 								getContentProvider().setInput(loadedObjects);
 								getTableViewer().setInput(loadedObjects);
@@ -125,12 +132,12 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 						}
 					});
 				}
-				
+
 				// remove deleted objects.
 				Map<JDOObjectID, JDOObject> deletedObjects = event.getDeletedJDOObjects();
 				if (deletedObjects != null) {
-					Collection<JDOObject> delObjects = new HashSet<JDOObject>();
-					for (JDOObject delObject : delObjects) {
+					Collection<JDOObject> delObjects = new HashSet<JDOObject>(deletedObjects.size());
+					for (JDOObject delObject : deletedObjects.values()) {
 						if (delObject != null) {
 							delObjects.add(delObject);
 						}
@@ -143,7 +150,17 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 					});
 				}
 			}
+		};
+		controller.addJDOObjectsChangedListener(jdoObjectsChangedListener);
+
+		addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent arg0)
+			{
+				controller.close();
+			}
 		});
+
 		controller.getJDOObjects();
 	}
 	
