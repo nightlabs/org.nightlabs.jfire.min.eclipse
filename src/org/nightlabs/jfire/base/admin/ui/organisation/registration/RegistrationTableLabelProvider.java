@@ -71,7 +71,7 @@ public class RegistrationTableLabelProvider
 						if (rs.getOpenUser() == null)
 							return ""; //$NON-NLS-1$
 						else
-              return rs.getOpenUser().getLogin() + ((rs.getOpenUser().getName() != null)?"(" + rs.getOpenUser().getName() + ")":""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+              return rs.getOpenUser().getCompleteUserID() + ((rs.getOpenUser().getName() != null)?"(" + rs.getOpenUser().getName() + ")":""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					case 5:
 						if (rs.getCloseDT() == null)
 							return ""; //$NON-NLS-1$
@@ -81,7 +81,7 @@ public class RegistrationTableLabelProvider
 						if (rs.getCloseUser() == null)
 							return ""; //$NON-NLS-1$
 						else
-							return rs.getCloseUser().getLogin() + ((rs.getCloseUser().getName() != null)?"(" + rs.getCloseUser().getName() + ")":""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+							return rs.getCloseUser().getCompleteUserID() + ((rs.getCloseUser().getName() != null)?"(" + rs.getCloseUser().getName() + ")":""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					default:
 						return ""; //$NON-NLS-1$
 				}
