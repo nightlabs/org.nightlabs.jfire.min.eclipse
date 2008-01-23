@@ -156,6 +156,8 @@ public class AsyncInvokeProblemTable
 					return "";
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
+				if (asyncInvokeProblem.getLastError() == null)
+					return "";
 				return asyncInvokeProblem.getLastError().getErrorClassName();
 			}
 			@Override
@@ -165,6 +167,8 @@ public class AsyncInvokeProblemTable
 					return "";
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
+				if (asyncInvokeProblem.getLastError() == null)
+					return "";
 				return asyncInvokeProblem.getLastError().getErrorStackTrace();
 			}
 		});
@@ -181,6 +185,8 @@ public class AsyncInvokeProblemTable
 					return "";
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
+				if (asyncInvokeProblem.getLastError() == null)
+					return "";
 				return asyncInvokeProblem.getLastError().getErrorMessage();
 			}
 			@Override
@@ -190,6 +196,8 @@ public class AsyncInvokeProblemTable
 					return "";
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
+				if (asyncInvokeProblem.getLastError() == null)
+					return "";
 				return asyncInvokeProblem.getLastError().getErrorStackTrace();
 			}
 		});
@@ -206,6 +214,8 @@ public class AsyncInvokeProblemTable
 					return "";
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
+				if (asyncInvokeProblem.getLastError() == null)
+					return "";
 				return asyncInvokeProblem.getLastError().getErrorRootCauseClassName();
 			}
 			@Override
@@ -215,6 +225,8 @@ public class AsyncInvokeProblemTable
 					return "";
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
+				if (asyncInvokeProblem.getLastError() == null)
+					return "";
 				return asyncInvokeProblem.getLastError().getErrorStackTrace();
 			}
 		});
