@@ -49,7 +49,9 @@ extends SearchEntryViewer
 
 	@Override
 	public Composite createResultComposite(Composite parent) {
-		return createListComposite(parent);
+		AbstractTableComposite tableComposite = createListComposite(parent);
+		addResultTableListeners(tableComposite);
+		return tableComposite;
 	}
 
 	@Override
@@ -74,6 +76,18 @@ extends SearchEntryViewer
 	 * @return the {@link AbstractTableComposite} which is used as result composite
 	 */
 	public abstract AbstractTableComposite createListComposite(Composite parent); 
+	
+	/**
+	 * This method is called by {@link #createSearchComposite(Composite)} with
+	 * the table created by {@link #createListComposite(Composite)}.
+	 * <p>
+	 * This implementation does nothing, but subclass may add listeners (for doubleclick etc.)
+	 * to the table here.
+	 * </p>
+	 * @param tableComposite
+	 */
+	protected void addResultTableListeners(AbstractTableComposite  tableComposite) {		
+	}
 	
 	/**
 	 * returns the AbstractTableComposite created by {@link #createListComposite(Composite)}
