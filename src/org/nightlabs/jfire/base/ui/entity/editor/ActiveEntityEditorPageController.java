@@ -10,11 +10,17 @@ import javax.jdo.JDOHelper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -24,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -47,13 +54,51 @@ import org.nightlabs.progress.SubProgressMonitor;
 import org.nightlabs.util.Util;
 
 /**
- * Best practice for one-object controllers
- * cloning of object (not working on copy in cache)
- * listener for remote changes and notification for the user
- * 
+ * EntityEditorPageController that manages one single object that it assumes to be a
+ * JFire JDO object (PersistanceCapable). For this object the controller will register
+ * a change and delete listener and will notify the user when the object was changed
+ * on the server.
+ * <p>
+ * This should be used as base-class for EntityEditorPageControllers where ever possible
+ * as it implements the best practice for such an editor with a listener for remote changes. 
+ * </p> 
+ * <p>
+ * The controller delegates the loading of the object to {@link #retrieveEntity(ProgressMonitor)}
+ * where a subclass would usually use the appropriate DAO object. After loading the object is
+ * cloned, so that the Editor operates on a independent copy and the object is not modified in
+ * the cache until it is not saved.
+ * </p>
+ * <p>
+ * The saving is also delegated, to {@link #storeEntity(Object, ProgressMonitor)} that should also
+ * use the appropriate DAO. 
+ * </p>
+ * <p>
+ * Loading and saving should use the same fetch-groups (saving for re-retrieving the object). These
+ * fetch-groups are also used to put the retrieved object into the Cache and need therefore to be
+ * returned in {@link #getEntityFetchGroups()} and it is advised to use this method in the retrieve and store methods.   
+ * </p>
+ * <p>
+ * This controller will register a change listener for the object.
+ * The listener will first check if this controller is responsible to process the change notification. It will do
+ * so by checking the ObjectID of the object and checking if the controller/Editor caused the change
+ * itself (this is currently delegated to {@link #checkForSelfCausedChange(DirtyObjectID)}).
+ * </p> 
+ * <p>
+ * If the controller finds itself responsible it will first check if the Editor has local changes (isDirty()). 
+ * If so it will invoke (possibly lazy when the Editor gets activated/focus) a handler that per default
+ * presents a Dialog to the user with up to three choices. The handler used can be overwritten by {@link #createEntityChangedHandler(DirtyObjectID)}.
+ * </p>
+ * <p>
+ * The default change handler ({@link HandleChangeRunnable}) will present the user the following options when 
+ * a remote change was notified and the local copy was already modified:
+ * <ul>
+ *   <li>Keep the local changes, that will not reload the Editor. This might result in remote changes being overwritten when the local copy is saved.</li>
+ *   <li>Load the remote object, that will simply reload the Editor discarding the local changes.</li>
+ *   <li>Load the remote object in an other Editor instance. This will only be presented, when the controller returns something in {@link #createNewInstanceEditorInput()}.
+ *   This option will then open another Editor instance so the user can compare the objects.</li>
+ * </ul>
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- *
- */
+s */
 public abstract class ActiveEntityEditorPageController<EntityType> extends EntityEditorPageController {
 
 	/**
@@ -112,6 +157,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				choiceList.add(choice.getMessage());
 			}
 			choiceList.setSelection(1);
+			selectedChoice = EntityChangeAction.loadRemoteChanges;
 			choiceList.setLayoutData(new GridData(GridData.FILL_BOTH));
 			choiceList.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -122,7 +168,21 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					} else {
 						selectedChoice = null;						 
 					}
-					// TODO set OK button enable-state
+					Button okB = getButton(IDialogConstants.OK_ID);
+					if (okB != null) {
+						okB.setEnabled(selectedChoice != null);
+					}					
+				}
+			});
+			choiceList.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseDoubleClick(MouseEvent e) {
+				}
+				@Override
+				public void mouseDown(MouseEvent e) {
+				}
+				@Override
+				public void mouseUp(MouseEvent e) {
 				}
 			});
 
@@ -202,7 +262,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					break;
 				case loadRemoteChanges:
 					// reload					
-					reload(new NullProgressMonitor());
+					doReload(new NullProgressMonitor());
+					setStale(false);
 					break;
 				case viewRemoteChanges:
 					// open the editor with the fresh object
@@ -267,14 +328,16 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				Collections.reverse(reverseSubjects);
 				for (DirtyObjectID dirtyObjectID : reverseSubjects) {
 					if (controllerObjectID.equals(dirtyObjectID.getObjectID())) {
+						setStale(true);
 						if (dirtyObjectID.getLifecycleState() == JDOLifecycleState.DELETED) {
-							// create the handler for the deletion of the object
+							// create the handler for the deletion of the object							
 							setHandleEntityChangeRunnable(createEntityDeletedHandler(dirtyObjectID));
 						} else {
 							if (checkForSelfCausedChange(dirtyObjectID)) {
 								// if this controller has caused the change then simply put the 
 								// object into the cache again.
 								Cache.sharedInstance().put(null, controllerObject, getEntityFetchGroups(), getEntityMaxFetchDepth());
+								setStale(false);
 							} else {
 								// another controller/client has caused the change
 								if (isDirty()) {
@@ -284,6 +347,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 								} else {
 									// no local changes, reload
 									doReload(new org.eclipse.core.runtime.SubProgressMonitor(getProgressMonitor(), 100));
+									setStale(false);
 								}
 							}
 						}
@@ -319,6 +383,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 */
 	private Object mutex = new Object();
 	
+	private boolean shellDeactivated = false;
+	
 	/**
 	 * This is set to react on changes, but only when the the editor gets activated.
 	 * This value is checked and executed by {@link #handleEditorActivated()} in its default implementation.
@@ -340,6 +406,32 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	public ActiveEntityEditorPageController(EntityEditor editor) {
 		super(editor);		
 		if (getEntityEditor() != null) {
+			final ShellListener shellListener = new ShellListener() {
+				@Override
+				public void shellActivated(ShellEvent e) {
+					shellDeactivated = false;
+					if (RCPUtil.getActiveWorkbenchPage() != null) {
+						IEditorPart part = RCPUtil.getActiveWorkbenchPage().getActiveEditor();
+						if (getEntityEditor().equals(part)) {
+							handleEditorActivated();
+						}
+					}
+				}
+				@Override
+				public void shellClosed(ShellEvent e) {
+				}
+				@Override
+				public void shellDeactivated(ShellEvent e) {
+					shellDeactivated = true;
+				}
+				@Override
+				public void shellDeiconified(ShellEvent e) {
+				}
+				@Override
+				public void shellIconified(ShellEvent e) {
+				}
+			};
+			
 			// add a part listener that will react on the activation of the
 			// associated editor and notify the user of a change if necessary.
 			RCPUtil.getActiveWorkbenchPage().addPartListener(new IPartListener() {
@@ -360,6 +452,13 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 						if (entityChangeListener != null && controllerObjectClass != null) {
 							JDOLifecycleManager.sharedInstance().removeNotificationListener(controllerObjectClass, entityChangeListener);
 						}
+						// and the part listener
+						IWorkbenchPage page = RCPUtil.getActiveWorkbenchPage();
+						if (page != null)
+							page.removePartListener(this);
+						Shell workbenchShell = RCPUtil.getActiveWorkbenchShell();
+						if (workbenchShell != null)
+							workbenchShell.removeShellListener(shellListener);
 					}
 				}
 				@Override
@@ -369,6 +468,11 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				public void partOpened(final IWorkbenchPart part) {
 				}
 			});
+			// also add a shell listener so that when the 
+			// notification happens when the shell does not 
+			// have the focus, the handler is invoked 
+			// when it gets the focus again
+			RCPUtil.getActiveWorkbenchShell().addShellListener(shellListener);			
 		}		
 	}
 	
@@ -447,6 +551,11 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	protected void doReload(IProgressMonitor monitor) {
 		// TODO: Think about doing this in a job and notifying the page before the reload (so it can show the progress view)
 		reload(monitor);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				getEntityEditor().editorDirtyStateChanged();		
+			}
+		});
 	}
 
 	
@@ -526,11 +635,20 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return Whether the changed notified by the given {@link DirtyObjectID} was caused by this controller.
 	 */
 	protected boolean checkForSelfCausedChange(DirtyObjectID dirtyObjectID) {
-		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
-			if (!sessionID.equals(Cache.sharedInstance().getSessionID()))
-				return false;
+		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs, 
+		// so we check if the current sessionID is in the sourceSessionIDs and not if 
+		// it is the only one, see issue: https://www.jfire.org/modules/bugs/view.php?id=471
+		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {			
+			if (sessionID.equals(Cache.sharedInstance().getSessionID()))
+				return true;
 		}
-		return true;
+		return false;
+//		return true;
+//		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {			
+//		if (!sessionID.equals(Cache.sharedInstance().getSessionID()))
+//			return false;
+//	}
+//	return true;
 	}
 	
 	/**
@@ -580,8 +698,20 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 */
 	protected void setHandleEntityChangeRunnable(Runnable runnable) {
 		if (this.handleEntityChangeRunnable == null) {
-			final IEditorPart activeEditor = RCPUtil.getActiveWorkbenchPage().getActiveEditor();
-			if (activeEditor != null && activeEditor == getEntityEditor()) {
+			final IEditorPart[] activeEditor = new IEditorPart[1];
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					Shell shell = RCPUtil.getActiveWorkbenchShell();
+					if (shell != null) {
+						if (shellDeactivated)
+							return;
+					}
+					IWorkbenchPage workbenchPage = RCPUtil.getActiveWorkbenchPage();
+					if (workbenchPage != null)
+						activeEditor[0] = workbenchPage.getActiveEditor();
+				}
+			});
+			if (activeEditor[0] != null && activeEditor[0] == getEntityEditor()) {
 				PlatformUI.getWorkbench().getDisplay().asyncExec(runnable);
 			} else {
 				this.handleEntityChangeRunnable = runnable;
