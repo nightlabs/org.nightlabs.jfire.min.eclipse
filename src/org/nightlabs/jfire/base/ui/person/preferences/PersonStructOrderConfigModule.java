@@ -42,9 +42,6 @@ import org.nightlabs.jfire.person.PersonStruct;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class PersonStructOrderConfigModule extends ConfigModule {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/** 

@@ -30,10 +30,6 @@ package org.nightlabs.jfire.base.ui.prop.edit;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class DataFieldEditorNotFoundException extends Exception {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
