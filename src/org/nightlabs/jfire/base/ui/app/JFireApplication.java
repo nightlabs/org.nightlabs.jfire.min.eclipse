@@ -45,6 +45,8 @@ import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.WorkOfflineException;
+import org.nightlabs.util.IOUtil;
+import org.nightlabs.util.Util;
 
 /**
  * JFireApplication is the main executed class {@see JFireApplication#run(Object)}. 
@@ -133,7 +135,19 @@ extends AbstractApplication
 				}
 			};
 
-			File classLoaderCacheDir = new File(AbstractApplication.getRootDir(), "classloader.cache"); //$NON-NLS-1$
+
+//			File classLoaderCacheDir = new File(AbstractApplication.getRootDir(), "classloader.cache"); //$NON-NLS-1$
+
+			// https://www.jfire.org/modules/bugs/view.php?id=479
+			// When using Windows "domains", the client computers' home directories are mirrored to the server. Unfortunately, though,
+			// this mechanism suffers a maximum path length which our class-loader's cache directory often exceeds. Since we 1st don't need
+			// the classes to be mirrored to the Windows Domain Controller and 2nd they cause trouble, we simply put this directory into the
+			// temp directory instead (which is not mirrored to the server).
+			//
+			// In GNU/Linux, there is exactly one temp-directory for all users; hence we need to put the current OS user's name into the path.
+			// This is done by IOUtil.getUserTempDir().
+
+			File classLoaderCacheDir = new File(IOUtil.createUserTempDir("jfire.", null), "classloader.cache"); //$NON-NLS-1$
 			org.nightlabs.jfire.classloader.JFireRCDLDelegate.createSharedInstance(
 					icp,
 					classLoaderCacheDir).setFilter(RemoteResourceFilterRegistry.sharedInstance());
