@@ -163,7 +163,7 @@ implements IConfigModuleController
 	 * @return the ConfigModule of the Config with ID = <code>configID</code> and the parameter as set
 	 * 	by the abstract getters (e.g. <code>getPreferencePage().getConfigModuleClassName()</code>).
 	 */	
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	@SuppressWarnings("unchecked") 
 	public ConfigModule retrieveConfigModule(ProgressMonitor monitor) 
 	{
 		if (getConfigID() == null)

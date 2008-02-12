@@ -97,7 +97,7 @@ public class LoginConfigModule extends ConfigModule implements Cloneable
 		acquireWriteLock();
 		try {
 
-			LoginConfiguration copy = (LoginConfiguration) latestLoginConfiguration.clone();
+			LoginConfiguration copy = latestLoginConfiguration.clone();
 			savedLoginConfigurations.remove(copy);
 			savedLoginConfigurations.addFirst(copy);
 

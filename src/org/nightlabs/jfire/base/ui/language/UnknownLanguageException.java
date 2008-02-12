@@ -32,6 +32,11 @@ package org.nightlabs.jfire.base.ui.language;
 public class UnknownLanguageException extends RuntimeException
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public UnknownLanguageException()
 	{
 	}

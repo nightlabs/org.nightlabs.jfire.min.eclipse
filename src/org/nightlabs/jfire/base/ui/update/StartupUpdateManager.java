@@ -47,6 +47,7 @@ import org.nightlabs.jfire.base.ui.login.LoginConfigModule;
  * @deprecated new LoginStateListener in org.nightlabs.update.ui
  */
 
+@Deprecated
 public class StartupUpdateManager implements IProgressMonitor, Runnable
 {
 	private double worked;

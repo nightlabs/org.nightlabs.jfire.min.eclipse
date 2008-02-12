@@ -42,6 +42,11 @@ import org.nightlabs.jfire.person.PersonStruct;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class PersonStructOrderConfigModule extends ConfigModule {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** 
 	 * this will be serialized
 	 */
@@ -237,7 +242,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 	public static PersonStructOrderConfigModule sharedInstance() {
 		if (sharedInstance == null) {
 			try {
-				sharedInstance = ((PersonStructOrderConfigModule)Config.sharedInstance().createConfigModule(PersonStructOrderConfigModule.class));
+				sharedInstance = (Config.sharedInstance().createConfigModule(PersonStructOrderConfigModule.class));
 			} catch (ConfigException e) {
 				IllegalStateException ill = new IllegalStateException("Error creating ConfigModule"); //$NON-NLS-1$
 				ill.initCause(e);

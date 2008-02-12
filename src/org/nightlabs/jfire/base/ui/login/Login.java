@@ -333,7 +333,7 @@ extends AbstractEPProcessor
 	{
 		if (_runtimeConfigModule == null) {
 			try {
-				LoginConfigModule _loginConfigModule = ((LoginConfigModule)Config.sharedInstance().createConfigModule(LoginConfigModule.class));
+				LoginConfigModule _loginConfigModule = (Config.sharedInstance().createConfigModule(LoginConfigModule.class));
 				if (_loginConfigModule != null) {
 					_runtimeConfigModule = (LoginConfigModule) _loginConfigModule.clone();
 				}

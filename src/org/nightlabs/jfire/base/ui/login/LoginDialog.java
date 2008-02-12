@@ -160,7 +160,7 @@ public class LoginDialog extends TitleAreaDialog
 		setShellStyle(getShellStyle()|SWT.RESIZE);
 		setTitleImage(SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginDialog.class, null, ImageDimension._75x70).createImage());
 		try {
-			persistentLoginModule = ((LoginConfigModule)Config.sharedInstance().createConfigModule(LoginConfigModule.class));
+			persistentLoginModule = (Config.sharedInstance().createConfigModule(LoginConfigModule.class));
 		} catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}

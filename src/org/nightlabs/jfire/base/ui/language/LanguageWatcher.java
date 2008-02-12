@@ -66,7 +66,7 @@ public class LanguageWatcher implements LoginStateListener {
 	private boolean isLanguageChecked(String userName) {
 		if (!languageChecks.containsKey(userName))
 			return false;
-		Boolean checked = (Boolean) languageChecks.get(userName);
+		Boolean checked = languageChecks.get(userName);
 		return checked.booleanValue();
 	}
 	
