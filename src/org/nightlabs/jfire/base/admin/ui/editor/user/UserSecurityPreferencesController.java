@@ -70,9 +70,6 @@ import org.nightlabs.progress.SubProgressMonitor;
  */
 public class UserSecurityPreferencesController extends EntityEditorPageController
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

@@ -66,9 +66,6 @@ import org.nightlabs.progress.SubProgressMonitor;
  */
 public class GroupSecurityPreferencesController extends EntityEditorPageController
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
