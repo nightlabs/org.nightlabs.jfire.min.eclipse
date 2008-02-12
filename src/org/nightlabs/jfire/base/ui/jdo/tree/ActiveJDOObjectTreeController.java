@@ -196,6 +196,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 				switch (objectID.getLifecycleState()) {
 					case DIRTY: dirtyNodes.put(jdoObjectID, dirtyNode); break;
 					case DELETED: deletedNodes.put(jdoObjectID, dirtyNode); break;
+					case NEW: break; // do nothing for new objects
 				}
 			}
 			final Map<JDOObjectID, TreeNode> ignoredNodes = new HashMap<JDOObjectID, TreeNode>();
