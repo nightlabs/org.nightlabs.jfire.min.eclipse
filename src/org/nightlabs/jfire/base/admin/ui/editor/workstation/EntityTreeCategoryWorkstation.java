@@ -76,6 +76,7 @@ extends ActiveJDOEntityTreeCategory<WorkstationID, Workstation>
 		return new LabelProvider();
 	}
 
+	@Override
 	protected Class<Workstation> getJDOObjectClass()
 	{
 		return Workstation.class;
@@ -85,16 +86,19 @@ extends ActiveJDOEntityTreeCategory<WorkstationID, Workstation>
 		FetchPlan.DEFAULT, Workstation.FETCH_GROUP_THIS_WORKSTATION
 		};
 
+	@Override
 	protected Collection<Workstation> retrieveJDOObjects(Set<WorkstationID> workstationIDs, ProgressMonitor monitor)
 	{
 		return WorkstationDAO.sharedInstance().getWorkstations(workstationIDs, FETCH_GROUPS_WORKSTATION, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 	}
 
+	@Override
 	protected Collection<Workstation> retrieveJDOObjects(ProgressMonitor monitor)
 	{
 		return WorkstationDAO.sharedInstance().getWorkstations(FETCH_GROUPS_WORKSTATION, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 	}
 
+	@Override
 	protected void sortJDOObjects(List<Workstation> workstations)
 	{
 		Collections.sort(workstations, new Comparator<Workstation>() {

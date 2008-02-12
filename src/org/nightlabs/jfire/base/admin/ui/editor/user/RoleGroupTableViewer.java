@@ -45,7 +45,7 @@ public class RoleGroupTableViewer extends TableViewer
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			switch (columnIndex) {
-			case 1: return CheckboxCellEditorHelper.getCellEditorImage(model.getRoleGroups().contains((RoleGroup) element), false);
+			case 1: return CheckboxCellEditorHelper.getCellEditorImage(model.getRoleGroups().contains(element), false);
 			case 2:	return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), RoleGroupsLabelProvider.class);
 			default: return null;
 			}
@@ -57,11 +57,11 @@ public class RoleGroupTableViewer extends TableViewer
 			RoleGroup g = (RoleGroup) element;
 			switch (columnIndex) {
 			case 0:
-				if (model.getRoleGroups().contains((RoleGroup) element) && model.getRoleGroupsFromUserGroups().contains((RoleGroup) element))
+				if (model.getRoleGroups().contains(element) && model.getRoleGroupsFromUserGroups().contains(element))
 					return "DG";
-				else if (model.getRoleGroups().contains((RoleGroup) element))
+				else if (model.getRoleGroups().contains(element))
 					return "D";
-				else if (model.getRoleGroupsFromUserGroups().contains((RoleGroup) element))
+				else if (model.getRoleGroupsFromUserGroups().contains(element))
 					return "G";
 				return "";
 			case 2:	return g.getName().getText(Locale.getDefault().getLanguage());

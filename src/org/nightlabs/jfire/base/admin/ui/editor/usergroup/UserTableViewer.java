@@ -21,7 +21,6 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.User;
 
 public class UserTableViewer extends TableViewer
@@ -48,7 +47,7 @@ public class UserTableViewer extends TableViewer
 		public Image getColumnImage(Object element, int columnIndex)
 		{
 			switch(columnIndex) {
-			case 0: return CheckboxCellEditorHelper.getCellEditorImage(model.getIncludedUsers().contains((User) element), false);
+			case 0: return CheckboxCellEditorHelper.getCellEditorImage(model.getIncludedUsers().contains(element), false);
 			case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UsersLabelProvider.class);
 			default: return null;
 			}

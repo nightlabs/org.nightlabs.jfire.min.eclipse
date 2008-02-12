@@ -84,6 +84,7 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 		return new LabelProvider();
 	}
 
+	@Override
 	protected Class getJDOObjectClass()
 	{
 		return StructLocal.class;
@@ -105,6 +106,7 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 		IStruct.FETCH_GROUP_ISTRUCT_FULL_DATA
 	};
 
+	@Override
 	protected Collection<StructLocal> retrieveJDOObjects(Set<StructLocalID> structLocalIDs, ProgressMonitor monitor)
 	{
 		List<StructLocal> structLocals = new ArrayList<StructLocal>(structLocalIDs.size());
@@ -114,12 +116,14 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 		return structLocals;
 	}
 
+	@Override
 	protected Collection<StructLocal> retrieveJDOObjects(ProgressMonitor monitor)
 	{
 		Collection<StructLocalID> structLocalIDs = StructEditorUtil.getAvailableStructLocalIDs();
 		return retrieveJDOObjects(new HashSet<StructLocalID>(structLocalIDs), monitor);
 	}
 
+	@Override
 	protected void sortJDOObjects(List<StructLocal> structLocals)
 	{
 		// TODO: Implement sorting.

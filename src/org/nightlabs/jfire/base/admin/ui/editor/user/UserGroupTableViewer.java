@@ -42,7 +42,7 @@ public class UserGroupTableViewer extends TableViewer {
 		public Image getColumnImage(Object element, int columnIndex)
 		{
 			if (columnIndex == 0)
-				return CheckboxCellEditorHelper.getCellEditorImage(model.getUserGroups().contains((UserGroup) element), false);
+				return CheckboxCellEditorHelper.getCellEditorImage(model.getUserGroups().contains(element), false);
 			
 			if(columnIndex == 1)
 				return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UserGroupsLabelProvider.class);
@@ -90,9 +90,9 @@ public class UserGroupTableViewer extends TableViewer {
 			@Override
 			protected void doSetValue(UserGroup element, boolean value) {
 				if (value)
-					model.addUserGroup((UserGroup) element);
+					model.addUserGroup(element);
 				else
-					model.removeUserGroup((UserGroup) element);
+					model.removeUserGroup(element);
 				
 				UserGroupTableViewer.this.dirtyStateManager.markDirty();
 			}	

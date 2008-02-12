@@ -43,7 +43,7 @@ implements IViewActionDelegate
 			}
 		};
 		job.setUser(true);
-		job.setPriority(Job.SHORT);
+		job.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 		job.schedule();
 	}
 

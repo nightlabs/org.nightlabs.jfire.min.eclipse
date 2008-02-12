@@ -23,7 +23,6 @@
  ******************************************************************************/
 package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
