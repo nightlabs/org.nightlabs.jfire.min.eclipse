@@ -19,7 +19,7 @@ public interface IConfigModuleController
 	/**
 	 * @return The Class of ConfigModule this controller and its associated page is designed for.  
 	 */
-	public abstract Class<?> getConfigModuleClass();
+	public abstract Class<? extends ConfigModule> getConfigModuleClass();
 	
 	/**
 	 * This method should return all fetch groups necessary to display a detached {@link ConfigModule}
