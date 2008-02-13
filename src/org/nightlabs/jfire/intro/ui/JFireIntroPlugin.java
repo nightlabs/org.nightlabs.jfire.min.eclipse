@@ -52,6 +52,6 @@ public class JFireIntroPlugin extends Plugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.intro.ui", path);		
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.intro.ui", path);
 	}
 }
