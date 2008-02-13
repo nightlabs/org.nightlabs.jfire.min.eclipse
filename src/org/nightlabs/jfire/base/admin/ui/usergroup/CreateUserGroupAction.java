@@ -43,7 +43,7 @@ public class CreateUserGroupAction extends WorkbenchWindowAndViewActionDelegate
 	public void run(IAction action)
 	{
 		try {
-			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(getShell(), new CreateUserGroupWizard());
+			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(new CreateUserGroupWizard());
 //			{
 //				@Override
 //				protected void configureShell(Shell newShell) {

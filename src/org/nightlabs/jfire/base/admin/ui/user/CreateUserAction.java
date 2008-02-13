@@ -46,7 +46,7 @@ public class CreateUserAction extends WorkbenchWindowAndViewActionDelegate
 	{
 		try
 		{
-			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(getShell(), new CreateUserWizard()) {
+			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(new CreateUserWizard()) {
 				@Override
 				protected Point getInitialSize() {
 					return new Point(780,650);

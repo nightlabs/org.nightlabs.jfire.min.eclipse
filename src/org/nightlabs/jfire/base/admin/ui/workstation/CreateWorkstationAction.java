@@ -43,7 +43,7 @@ public class CreateWorkstationAction extends WorkbenchWindowAndViewActionDelegat
 	 */
 	public void run(IAction action)
 	{
-  	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getShell(), new CreateWorkstationWizard());
+  	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(new CreateWorkstationWizard());
     wzd.open();
 	}
 }

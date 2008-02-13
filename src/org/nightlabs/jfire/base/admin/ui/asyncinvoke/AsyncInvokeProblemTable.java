@@ -16,8 +16,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.asyncinvoke.AsyncInvokeEnvelope;
 import org.nightlabs.jfire.asyncinvoke.AsyncInvokeProblem;
 import org.nightlabs.jfire.asyncinvoke.Invocation;
@@ -262,8 +262,8 @@ public class AsyncInvokeProblemTable
 					return;
 
 				AsyncInvokeProblem asyncInvokeProblem = selectedElements.iterator().next();
-//				MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Stack trace", asyncInvokeProblem.getLastError().getErrorStackTrace());
-				new StackTraceDialog(Display.getDefault().getActiveShell(), asyncInvokeProblem).open();
+//				MessageDialog.openInformation(RCPUtil.getActiveShell(), "Stack trace", asyncInvokeProblem.getLastError().getErrorStackTrace());
+				new StackTraceDialog(RCPUtil.getActiveShell(), asyncInvokeProblem).open();
 			}
 		});
 	}
