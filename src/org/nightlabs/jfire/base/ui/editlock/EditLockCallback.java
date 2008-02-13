@@ -1,7 +1,5 @@
 package org.nightlabs.jfire.base.ui.editlock;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 public abstract class EditLockCallback
 {
 	/**
@@ -23,7 +21,7 @@ public abstract class EditLockCallback
 	 * This method is called if you returned {@link InactivityAction#DIALOG_BLOCKING_DUE_TO_INACTIVITY} in {@link #getEditLockAction(EditLockCarrier)}
 	 * and the user selected the action "Save changes" for this edit lock.<br />
 	 * You should react on this action for example by saving the state of the editor and closing it afterwards. The corresponding edit lock is
-	 * automatically released after this method call returns. 
+	 * automatically released after this method call returns.
 	 */
 	public void doSaveAndRelease() {}
 	
@@ -36,7 +34,7 @@ public abstract class EditLockCallback
 	 * on the OK button or the count-down has expired.</li>
 	 * </ul>
 	 * You should react on this action for example by discarding the state of the editor and closing it afterwards. The corresponding edit lock is
-	 * automatically released after this method call returns. 
+	 * automatically released after this method call returns.
 	 */
 	public void doDiscardAndRelease() {}
 	

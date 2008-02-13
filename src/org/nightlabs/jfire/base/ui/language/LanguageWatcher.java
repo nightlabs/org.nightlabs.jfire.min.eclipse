@@ -106,7 +106,7 @@ public class LanguageWatcher implements LoginStateListener {
 		 * languages that are missing on the server.
 		 */
 		protected void syncLanguages() {
-			org.nightlabs.jfire.language.LanguageManager remoteLanguageManager = null;		
+			org.nightlabs.jfire.language.LanguageManager remoteLanguageManager = null;
 			try {
 				LanguageManager localLanguageManager = LanguageManager.sharedInstance();
 
@@ -169,7 +169,7 @@ public class LanguageWatcher implements LoginStateListener {
 		}
 
 		/**
-		 * Checks if Locale has the users prefered language and 
+		 * Checks if Locale has the users prefered language and
 		 * asks to restart if not
 		 */
 		protected void checkUserLanguage() {

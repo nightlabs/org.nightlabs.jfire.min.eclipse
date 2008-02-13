@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
  * The object created by a {@link CategoryFactory}. The {@link Category} holds its
  * {@link Entry}s and is responsible of creating its own {@link Composite} that represents it.
  * <p>
- * The {@link DefaultCategory}, which is usually used 
+ * The {@link DefaultCategory}, which is usually used
  * (default registration with no differing class specified for the {@link CategoryFactory}),
  * creates a Composite that displays all entries in a Table. ({@link DefaultCategoryComposite}).
  * </p>
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 public interface Category {
 
 	/**
-	 * Create the {@link Composite} of this Category that is 
+	 * Create the {@link Composite} of this Category that is
 	 * responsible for displaying its entries.
 	 * <p>
 	 * This method should only be called once per Category.
@@ -42,12 +42,12 @@ public interface Category {
 	 * </p>
 	 * @return
 	 */
-	Composite getComposite();	
+	Composite getComposite();
 
 	/**
 	 * Create the entries according to the extension registrations.
 	 * <p>
-	 * This method should only be called once per Category. 
+	 * This method should only be called once per Category.
 	 * Note, that implementations might ensure this an throw an
 	 * expception if createEntries() is called more than once.
 	 * </p>
@@ -76,7 +76,7 @@ public interface Category {
 	 * This should not be called before {@link #createEntries()} was called.
 	 * Note that implementations might ensure this and
 	 * throw an exception if it is called before.
-	 * </p> 
+	 * </p>
 	 * @return An unmodifiable list of {@link Entry}s of this {@link Category}.
 	 */
 	List<Entry> getEntries();

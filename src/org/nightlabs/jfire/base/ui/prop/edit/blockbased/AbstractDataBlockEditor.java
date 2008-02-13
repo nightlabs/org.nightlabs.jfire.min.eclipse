@@ -74,7 +74,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		addFieldEditor(dataField, fieldEditor, true);
 	}
 	
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<? extends DataField> fieldEditor, boolean addListener) {		
+	protected void addFieldEditor(DataField dataField, DataFieldEditor<? extends DataField> fieldEditor, boolean addListener) {
 		fieldEditors.put(dataField.getPropRelativePK(),fieldEditor);
 		fieldEditor.addDataFieldEditorChangedListener(this);
 	}
@@ -87,7 +87,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		return fieldEditors.containsKey(dataField.getPropRelativePK());
 	}
 	
-	private Collection<DataBlockEditorChangedListener> changeListener = new LinkedList<DataBlockEditorChangedListener>();	
+	private Collection<DataBlockEditorChangedListener> changeListener = new LinkedList<DataBlockEditorChangedListener>();
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
@@ -121,7 +121,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		notifyChangeListeners(editor);
 	}
 	
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public Iterator<DataField> getOrderedPropDataFieldsIterator() {
 		List<DataField> result = new LinkedList<DataField>();
 		Map<String, Integer> structFieldOrder = getStructFieldDisplayOrder();
@@ -139,7 +139,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 
 	protected IStruct getStruct() {
 		return struct;
-	}	
+	}
 	
 	protected void setStruct(IStruct struct) {
 		this.struct = struct;
@@ -168,5 +168,5 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 
 	public DataBlock getDataBlock() {
 		return dataBlock;
-	}	
+	}
 }

@@ -84,13 +84,13 @@ public interface PropertySetEditor {
 	public Control createControl(Composite parent, boolean refresh);
 	
 	/**
-	 * Dispose this editors Control. 
+	 * Dispose this editors Control.
 	 */
 	public void disposeControl();
 	
 	/**
 	 * Refresh the UI representation.
-	 * Implementors should refresh on the GUI-Thread to avoid 
+	 * Implementors should refresh on the GUI-Thread to avoid
 	 * InvalidThreadAccessExceptions.
 	 */
 	public void refreshControl();

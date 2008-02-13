@@ -93,10 +93,10 @@ public class WorkstationSearchComposite extends XComposite {
 		return (flags & FLAG_MULTI_SELECTION) > 0;
 	}
 	protected boolean isShowSearchButton() {
-		return (flags & FLAG_SEARCH_BUTTON) > 0;	
+		return (flags & FLAG_SEARCH_BUTTON) > 0;
 	}
 	
-	protected Text createTextSearchEntry(Composite parent, String labelString) 
+	protected Text createTextSearchEntry(Composite parent, String labelString)
 	{
 		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		Label label = new Label(wrapper, SWT.NONE);
@@ -106,7 +106,7 @@ public class WorkstationSearchComposite extends XComposite {
 		return text;
 	}
 	
-	protected WorkstationQuery getWorkstationQuery() 
+	protected WorkstationQuery getWorkstationQuery()
 	{
 		WorkstationQuery workstationQuery = new WorkstationQuery();
 		
@@ -120,8 +120,8 @@ public class WorkstationSearchComposite extends XComposite {
 	}
 	
 	
-	public void searchPressed() 
-	{		
+	public void searchPressed()
+	{
 		workstationTable.setInput("Searching...");
 		Job job = new Job("Searching workstations") {
 			@Override
@@ -132,18 +132,18 @@ public class WorkstationSearchComposite extends XComposite {
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getWorkstationQuery());
-						}					
+						}
 					});
-					Set<WorkstationID> workstationIDs = um.getWorkstaionIDs(queries);					
+					Set<WorkstationID> workstationIDs = um.getWorkstaionIDs(queries);
 					if (workstationIDs != null && !workstationIDs.isEmpty()) {
 						String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
-						final Collection<Workstation> users = WorkstationDAO.sharedInstance().getWorkstations(workstationIDs, USER_FETCH_GROUPS, 
+						final Collection<Workstation> users = WorkstationDAO.sharedInstance().getWorkstations(workstationIDs, USER_FETCH_GROUPS,
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {					
+							public void run() {
 								workstationTable.setInput(users);
 							}
-						});						
+						});
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -152,7 +152,7 @@ public class WorkstationSearchComposite extends XComposite {
 			}
 		};
 //		job.setPriority(Job.SHORT);
-		job.schedule();		
+		job.schedule();
 	}
 
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {

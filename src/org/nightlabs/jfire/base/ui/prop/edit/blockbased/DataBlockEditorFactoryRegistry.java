@@ -65,7 +65,7 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 	public AbstractDataBlockEditor createDataBlockEditor(
 		IStruct struct,
 		DataBlock dataBlock,
-		Composite parent, 
+		Composite parent,
 		int style,
 		int columnHint
 	) {

@@ -5,8 +5,8 @@ package org.nightlabs.jfire.base.ui.overview.search;
  * 
  * @author Daniel Mazurek - daniel <at> nightlabs <dot> de
  */
-public abstract class AbstractQuickSearchEntry 
-implements QuickSearchEntry 
+public abstract class AbstractQuickSearchEntry
+implements QuickSearchEntry
 {
 	private QuickSearchEntryFactory factory = null;
 	private String searchText = null;

@@ -59,11 +59,11 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 	 * @param parent Should be a ExpandableDataBlockGroupEditor
 	 * @param style SWT-style for the container-Composite
 	 * @param columnHint A hint for the column count the Editor should use
-	 */	
+	 */
 	public GenericDataBlockEditor(
 		IStruct struct,
 		DataBlock dataBlock,
-		Composite parent, 
+		Composite parent,
 		int style,
 		int columnHint
 	) {
@@ -77,7 +77,7 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.numColumns = columnHint;
 		thisLayout.makeColumnsEqualWidth = true;
-		setLayout(thisLayout);		
+		setLayout(thisLayout);
 		createFieldEditors();
 	}
 	
@@ -89,7 +89,7 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 				DataFieldEditor<DataField> fieldEditor;
 				try {
 					fieldEditor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
-							getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, 
+							getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE,
 							null, dataField
 						);
 				} catch (DataFieldEditorNotFoundException e) {
@@ -121,7 +121,7 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 	 */
 	@Override
 	public void refresh(IStruct struct, DataBlock dataBlock) {
-		if (dataBlock == null) 
+		if (dataBlock == null)
 			throw new IllegalStateException("Parameter dataBlock must not be null");		 //$NON-NLS-1$
 		this.dataBlock = dataBlock;
 		setStruct(struct);

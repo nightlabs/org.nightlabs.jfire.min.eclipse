@@ -176,7 +176,7 @@ public abstract class JDOObjectProvider
 		if (!(objectIDs instanceof Set))
 			objectIDs = new HashSet(objectIDs);
 
-		try 
+		try
 		{
 			ArrayList objects = new ArrayList();
 			Set fetchObjectIDs = new HashSet();
@@ -190,15 +190,15 @@ public abstract class JDOObjectProvider
 					fetchObjectIDs.add(objectID);
 			}
 
-			if (fetchObjectIDs.size() > 0) 
+			if (fetchObjectIDs.size() > 0)
 			{
 				Collection fetchedObjects = retrieveJDOObjects(scope, fetchObjectIDs, fetchGroups, maxFetchDepth);
 				cache.putAll(scope, fetchedObjects, fetchGroups, maxFetchDepth);
 				objects.addAll(fetchedObjects);
 			}
 			return objects;
-		} 
-		catch (Exception x) 
+		}
+		catch (Exception x)
 		{
 			throw new RuntimeException(x);
 		}

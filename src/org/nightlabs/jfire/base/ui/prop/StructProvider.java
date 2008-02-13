@@ -40,7 +40,7 @@ package org.nightlabs.jfire.base.ui.prop;
 //
 ///**
 // * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
-// * 
+// *
 // */
 //public class StructProvider extends JDOObjectProvider
 //{
@@ -51,17 +51,17 @@ package org.nightlabs.jfire.base.ui.prop;
 //	private Class linkClass;
 //
 //	/**
-//	 * 
+//	 *
 //	 */
 //	public StructProvider(Class linkClass)
 //	{
 //		super();
 //		this.linkClass = linkClass;
 //	}
-//	
+//
 //	/**
 //	 * Retrieves the Struct and creates the orderedPropStructBlocks list.
-//	 * 
+//	 *
 //	 * @see org.nightlabs.jfire.base.ui.jdo.JDOObjectProvider#retrieveJDOObject(java.lang.String,
 //	 *      java.lang.Object, java.lang.String[])
 //	 */
@@ -76,7 +76,7 @@ package org.nightlabs.jfire.base.ui.prop;
 //		int unmentionedCount = 0;
 //
 ////		Map structBlockOrder = AbstractPropStructOrderConfigModule.sharedInstance().structBlockDisplayOrder();
-////		
+////
 ////		for (Iterator it = propStruct.getStructBlocks().iterator(); it.hasNext();)
 ////		{
 ////			// all blocks
@@ -96,7 +96,7 @@ package org.nightlabs.jfire.base.ui.prop;
 ////			orderedPropStructBlocks.add(structBlock);
 ////		}
 ////		Collections.sort(orderedPropStructBlocks);
-//		
+//
 //		for (StructBlock block : propStruct.getStructBlocks())
 //		{
 //			orderedPropStructBlocks.add(block);
@@ -107,7 +107,7 @@ package org.nightlabs.jfire.base.ui.prop;
 //
 //	/**
 //	 * Get the full Property structure out of the Cache.
-//	 * 
+//	 *
 //	 * @return The full Struct.
 //	 */
 //	public Struct getStruct()
@@ -122,7 +122,7 @@ package org.nightlabs.jfire.base.ui.prop;
 //			throw new RuntimeException(e);
 //		}
 //	}
-//	
+//
 //	public StructLocal getStructLocal()
 //	{
 //		try

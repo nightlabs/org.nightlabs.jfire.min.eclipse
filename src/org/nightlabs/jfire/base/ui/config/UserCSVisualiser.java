@@ -44,9 +44,9 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class UserCSVisualiser implements ConfigSetupVisualiser 
+public class UserCSVisualiser implements ConfigSetupVisualiser
 {
-	private static String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT}; 	
+	private static String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
 	
 	/**
 	 * @see org.nightlabs.jfire.base.ui.config.ConfigSetupVisualiser#getKeyObjectName(org.nightlabs.jfire.base.ui.config.id.ConfigID)
@@ -58,7 +58,7 @@ public class UserCSVisualiser implements ConfigSetupVisualiser
 			return String.format(Messages.getString("org.nightlabs.jfire.base.ui.config.UserCSVisualiser.keyObjectName"), user.getUserID(), user.getName()); //$NON-NLS-1$
 		} catch (Exception e) {
 			return configID.configKey;
-		} 
+		}
 	}
 
 	public String getConfigDescription(ConfigID configID)
@@ -70,7 +70,7 @@ public class UserCSVisualiser implements ConfigSetupVisualiser
 		if (ConfigSetupDAO.sharedInstance().isConfigGroup(configID, monitor)) {
 			ConfigGroup group = setup.getConfigGroup(configID.configKey);
 			return String.format(Messages.getString("org.nightlabs.jfire.base.ui.config.UserCSVisualiser.configGroupDescription"), group.getName()); //$NON-NLS-1$
-		}		
+		}
 		return String.format(Messages.getString("org.nightlabs.jfire.base.ui.config.UserCSVisualiser.userConfigDescription")+getKeyObjectName(configID)); //$NON-NLS-1$
 	}
 }

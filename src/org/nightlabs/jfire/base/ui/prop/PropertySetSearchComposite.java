@@ -77,11 +77,11 @@ import org.nightlabs.util.Util;
  * <p>
  * The Composite constructs an upper area with a {@link TabFolder} for a static (simple)
  * and a dynamic (complex) search. Clients are responsible to create the static and dynamic
- * filter providers {@link #createStaticSearchFilterProvider(SearchResultFetcher)}, {@link #createDynamicSearchFilterProvider(SearchResultFetcher)}.  
+ * filter providers {@link #createStaticSearchFilterProvider(SearchResultFetcher)}, {@link #createDynamicSearchFilterProvider(SearchResultFetcher)}.
  * </p>
  * <p>
  * Below the search filter TabFolder the Composite will create a so-called
- * Button-bar, a simple Composite that can be filled by clients with 
+ * Button-bar, a simple Composite that can be filled by clients with
  * Widgets to trigger search or other custom actions ({@link #getButtonBar()}).
  * </p>
  * <p>
@@ -95,12 +95,12 @@ import org.nightlabs.util.Util;
  * The other alternative is to retrieve the objects directly with the search. This has to be
  * used when the objects searched are not instances of {@link PropertySet}.
  * </p>
- *  
+ * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  * @param <PropertySetType> The type of {@link PropertySet} the search should be performed for.
  * 		This can be {@link PropertySet} itself or a subclass as well as as objects that are
- * 		in an other way linked to a property set. 
+ * 		in an other way linked to a property set.
  */
 public abstract class PropertySetSearchComposite<PropertySetType> extends XComposite {
 	
@@ -162,24 +162,24 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	
 	/**
 	 * Static filter provider tab.
-	 */	
+	 */
 	private class StaticProviderTabItem implements FilterProviderTab {
 		private TabItem tabItem;
 		private SearchFilterProvider filterProvider;
 		private Composite providerComposite;
 		
 		public StaticProviderTabItem(
-				TabFolder parent, 
+				TabFolder parent,
 				SearchResultFetcher resultFetcher
-			) 
+			)
 		{
 			tabItem = new TabItem(parent, SWT.NONE);
-			filterProvider = createStaticSearchFilterProvider(resultFetcher);			
-			providerComposite = filterProvider.createComposite(parent);			
+			filterProvider = createStaticSearchFilterProvider(resultFetcher);
+			providerComposite = filterProvider.createComposite(parent);
 			providerComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 			tabItem.setControl(providerComposite);
 			tabItem.setData(this);
-		}		
+		}
 		
 		public TabItem getTabItem() {
 			return tabItem;
@@ -198,7 +198,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 
 	/**
 	 * Dynamic filter provider tab.
-	 */	
+	 */
 	private class DynamicProviderTabItem implements FilterProviderTab {
 		private TabItem tabItem;
 		private SearchFilterProvider filterProvider;
@@ -211,7 +211,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			providerComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 			tabItem.setControl(providerComposite);
 			tabItem.setData(this);
-		}		
+		}
 		public TabItem getTabItem() {
 			return tabItem;
 		}
@@ -227,14 +227,14 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * that will search using the {@link PropertyManager}.
 	 */
 	private SearchResultFetcher resultFetcher = new SearchResultFetcher() {
-		@SuppressWarnings("unchecked") 
+		@SuppressWarnings("unchecked")
 		public void searchTriggered(final SearchFilterProvider filterProvider) {
 			logger.debug("Search triggered, getting PersonManager"); //$NON-NLS-1$
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					resultTable.setInput(new String[] {Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.statusMessage.searching")}); //$NON-NLS-1$
 				}
-			});	
+			});
 			PropertyManagerHome home = null;
 			PropertyManager propertyManager = null;
 			try {
@@ -261,8 +261,8 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 					logger.debug("ID search for "+propIDs.size()+" entries took " + Util.getTimeDiffString(start)); //$NON-NLS-1$ //$NON-NLS-2$
 					start = System.currentTimeMillis();
 					input = PropertySetDAO.sharedInstance().getPropertySets(
-							propIDs, 
-							getFetchGroups(), 
+							propIDs,
+							getFetchGroups(),
 							NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 							new NullProgressMonitor()
 					);
@@ -285,7 +285,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 							resultTable.setSelection(new StructuredSelection(finalInput.iterator().next()));
 						}
 					}
-				});				
+				});
 			} catch (Exception e) {
 				logger.error("Error searching person.",e); //$NON-NLS-1$
 				throw new RuntimeException(e);
@@ -301,7 +301,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * </p>
 	 */
 	public void performSearch() {
-		final SearchFilterProvider filterProvider = ((FilterProviderTab) filterProviderFolder.getSelection()[0].getData()).getFilterProvider();		
+		final SearchFilterProvider filterProvider = ((FilterProviderTab) filterProviderFolder.getSelection()[0].getData()).getFilterProvider();
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.searchJob.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -354,13 +354,13 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		
 		buttonBar = new XComposite(topWrapper, SWT.NONE, XComposite.LayoutMode.LEFT_RIGHT_WRAPPER, XComposite.LayoutDataMode.GRID_DATA_HORIZONTAL);
 		
-		XComposite resultWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER); 
+		XComposite resultWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		resultLabelWrapper = new XComposite(resultWrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		resultLabelWrapper.getGridData().verticalIndent = 5;
 		resultLabelWrapper.getGridData().horizontalIndent = 5;
 		resultLabelWrapper.getGridData().verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
 		resultLabelWrapper.getGridData().grabExcessVerticalSpace = false;
-		resultLabel = new Label(resultLabelWrapper, SWT.NONE | SWT.WRAP);		
+		resultLabel = new Label(resultLabelWrapper, SWT.NONE | SWT.WRAP);
 		resultLabel.setLayoutData(new GridData());
 		resultLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.resultLabel.text")); //$NON-NLS-1$
 		
@@ -383,7 +383,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 
 	/**
 	 * Creates a Button in the given Composite that will trigger {@link #performSearch()}
-	 * when selected. 
+	 * when selected.
 	 * <p>
 	 * This method is intended to be used by clients and is not called internally.
 	 * </p>
@@ -404,7 +404,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	}
 	
 	/**
-	 * Get the result Table created with {@link #createResultTable(Composite)}. 
+	 * Get the result Table created with {@link #createResultTable(Composite)}.
 	 * @return The result Table created with {@link #createResultTable(Composite)}.
 	 */
 	public PropertySetTable<PropertySetType> getResultTable() {
@@ -457,7 +457,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * Create the table to display the found results in.
 	 * This should be a {@link PropertySetTable} parameterized
 	 * with the same type as this class.
-	 *  
+	 * 
 	 * @param parent The parent to add the table to.
 	 * @return The newly created table.
 	 */

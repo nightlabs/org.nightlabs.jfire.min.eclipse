@@ -40,9 +40,9 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class PersonManagementPreferencePage 
-extends 
-	PreferencePage 
+public class PersonManagementPreferencePage
+extends
+	PreferencePage
 implements
 	IWorkbenchPreferencePage
 {
@@ -59,7 +59,7 @@ implements
   	createWrapperComposite(parent);
   	Label label = new Label(wrapperComposite,SWT.PUSH);
   	label.setText("Test label for person management pref page."); //$NON-NLS-1$
-  	return wrapperComposite;		
+  	return wrapperComposite;
   }
   
   protected void createWrapperComposite(Composite parent) {

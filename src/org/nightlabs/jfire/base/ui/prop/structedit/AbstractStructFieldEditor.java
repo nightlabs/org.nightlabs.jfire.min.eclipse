@@ -36,7 +36,7 @@ public abstract class AbstractStructFieldEditor<F extends StructField> implement
 	public Composite createComposite(Composite parent, int style, StructEditor structEditor, LanguageChooser languageChooser) {
 		this.languageChooser = languageChooser;
 		this.structEditor = structEditor;
-		editorGroup = new Group(parent, SWT.NONE);		
+		editorGroup = new Group(parent, SWT.NONE);
 		editorGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout gl = new GridLayout();
 		XComposite.configureLayout(LayoutMode.ORDINARY_WRAPPER, gl);
@@ -92,7 +92,7 @@ public abstract class AbstractStructFieldEditor<F extends StructField> implement
 			return;
 		}
 		
-		fieldNameEditor.setEnabled(true);		
+		fieldNameEditor.setEnabled(true);
 		fieldNameEditor.setI18nText(field.getName(), EditMode.DIRECT);
 		StructFieldMetaData sfmd = StructFieldFactoryRegistry.sharedInstance().getFieldMetaDataMap().get(field.getClass().getName());
 		if (sfmd != null) {
@@ -178,7 +178,7 @@ class ErrorComposite extends XComposite {
 		errorImage = JFireBasePlugin.getImageDescriptor("icons/Validation_error.gif").createImage(); //$NON-NLS-1$
 		
 		errorImageLabel = new Label(this, SWT.NONE);
-		errorLabel = new Label(this, SWT.NONE);		
+		errorLabel = new Label(this, SWT.NONE);
 		errorImageLabel.setImage(errorImage);
 		errorLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
 		setVisible(false);

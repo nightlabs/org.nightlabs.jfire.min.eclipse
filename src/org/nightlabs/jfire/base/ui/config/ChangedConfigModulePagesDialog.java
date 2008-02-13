@@ -43,10 +43,10 @@ extends CenteredDialog // IconAndMessageDialog
 //		message = "The following configurations changed. Mark the Modules that shall be reloaded.";
 	}
 
-	protected static class ContentProvider implements ITreeContentProvider {		
+	protected static class ContentProvider implements ITreeContentProvider {
 		Map<Config, Set<PageModulePair>> updatedModules = null;
 		
-		@SuppressWarnings("unchecked") 
+		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof Map) {
 				updatedModules = (Map<Config, Set<PageModulePair>>) inputElement;
@@ -141,7 +141,7 @@ extends CenteredDialog // IconAndMessageDialog
 	 * @param updatedModule the updated {@link ConfigModule}
 	 * @param correspondingConfig the config corresponding to the changed module
 	 */
-	public static void addChangedConfigModule(AbstractConfigModulePreferencePage page, ConfigModule updatedModule) 
+	public static void addChangedConfigModule(AbstractConfigModulePreferencePage page, ConfigModule updatedModule)
 	{
 		// TODO we should NOT pass the correspondingConfig because it allows inconsistent data to be passed
 		// to this dialog. Instead the correspondingConfig should be read from the config module.
@@ -169,7 +169,7 @@ extends CenteredDialog // IconAndMessageDialog
 		Set<PageModulePair> changedModulesOfConfig = updatedConfigs.get(correspConfig);
 		if (changedModulesOfConfig == null) {
 			changedModulesOfConfig = new HashSet<PageModulePair>();
-			updatedConfigs.put(correspConfig, changedModulesOfConfig);			
+			updatedConfigs.put(correspConfig, changedModulesOfConfig);
 		}
 		changedModulesOfConfig.add(new PageModulePair(page, updatedModule));
 
@@ -232,8 +232,8 @@ extends CenteredDialog // IconAndMessageDialog
 				} else {
 					// clicked on a ConfigModule -> mark / unmark Config if all / none are checked
 					TreeItem correspConfig = item.getParentItem();
-					if (! checkedStatus) { 
-						// item was made unchecked -> if parent was checked --> mark unchecked 
+					if (! checkedStatus) {
+						// item was made unchecked -> if parent was checked --> mark unchecked
 						if (correspConfig.getChecked())
 							correspConfig.setChecked(false);
 					} else {
@@ -259,14 +259,14 @@ extends CenteredDialog // IconAndMessageDialog
 //				StructuredSelection selection = (StructuredSelection) event.getSelection();
 //				if (selection.isEmpty())
 //					return;
-//				
+//
 //				for (Iterator it = selection.iterator(); it.hasNext();) {
 //					Object markedEntry = it.next();
 //					if (markedEntry instanceof Config) {
 //						// How to get to the widget which represents this Config??
 //						Config markedConfig = (Config) markedEntry;
 //						treeViewer.setSelection( // sets the selection no the checked state.
-//								new StructuredSelection(updatedConfigs.get(markedConfig).toArray()), 
+//								new StructuredSelection(updatedConfigs.get(markedConfig).toArray()),
 //								true
 //								);
 //					}

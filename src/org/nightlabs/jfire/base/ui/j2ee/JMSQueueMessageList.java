@@ -155,7 +155,7 @@ public class JMSQueueMessageList extends XComposite {
 						return;
 					}
 
-					if (queuesCombo.getSelectedElement() != null) 
+					if (queuesCombo.getSelectedElement() != null)
 						loadQueueMessaged(queuesCombo.getSelectedElement());
 				}
 			});

@@ -24,7 +24,7 @@ public class StructFieldNode extends TreeNode //implements Comparable<StructFiel
 			throw new IllegalArgumentException("field must not be null!"); //$NON-NLS-1$
 		
 		this.field = field;
-		this.parentBlock = parent;		
+		this.parentBlock = parent;
 	}
 	
 	@Override

@@ -38,12 +38,12 @@ package org.nightlabs.jfire.base.ui.prop;
 //{
 //	private static Map<Class, JDOObjectProvider> providers;
 //	private static PropStructProviderRegistry sharedInstance;
-//	
+//
 //	public PropStructProviderRegistry()
 //	{
-//		
+//
 //	}
-//	
+//
 //	public JDOObjectProvider getPropStructProvider(Class linkClass)
 //	{
 //		if (providers.containsKey(linkClass))
@@ -55,9 +55,9 @@ package org.nightlabs.jfire.base.ui.prop;
 //			return prov;
 //		}
 //	}
-//	
+//
 //	public static PropStructProviderRegistry sharedInstance()
 //	{
 //		return sharedInstance == null ? sharedInstance = new PropStructProviderRegistry() : sharedInstance;
-//	}	
+//	}
 //}

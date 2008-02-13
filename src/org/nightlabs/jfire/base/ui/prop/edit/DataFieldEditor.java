@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
-import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructField;
 
 
@@ -65,7 +64,7 @@ public interface DataFieldEditor<F extends DataField> {
 	 * 
 	 * @param parent The parent to use.
 	 * @return A newly create Control.
-	 */	
+	 */
 	public Control createControl(Composite parent);
 	
 	/**
@@ -101,7 +100,7 @@ public interface DataFieldEditor<F extends DataField> {
 	public void refresh();
 	
 	/**
-	 * Updates the PropertySet, sets the data from the UI control 
+	 * Updates the PropertySet, sets the data from the UI control
 	 * to the {@link DataField} currently set.
 	 * <p>
 	 * This method should be threadsafe (access GUI on the GUI-Thread).

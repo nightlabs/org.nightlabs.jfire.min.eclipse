@@ -33,12 +33,12 @@ import org.nightlabs.jfire.base.ui.JFireWelcomePerspective;
 
 /**
  * 
- * @author Alexander Bieber <alex[AT]nightlabs[DOT]de> 
+ * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * 
  */
-public class JFireWorkbenchAdvisor 
+public class JFireWorkbenchAdvisor
 extends AbstractWorkbenchAdvisor
-{    
+{
 	/**
 	 * Constructs a new <code>JFireWorkbenchAdvisor</code>.<br/>
 	 */

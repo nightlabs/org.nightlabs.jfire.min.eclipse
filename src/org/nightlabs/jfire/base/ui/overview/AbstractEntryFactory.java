@@ -13,8 +13,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public abstract class AbstractEntryFactory 
-implements EntryFactory 
+public abstract class AbstractEntryFactory
+implements EntryFactory
 {
 	public static final String ELEMENT_CATEGORY_ENTRY = "categoryEntry"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
@@ -22,7 +22,7 @@ implements EntryFactory
 	public static final String ATTRIBUTE_INDEX = "index"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_ID = "categoryEntryID"; //$NON-NLS-1$
 	
-	public AbstractEntryFactory() {		
+	public AbstractEntryFactory() {
 	}
 
 	private Image image;
@@ -55,7 +55,7 @@ implements EntryFactory
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}  
+	}
 
 	private int index = -1;
 	/**
@@ -87,12 +87,12 @@ implements EntryFactory
 	 */
 	public void setID(String id) {
 		this.id = id;
-	}  
+	}
 	
 	
 	public void setInitializationData(IConfigurationElement element,
-			String propertyName, Object data) 
-	throws CoreException 
+			String propertyName, Object data)
+	throws CoreException
 	{
 		String name = element.getAttribute(ATTRIBUTE_NAME);
 		String iconString = element.getAttribute(ATTRIBUTE_ICON);
@@ -104,7 +104,7 @@ implements EntryFactory
 			ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 					element.getNamespaceIdentifier(), iconString);
 			if (imageDescriptor != null)
-				setImage(imageDescriptor.createImage());										
+				setImage(imageDescriptor.createImage());
 		}
 		if (checkString(indexString)) {
 			try {
@@ -112,7 +112,7 @@ implements EntryFactory
 				setIndex(index);
 			} catch (NumberFormatException e) {
 				
-			}			
+			}
 		}
 		if (checkString(id))
 			setID(id);
@@ -121,7 +121,7 @@ implements EntryFactory
 		
 	}
 	
-	protected boolean checkString(String s) 
+	protected boolean checkString(String s)
 	{
 		if (s == null || s.trim().equals("") ) //$NON-NLS-1$
 			return false;

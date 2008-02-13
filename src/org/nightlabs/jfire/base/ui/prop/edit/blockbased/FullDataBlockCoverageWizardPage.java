@@ -75,7 +75,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	public void updatePropertySet() {
 		if (fullDataBlockCoverageComposite != null)
 			fullDataBlockCoverageComposite.updatePropertySet();
-	}	
+	}
 
 	/**
 	 * See {@link FullDataBlockCoverageComposite#refresh(PropertySet)}

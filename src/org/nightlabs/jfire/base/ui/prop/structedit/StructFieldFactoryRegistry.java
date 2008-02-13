@@ -104,7 +104,7 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 	private static StructFieldFactoryRegistry sharedInstance;
 
 	/**
-	 * Returns the static shared instance of a DataFieldEditorFactoryRegistry. 
+	 * Returns the static shared instance of a DataFieldEditorFactoryRegistry.
 	 * @return The static shared instance of a DataFieldEditorFactoryRegistry.
 	 */
 	public static StructFieldFactoryRegistry sharedInstance() {

@@ -30,7 +30,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 
 /**
- * A category that will not display its items in a table, but rather will 
+ * A category that will not display its items in a table, but rather will
  * ask all its entries to create a Composite for itself.
  * See {@link Entry#createComposite(Composite)}.
  * <p>
@@ -55,7 +55,7 @@ public class CustomCompositeCategory extends DefaultCategory {
 			Composite comp = entry.createComposite(wrapper);
 			if (comp.getLayoutData() == null) {
 				comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			}			
+			}
 		}
 		return wrapper;
 	}

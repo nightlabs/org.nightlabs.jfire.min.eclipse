@@ -35,7 +35,7 @@ import org.nightlabs.jfire.prop.DataField;
  */
 public interface DataFieldEditorChangeListener {
 	/**
-	 * Called when the value of the {@link DataFieldEditor} this listener is 
+	 * Called when the value of the {@link DataFieldEditor} this listener is
 	 * associated with has changed.
 	 * 
 	 * @param editor The field editor whose value has changed.

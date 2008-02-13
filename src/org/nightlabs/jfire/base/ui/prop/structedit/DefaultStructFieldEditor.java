@@ -17,6 +17,6 @@ public class DefaultStructFieldEditor extends AbstractStructFieldEditor<StructFi
 	}
 
 	@Override
-	protected void setSpecialData(StructField field) {		
+	protected void setSpecialData(StructField field) {
 	}
 }

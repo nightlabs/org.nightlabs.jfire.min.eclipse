@@ -12,7 +12,7 @@ public class StructFieldMetaData
 		editorFactory = _editorFactory;
 		fieldFactory = _fieldFactory;
 		fieldName = _fieldName;
-		description = _description;		
+		description = _description;
 	}
 
 	public StructFieldEditorFactory getEditorFactory()
@@ -36,7 +36,7 @@ public class StructFieldMetaData
 			return editorFactory.getStructFieldClass();
 		else
 			return fieldName;
-	}	
+	}
 	
 	@Override
 	public String toString()

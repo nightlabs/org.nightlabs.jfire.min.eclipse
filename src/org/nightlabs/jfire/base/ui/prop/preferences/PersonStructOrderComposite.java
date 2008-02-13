@@ -257,13 +257,13 @@ public class PersonStructOrderComposite extends Composite {
 		buttonFieldDown.setLayoutData(buttonLData);
 		
 		// Blocks table
-		tableViewerBlocks = new TableViewer(blocksTableComposite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);    
-		GridData tgd = new GridData(GridData.FILL_BOTH);    
-		Table t = tableViewerBlocks.getTable(); 
+		tableViewerBlocks = new TableViewer(blocksTableComposite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
+		GridData tgd = new GridData(GridData.FILL_BOTH);
+		Table t = tableViewerBlocks.getTable();
 		t.setHeaderVisible(true);
 		t.setLinesVisible(true);
 		t.setLayoutData(tgd);
-		t.setLayout(new TableLayout());    
+		t.setLayout(new TableLayout());
 		tableViewerBlocks.setContentProvider(new BlockOrderListContentProvider());
 		tableViewerBlocks.setLabelProvider(new BlockOrderListLabelProvider());
 		new TableColumn(t, SWT.LEFT, 0).setText("Structure block"); //$NON-NLS-1$
@@ -275,12 +275,12 @@ public class PersonStructOrderComposite extends Composite {
 		
 		// Fields table
 		tableViewerFields = new TableViewer(fieldsTableComposite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
-		tgd = new GridData(GridData.FILL_BOTH);    
-		t = tableViewerFields.getTable(); 
+		tgd = new GridData(GridData.FILL_BOTH);
+		t = tableViewerFields.getTable();
 		t.setHeaderVisible(true);
 		t.setLinesVisible(true);
 		t.setLayoutData(tgd);
-		t.setLayout(new TableLayout());    
+		t.setLayout(new TableLayout());
 		new TableColumn(t, SWT.LEFT, 0).setText("Structure field"); //$NON-NLS-1$
 		
 		this.layout();

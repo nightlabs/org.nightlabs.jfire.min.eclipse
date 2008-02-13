@@ -37,8 +37,8 @@ import org.nightlabs.jfire.security.id.UserID;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public abstract class AbstractUserConfigModulePreferencePage 
-extends AbstractConfigModulePreferencePage 
+public abstract class AbstractUserConfigModulePreferencePage
+extends AbstractConfigModulePreferencePage
 {
 	private static final Logger logger = Logger.getLogger(AbstractUserConfigModulePreferencePage.class);
 	
@@ -64,7 +64,7 @@ extends AbstractConfigModulePreferencePage
 
 	/**
 	 * Sets the current ConfigID to the user currently logged in user.
-	 *  
+	 * 
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
@@ -74,7 +74,7 @@ extends AbstractConfigModulePreferencePage
 			getConfigModuleController().setConfigID(
 					UserConfigSetup.getUserConfigID(UserID.create(
 							login.getOrganisationID(), login.getUserID())),
-							false, (String) null); // TODO: how to get the ConfigModule's id (number) or create several pages with all ids there are 
+							false, (String) null); // TODO: how to get the ConfigModule's id (number) or create several pages with all ids there are
 		} catch (Exception e) {
 			logger.info("User decided to work offline!"); //$NON-NLS-1$
 		}

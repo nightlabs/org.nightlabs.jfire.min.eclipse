@@ -69,7 +69,7 @@ public abstract class LSDEditorActionDelegate implements IEditorActionDelegate, 
 	
 	/**
 	 * Subclasses may override this but have to make sure
-	 * super.selectionChanged(action,selection) is called to 
+	 * super.selectionChanged(action,selection) is called to
 	 * further provide login-state-dependency
 	 * 
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
@@ -86,7 +86,7 @@ public abstract class LSDEditorActionDelegate implements IEditorActionDelegate, 
 	 * Default implementation of loginStateChanged does nothing.
 	 * @see LoginStateListener#loginStateChanged(int, IAction)
 	 */
-	public void loginStateChanged(int loginState, IAction action) {		
+	public void loginStateChanged(int loginState, IAction action) {
 	}
 
 }

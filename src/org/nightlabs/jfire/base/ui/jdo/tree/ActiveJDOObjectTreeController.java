@@ -40,13 +40,13 @@ import org.nightlabs.notification.NotificationListener;
  * <p>
  * The controller is <em>active</em> as it tracks changes to the structure (new/deleted objects, changed objects)
  * keeps the data up-to-date and uses a callback to notify the user of the changes (see {@link #onJDOObjectsChanged(JDOTreeNodesChangedEvent)}).
- * </p> 
+ * </p>
  * <p>
  * More details about how to use this class can be found in our wiki:
  * <a href="https://www.jfire.org/modules/phpwiki/index.php/ActiveJDOObjectTreeController">https://www.jfire.org/modules/phpwiki/index.php/ActiveJDOObjectTreeController</a>
  * </p>
  *
- * @author Marco Schulze 
+ * @author Marco Schulze
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  * @param <JDOObjectID> The type of the {@link ObjectID} the tree sturcture uses
@@ -60,7 +60,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 	/**
 	 * Retrieve the children of the given parent element.
-	 * If the parent is null this method should return the root element of the tree structure. 
+	 * If the parent is null this method should return the root element of the tree structure.
 	 * 
 	 * @param parent <code>null</code> for the root elements or the parent element for which to load the children.
 	 * @return The children of the the JDOObject with the given parentID, but never <code>null</code>.
@@ -130,9 +130,9 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
 	 * track new objects that are children of one of the objects referenced by
-	 * the given parentObjectIDs. 
+	 * the given parentObjectIDs.
 	 * By default this will create a {@link TreeLifecycleListenerFilter}
-	 * for {@link JDOLifecycleState#NEW}.  
+	 * for {@link JDOLifecycleState#NEW}.
 	 * 
 	 * @param parentObjectIDs The {@link ObjectID}s of the parent objects new children should be tracked for.
 	 * @return A new {@link IJDOLifecycleListenerFilter}
@@ -178,7 +178,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 	private NotificationListener changeListener;
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	protected void handleChangeNotification(NotificationEvent notificationEvent, IProgressMonitor monitor) {
 		synchronized (objectID2TreeNode) {
 			if (hiddenRootNode == null)
@@ -223,8 +223,8 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 					fireJDOObjectsChangedEvent(new JDOTreeNodesChangedEvent<JDOObjectID, TreeNode>(
 							ActiveJDOObjectTreeController.this,
 							parentsToRefresh,
-							new ArrayList<TreeNode>(dirtyNodes.values()), 
-							ignoredNodes, 
+							new ArrayList<TreeNode>(dirtyNodes.values()),
+							ignoredNodes,
 							deletedNodes
 					)
 					);
@@ -233,19 +233,19 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 		} // synchronized (objectID2TreeNode) {
 	}
 	
-	protected class ChangeListener extends NotificationAdapterJob {		
+	protected class ChangeListener extends NotificationAdapterJob {
 		
 		public ChangeListener(String name) {
 			super(name);
 		}
 		
-		@SuppressWarnings("unchecked") 
+		@SuppressWarnings("unchecked")
 		public void notify(NotificationEvent notificationEvent) {
 			handleChangeNotification(notificationEvent, getProgressMonitor());
 		}
 	};
 
-	@SuppressWarnings("deprecation") 
+	@SuppressWarnings("deprecation")
 	protected void registerJDOLifecycleListener()
 	{
 		registerJDOLifecycleListeners();
@@ -273,7 +273,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 				logger.debug("  - " + jdoObjectID); //$NON-NLS-1$
 		}
 
-		lifecycleListener = createJDOLifecycleListener(activeParentObjectIDs);		
+		lifecycleListener = createJDOLifecycleListener(activeParentObjectIDs);
 		JDOLifecycleManager.sharedInstance().addLifecycleListener(lifecycleListener);
 	}
 
@@ -288,7 +288,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 		}
 	}
 
-	@SuppressWarnings("deprecation") 
+	@SuppressWarnings("deprecation")
 	protected void registerChangeListener() {
 		createRegisterChangeListener();
 	}
@@ -324,7 +324,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 			return filter;
 		}
 
-		@SuppressWarnings("unchecked") 
+		@SuppressWarnings("unchecked")
 		public void notify(JDOLifecycleEvent event)
 		{
 			if (logger.isDebugEnabled())
@@ -493,7 +493,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * @param parent The parent node or <code>null</code>.
 	 * @return A list of {@link TreeNode}s or <code>null</code>, if data is not yet ready.
 	 */
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public List<TreeNode> getNodes(TreeNode _parent)
 	{
 		if (_parent != null && _parent == hiddenRootNode)
@@ -654,7 +654,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 		treeNodesChangedListeners.remove(listener);
 	}
 	
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	private void fireJDOObjectsChangedEvent(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent)
 	{
 		if (logger.isDebugEnabled()) {

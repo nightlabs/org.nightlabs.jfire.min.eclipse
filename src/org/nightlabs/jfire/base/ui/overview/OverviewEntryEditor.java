@@ -25,7 +25,7 @@ import org.nightlabs.jfire.base.ui.login.part.LSDEditorPart;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class OverviewEntryEditor 
+public class OverviewEntryEditor
 extends LSDEditorPart
 {
 	private static final Logger logger = Logger.getLogger(OverviewEntryEditor.class);
@@ -56,7 +56,7 @@ extends LSDEditorPart
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
-	throws PartInitException 
+	throws PartInitException
 	{
 		setSite(site);
 		setInput(input);
@@ -64,7 +64,7 @@ extends LSDEditorPart
 			OverviewEntryEditorInput entryInput = (OverviewEntryEditorInput) input;
 			entryViewer = entryInput.getEntry().createEntryViewer();
 		}
-		getSite().getPage().addPartListener(partListener);			
+		getSite().getPage().addPartListener(partListener);
 	}
 	
 	private EntryViewer entryViewer;
@@ -73,7 +73,7 @@ extends LSDEditorPart
 	}
 	
 	private Composite composite;
-	public void createPartContents(Composite parent) 
+	public void createPartContents(Composite parent)
 	{
 		if (entryViewer != null) {
 			composite = entryViewer.createComposite(parent);
@@ -82,28 +82,28 @@ extends LSDEditorPart
 				entryViewer.getSelectionProvider().addSelectionChangedListener(selectionChangedListener);
 			}
 			
-			if (getEditorSite().getActionBarContributor() != null && 
-					getEditorSite().getActionBarContributor() instanceof XEditorActionBarContributor) 
+			if (getEditorSite().getActionBarContributor() != null &&
+					getEditorSite().getActionBarContributor() instanceof XEditorActionBarContributor)
 			{
-				XEditorActionBarContributor editorActionBarContributor = 
+				XEditorActionBarContributor editorActionBarContributor =
 					(XEditorActionBarContributor) getEditorSite().getActionBarContributor();
 				addSelectionChangedListener(editorActionBarContributor);
 			}
 			
 			updateContextMenu();
 			updateToolbar();
-		}		
+		}
 	}
 		
 	@Override
 	public void setFocus() {
-		if (composite != null && !composite.isDisposed())		
+		if (composite != null && !composite.isDisposed())
 			composite.setFocus();
 	}
 	
-	protected void updateContextMenu() 
+	protected void updateContextMenu()
 	{
-		EditorActionBarContributor actionBarContributor = 
+		EditorActionBarContributor actionBarContributor =
 			(EditorActionBarContributor) getEditorSite().getActionBarContributor();
 		if (actionBarContributor != null && entryViewer != null) {
 			MenuManager menuManager = entryViewer.getMenuManager();
@@ -121,13 +121,13 @@ extends LSDEditorPart
 				} else {
 					actionBarContributor.contributeToMenu(menuManager);
 				}
-			}				
-		}		
+			}
+		}
 	}
 	
-	protected void removeContextMenu() 
+	protected void removeContextMenu()
 	{
-		EditorActionBarContributor actionBarContributor = 
+		EditorActionBarContributor actionBarContributor =
 			(EditorActionBarContributor) getEditorSite().getActionBarContributor();
 		if (actionBarContributor != null && entryViewer != null) {
 			MenuManager menuManager = entryViewer.getMenuManager();
@@ -136,13 +136,13 @@ extends LSDEditorPart
 				menuManager.updateAll(true);
 				if (logger.isDebugEnabled())
 					logger.debug("removeContextMenu, Number of entries = "+menuManager.getItems().length+", actionBarContributor = "+actionBarContributor); //$NON-NLS-1$ //$NON-NLS-2$
-			}							
+			}
 		}
 	}
 
-	protected void updateToolbar() 
+	protected void updateToolbar()
 	{
-		EditorActionBarContributor actionBarContributor = 
+		EditorActionBarContributor actionBarContributor =
 			(EditorActionBarContributor) getEditorSite().getActionBarContributor();
 		if (actionBarContributor != null && entryViewer != null) {
 			ToolBarManager toolbarManager = entryViewer.getToolBarManager();
@@ -160,13 +160,13 @@ extends LSDEditorPart
 				} else {
 					actionBarContributor.contributeToToolBar(toolbarManager);
 				}
-			}				
-		}		
+			}
+		}
 	}
 	
-	protected void removeToolbar() 
+	protected void removeToolbar()
 	{
-		EditorActionBarContributor actionBarContributor = 
+		EditorActionBarContributor actionBarContributor =
 			(EditorActionBarContributor) getEditorSite().getActionBarContributor();
 		if (actionBarContributor != null && entryViewer != null) {
 			ToolBarManager toolbarManager = entryViewer.getToolBarManager();
@@ -175,32 +175,32 @@ extends LSDEditorPart
 				toolbarManager.update(true);
 				if (logger.isDebugEnabled())
 					logger.debug("removeToolbar, Number of entries = "+toolbarManager.getItems().length+", actionBarContributor = "+actionBarContributor); //$NON-NLS-1$ //$NON-NLS-2$
-			}							
+			}
 		}
-	}	
+	}
 	
-	private IPartListener partListener = new IPartListener(){	
-		public void partOpened(IWorkbenchPart part) {			
-		}	
-		public void partDeactivated(IWorkbenchPart part) {		
+	private IPartListener partListener = new IPartListener(){
+		public void partOpened(IWorkbenchPart part) {
+		}
+		public void partDeactivated(IWorkbenchPart part) {
 			removeContextMenu();
 			removeToolbar();
-		}	
+		}
 		public void partClosed(IWorkbenchPart part) {
 			editorDisposed();
-		}	
+		}
 		public void partBroughtToTop(IWorkbenchPart part) {
 		}
 		public void partActivated(IWorkbenchPart part) {
 			updateContextMenu();
 			updateToolbar();
-		}	
+		}
 	};
 		
 	protected void editorDisposed() {
 		getSite().getPage().removePartListener(partListener);
 		if (entryViewer != null)
-			getSite().setSelectionProvider(entryViewer.getSelectionProvider());		
+			getSite().setSelectionProvider(entryViewer.getSelectionProvider());
 	}
 	
 	private ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener(){
@@ -213,7 +213,7 @@ extends LSDEditorPart
 	private ListenerList listeners = new ListenerList();
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.add(listener);
-	}	
+	}
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.remove(listener);
 	}

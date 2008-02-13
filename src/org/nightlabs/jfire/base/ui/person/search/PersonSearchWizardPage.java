@@ -45,12 +45,12 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		super(
 			PersonSearchWizardPage.class.getName(),
 			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.title") //$NON-NLS-1$
-		);		
+		);
 		this.quickSearchText = quickSearchText;
 		new WizardHop(this);
 	}
 
-	/** 
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

@@ -21,13 +21,13 @@ import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener;
 
 /**
- * A base class for active tables. 
+ * A base class for active tables.
  * Subclasses must provide a {@link ActiveJDOObjectController} that provides the data.
  * <p>
  * You should not use the {@link #setInput(Object)} method directly for this class,
- * neither the one of the contained {@link TableViewer}. Use the {@link #load()} method instead. 
- * </p> 
- * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de --> 
+ * neither the one of the contained {@link TableViewer}. Use the {@link #load()} method instead.
+ * </p>
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> extends
 		AbstractTableComposite<JDOObject> {
@@ -36,7 +36,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 * Used internally
 	 */
 	class ContentProvider extends TableContentProvider {
-		private List<JDOObject> input; 
+		private List<JDOObject> input;
 		@Override
 		public Object[] getElements(Object inputElement) {
 			if (input == null) {
@@ -85,7 +85,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	protected abstract ITableLabelProvider createLabelProvider();
 
 	/**
-	 * Sets the {@link ContentProvider} and the LabelProvider {@link #createLabelProvider()}. 
+	 * Sets the {@link ContentProvider} and the LabelProvider {@link #createLabelProvider()}.
 	 */
 	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
@@ -100,7 +100,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	}
 
 	/**
-	 * Initializes the controller for this table and adds a listener to react to 
+	 * Initializes the controller for this table and adds a listener to react to
 	 * changed and deleted objects.
 	 */
 	private void initController() {
@@ -108,7 +108,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 		// add the listener.
 		final JDOObjectsChangedListener<JDOObjectID, JDOObject> jdoObjectsChangedListener = new JDOObjectsChangedListener<JDOObjectID, JDOObject>() {
 			public void onJDOObjectsChanged(JDOObjectsChangedEvent<JDOObjectID, JDOObject> event) {
-				// refresh changed and new objects				
+				// refresh changed and new objects
 				final Collection<JDOObject> loadedObjects = event.getLoadedJDOObjects();
 				if (loadedObjects != null) {
 					Display.getDefault().asyncExec(new Runnable() {

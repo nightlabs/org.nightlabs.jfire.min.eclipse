@@ -22,7 +22,7 @@ public class CacheFactory implements ICacheFactory {
 	
 
 	/**
-	 * The dummy/delegate implementation of {@link ICache} 
+	 * The dummy/delegate implementation of {@link ICache}
 	 */
 	public static class CacheDelegate implements ICache {
 		
@@ -85,7 +85,7 @@ public class CacheFactory implements ICacheFactory {
 	 */
 	public void setInitializationData(IConfigurationElement arg0, String arg1,
 			Object arg2) throws CoreException {
-		// Yet nothing to do 
+		// Yet nothing to do
 	}
 
 	public String getID() {

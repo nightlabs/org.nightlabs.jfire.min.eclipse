@@ -55,7 +55,7 @@ public class EditLockHandle {
 	}
 
 	/**
-	 * Asynchronously release the lock referenced by this handle. This method returns immediately and spawns a <code>Job</code> to do the work. 
+	 * Asynchronously release the lock referenced by this handle. This method returns immediately and spawns a <code>Job</code> to do the work.
 	 */
 	@SuppressWarnings("deprecation")
 	public void release() {

@@ -22,7 +22,6 @@ import org.eclipse.ui.PartInitException;
 import org.nightlabs.base.ui.celleditor.ComboBoxCellEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
-import org.nightlabs.base.ui.entity.editor.EntityEditorStaleHandler;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageStaleHandler;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
@@ -46,8 +45,8 @@ import org.nightlabs.util.Util;
  * on the server.
  * <p>
  * This should be used as base-class for EntityEditorPageControllers where ever possible
- * as it implements the best practice for such an editor with a listener for remote changes. 
- * </p> 
+ * as it implements the best practice for such an editor with a listener for remote changes.
+ * </p>
  * <p>
  * The controller delegates the loading of the object to {@link #retrieveEntity(ProgressMonitor)}
  * where a subclass would usually use the appropriate DAO object. After loading the object is
@@ -56,27 +55,27 @@ import org.nightlabs.util.Util;
  * </p>
  * <p>
  * The saving is also delegated, to {@link #storeEntity(Object, ProgressMonitor)} that should also
- * use the appropriate DAO. 
+ * use the appropriate DAO.
  * </p>
  * <p>
  * Loading and saving should use the same fetch-groups (saving for re-retrieving the object). These
  * fetch-groups are also used to put the retrieved object into the Cache and need therefore to be
- * returned in {@link #getEntityFetchGroups()} and it is advised to use this method in the retrieve and store methods.   
+ * returned in {@link #getEntityFetchGroups()} and it is advised to use this method in the retrieve and store methods.
  * </p>
  * <p>
  * This controller will register a change listener for the object.
  * The listener will first check if this controller is responsible to process the change notification. It will do
  * so by checking the ObjectID of the object and checking if the controller/Editor caused the change
  * itself (this is currently delegated to {@link #checkForSelfCausedChange(DirtyObjectID)}).
- * </p> 
+ * </p>
  * <p>
- * If the controller finds itself responsible it will first check if the Editor has local changes (isDirty()). 
+ * If the controller finds itself responsible it will first check if the Editor has local changes (isDirty()).
  * If so it will invoke (possibly lazy when the Editor gets activated/focus) a handler to react on that change.
  * The handler is invoked via the editors {@link EntityEditorStaleHandler}. The handler used for a change
  * notification can be overwritten by {@link #createEntityChangedHandler(DirtyObjectID)}.
  * </p>
  * <p>
- * The default change handler ({@link EntityChangedHandler}) will let the user choose from the following options when 
+ * The default change handler ({@link EntityChangedHandler}) will let the user choose from the following options when
  * a remote change was notified and the local copy was already modified:
  * <ul>
  *   <li>Keep the local changes, that will not reload the Editor. This might result in remote changes being overwritten when the local copy is saved.</li>
@@ -143,7 +142,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			this.controller = controller;
 		}
 		
-		private ComboBoxCellEditor getCreateCellEditor(Composite parent) {			
+		private ComboBoxCellEditor getCreateCellEditor(Composite parent) {
 			if (cellEditor == null) {
 				String[] messages = new String[actions.length];
 				for (int i = 0; i < actions.length; i++) {
@@ -156,7 +155,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 							public void widgetSelected(SelectionEvent e) {
 								fireApplyEditorValue();
 							}
-							public void widgetDefaultSelected(SelectionEvent e) {}					
+							public void widgetDefaultSelected(SelectionEvent e) {}
 						});
 					}
 				};
@@ -187,7 +186,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		}
 
 		@Override
-		public IEntityEditorPageController getPageController() {			
+		public IEntityEditorPageController getPageController() {
 			return controller;
 		}
 
@@ -231,7 +230,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					setStale(true);
 					break;
 				case loadRemoteChanges:
-					// reload					
+					// reload
 					doReload(new NullProgressMonitor());
 					setStale(false);
 					break;
@@ -282,7 +281,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			}
 		}
 		
-	}	
+	}
 	
 	/**
 	 * The change listener that will determine whether a
@@ -313,7 +312,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 							getEntityEditor().getStaleHandler().addEntityEdiorStaleHandler(createEntityDeletedHandler(dirtyObjectID));
 						} else {
 							if (checkForSelfCausedChange(dirtyObjectID)) {
-								// if this controller has caused the change then simply put the 
+								// if this controller has caused the change then simply put the
 								// object into the cache again.
 								Cache.sharedInstance().put(null, controllerObject, getEntityFetchGroups(), getEntityMaxFetchDepth());
 								setStale(false);
@@ -333,11 +332,11 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 
 						// only the last event is taken into account
 						break;
-					}						
+					}
 				}
 			}
 		}
-	}	
+	}
 	
 	/**
 	 * The object currently managed by this controller.
@@ -355,7 +354,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * is not in sync with the server any more, that means a change
 	 * was notified but the user has neglected it.
 	 */
-	private boolean stale = false;  
+	private boolean stale = false;
 	
 	/**
 	 * This is used to synchronize.
@@ -383,13 +382,13 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @param startBackgroundLoading Whether to start loading right away.
 	 */
 	public ActiveEntityEditorPageController(EntityEditor editor, boolean startBackgroundLoading) {
-		super(editor, startBackgroundLoading);				
+		super(editor, startBackgroundLoading);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * This implementation calls {@link #retrieveEntity(ProgressMonitor)} 
+	 * This implementation calls {@link #retrieveEntity(ProgressMonitor)}
 	 * and keeps a clone of the result as controller object (see {@link #getControllerObject()}).
 	 * </p>
 	 */
@@ -422,7 +421,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * This implementation calls {@link #storeEntity(ProgressMonitor)} 
+	 * This implementation calls {@link #storeEntity(ProgressMonitor)}
 	 * and keeps a clone of the result as controller object (see {@link #getControllerObject()}).
 	 * </p>
 	 */
@@ -445,7 +444,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	}
 	
 	/**
-	 * Reload the controller object. Currently only wraps {@link #reload(IProgressMonitor)}. 
+	 * Reload the controller object. Currently only wraps {@link #reload(IProgressMonitor)}.
 	 */
 	protected void doReload(IProgressMonitor monitor) {
 		// TODO: Think about doing this in a job and notifying the page before the reload (so it can show the progress view)
@@ -459,7 +458,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		doLoad(monitor);
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				getEntityEditor().editorDirtyStateChanged();		
+				getEntityEditor().editorDirtyStateChanged();
 			}
 		});
 	}
@@ -480,7 +479,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	/**
 	 * Subclasses need to implement the retrieval of the controllers
 	 * object here. Usually this will be a call to the DAO object.
-	 *  
+	 * 
 	 * @param monitor The monitor to use.
 	 * @return The controllers object.
 	 */
@@ -490,7 +489,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * Subclasses need to implement the storing of the given controller object here.
 	 * Usually this will be a call to the DAO object. The saved object (newly retrieved from the server)
 	 * should be returned.
-	 * @param controllerObject The controllerObject to store. 
+	 * @param controllerObject The controllerObject to store.
 	 * @param monitor The monitor to use.
 	 * @return The controllers object.
 	 */
@@ -535,8 +534,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * and the remote version.
 	 * <p>
 	 * The default implementation returns <code>null</code>.
-	 * </p> 
-	 * @return {@link IEditorInput} that allows opening of a new instance of the associated editor for the object with the same id but different version. 
+	 * </p>
+	 * @return {@link IEditorInput} that allows opening of a new instance of the associated editor for the object with the same id but different version.
 	 */
 	protected IEditorInput createNewInstanceEditorInput() {
 		return null;
@@ -550,16 +549,16 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return Whether the changed notified by the given {@link DirtyObjectID} was caused by this controller.
 	 */
 	protected boolean checkForSelfCausedChange(DirtyObjectID dirtyObjectID) {
-		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs, 
-		// so we check if the current sessionID is in the sourceSessionIDs and not if 
+		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs,
+		// so we check if the current sessionID is in the sourceSessionIDs and not if
 		// it is the only one, see issue: https://www.jfire.org/modules/bugs/view.php?id=471
-		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {			
+		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
 			if (sessionID.equals(Cache.sharedInstance().getSessionID()))
 				return true;
 		}
 		return false;
 //		return true;
-//		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {			
+//		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
 //		if (!sessionID.equals(Cache.sharedInstance().getSessionID()))
 //			return false;
 //	}
@@ -567,24 +566,24 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	}
 	
 	/**
-	 * Create the {@link IEntityEditorPageStaleHandler} that will be used notify the user of 
+	 * Create the {@link IEntityEditorPageStaleHandler} that will be used notify the user of
 	 * a remote change of the controller object.
 	 * <p>
-	 * This will be set by the change listener to the editor {@link EntityEditorStaleHandler} 
-	 * which means that it is not necessarily executed instantly, when the editor currently doesn't have the focus, 
+	 * This will be set by the change listener to the editor {@link EntityEditorStaleHandler}
+	 * which means that it is not necessarily executed instantly, when the editor currently doesn't have the focus,
 	 * it will be executed lazily when the editor was activated again.
 	 * </p>
 	 * <p>
 	 * This implementation returns {@link EntityChangedHandler}.
 	 * </p>
 	 * @param dirtyObjectID The {@link DirtyObjectID} that notified the change.
-	 * @return The handler that will be executed to notify the user of 
+	 * @return The handler that will be executed to notify the user of
 	 * 	a remote change of the controller object.
 	 */
 	protected IEntityEditorPageStaleHandler createEntityChangedHandler(DirtyObjectID dirtyObjectID) {
 		List<EntityStaleAction> actions = new ArrayList<EntityStaleAction>(3);
 		actions.add(EntityStaleAction.keepLocalChanges);
-		actions.add(EntityStaleAction.loadRemoteChanges);		
+		actions.add(EntityStaleAction.loadRemoteChanges);
 		return new EntityChangedHandler(
 				actions.toArray(new EntityStaleAction[0]),
 				EntityStaleAction.loadRemoteChanges,
@@ -596,8 +595,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * Create the {@link IEntityEditorPageStaleHandler} that will be executed to notify the user that
 	 * the controller object was deleted on the server.
 	 * <p>
-	 * This will be set by the change listener to the editor {@link EntityEditorStaleHandler} 
-	 * which means that it is not necessarily executed instantly, when the editor currently doesn't have the focus, 
+	 * This will be set by the change listener to the editor {@link EntityEditorStaleHandler}
+	 * which means that it is not necessarily executed instantly, when the editor currently doesn't have the focus,
 	 * it will be executed lazily when the editor was activated again.
 	 * </p>
 	 * <p>

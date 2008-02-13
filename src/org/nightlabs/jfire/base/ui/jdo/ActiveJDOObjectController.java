@@ -69,7 +69,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 	 * in order to filter newly created objects already on the server side.
 	 *
 	 * @param monitor The monitor.
-	 * @return Returns all those jdo objects that this 
+	 * @return Returns all those jdo objects that this
 	 */
 	protected abstract Collection<JDOObject> retrieveJDOObjects(ProgressMonitor monitor);
 
@@ -169,7 +169,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 							JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
 							ignoredJDOObjectIDs.remove(jdoObjectID);
 							jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
-						}						
+						}
 					}
 					if (ignoredJDOObjectIDs.isEmpty())
 						ignoredJDOObjects = null;
@@ -282,7 +282,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 
 	/**
 	 * You <b>must</b> call this method once you don't need this controller anymore.
-	 * It performs some clean-ups, e.g. unregistering all listeners. 
+	 * It performs some clean-ups, e.g. unregistering all listeners.
 	 */
 	public void close()
 	{

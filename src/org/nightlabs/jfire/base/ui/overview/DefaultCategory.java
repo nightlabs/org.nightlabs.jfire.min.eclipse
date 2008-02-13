@@ -23,7 +23,7 @@ public class DefaultCategory extends AbstractCategory {
 	/**
 	 * Create a new {@link DefaultCategoryComposite}.
 	 * <p>
-	 * Note that the {@link DefaultCategory} will 
+	 * Note that the {@link DefaultCategory} will
 	 * create its entries in the constructor.
 	 * </p>
 	 * 
@@ -34,7 +34,7 @@ public class DefaultCategory extends AbstractCategory {
 		createEntries();
 	}
 
-	/** 
+	/**
 	 * {@inheritDoc}
 	 * <p>
 	 * This method is intended to be overridden in order to use
@@ -43,7 +43,7 @@ public class DefaultCategory extends AbstractCategory {
 	 * @see org.nightlabs.jfire.base.ui.overview.Category#createComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	public Composite createComposite(Composite composite) {
-		categoryComposite = new DefaultCategoryComposite(composite, SWT.NONE, this, 
+		categoryComposite = new DefaultCategoryComposite(composite, SWT.NONE, this,
 				AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		return categoryComposite;
 	}
@@ -66,7 +66,7 @@ public class DefaultCategory extends AbstractCategory {
 			return;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				if (categoryComposite != null && !categoryComposite.isDisposed()) 
+				if (categoryComposite != null && !categoryComposite.isDisposed())
 					categoryComposite.setInput(getEntries());
 			}
 		});

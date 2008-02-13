@@ -61,7 +61,7 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
  *
  */
 public class CommentDataBlockEditor extends AbstractDataBlockEditor
-	implements 
+	implements
 		ModifyListener,
 		DataFieldEditor
 {
@@ -132,7 +132,7 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public Control createControl(Composite parent) {
-		if (textComment == null) {			
+		if (textComment == null) {
 			labelTitle = new Label(parent,SWT.NONE);
 			labelTitle.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			
@@ -192,7 +192,7 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	private boolean changed = false;
 	/**
 	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#setChanged(boolean)
-	 */	
+	 */
 	public void setChanged(boolean changed) {
 		this.changed = changed;
 		if (!refreshing)

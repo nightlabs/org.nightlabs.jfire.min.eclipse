@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * An QuickSearchEntryFactory holds decorative data, like
  * name, images etc. for a certain kind of QuickSearchEntryTypes
- *   
+ * 
  * Instances of this interface, can create instances of {@link QuickSearchEntry}
  * 
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
@@ -47,7 +47,7 @@ extends IExecutableExtension
 	String getId();
 	
 	/**
-	 * returns the name of the QuickSearchEntry 
+	 * returns the name of the QuickSearchEntry
 	 * @return the name of the QuickSearchEntry
 	 */
 	String getName();

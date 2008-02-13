@@ -15,8 +15,8 @@ import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
  * 
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  */
-public abstract class AbstractQuickSearchEntryFactory 
-implements QuickSearchEntryFactory 
+public abstract class AbstractQuickSearchEntryFactory
+implements QuickSearchEntryFactory
 {
 //	private Image composedDecoratorImage = null;
 	private Image image = null;
@@ -38,7 +38,7 @@ implements QuickSearchEntryFactory
 		this.image = image;
 	}
 	
-//	public Image getComposedDecoratorImage() 
+//	public Image getComposedDecoratorImage()
 //	{
 //		if (composedDecoratorImage == null && getDecoratorImage() != null) {
 //			composedDecoratorImage = new SearchCompositeImage(getDecoratorImage()).createImage();
@@ -60,8 +60,8 @@ implements QuickSearchEntryFactory
 		this.name = name;
 	}
 	
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) 
-	throws CoreException 
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+	throws CoreException
 	{
 		if (config.getName().equals(QuickSearchEntryRegistry.ELEMENT_QUICK_SEARCH_ENTRY_FACTORY)) {
 			String decoratorString = config.getAttribute(QuickSearchEntryRegistry.ATTRIBUTE_DECORATOR_IMAGE);
@@ -75,18 +75,18 @@ implements QuickSearchEntryFactory
 				ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 						config.getNamespaceIdentifier(), iconString);
 				if (imageDescriptor != null)
-					image = imageDescriptor.createImage();										
+					image = imageDescriptor.createImage();
 			}
 			if (AbstractEPProcessor.checkString(decoratorString)) {
 				ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 						config.getNamespaceIdentifier(), decoratorString);
 				if (imageDescriptor != null)
-					decoratorImage = imageDescriptor.createImage();										
+					decoratorImage = imageDescriptor.createImage();
 			}
 			if (AbstractEPProcessor.checkString(idString)) {
-				id = idString;				
+				id = idString;
 			}
-		}		
+		}
 	}
 	
 }

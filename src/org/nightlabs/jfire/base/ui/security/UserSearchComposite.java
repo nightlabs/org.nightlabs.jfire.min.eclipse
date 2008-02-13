@@ -42,8 +42,8 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserSearchComposite 
-extends XComposite 
+public class UserSearchComposite
+extends XComposite
 {
 	public static final int FLAG_MULTI_SELECTION = 1;
 	public static final int FLAG_TYPES_ALL = 2;
@@ -69,13 +69,13 @@ extends XComposite
 		return (flags & FLAG_TYPES_ALL) > 0;
 	}
 	protected boolean useAllTypes() {
-		return 
+		return
 			 _useAllTypes()
-			|| 
+			||
 			(
 				!useTypeUser() && !useTypeUserGroup() && !useTypeOrganisation()
 			);
-	}	
+	}
 	protected boolean useTypeUser() {
 		return (flags & FLAG_TYPE_USER) > 0 || _useAllTypes();
 	}
@@ -89,7 +89,7 @@ extends XComposite
 		return (flags & FLAG_MULTI_SELECTION) > 0;
 	}
 	protected boolean isShowSearchButton() {
-		return (flags & FLAG_SEARCH_BUTTON) > 0;	
+		return (flags & FLAG_SEARCH_BUTTON) > 0;
 	}
 
 	
@@ -128,7 +128,7 @@ extends XComposite
 		return userTable.getSelectedElements();
 	}
 	
-	protected void createComposite(Composite parent) 
+	protected void createComposite(Composite parent)
 	{
 		XComposite searchComp = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		searchComp.getGridLayout().numColumns = isShowSearchButton() ? 4 : 3;
@@ -177,7 +177,7 @@ extends XComposite
 		userTable.addSelectionChangedListener(userTableSelectionListener);
 	}
 	
-	protected Text createTextSearchEntry(Composite parent, String labelString) 
+	protected Text createTextSearchEntry(Composite parent, String labelString)
 	{
 		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		Label label = new Label(wrapper, SWT.NONE);
@@ -187,7 +187,7 @@ extends XComposite
 		return text;
 	}
 	
-	protected UserQuery getUserQuery() 
+	protected UserQuery getUserQuery()
 	{
 		UserQuery userQuery = new UserQuery();
 		
@@ -213,8 +213,8 @@ extends XComposite
 		return userQuery;
 	}
 	
-	public void searchPressed() 
-	{		
+	public void searchPressed()
+	{
 		userTable.setInput(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.input_loading")); //$NON-NLS-1$
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.loadJob.name")) { //$NON-NLS-1$
 			@Override
@@ -225,18 +225,18 @@ extends XComposite
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getUserQuery());
-						}					
+						}
 					});
-					Set<UserID> userIDs = um.getUserIDs(queries);					
+					Set<UserID> userIDs = um.getUserIDs(queries);
 					if (userIDs != null && !userIDs.isEmpty()) {
 						String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
-						final List<User> users = UserDAO.sharedInstance().getUsers(userIDs, USER_FETCH_GROUPS, 
+						final List<User> users = UserDAO.sharedInstance().getUsers(userIDs, USER_FETCH_GROUPS,
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {					
+							public void run() {
 								userTable.setInput(users);
 							}
-						});						
+						});
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -245,10 +245,10 @@ extends XComposite
 			}
 		};
 //		job.setPriority(Job.SHORT);
-		job.schedule();		
+		job.schedule();
 	}
 	
-	private ISelectionChangedListener userTableSelectionListener = new ISelectionChangedListener(){	
+	private ISelectionChangedListener userTableSelectionListener = new ISelectionChangedListener(){
 		public void selectionChanged(SelectionChangedEvent event) {
 			if (!event.getSelection().isEmpty() && event.getSelection() instanceof StructuredSelection) {
 				StructuredSelection sel = (StructuredSelection) event.getSelection();

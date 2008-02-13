@@ -96,8 +96,8 @@ public class StaticPersonSearchFilterProviderComposite extends org.eclipse.swt.w
 //		controlCompany.setLayoutData(controlCompanyLData);
 
 		secondRow = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE);
-		GridLayout secondRowLayout = ((GridLayout)secondRow.getLayout());;		
-		GridData secondRowLData = new GridData();		
+		GridLayout secondRowLayout = ((GridLayout)secondRow.getLayout());;
+		GridData secondRowLData = new GridData();
 		secondRowLData.grabExcessHorizontalSpace = true;
 		secondRowLData.horizontalAlignment = GridData.FILL;
 		secondRowLayout.numColumns = 3;

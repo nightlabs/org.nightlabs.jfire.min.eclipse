@@ -33,7 +33,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	/**
 	 * The person editor control showed in this section.
 	 */
-	private Control blockBasedPersonEditorControl;	
+	private Control blockBasedPersonEditorControl;
 
 	/**
 	 * Create an instance of UserPropertiesSection.
@@ -72,7 +72,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit, String sectionDescriptionText) 
+	protected void createClient(Section section, FormToolkit toolkit, String sectionDescriptionText)
 	{
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));

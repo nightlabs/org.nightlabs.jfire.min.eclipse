@@ -18,15 +18,15 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * {@link OverviewRegistry} processes extension points with a schema according
- * to overview.exsd in this plugin. It holds the registered 
- * {@link CategoryFactory} - {@link EntryFactory} structure and can build 
+ * to overview.exsd in this plugin. It holds the registered
+ * {@link CategoryFactory} - {@link EntryFactory} structure and can build
  * {@link Category} - {@link Entry} instances out of it.
  * 
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class OverviewRegistry 
-extends AbstractEPProcessor 
+public abstract class OverviewRegistry
+extends AbstractEPProcessor
 {
 //	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.overview"; //$NON-NLS-1$
 	public static final String ELEMENT_CATEGORY = "categoryFactory"; //$NON-NLS-1$
@@ -45,7 +45,7 @@ extends AbstractEPProcessor
 
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element)
-	throws Exception 
+	throws Exception
 	{
 		if (element.getName().equals(ELEMENT_CATEGORY)) {
 			String categoryID = element.getAttribute(ATTRIBUTE_CATEGORY_ID);
@@ -62,7 +62,7 @@ extends AbstractEPProcessor
 					ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 							extension.getNamespaceIdentifier(), iconString);
 					if (imageDescriptor != null)
-						defaultCategory.setImage(imageDescriptor.createImage());										
+						defaultCategory.setImage(imageDescriptor.createImage());
 				}
 				if (checkString(indexString)) {
 					int index = Integer.valueOf(indexString);
@@ -79,7 +79,7 @@ extends AbstractEPProcessor
 			}
 			
 			categoryID2CategoryFactory.put(categoryID, categoryFactory);
-		}		
+		}
 		if (element.getName().equals(ELEMENT_CATEGORY_ENTRY)) {
 			String categoryID = element.getAttribute(ATTRIBUTE_CATEGORY_ID);
 //			String categoryEntryID = element.getAttribute(ATTRIBUTE_CATEGORY_ENTRY_ID);
@@ -92,8 +92,8 @@ extends AbstractEPProcessor
 //					ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 //							extension.getNamespaceIdentifier(), iconString);
 //					if (imageDescriptor != null)
-//						entry.setImage(imageDescriptor.createImage());										
-//				}				
+//						entry.setImage(imageDescriptor.createImage());
+//				}
 				List<EntryFactory> entryFactories = tmpCategoryID2EntryFatories.get(categoryID);
 				if (entryFactories == null)
 					entryFactories = new ArrayList<EntryFactory>();
@@ -104,17 +104,17 @@ extends AbstractEPProcessor
 							int index = entryFactories.size();
 							AbstractEntryFactory abstractEntryFactory = (AbstractEntryFactory) entryFactory;
 							abstractEntryFactory.setIndex(index);
-						}											
-					}					
+						}
+					}
 				} catch (IndexOutOfBoundsException e) {
 					if (entryFactory instanceof AbstractEntryFactory) {
 						int index = entryFactories.size();
 						AbstractEntryFactory abstractEntryFactory = (AbstractEntryFactory) entryFactory;
 						abstractEntryFactory.setIndex(index);
-					}										
+					}
 				}
 				
-				entryFactories.add(entryFactory.getIndex(), entryFactory);				
+				entryFactories.add(entryFactory.getIndex(), entryFactory);
 				tmpCategoryID2EntryFatories.put(categoryID, entryFactories);
 			} catch (CoreException e) {
 				throw new EPProcessorException(e);
@@ -151,7 +151,7 @@ extends AbstractEPProcessor
 			if (categoryFactory == null)
 				categoryFactory = getFallbackCategory();
 			categoryFactory.getEntryFactories().addAll(entryFactories);
-		}			
+		}
 	}
 
 	public List<CategoryFactory> getCategoryFacories() {
@@ -176,10 +176,10 @@ extends AbstractEPProcessor
 		return categories;
 	}
 	
-	private Comparator<CategoryFactory> categoryComparator = new Comparator<CategoryFactory>(){	
+	private Comparator<CategoryFactory> categoryComparator = new Comparator<CategoryFactory>(){
 		public int compare(CategoryFactory c1, CategoryFactory c2) {
 			return c1.getIndex() - c2.getIndex();
-		}	
+		}
 	};
 	
 	public EntryFactory getEntryFactory(String id) {

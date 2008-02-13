@@ -46,8 +46,8 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author marco schulze - marco at nightlabs dot de
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class LoginAction 
-extends LSDWorkbenchWindowActionDelegate 
+public class LoginAction
+extends LSDWorkbenchWindowActionDelegate
 {
 	/**
 	 * LOG4J logger used by this class
@@ -91,7 +91,7 @@ extends LSDWorkbenchWindowActionDelegate
 	 */
 	@Override
 	public void run(IAction action) {
-		try {			
+		try {
 			Login login = Login.getLogin(false);
 			if (Login.isLoggedIn())
 				login.workOffline();

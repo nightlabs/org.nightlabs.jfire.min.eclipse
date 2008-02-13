@@ -8,13 +8,12 @@ import org.nightlabs.base.ui.wizard.IWizardHopPage;
 import org.nightlabs.base.ui.wizard.WizardHop;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
  * A wizard hop that can create {@link CompoundDataBlockWizardPage}s as its
- * sub-pages. It is intended to be placed in a Wizard that should edit a 
- * {@link PropertySet}. 
+ * sub-pages. It is intended to be placed in a Wizard that should edit a
+ * {@link PropertySet}.
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
@@ -40,11 +39,11 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 	
 	/**
 	 * Add a new {@link CompoundDataBlockWizardPage} to this hop. The new page will display
-	 * DataBlockEditors for the given structBlockIDs. 
+	 * DataBlockEditors for the given structBlockIDs.
 	 * <p>
 	 * If the given structBlockIDs are either <code>null</code> or empty a {@link FullDataBlockCoverageWizardPage}
 	 * will be added that displays all remaining {@link StructBlock}s not added previously.
-	 * </p> 
+	 * </p>
 	 * 
 	 * @param structBlockIDs The id of the {@link StructBlock}s that should be edited by the new page.
 	 * @param name The name of the new page.

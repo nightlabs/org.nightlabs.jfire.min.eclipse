@@ -60,7 +60,7 @@ import org.nightlabs.progress.ProgressMonitor;
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
  * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor
- *  
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class ExpandableBlocksEditor implements PropertySetEditor { // extends ScrolledComposite {
@@ -83,7 +83,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	
 	/**
 	 * Sets the current propertySet of this editor.
-	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)} 
+	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
 	 * is called.
 	 * @param refresh
 	 * @param propertySet
@@ -92,14 +92,14 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		this.prop = prop;
 		structBlockRegistry = new EditorStructBlockRegistry(prop.getStructLocalLinkClass(), prop.getStructLocalScope());
 		if (refresh)
-			refreshControl();		
+			refreshControl();
 	}
 	
 	/**
 	 * Will only set the propertySet, no changes to the UI will be made.
 	 * @param propertySet
 	 */
-	public void setPropertySet(PropertySet prop) {		
+	public void setPropertySet(PropertySet prop) {
 		setPropertySet(prop, false);
 	}
 	/**
@@ -112,7 +112,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 
 	private ScrolledForm form = null;
 	/**
-	 * Returns the {@link ScrolledForm}. 
+	 * Returns the {@link ScrolledForm}.
 	 * With {@link ScrolledForm#getBody()} you can access the Composite.
 	 * @return
 	 */
@@ -152,7 +152,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	 * @param changeListener
 	 */
 	public void refreshControl() {
-		Display.getDefault().asyncExec( 
+		Display.getDefault().asyncExec(
 			new Runnable() {
 				public void run() {
 					if (!prop.isInflated())
@@ -165,16 +165,16 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 							if (!groupEditors.containsKey(blockGroup.getStructBlockKey())) {
 								ExpandableDataBlockGroupEditor groupEditor = new ExpandableDataBlockGroupEditor(prop.getStructure(), blockGroup, form.getBody());
 								groupEditor.setOwner(form);
-								if (ExpandableBlocksEditor.this.changeListener != null) 
+								if (ExpandableBlocksEditor.this.changeListener != null)
 									groupEditor.addPropDataBlockEditorChangedListener(ExpandableBlocksEditor.this.changeListener);
 								groupEditors.put(blockGroup.getStructBlockKey(), groupEditor);
 							}
-							else {			
-								ExpandableDataBlockGroupEditor groupEditor = groupEditors.get(blockGroup.getStructBlockKey());								
+							else {
+								ExpandableDataBlockGroupEditor groupEditor = groupEditors.get(blockGroup.getStructBlockKey());
 								groupEditor.refresh(blockGroup);
 							}
 						} // if (shouldDisplayStructBlock(blockGroup)) {
-					}		
+					}
 					form.reflow(true);
 				}
 			}
@@ -187,9 +187,9 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		return (ScrolledForm)createControl(parent,changeListener,refresh);
 	}
 	/**
-	 * Creates the Form. 
+	 * Creates the Form.
 	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
-	 * will be called. 
+	 * will be called.
 	 * 
 	 * @param parent
 	 * @param changeListener
@@ -243,22 +243,22 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	}
 	
 	/**
-	 * Will create the form. No change listener will be set and 
+	 * Will create the form. No change listener will be set and
 	 * no propertySet data will be displayed.
 	 * 
 	 * @param parent
 	 * @return
 	 */
 	public ScrolledForm createForm(Composite parent) {
-		return createForm(parent, null);	
+		return createForm(parent, null);
 	}
 	
 	public ScrolledForm createForm(Composite parent, boolean refresh) {
-		return createForm(parent, null, refresh);	
+		return createForm(parent, null, refresh);
 	}
 
 	public Control createControl(Composite parent, boolean refresh) {
-		return createForm(parent, refresh);	
+		return createForm(parent, refresh);
 	}
 
 	private String editorScope;
@@ -313,12 +313,12 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	
 	/**
 	 * Shortcut of setting the list of PropStructBlocks
-	 * this editor should display. 
-	 * After this was set to a non null value this editor 
+	 * this editor should display.
+	 * After this was set to a non null value this editor
 	 * will not care about registrations in {@link EditorStructBlockRegistry}.
 	 * 
 	 * @param structBlockList
-	 */	
+	 */
 	public void setEditorPropStructBlockList(List<StructBlockID> structBlockList) {
 		if (structBlockList != null) {
 			if (structBlockList.size() > 0)

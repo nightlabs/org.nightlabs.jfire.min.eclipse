@@ -16,7 +16,7 @@ import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class LSDPreferencePage 
+public abstract class LSDPreferencePage
 extends PreferencePage
 implements IWorkbenchPreferencePage, ControllablePart
 {
@@ -36,7 +36,7 @@ implements IWorkbenchPreferencePage, ControllablePart
 	}
 
 	protected void init() {
-		LSDPartController.sharedInstance().registerPart(this, new FillLayout());			
+		LSDPartController.sharedInstance().registerPart(this, new FillLayout());
 	}
 	
 	@Implement
@@ -50,7 +50,7 @@ implements IWorkbenchPreferencePage, ControllablePart
 	}
 
 	@Override
-	protected Control createContents(Composite parent) 
+	protected Control createContents(Composite parent)
 	{
 		LSDPartController.sharedInstance().createPartControl(this, parent);
 		return parent;

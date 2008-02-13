@@ -27,13 +27,12 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.nightlabs.jfire.prop.StructField;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public interface StructFieldEditorFactory extends IExecutableExtension
-{	
+{
 	/**
 	 * Editors should return an appropriate {@link StructFieldEditor} for the given {@link StructField}
 	 */

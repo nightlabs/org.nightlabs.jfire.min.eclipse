@@ -31,11 +31,11 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.nightlabs.base.ui.app.DefaultActionBuilder;
 
 /**
- * Creates the Menu 
+ * Creates the Menu
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public class JFireActionBuilder 
+public class JFireActionBuilder
 extends DefaultActionBuilder
 {
 	public JFireActionBuilder(IActionBarConfigurer configurer) {

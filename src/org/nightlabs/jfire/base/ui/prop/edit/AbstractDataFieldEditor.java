@@ -41,7 +41,7 @@ import org.nightlabs.language.LanguageCf;
 /**
  * Abstract base class for all  {@link DataFieldEditor} s with implementations for the listener stuff and other
  * common things for all field editors.<br/>
- * This class as well already implements ModifyListener so it can be used as listener for Text Widgets. 
+ * This class as well already implements ModifyListener so it can be used as listener for Text Widgets.
  * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractDataFieldEditor<F extends DataField> implements DataFieldEditor<F>, ModifyListener
@@ -106,7 +106,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	/**
 	 * Not intended to be overridden.
 	 * 
-	 * @see #doRefresh(DataField) 
+	 * @see #doRefresh(DataField)
 	 */
 	public final void refresh() {
 		refreshing = true;
@@ -114,7 +114,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 			doRefresh();
 		} finally {
 			refreshing = false;
-		}		
+		}
 	}
 	
 	private Collection<DataFieldEditorChangeListener> changeListener = new LinkedList<DataFieldEditorChangeListener>();

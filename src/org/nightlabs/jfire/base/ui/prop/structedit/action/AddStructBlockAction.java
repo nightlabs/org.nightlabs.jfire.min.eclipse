@@ -7,8 +7,6 @@ import org.nightlabs.base.ui.action.SelectionAction;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.prop.Struct;
-import org.nightlabs.jfire.prop.StructBlock;
 
 /**
  * Adds a {@link StructBlock} to the {@link Struct} edited in the {@link StructEditor}.

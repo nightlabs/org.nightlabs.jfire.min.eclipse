@@ -42,10 +42,10 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
-public class JFireWorkbenchWindowAdvisor 
-//extends SplashHandlingWorkbenchWindowAdvisor 
+public class JFireWorkbenchWindowAdvisor
+//extends SplashHandlingWorkbenchWindowAdvisor
 extends WorkbenchWindowAdvisor
-{	
+{
 	/**
 	 * LOG4J logger used by this class
 	 */
@@ -93,7 +93,7 @@ extends WorkbenchWindowAdvisor
 			ContributionItemSetRegistry.sharedInstance().checkPerspectiveListenerAdded();
 		} catch (EPProcessorException e) {
 			logger.error("There occured an error getting the ContributionItemSetRegistry", e); //$NON-NLS-1$
-		}		
+		}
 	}
 
 	/**
@@ -103,13 +103,13 @@ extends WorkbenchWindowAdvisor
 	public void preWindowOpen() {
 		super.preWindowOpen();
 		// TODO: dont forget JobErrorNotificationManager
-//		PlatformUI.getWorkbench().getProgressService().setJobErrorNotificationManager(new JobErrorNotificationManager());		
+//		PlatformUI.getWorkbench().getProgressService().setJobErrorNotificationManager(new JobErrorNotificationManager());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Additionally adds IWindowTrims to the created Window for displaying the logged in user and current locale 
+	 * Additionally adds IWindowTrims to the created Window for displaying the logged in user and current locale
 	 * </p>
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createWindowContents(org.eclipse.swt.widgets.Shell)
 	 */

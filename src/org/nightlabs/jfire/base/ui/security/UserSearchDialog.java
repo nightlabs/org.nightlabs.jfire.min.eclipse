@@ -20,8 +20,8 @@ import org.nightlabs.jfire.security.User;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserSearchDialog 
-extends CenteredDialog 
+public class UserSearchDialog
+extends CenteredDialog
 {
 	/**
 	 * @param parentShell
@@ -50,13 +50,13 @@ extends CenteredDialog
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent) 
+	protected Control createDialogArea(Composite parent)
 	{
 		userSearchComposite = new UserSearchComposite(parent, SWT.NONE);
 		if (searchText != null && !searchText.trim().equals("")) { //$NON-NLS-1$
 			userSearchComposite.getUserIDText().setText(searchText);
 		}
-		userSearchComposite.getUserTable().getTableViewer().addDoubleClickListener(userDoubleClickListener);		
+		userSearchComposite.getUserTable().getTableViewer().addDoubleClickListener(userDoubleClickListener);
 		return userSearchComposite;
 	}
 	
@@ -70,20 +70,20 @@ extends CenteredDialog
 	public static final int SEARCH_ID = IDialogConstants.CLIENT_ID + 1;
 	
 	@Override
-	protected void createButtonsForButtonBar(Composite parent) 
+	protected void createButtonsForButtonBar(Composite parent)
 	{
 		super.createButtonsForButtonBar(parent);
 		Button searchButton = createButton(parent, SEARCH_ID, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchDialog.Search"), true); //$NON-NLS-1$
-		searchButton.addSelectionListener(searchButtonListener);		
+		searchButton.addSelectionListener(searchButtonListener);
 	}
 	
-	private SelectionListener searchButtonListener = new SelectionListener(){	
+	private SelectionListener searchButtonListener = new SelectionListener(){
 		public void widgetSelected(SelectionEvent e) {
 			userSearchComposite.searchPressed();
-		}	
+		}
 		public void widgetDefaultSelected(SelectionEvent e) {
 			widgetSelected(e);
-		}	
+		}
 	};
 	
 	@Override
@@ -92,7 +92,7 @@ extends CenteredDialog
 		return super.close();
 	}
 	
-	private IDoubleClickListener userDoubleClickListener = new IDoubleClickListener(){	
+	private IDoubleClickListener userDoubleClickListener = new IDoubleClickListener(){
 		public void doubleClick(DoubleClickEvent event) {
 			if (!event.getSelection().isEmpty() && event.getSelection() instanceof StructuredSelection) {
 				StructuredSelection sel = (StructuredSelection) event.getSelection();
@@ -100,8 +100,8 @@ extends CenteredDialog
 					selectedUser = (User) sel.getFirstElement();
 					close();
 				}
-			}			
-		}	
+			}
+		}
 	};
 	
 }

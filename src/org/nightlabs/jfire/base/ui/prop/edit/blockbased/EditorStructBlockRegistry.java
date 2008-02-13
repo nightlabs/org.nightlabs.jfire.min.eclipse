@@ -35,7 +35,6 @@ import java.util.Map;
 
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
-import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 import org.nightlabs.progress.NullProgressMonitor;
@@ -49,7 +48,7 @@ public class EditorStructBlockRegistry
 {
 	/**
 	 * The class whose property's structBlock is to be edited.
-	 */		
+	 */
 	private String linkClass;
 	/**
 	 * The {@link StructLocal} scope to use.
@@ -76,7 +75,7 @@ public class EditorStructBlockRegistry
 	
 	/**
 	 * Registers the given structBlockIDs for the editor with the given name.
-	 *  
+	 * 
 	 * @param editorName The name of the editor, whose structBlockIDs are to be registered.
 	 * @param propStructBlockKeys Array of structBlockIDs to be registered.
 	 */
@@ -102,8 +101,8 @@ public class EditorStructBlockRegistry
 		List<StructBlockID> toReturn = editorsStructBlocks.get(editorName);
 		if (toReturn != null)
 			return toReturn;
-		else 
-			return Collections.emptyList();		
+		else
+			return Collections.emptyList();
 	}
 	 
 	/**
@@ -153,7 +152,7 @@ public class EditorStructBlockRegistry
 	 */
 	public StructBlockID[] getUnassignedBlockKeyArray()
 	{
-		List<StructBlockID> keys = getUnassignedBlockKeyList();		
+		List<StructBlockID> keys = getUnassignedBlockKeyList();
 		StructBlockID[] toReturn = new StructBlockID[keys.size()];
 		
 		for (int i=0; i < keys.size(); i++)

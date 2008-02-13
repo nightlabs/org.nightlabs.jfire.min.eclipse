@@ -51,10 +51,10 @@ import org.nightlabs.progress.NullProgressMonitor;
 
 /**
  * SelectionListener based on SelectionNotificationProxy that additionally
- * triggers selections for a ConfigID when an object or its ObjectID from a set 
- * of configuration-link objecttypes was selected. 
- * This set of objecttypes can be configured through the 
- * conifgtypeset extension-point. 
+ * triggers selections for a ConfigID when an object or its ObjectID from a set
+ * of configuration-link objecttypes was selected.
+ * This set of objecttypes can be configured through the
+ * conifgtypeset extension-point.
  * 
  * @see org.nightlabs.jfire.base.ui.config.ConfigTypeRegistry
  * 
@@ -87,7 +87,7 @@ public class ConfigLinkSelectionNotificationProxy extends
 	}
 
 	/**
-	 * Triggers 
+	 * Triggers
 	 * @param object
 	 * @return
 	 */
@@ -97,17 +97,17 @@ public class ConfigLinkSelectionNotificationProxy extends
 		if (object instanceof ObjectID) {
 			// ask jdo service for object class name
 			Class jdoObjectClass = JDOObjectID2PCClassMap.sharedInstance().getPersistenceCapableClass(object);
-			if (jdoObjectClass != null) {				
+			if (jdoObjectClass != null) {
 				objectClass = jdoObjectClass;
 				objectID = (ObjectID)object;
 			}
 		}
 		else if (object instanceof PersistenceCapable) {
 			// get ObjectID for PC class
-			Object idObject = JDOHelper.getObjectId(object); 
+			Object idObject = JDOHelper.getObjectId(object);
 			if (!(idObject instanceof ObjectID)) {
 				logger.warn("ID-object of PersistenceCapable selection object was not an instance of ObjectID but "+idObject.getClass().getName()+" and was ignored."); //$NON-NLS-1$ //$NON-NLS-2$
-				return null;				
+				return null;
 			}
 			objectID = (ObjectID)idObject;
 			objectClass = object.getClass();
@@ -116,12 +116,12 @@ public class ConfigLinkSelectionNotificationProxy extends
 			// silently do nothing
 			return null;
 		
-		// Exit when no registration on the current class is found 
+		// Exit when no registration on the current class is found
 		if (!ConfigSetupDAO.sharedInstance().containsRegistrationForLinkClass(objectClass, new NullProgressMonitor()))
 			return null;
 		
-		// TODO: Ensure here always the current users organisationID can be used 
-		// if not, extend configTypeSet extensionpoint and registry with 
+		// TODO: Ensure here always the current users organisationID can be used
+		// if not, extend configTypeSet extensionpoint and registry with
 		// interface ConfigLinkIDProvider
 		try {
 			return ConfigID.create(Login.getLogin().getOrganisationID(), objectID, objectClass);
@@ -131,7 +131,7 @@ public class ConfigLinkSelectionNotificationProxy extends
 	}
 	
 	@Override
-	public void selectionChanged(SelectionChangedEvent event) 
+	public void selectionChanged(SelectionChangedEvent event)
 	{
 		// first do the notification of the selected object itself
 		super.selectionChanged(event);
@@ -139,7 +139,7 @@ public class ConfigLinkSelectionNotificationProxy extends
 		// no check for config-links
     ISelection selection = event.getSelection();
     if(!selection.isEmpty())
-    {    	
+    {
 			NotificationEvent e = null;
     	if(selection instanceof IStructuredSelection)
     	{

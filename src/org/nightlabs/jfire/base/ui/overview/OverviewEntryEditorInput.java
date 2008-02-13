@@ -1,6 +1,5 @@
 package org.nightlabs.jfire.base.ui.overview;
 
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.internal.part.NullEditorInput;
 
 /**
@@ -9,8 +8,8 @@ import org.eclipse.ui.internal.part.NullEditorInput;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class OverviewEntryEditorInput 
-//implements IEditorInput 
+public class OverviewEntryEditorInput
+//implements IEditorInput
 extends NullEditorInput
 {
 
@@ -36,7 +35,7 @@ extends NullEditorInput
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) 
+	public boolean equals(Object obj)
 	{
 		if (obj == null)
 			return false;

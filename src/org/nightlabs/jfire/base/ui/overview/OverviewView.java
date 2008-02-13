@@ -11,8 +11,8 @@ import org.eclipse.ui.part.ViewPart;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class OverviewView 
-extends ViewPart 
+public abstract class OverviewView
+extends ViewPart
 {
 	public OverviewView() {
 		super();

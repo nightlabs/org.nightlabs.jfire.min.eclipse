@@ -13,13 +13,13 @@ import org.nightlabs.jdo.query.JDOQuery;
 import org.nightlabs.jdo.ui.JDOQueryComposite;
 
 /**
- * Abstract base class for a Composite which returns {@link JDOQuery}s for searching. 
+ * Abstract base class for a Composite which returns {@link JDOQuery}s for searching.
  * It uses {@link JDOQueryComposite}s which are displayed in a {@link Section}.
  * 
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  */
-public abstract class AbstractQueryFilterComposite 
-extends XComposite 
+public abstract class AbstractQueryFilterComposite
+extends XComposite
 {
 	/**
 	 * Creates a new {@link AbstractQueryFilterComposite}.
@@ -39,7 +39,7 @@ extends XComposite
 	}
 
 	/**
-	 * Creates a new {@link AbstractQueryFilterComposite} 
+	 * Creates a new {@link AbstractQueryFilterComposite}
 	 * with default layout mode and layout data mode.
 	 * <p>
 	 * Note that subclasses are responsible for defining the layout.
@@ -58,7 +58,7 @@ extends XComposite
 	private Map<Button, JDOQueryComposite> button2Composite = null;
 	// TODO: What was that for?
 //	private List<QuickSearchEntry> quickSearchEntries = null;
-//	
+//
 //	public List<QuickSearchEntry> getQuickSearchEntryTypes() {
 //		return quickSearchEntries;
 //	}
@@ -90,19 +90,19 @@ extends XComposite
 		queryComposites = registerJDOQueryComposites();
 	}
 	
-//  TODO: What was that for?	
+//  TODO: What was that for?
 //	/**
 //	 * This method can be used wihtin {@link #createContents(Composite)}
 //	 * to configure a section for a given JDOQueryComposite.
 //	 * It will create an active-button for the section and register it
 //	 * in the mapping.
 //	 */
-//	protected void configureSection(Section section, JDOQueryComposite comp) 
+//	protected void configureSection(Section section, JDOQueryComposite comp)
 //	{
 //		Button activeButton = new Button(section, SWT.CHECK);
 //		activeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.AbstractQueryFilterComposite.activeButton.text")); //$NON-NLS-1$
 //		activeButton.setSelection(comp.isActive());
-//		activeButton.addSelectionListener(new SelectionListener(){	
+//		activeButton.addSelectionListener(new SelectionListener(){
 //			public void widgetSelected(SelectionEvent e) {
 //				Button b = (Button) e.getSource();
 //				JDOQueryComposite comp = getButton2QueryComposite().get(b);
@@ -111,21 +111,21 @@ extends XComposite
 //				Section section = getButton2Section().get(b);
 //				if (section != null)
 //					section.setExpanded(b.getSelection());
-//			}	
+//			}
 //			public void widgetDefaultSelected(SelectionEvent e) {
 //				widgetSelected(e);
-//			}	
-//		});				
+//			}
+//		});
 //		section.setTextClient(activeButton);
-//		getButton2QueryComposite().put(activeButton, comp);		
-//		getButton2Section().put(activeButton, section);		
+//		getButton2QueryComposite().put(activeButton, comp);
+//		getButton2Section().put(activeButton, section);
 //	}
 	/**
 	 * @return All active {@link JDOQuery}s obtained by the {@link JDOQueryComposite}.
-	 */	
-	public List<JDOQuery> getJDOQueries() 
+	 */
+	public List<JDOQuery> getJDOQueries()
 	{
-		if (queryComposites != null) 
+		if (queryComposites != null)
 		{
 			List<JDOQuery> queries = new ArrayList<JDOQuery>(queryComposites.size());
 			for (JDOQueryComposite comp : queryComposites) {
@@ -152,11 +152,11 @@ extends XComposite
 	protected abstract Class getQueryClass();
 	
 	/**
-	 * Creates the contents, usually the same Composites like 
+	 * Creates the contents, usually the same Composites like
 	 * returned in {@link #registerJDOQueryComposites()}.
 	 * Here these Composites have to be placed in the layout.
 	 * 
 	 * @param parent The parent to use.
 	 */
-	protected abstract void createContents(Composite parent);	
+	protected abstract void createContents(Composite parent);
 }

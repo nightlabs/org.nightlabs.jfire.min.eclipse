@@ -47,7 +47,7 @@ public class PersonStartsWithQuickSearch extends PropertySetQuickSearch {
 	 * Construct a PersonStartsWithQuickSearch for persons begining with startWithNeedle.<br/>
 	 * The resultFetcher will be called when the quick-button is pressed.<br/>
 	 * If buttonText is not null or an empty string this will be the Buttons text,
-	 * otherwise the startWithNeedle will be used. 
+	 * otherwise the startWithNeedle will be used.
 	 * 
 	 * @param buttonText
 	 * @param resultFetcher
@@ -64,7 +64,7 @@ public class PersonStartsWithQuickSearch extends PropertySetQuickSearch {
 	/**
 	 * Construct a PersonStartsWithQuickSearch for persons begining with startWithNeedle.<br/>
 	 * The resultFetcher will be called when the quick-button is pressed.
-	 *  
+	 * 
 	 * @param resultFetcher
 	 * @param startWithNeedle
 	 */

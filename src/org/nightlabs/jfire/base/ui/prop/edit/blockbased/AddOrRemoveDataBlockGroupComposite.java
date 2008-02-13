@@ -27,13 +27,13 @@ public class AddOrRemoveDataBlockGroupComposite extends XComposite {
 		gd.widthHint = 20;
 		
 		addButton = new Button(this, SWT.PUSH);
-		addButton.setText("+");		
+		addButton.setText("+");
 		addButton.setLayoutData(gd);
 		
 		gd = new GridData();
 		gd.widthHint = 20;
-		removeButton = new Button(this, SWT.PUSH);		
-		removeButton.setText("-");		
+		removeButton = new Button(this, SWT.PUSH);
+		removeButton.setText("-");
 		removeButton.setLayoutData(gd);
 		
 		SelectionListener selectionListener = new SelectionListener() {

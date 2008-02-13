@@ -38,7 +38,7 @@ import org.nightlabs.jfire.base.ui.preferences.LSDPreferencePage;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class PersonStructOrderPreferencePage 
+public class PersonStructOrderPreferencePage
 extends LSDPreferencePage
 {
 	// TODO what is this wrapper composite good for???
@@ -51,16 +51,16 @@ extends LSDPreferencePage
 	}
 	
   @Override
-	public void createPartContents(Composite parent) 
+	public void createPartContents(Composite parent)
   {
   	createWrapperComposite(parent);
-		structOrderComposite = new PersonStructOrderComposite(wrapperComposite,SWT.NONE);	
+		structOrderComposite = new PersonStructOrderComposite(wrapperComposite,SWT.NONE);
   }
   
-  protected void createWrapperComposite(Composite parent) 
+  protected void createWrapperComposite(Composite parent)
   {
   	if (wrapperComposite == null)
-  		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE); 	
+  		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE);
   }
 
 	/**
@@ -76,6 +76,6 @@ extends LSDPreferencePage
 		super.performApply();
 		PersonStructOrderConfigModule.sharedInstance().setStructBlockDisplayOrder(
 				structOrderComposite.getStructBlockOrder()
-			);		
+			);
 	}
 }

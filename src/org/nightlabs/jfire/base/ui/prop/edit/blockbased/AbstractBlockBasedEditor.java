@@ -38,7 +38,6 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.Struct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -48,12 +47,12 @@ import org.nightlabs.progress.ProgressMonitor;
 /**
  * Abstract base for block based {@link PropertySetEditor}s.
  * It manages (holds) the {@link PropertySet} to edit and the StructBlocks
- * that should be visible when editing the propertySet. 
+ * that should be visible when editing the propertySet.
  * 
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
  * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor
- *  
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractBlockBasedEditor implements PropertySetEditor { // extends ScrolledComposite {
@@ -66,8 +65,8 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	}
 	
 	/**
-	 * Create a new {@link AbstractBlockBasedEditor} for the given 
-	 * propertySet. 
+	 * Create a new {@link AbstractBlockBasedEditor} for the given
+	 * propertySet.
 	 * 
 	 * @param prop
 	 * @param propStruct
@@ -86,7 +85,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	
 	/**
 	 * Sets the current propertySet of this editor.
-	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)} 
+	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
 	 * is called.
 	 * @param refresh
 	 * @param propertySet
@@ -101,8 +100,8 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * Will only set the propertySet, no changes to the UI will be made.
 	 * @param propertySet
 	 */
-	public void setPropertySet(PropertySet propSet) {		
-		setPropertySet(propSet, false);		
+	public void setPropertySet(PropertySet propSet) {
+		setPropertySet(propSet, false);
 	}
 	/**
 	 * Returns the propertySet.
@@ -170,12 +169,12 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	}
 	
 	/**
-	 * Shortcut to set the list of PropStructBlocks this editor should display. 
-	 * After this was set to a non null value this editor 
+	 * Shortcut to set the list of PropStructBlocks this editor should display.
+	 * After this was set to a non null value this editor
 	 * will not care about registrations in {@link EditorStructBlockRegistry}.
 	 * 
 	 * @param structBlockList
-	 */	
+	 */
 	public void setEditorPropStructBlockList(List<StructBlockID> structBlockIDs) {
 		if (structBlockIDs != null && structBlockIDs.size() > 0)
 		{

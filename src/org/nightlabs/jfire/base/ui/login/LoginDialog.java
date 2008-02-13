@@ -74,7 +74,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class LoginDialog extends TitleAreaDialog 
+public class LoginDialog extends TitleAreaDialog
 {
 	/**
 	 * LOG4J logger used by this class
@@ -87,7 +87,7 @@ public class LoginDialog extends TitleAreaDialog
 
 	private LoginConfigModule persistentLoginModule = null;
 	private LoginConfigModule runtimeLoginModule = null;
-	private Login.AsyncLoginResult loginResult = null;	
+	private Login.AsyncLoginResult loginResult = null;
 	private LoginData loginData = null;
 
 	protected static final int DETAILS_ID = IDialogConstants.CLIENT_ID + 1;
@@ -104,7 +104,7 @@ public class LoginDialog extends TitleAreaDialog
 	private Button deleteButton = null;
 
 	/**
-	 * Used to set the details area visible or invisible 
+	 * Used to set the details area visible or invisible
 	 * by setting heightHint to 0 or SWT.DEFAULT.
 	 */
 	private GridData detailsAreaGridData = null;
@@ -154,7 +154,7 @@ public class LoginDialog extends TitleAreaDialog
 	 * Create a new LoginDialog.
 	 * @param parent The dialogs parent
 	 */
-	public LoginDialog(Shell parent) 
+	public LoginDialog(Shell parent)
 	{
 		super(parent);
 		setShellStyle(getShellStyle()|SWT.RESIZE);
@@ -192,7 +192,7 @@ public class LoginDialog extends TitleAreaDialog
 	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
 	@Override
-	protected void configureShell(Shell shell) 
+	protected void configureShell(Shell shell)
 	{
 		super.configureShell(shell);
 		shell.setText(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.labellogin")); //$NON-NLS-1$
@@ -217,9 +217,9 @@ public class LoginDialog extends TitleAreaDialog
 	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected Control createDialogArea(Composite parent) 
+	protected Control createDialogArea(Composite parent)
 	{
-		Composite area = (Composite)super.createDialogArea(parent); 
+		Composite area = (Composite)super.createDialogArea(parent);
 		createMainArea(area);
 		createDetailsArea(area);
 		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.titleAreaTitle")); //$NON-NLS-1$
@@ -251,7 +251,7 @@ public class LoginDialog extends TitleAreaDialog
 		return mainArea;
 	}
 
-	private void updateUIWithLoginConfiguration(LoginConfiguration loginConfiguration) 
+	private void updateUIWithLoginConfiguration(LoginConfiguration loginConfiguration)
 	{
 		internallyModifying_suppressModifyEvents = true;
 		try {
@@ -290,7 +290,7 @@ public class LoginDialog extends TitleAreaDialog
 
 	private LabelProvider createLoginConfigLabelProvider()
 	{
-		return new LabelProvider() { 
+		return new LabelProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof LoginConfiguration) {
@@ -315,7 +315,7 @@ public class LoginDialog extends TitleAreaDialog
 		Label labelRecentLoginConfigs = new Label(loginConfigGroup, SWT.NONE);
 		labelRecentLoginConfigs.setText(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.recentLoginsComboLabel")); //$NON-NLS-1$
 		recentLoginConfigs = new XComboComposite<LoginConfiguration>(loginConfigGroup, SWT.READ_ONLY);
-		recentLoginConfigs.setLabelProvider(createLoginConfigLabelProvider());		
+		recentLoginConfigs.setLabelProvider(createLoginConfigLabelProvider());
 		recentLoginConfigs.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateUIWithLoginConfiguration(recentLoginConfigs.getSelectedElement());
@@ -415,15 +415,15 @@ public class LoginDialog extends TitleAreaDialog
 	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected void createButtonsForButtonBar(Composite parent) 
+	protected void createButtonsForButtonBar(Composite parent)
 	{
 		createButton(parent, IDialogConstants.OK_ID, Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.labelbutton.login"), true); //$NON-NLS-1$
 		createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.labelbutton.offline"), false); //$NON-NLS-1$
-		createButton(parent, DETAILS_ID, IDialogConstants.SHOW_DETAILS_LABEL, false);		
+		createButton(parent, DETAILS_ID, IDialogConstants.SHOW_DETAILS_LABEL, false);
 	}
 
 	private void initializeWidgetValues()	{
-		LinkedList<LoginConfiguration> loginConfigurations = new LinkedList<LoginConfiguration>(runtimeLoginModule.getSavedLoginConfigurations());		
+		LinkedList<LoginConfiguration> loginConfigurations = new LinkedList<LoginConfiguration>(runtimeLoginModule.getSavedLoginConfigurations());
 		LoginConfiguration latestLoginConfiguration = runtimeLoginModule.getLatestLoginConfiguration();
 
 		if (latestLoginConfiguration != null)
@@ -498,7 +498,7 @@ public class LoginDialog extends TitleAreaDialog
 	}
 
 	@Override
-	protected void okPressed() 
+	protected void okPressed()
 	{
 		if(!checkUserInput())
 			return;
@@ -531,7 +531,7 @@ public class LoginDialog extends TitleAreaDialog
 
 // There is no difference between cancel and work offline anymore => moved this code into close()
 //	@Override
-//	protected void cancelPressed() 
+//	protected void cancelPressed()
 //	{
 //		loginResult.setSuccess(false);
 //		loginResult.setWorkOffline(true);
@@ -554,7 +554,7 @@ public class LoginDialog extends TitleAreaDialog
 	/**
 	 * Called when the "Details..." button was pressed.
 	 */
-	protected void detailsPressed() 
+	protected void detailsPressed()
 	{
 		showDetails(detailsAreaGridData.heightHint == 0);
 	}
@@ -600,11 +600,11 @@ public class LoginDialog extends TitleAreaDialog
 	}
 
 	/**
-	 * Helper methods that make the use of JFace message methods consistent. 
+	 * Helper methods that make the use of JFace message methods consistent.
 	 */
 	private void setWarningMessage(String message) {
 		setMessage(message, IMessageProvider.WARNING);
-	}	
+	}
 	private void setInfoMessage(String message) {
 		setMessage(message, IMessageProvider.INFORMATION);
 	}
@@ -617,12 +617,12 @@ public class LoginDialog extends TitleAreaDialog
 	private void enableDialogUI(boolean enable)
 	{
 		if (getShell() != null && !getShell().isDisposed())
-			getShell().setEnabled(enable);	
+			getShell().setEnabled(enable);
 	}
 
 	private void updateUIAfterLogin()
 	{
-		// verify login done 
+		// verify login done
 		if ((!loginResult.isWasAuthenticationErr()) && (loginResult.isSuccess())) {
 //			close(); // close is done by the loginstatelistener declared in okPressed()
 		} else {
@@ -671,7 +671,7 @@ public class LoginDialog extends TitleAreaDialog
 	 * @param visible <code>true</code> if the details should be shown
 	 * 		<code>false</code> otherwise.
 	 */
-	protected void showDetails(boolean visible) 
+	protected void showDetails(boolean visible)
 	{
 		logger.debug("show details"); //$NON-NLS-1$
 		if(!contentCreated) {
@@ -695,17 +695,17 @@ public class LoginDialog extends TitleAreaDialog
 			getShell().setSize(new Point(windowSize.x, windowSize.y + (newSize.y - oldSize.y)));
 	}
 
-	public static void registerSharedInstance(LoginDialog dialog) 
+	public static void registerSharedInstance(LoginDialog dialog)
 	{
 		sharedInstance = dialog;
 	}
 
-	public static void deregisterSharedInstance() 
+	public static void deregisterSharedInstance()
 	{
 		sharedInstance = null;
 	}
 
-	public static LoginDialog getSharedInstace() 
+	public static LoginDialog getSharedInstace()
 	{
 		return sharedInstance;
 	}
@@ -730,7 +730,7 @@ public class LoginDialog extends TitleAreaDialog
 			monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginComposite.loginTask.name"), 4); //$NON-NLS-1$
 			storeUserInput();
 			monitor.worked(1);
-			final boolean saveSettings = checkBoxSaveSettings.getSelection();			
+			final boolean saveSettings = checkBoxSaveSettings.getSelection();
 			logger.info("******************* async = "+async+" ********************");
 			if (async) {
 				Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
@@ -746,7 +746,7 @@ public class LoginDialog extends TitleAreaDialog
 //				return false;
 			} else {
 //				hadError = false;
-//				return 
+//				return
 				doCheckLogin(saveSettings, monitor, loginStateListener);
 			}
 
@@ -755,8 +755,8 @@ public class LoginDialog extends TitleAreaDialog
 			if (hadError)
 				enableDialogUI(true);
 			monitor.done();
-		}           
-	}     
+		}
+	}
 
 	/**
 	 * @param loginStateListener optional, can be null
@@ -804,5 +804,5 @@ public class LoginDialog extends TitleAreaDialog
 				loginStateListener.loginStateChanged(Login.LOGINSTATE_LOGGED_OUT, null);
 		}
 
-	} 	
+	}
 }

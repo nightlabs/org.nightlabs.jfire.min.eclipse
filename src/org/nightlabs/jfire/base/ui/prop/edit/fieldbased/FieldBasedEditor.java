@@ -89,7 +89,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	}
 	/**
 	 * Set the editorType.
-	 * Use the static finals. 
+	 * Use the static finals.
 	 * @param editorType The editorType to set.
 	 */
 	public void setEditorType(String editorType) {
@@ -151,10 +151,10 @@ public class FieldBasedEditor implements PropertySetEditor {
 	}
 	
 	/**
-	 * Returns null. Can be overridden to return a custom GridData 
-	 * for the given field, or null to use the LayoutData provided 
-	 * by the field-editor itself. 
-	 *  
+	 * Returns null. Can be overridden to return a custom GridData
+	 * for the given field, or null to use the LayoutData provided
+	 * by the field-editor itself.
+	 * 
 	 * @param field
 	 * @return A new GridData or null.
 	 */
@@ -166,9 +166,9 @@ public class FieldBasedEditor implements PropertySetEditor {
 	
 	/**
 	 * Determines weather a LayoutData in form of
-	 * a new GridData(GridData.FILL_BOTH) should 
+	 * a new GridData(GridData.FILL_BOTH) should
 	 * be set to the editorWrapper
-	 *  
+	 * 
 	 * @return Weather to setLayoutData on editorWrapper
 	 */
 	protected boolean setLayoutDataForWrapper() {
@@ -223,7 +223,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 			if (gridLayout == null)
 				throw new IllegalStateException("createGridLayout() returned null!!"); //$NON-NLS-1$
 			
-			editorWrapper.setLayout(gridLayout);			
+			editorWrapper.setLayout(gridLayout);
 			
 			editorComposite = new XComposite(editorWrapper, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
 //			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -245,7 +245,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	
 	/**
 	 * Calls createControl but returns as SelectableComposite.
-	 *  
+	 * 
 	 * @param parent
 	 * @param changeListener
 	 * @param refresh
@@ -267,7 +267,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#refreshControl()
 	 */
 	public void refreshControl() {
-		Display.getDefault().syncExec( 
+		Display.getDefault().syncExec(
 			new Runnable() {
 				public void run() {
 					if (propertySet == null)
@@ -298,7 +298,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 						if (!fieldEditors.containsKey(structFieldID)) {
 							try {
 								editor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
-										propertySet.getStructure(), getEditorType(), null, 
+										propertySet.getStructure(), getEditorType(), null,
 										field, false
 									);
 							} catch (DataFieldEditorNotFoundException e) {

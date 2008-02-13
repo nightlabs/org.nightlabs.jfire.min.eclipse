@@ -13,7 +13,7 @@ import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 /**
  * The default {@link CategoryFactory} is used for &lt;categoryFactory&gt; registrations
  * that do not specify a different class. It will then create a {@link DefaultCategory}
- * in {@link #createCategory()}. 
+ * in {@link #createCategory()}.
  * <p>
  * This class is also intended to be subclassed when developing custom {@link Category}s
  * as it manages the registration attributes (name, icon, index). Override {@link #createCategory()}
@@ -23,8 +23,8 @@ import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class DefaultCategoryFactory 
-implements CategoryFactory 
+public class DefaultCategoryFactory
+implements CategoryFactory
 {
 	public static final String ELEMENT_CATEGORY = "categoryFactory"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
@@ -89,7 +89,7 @@ implements CategoryFactory
 	 */
 	public int getIndex() {
 		return index;
-	}	
+	}
 	/**
 	 * sets the index
 	 * @param index the index to set
@@ -106,14 +106,14 @@ implements CategoryFactory
 	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
 	 */
 	public void setInitializationData(IConfigurationElement element,
-			String propertyName, Object data) 
-	throws CoreException 
+			String propertyName, Object data)
+	throws CoreException
 	{
-		if (element.getName().equals(ELEMENT_CATEGORY)) 
+		if (element.getName().equals(ELEMENT_CATEGORY))
 		{
 			String categoryID = element.getAttribute(ATTRIBUTE_CATEGORY_ID);
 			String name = element.getAttribute(ATTRIBUTE_NAME);
-			String iconString = element.getAttribute(ATTRIBUTE_ICON);			
+			String iconString = element.getAttribute(ATTRIBUTE_ICON);
 			String indexString = element.getAttribute(ATTRIBUTE_INDEX);
 			int index = -1;
 			try {
@@ -128,8 +128,8 @@ implements CategoryFactory
 				ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 						element.getNamespaceIdentifier(), iconString);
 				if (imageDescriptor != null)
-					setImage(imageDescriptor.createImage());										
-			}										
+					setImage(imageDescriptor.createImage());
+			}
 		}
 	}
 	

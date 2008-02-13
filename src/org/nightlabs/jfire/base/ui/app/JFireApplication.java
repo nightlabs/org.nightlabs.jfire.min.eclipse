@@ -46,14 +46,13 @@ import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.WorkOfflineException;
 import org.nightlabs.util.IOUtil;
-import org.nightlabs.util.Util;
 
 /**
- * JFireApplication is the main executed class {@see JFireApplication#run(Object)}. 
+ * JFireApplication is the main executed class {@see JFireApplication#run(Object)}.
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class JFireApplication 
-extends AbstractApplication 
+public class JFireApplication
+extends AbstractApplication
 {
 	public static final String PLUGIN_ID = "org.nightlabs.jfire.base.ui"; //$NON-NLS-1$
 	
@@ -73,9 +72,9 @@ extends AbstractApplication
 		for (Iterator<?> iter = applicationListener.iterator(); iter.hasNext();) {
 			JFireApplicationListener listener = (JFireApplicationListener) iter.next();
 			switch (applicationEventType) {
-				case APPLICATION_EVENTTYPE_STARTED: 
+				case APPLICATION_EVENTTYPE_STARTED:
 					listener.applicationStarted();
-					break;					
+					break;
 			}
 		}
 	}
@@ -85,8 +84,8 @@ extends AbstractApplication
 	}
 
 	@Override
-	protected void preCreateWorkbench() 
-	{		
+	protected void preCreateWorkbench()
+	{
 		try
 		{
 			initLogin();
@@ -95,7 +94,7 @@ extends AbstractApplication
 //			LoginConfigModule lcm = Login.sharedInstance().getLoginConfigModule();
 //			// TODO @Carnage lcm.getLastSavedLoginConfiguration() can return null, but this was not handled in the
 //			// following if clause => NPE. I added the check for null, but I don't know whether it's correct with == + || or whether
-//			// it should be != + && 
+//			// it should be != + &&
 //			if (lcm.getLastSavedLoginConfiguration() == null || lcm.getLastSavedLoginConfiguration().isAutomaticUpdate())
 //			{
 //				Login.getLogin();
@@ -171,7 +170,7 @@ extends AbstractApplication
 		} catch (LoginException e) {
 			throw new RuntimeException("How the hell could this happen?!", e); //$NON-NLS-1$
 		}
-	}	
+	}
 	
 	
 }

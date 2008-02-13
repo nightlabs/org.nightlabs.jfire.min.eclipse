@@ -51,10 +51,10 @@ public class UserProvider extends JDOObjectProvider
   private static UserProvider _sharedInstance = null;
   private UserManager um;
   
-  public static UserProvider sharedInstance() 
+  public static UserProvider sharedInstance()
     throws RemoteException, LoginException, CreateException, NamingException
   {
-    if (_sharedInstance == null) 
+    if (_sharedInstance == null)
       _sharedInstance = new UserProvider();
 
     return _sharedInstance;
@@ -68,7 +68,7 @@ public class UserProvider extends JDOObjectProvider
     return (User)super.getJDOObject(null, id, fetchGroups, maxFetchDepth);
   }
   
-  public Collection getUsersByType(String type, String[] fetchgroups, int maxFetchDepth) 
+  public Collection getUsersByType(String type, String[] fetchgroups, int maxFetchDepth)
     throws RemoteException, ModuleException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
@@ -76,7 +76,7 @@ public class UserProvider extends JDOObjectProvider
     return super.getJDOObjects(null, ids.toArray(), fetchgroups, maxFetchDepth);
   }
 
-  public Collection getUsersInUserGroup(UserID userGroupID, String[] fetchgroups, int maxFetchDepth) 
+  public Collection getUsersInUserGroup(UserID userGroupID, String[] fetchgroups, int maxFetchDepth)
     throws RemoteException, ModuleException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
@@ -84,7 +84,7 @@ public class UserProvider extends JDOObjectProvider
     return super.getJDOObjects(null, ids.toArray(), fetchgroups, maxFetchDepth);
   }
 
-  public Collection getUsersNotInUserGroup(UserID userGroupID, String[] fetchgroups, int maxFetchDepth) 
+  public Collection getUsersNotInUserGroup(UserID userGroupID, String[] fetchgroups, int maxFetchDepth)
     throws RemoteException, ModuleException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();

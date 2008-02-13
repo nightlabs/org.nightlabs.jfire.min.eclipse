@@ -33,7 +33,7 @@ public class RegexStructFieldEditor extends AbstractStructFieldEditor<RegexStruc
 
 	@Override
 	protected Composite createSpecialComposite(Composite parent, int style) {
-		comp = new RegexStructFieldEditComposite(parent, style, this);		
+		comp = new RegexStructFieldEditComposite(parent, style, this);
 		return comp;
 	}
 
@@ -88,7 +88,7 @@ class RegexStructFieldEditComposite extends XComposite {
 		if (regexField == null)
 			return;
 		
-		regexOrig = regexField.getRegex();		
+		regexOrig = regexField.getRegex();
 	}
 	
 	protected void restoreData() {
@@ -106,7 +106,7 @@ class RegexStructFieldEditComposite extends XComposite {
 		if (regexField == null) {
 			this.setEnabled(false);
 			return;
-		}		
+		}
 		this.setEnabled(true);
 
 		String patternStr = field.getRegex() == null ? "" : field.getRegex();		 //$NON-NLS-1$

@@ -44,11 +44,11 @@ import org.nightlabs.jfire.person.PersonStruct;
 public class PersonStructOrderConfigModule extends ConfigModule {
 	private static final long serialVersionUID = 1L;
 
-	/** 
+	/**
 	 * this will be serialized
 	 */
-	public static class PersonStructOrderMapEntry {		
-		public PersonStructOrderMapEntry() {			
+	public static class PersonStructOrderMapEntry {
+		public PersonStructOrderMapEntry() {
 		}
 		
 		private String key;
@@ -80,7 +80,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		super.init();
 	}
 	
-	private List structBlockDisplayOrderList;	
+	private List structBlockDisplayOrderList;
 	
 	/**
 	 * Not to be called, just for serialization.
@@ -113,7 +113,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		setChanged();
 	}
 	
-	private List structFieldDisplayOrderList;	
+	private List structFieldDisplayOrderList;
 	
 	/**
 	 * Not to be called, just for serialization.
@@ -153,9 +153,9 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 	private Map structBlockDisplayOrder;
 	
 	/**
-	 * Returns a Map of (String,Integer) of 
+	 * Returns a Map of (String,Integer) of
 	 * priorities mapped to PersonStructBlockKeys
-	 *  
+	 * 
 	 * @return
 	 */
 	public Map structBlockDisplayOrder() {
@@ -187,9 +187,9 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 	
 	/**
 	/**
-	 * Returns a Map of (String,Integer) of 
+	 * Returns a Map of (String,Integer) of
 	 * priorities mapped to PersonStructFieldKeys
-	 *  
+	 * 
 	 * @return
 	 */
 	public Map structFieldDisplayOrder() {

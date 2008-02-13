@@ -37,7 +37,7 @@ import org.nightlabs.util.RWLock;
 
 /**
  * This class holds all user specific data relevant for login in into JFire. It holds a list of
- * {@link LoginConfiguration}s that may be presented to the user upon login to reuse. 
+ * {@link LoginConfiguration}s that may be presented to the user upon login to reuse.
  * 
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -67,7 +67,7 @@ public class LoginConfigModule extends ConfigModule implements Cloneable
 			loginConfiguration.setLoginConfigModule(this);
 	}
 
-	public void setLatestLoginConfiguration(LoginData loginData, String configurationName) 
+	public void setLatestLoginConfiguration(LoginData loginData, String configurationName)
 	{
 		acquireWriteLock();
 		try {

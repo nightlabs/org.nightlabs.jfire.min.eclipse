@@ -41,12 +41,12 @@ public class DataBlockWizardPage extends CompoundDataBlockWizardPage {
 		
 	
 	/**
-	 * Creates a new DataBlockWizardPage for the 
-	 * StructBlock identified by the dataBlockID 
+	 * Creates a new DataBlockWizardPage for the
+	 * StructBlock identified by the dataBlockID
 	 */
 	public DataBlockWizardPage(
-		String pageName, 
-		String title, 
+		String pageName,
+		String title,
 		IStruct struct,
 		PropertySet prop,
 		StructBlockID structBlockID
@@ -57,7 +57,7 @@ public class DataBlockWizardPage extends CompoundDataBlockWizardPage {
 	
 	
 	/**
-	 * Returns the PropsStructBlockID this WizardPage is 
+	 * Returns the PropsStructBlockID this WizardPage is
 	 * associated to.
 	 * 
 	 * @return

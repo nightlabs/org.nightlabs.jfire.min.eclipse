@@ -24,7 +24,7 @@ public class TextStructFieldEditor extends AbstractStructFieldEditor<TextStructF
 	@Override
 	protected Composite createSpecialComposite(Composite parent, int style) {
 		XComposite comp = new XComposite(parent, style, LayoutMode.TIGHT_WRAPPER);
-		comp.getGridLayout().numColumns = 3;		
+		comp.getGridLayout().numColumns = 3;
 		new Label(comp, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.TextStructFieldEditor.lineCountLabel.text")); //$NON-NLS-1$
 		lineCountSpinner = new Spinner(comp, comp.getBorderStyle());
 		lineCountSpinner.setMinimum(1);
@@ -35,7 +35,7 @@ public class TextStructFieldEditor extends AbstractStructFieldEditor<TextStructF
 			public void modifyText(ModifyEvent e) {
 				if (textField.validateLineCount(lineCountSpinner.getSelection()))
 					textField.setLineCount(lineCountSpinner.getSelection());
-			}			
+			}
 		});
 		return comp;
 	}

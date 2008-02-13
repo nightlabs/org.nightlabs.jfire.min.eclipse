@@ -122,7 +122,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 			return;
 
 		super.notify(filterID, event);
-	}	
+	}
 	
 	private boolean notifyRCP(Long filterID, final JDOLifecycleEvent event, final JDOLifecycleListener listener)
 	{

@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.PropertySetTable;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
-import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -47,8 +46,8 @@ public class PersonResultTable extends PropertySetTable<Person> {
 
 	public PersonResultTable(Composite parent, int style) {
 		super(
-			parent, style, 
-			StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor()), 
+			parent, style,
+			StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor()),
 			new StructFieldID[] {
 				PersonStruct.PERSONALDATA_COMPANY, PersonStruct.PERSONALDATA_NAME, PersonStruct.PERSONALDATA_FIRSTNAME,
 				PersonStruct.POSTADDRESS_CITY, PersonStruct.POSTADDRESS_ADDRESS

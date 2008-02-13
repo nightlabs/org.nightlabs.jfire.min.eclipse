@@ -68,7 +68,6 @@ import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
-import org.nightlabs.jfire.base.ui.password.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
 import org.nightlabs.jfire.classloader.JFireRCLBackend;
@@ -82,14 +81,14 @@ import org.nightlabs.progress.ProgressMonitor;
 /**
  * Defines a client login to the JFire server
  * <p>
- * Use the static function getLogin. If logged in an instance of this class is returned. 
+ * Use the static function getLogin. If logged in an instance of this class is returned.
  * If not and all attempts to authenticate on the server fail a {@link javax.security.auth.login.LoginException} is thrown.
  * <p>
  * In general all code that requires the user to log in should place a line like
  * <code>Login.getLogin();</code>
  * somewhere before. If the user is already logged in this method immediately exits and returns
  * the static Login member. If the user some time before decided to work OFFLINE this method
- * will throw an {@link WorkOfflineException} to indicate this and not make any attempts to 
+ * will throw an {@link WorkOfflineException} to indicate this and not make any attempts to
  * login unless {@link #setForceLogin(boolean)} was not set to true. This means that user interface
  * actions have to do something like the following to login:
  * <pre>
@@ -124,7 +123,7 @@ extends AbstractEPProcessor
 	 */
 	public static final int LOGINSTATE_LOGGED_OUT = 1;
 	/**
-	 * Loginstate: Working OFFLINE indicating also that the user wants 
+	 * Loginstate: Working OFFLINE indicating also that the user wants
 	 * to stay OFFLINE and causing the Login to fail for a certain time
 	 * when not forced.
 	 * @see LoginStateListener
@@ -142,7 +141,7 @@ extends AbstractEPProcessor
 
 
 	/**
-	 * Class used to pass the result of 
+	 * Class used to pass the result of
 	 * login procedures back to {@link Login}
 	 * @author alex
 	 */
@@ -184,7 +183,7 @@ extends AbstractEPProcessor
 		}
 		public void setMessage(String message) {
 			this.message = message;
-		}		
+		}
 		public boolean isWorkOffline() {
 			return workOffline;
 		}
@@ -226,7 +225,7 @@ extends AbstractEPProcessor
 		 */
 		public void setWasSocketTimeout(boolean wasSocketTimeout) {
 			this.wasSocketTimeout = wasSocketTimeout;
-		}		
+		}
 
 		public void copyValuesTo(AsyncLoginResult loginResult) {
 			loginResult.exception = this.exception;
@@ -241,7 +240,7 @@ extends AbstractEPProcessor
 	}
 
 	/**
-	 * Used internally within static block, in order to create the shared instance as soon as the class is loaded. 
+	 * Used internally within static block, in order to create the shared instance as soon as the class is loaded.
 	 */
 	protected static void createLogin() {
 		sharedInstanceLogin = new Login();
@@ -291,7 +290,7 @@ extends AbstractEPProcessor
 	
 	/**
 	 * First removes the JFireRCDLDelegate from
-	 * the parent classloader and then flushes 
+	 * the parent classloader and then flushes
 	 * user information (logs out).
 	 */
 	private void logout(boolean doNotify) {
@@ -459,8 +458,8 @@ extends AbstractEPProcessor
 	 * This method calls {@link #doLogin(boolean)} with parameter forceLogoutFirst
 	 * set to false, so nothing will happen if already logged in.
 	 * 
-	 * @throws LoginException Exception is thrown whenever some error occurs during login. 
-	 * But not that the user might be presented the possibility to work OFFLINE. 
+	 * @throws LoginException Exception is thrown whenever some error occurs during login.
+	 * But not that the user might be presented the possibility to work OFFLINE.
 	 * In this case a LoginException is thrown as well with a {@link WorkOfflineException} as cause.
 	 * 
 	 * @see ILoginHandler
@@ -489,19 +488,19 @@ extends AbstractEPProcessor
 	 * 
 	 * @param forceLogoutFirst Defines weather to logout first
 	 * 
-	 * @throws LoginException Exception is thrown whenever some error occurs during login. 
-	 * But not that the user might be presented the possibility to work OFFLINE. 
+	 * @throws LoginException Exception is thrown whenever some error occurs during login.
+	 * But not that the user might be presented the possibility to work OFFLINE.
 	 * In this case a LoginException is thrown as well with a {@link WorkOfflineException} as cause.
 	 * 
 	 * @see ILoginHandler
 	 * @see Login#setLoginHandler(ILoginHandler)
 	 */
-	private void doLogin(final boolean forceLogoutFirst) throws LoginException 
+	private void doLogin(final boolean forceLogoutFirst) throws LoginException
 	{
 		int oldLoginstate = currLoginState;
 		logger.debug("Login requested by thread "+Thread.currentThread());		 //$NON-NLS-1$
 		if ((currLoginState == LOGINSTATE_OFFLINE)){
-			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;			
+			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
 			if (!forceLogin && elapsedTime < WORK_OFFLINE_TIMEOUT) {
 				LoginException lEx = new LoginException();
 				lEx.initCause(new WorkOfflineException());
@@ -616,7 +615,7 @@ extends AbstractEPProcessor
 	private org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor objectID2PCClassNotificationInterceptor = null;
 
 	/**
-	 * Sets whether to force login on next attempt even if login state is 
+	 * Sets whether to force login on next attempt even if login state is
 	 * {@link #LOGINSTATE_OFFLINE}.
 	 * 
 	 * @param forceLogin Whether to force Login on the next attempt.
@@ -728,7 +727,7 @@ extends AbstractEPProcessor
 	}
 
 	/**
-	 * Creates a new Login. 
+	 * Creates a new Login.
 	 * 
 	 * @throws NamingException
 	 */
@@ -792,7 +791,7 @@ extends AbstractEPProcessor
 
 	public User getUser(String fetchGroups[], int maxFetchDepth, IProgressMonitor monitor) {
 		return UserDAO.sharedInstance().getUser(
-				UserID.create(loginData.getOrganisationID(), loginData.getUserID()), 
+				UserID.create(loginData.getOrganisationID(), loginData.getUserID()),
 				fetchGroups, maxFetchDepth, new ProgressMonitorWrapper(monitor)
 			);
 	}
@@ -825,7 +824,7 @@ extends AbstractEPProcessor
 	}
 
 //	/**
-//	 * @deprecated Do not use anymore! Use 
+//	 * @deprecated Do not use anymore! Use
 //	 */
 //	@Deprecated
 //	public InitialContext getInitialContext() throws NamingException, LoginException
@@ -852,8 +851,8 @@ extends AbstractEPProcessor
 	}
 
 	/**
-	 * Simple class to hold {@link LoginStateListener} 
-	 * and their associated {@link IAction}.   
+	 * Simple class to hold {@link LoginStateListener}
+	 * and their associated {@link IAction}.
 	 */
 	protected static class LoginStateListenerRegistryItem {
 		private LoginStateListener loginStateListener;
@@ -862,7 +861,7 @@ extends AbstractEPProcessor
 			super();
 			this.loginStateListener = loginStateListener;
 			this.action = action;
-		}		
+		}
 		public IAction getAction() {
 			return action;
 		}
@@ -885,12 +884,12 @@ extends AbstractEPProcessor
 					if (isCheckActionOnEquals()) {
 						return ((LoginStateListenerRegistryItem)o).getAction().equals(this.action);
 					}
-					else 
+					else
 						return true;
-				} 
+				}
 				else
 					return false;
-			} 
+			}
 			else
 				return false;
 		}
@@ -931,7 +930,7 @@ extends AbstractEPProcessor
 	}
 
 	/**
-	 * Removes only the {@link LoginStateListener} associated to the given {@link IAction}.  
+	 * Removes only the {@link LoginStateListener} associated to the given {@link IAction}.
 	 * @param loginStateListener
 	 * @param action
 	 */
@@ -940,8 +939,8 @@ extends AbstractEPProcessor
 	}
 
 	/**
-	 * Removes either all occurences of the given {@link LoginStateListener} or only 
-	 * the one associated to the given {@link IAction}.  
+	 * Removes either all occurences of the given {@link LoginStateListener} or only
+	 * the one associated to the given {@link IAction}.
 	 * @param loginStateListener
 	 * @param action
 	 * @param allOccurencesOfListener
@@ -1002,7 +1001,7 @@ extends AbstractEPProcessor
 
 	/**
 	 * Do not call this method yourself.<br/>
-	 * It is used to trigger the notification right after the 
+	 * It is used to trigger the notification right after the
 	 * WorkbenchWindow is shown, as Login can be requested
 	 * at a point in startup when actions and other
 	 * LoginStateListeners are not build yet.<br/>
@@ -1069,7 +1068,7 @@ extends AbstractEPProcessor
 				}
 				else {
 					if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
-						loginResult.setWasAuthenticationErr(true);				
+						loginResult.setWasAuthenticationErr(true);
 						loginResult.setSuccess(false);
 					}
 					else {

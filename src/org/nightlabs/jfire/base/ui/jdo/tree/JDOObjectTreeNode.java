@@ -118,5 +118,5 @@ public class JDOObjectTreeNode<JDOObjectID, JDOObject, Controller extends Active
 			logger.debug("removeChildNode: removed childNode (return " + res + ")! childNode.jdoObjectID=\"" + JDOHelper.getObjectId(childNode.getJdoObject()) + "\" this.jdoObjectID=\"" + JDOHelper.getObjectId(this.jdoObject) + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 		return res;
-	} 
+	}
 }

@@ -9,7 +9,6 @@ import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
@@ -257,7 +256,7 @@ public class EditLockMan
 	/**
 	 * Asynchronously checks for <code>EditLock</code>s of the given type corresponding to the {@link EditLockTypeID}
 	 * of the object corresponding to the given {@link ObjectID}.
-	 *  
+	 * 
 	 * @param editLockTypeID The ID referencing the {@link EditLockType} to which the new {@link EditLock} will belong. This parameter is ignored, if the
 	 *		<code>EditLock</code> already exists.
 	 * @param objectID The ID of the object that shall be locked.
@@ -266,7 +265,7 @@ public class EditLockMan
 	 * 
 	 * @return An {@link EditLockHandle} on the acquired lock that serves to conveniently refresh or release the lock.
 	 */
-	public EditLockHandle acquireEditLockAsynchronously(final EditLockTypeID editLockTypeID, 
+	public EditLockHandle acquireEditLockAsynchronously(final EditLockTypeID editLockTypeID,
 			final ObjectID objectID, final String description, final EditLockCallback editLockCallback)
 	{
 		EditLockHandle handle = new EditLockHandle(editLockTypeID, objectID, description, editLockCallback, (Shell) null);
@@ -329,7 +328,7 @@ public class EditLockMan
 		ObjectID objectID = handle.getObjectID();
 		String description = handle.getDescription();
 		EditLockCallback editLockCallback = handle.getEditLockCallback();
-		final Shell parentShell = handle.getShell();		
+		final Shell parentShell = handle.getShell();
 		
 		if (editLockTypeID == null)
 			throw new IllegalArgumentException("editLockTypeID must not be null!"); //$NON-NLS-1$

@@ -48,13 +48,13 @@ public class PropertySetSearchResultTableLabelProvider implements ITableLabelPro
 	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
 	 */
 	public String getColumnText(Object element, int columnIndex) {
-		// TODO: temporär -> columns, data ... 
+		// TODO: temporär -> columns, data ...
 		String label = ""; //$NON-NLS-1$
 		if ((element instanceof Person)) {
 //			throw new IllegalArgumentException("Element should be of type Person but is "+element.getClass().getName());
 			Person person = (Person)element;
 			label = person.getOrganisationID()+": "+person.getPropertySetID(); //$NON-NLS-1$
-		} 
+		}
 		else if (element instanceof Object[]) {
 			Object[] array = (Object[])element;
 			if (array.length > columnIndex) {

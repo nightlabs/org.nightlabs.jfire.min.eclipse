@@ -41,7 +41,7 @@ import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class TextStructFieldSearchItemEditorHelper 
+public class TextStructFieldSearchItemEditorHelper
 		extends PropertySetStructFieldSearchItemEditorHelper {
 	
 	public static class Factory implements PropertySetSearchFilterItemEditorHelperFactory<TextStructFieldSearchItemEditorHelper> {

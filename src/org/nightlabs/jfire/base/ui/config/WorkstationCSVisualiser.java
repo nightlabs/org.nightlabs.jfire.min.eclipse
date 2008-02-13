@@ -44,9 +44,9 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class WorkstationCSVisualiser implements ConfigSetupVisualiser 
+public class WorkstationCSVisualiser implements ConfigSetupVisualiser
 {
-	private static String[] WORKSTATION_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT}; 	
+	private static String[] WORKSTATION_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
 	
 	/**
 	 * @see org.nightlabs.jfire.base.ui.config.ConfigSetupVisualiser#getKeyObjectName(org.nightlabs.jfire.base.ui.config.id.ConfigID)
@@ -55,17 +55,17 @@ public class WorkstationCSVisualiser implements ConfigSetupVisualiser
 		try {
 			WorkstationID workstaionID = new WorkstationID(configID.configKey);
 			Workstation workstation = WorkstationDAO.sharedInstance().getWorkstation(
-					workstaionID, WORKSTATION_FETCH_GROUPS, 
-					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
+					workstaionID, WORKSTATION_FETCH_GROUPS,
+					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 					new NullProgressMonitor()
 				);
 			return workstation.getWorkstationID();
 		} catch (Exception e) {
 			return configID.configKey;
-		} 
+		}
 	}
 	
-	public String getConfigDescription(ConfigID configID) 
+	public String getConfigDescription(ConfigID configID)
 	{
 		ProgressMonitor monitor = new NullProgressMonitor();
 		ConfigSetup setup = ConfigSetupDAO.sharedInstance().getConfigSetupForConfigType(configID, monitor);
@@ -74,7 +74,7 @@ public class WorkstationCSVisualiser implements ConfigSetupVisualiser
 		if (ConfigSetupDAO.sharedInstance().isConfigGroup(configID, monitor)) {
 			ConfigGroup group = setup.getConfigGroup(configID.configKey);
 			return String.format(Messages.getString("org.nightlabs.jfire.base.ui.config.WorkstationCSVisualiser.configGroupDescription"), group.getName()); //$NON-NLS-1$
-		}		
+		}
 		return String.format(Messages.getString("org.nightlabs.jfire.base.ui.config.WorkstationCSVisualiser.workstationConfigDescription"), getKeyObjectName(configID)); //$NON-NLS-1$
 	}
 }

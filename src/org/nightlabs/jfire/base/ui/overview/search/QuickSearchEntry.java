@@ -6,14 +6,14 @@ package org.nightlabs.jfire.base.ui.overview.search;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * Interface which defines an QuickSearch which can be used 
- * e.g. in the Overview to perform a quick search with only a search text 
+ * Interface which defines an QuickSearch which can be used
+ * e.g. in the Overview to perform a quick search with only a search text
  * in a special context defined by this QuickSearchEntry
- *  
+ * 
  * @author Daniel Mazurek - daniel <at> nightlabs <dot> de
  *	
  */
-public interface QuickSearchEntry 
+public interface QuickSearchEntry
 {
 	/**
 	 * returns the text to search for
@@ -37,7 +37,7 @@ public interface QuickSearchEntry
 	
 	/**
 	 * sets the range for the result
-	 *  
+	 * 
 	 * @param minInclude the minimum range which is inlcuded
 	 * @param maxExclude the maximum range which is excluded
 	 */

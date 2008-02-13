@@ -74,7 +74,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 		return comp;
 //		comp = new XComposite(parent, SWT.NONE, LayoutMode.T, LayoutDataMode.GRID_DATA_HORIZONTAL);
 //
-//		title = new Label(comp, SWT.NONE);		
+//		title = new Label(comp, SWT.NONE);
 //		valueSpinner = new Spinner(comp, comp.getBorderStyle());
 //		valueSpinner.addModifyListener(new ModifyListener() {
 //			public void modifyText(ModifyEvent e) {
@@ -96,7 +96,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 //		NumberDataField numberDataField = getDataField();
 //		NumberStructField numberStructField = (NumberStructField) getStructField();
 //		title.setText(numberStructField.getName().getText(language.getLanguageID()));
-//		
+//
 //		if (numberStructField.isBounded()) {
 //			valueSpinner.setMaximum(numberStructField.getSpinnerMax());
 //			valueSpinner.setMinimum(numberStructField.getSpinnerMin());
@@ -105,8 +105,8 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 //			valueSpinner.setMinimum(0);
 //		}
 //		valueSpinner.setDigits(numberStructField.getDigits());
-//		
-//		valueSpinner.setSelection(numberDataField.getIntValue());		
+//
+//		valueSpinner.setSelection(numberDataField.getIntValue());
 	}
 	
 	/*
@@ -137,7 +137,7 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 
 //	private Label title;
 	private Spinner valueSpinner;
-//	private NumberDataFieldEditor editor;	
+//	private NumberDataFieldEditor editor;
 	private ModifyListener modifyListener;
 	
 	public NumberDataFieldComposite(Composite parent, NumberDataFieldEditor _editor) {
@@ -157,7 +157,7 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 			public void modifyText(ModifyEvent e) {
 				getEditor().setChanged(true);
 			}
-		};		
+		};
 		valueSpinner.addModifyListener(modifyListener);
 		
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueSpinner);

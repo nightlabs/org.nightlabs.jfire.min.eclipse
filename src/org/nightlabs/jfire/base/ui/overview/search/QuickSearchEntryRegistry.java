@@ -14,12 +14,12 @@ import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 
 /**
- * registry for the extension-point org.nightlabs.jfire.base.ui.quickSearchEntry 
+ * registry for the extension-point org.nightlabs.jfire.base.ui.quickSearchEntry
  * 
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  */
-public class QuickSearchEntryRegistry 
-extends AbstractEPProcessor 
+public class QuickSearchEntryRegistry
+extends AbstractEPProcessor
 {
 	private static final Logger logger = Logger.getLogger(QuickSearchEntryRegistry.class);
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.quickSearchEntry";
@@ -52,7 +52,7 @@ extends AbstractEPProcessor
 
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element)
-	throws Exception 
+	throws Exception
 	{
 		if (element.getName().equals(ELEMENT_QUICK_SEARCH_ENTRY_FACTORY)) {
 			if (checkString(element.getAttribute(ATTRIBUTE_CLASS))) {
@@ -64,11 +64,11 @@ extends AbstractEPProcessor
 						if (factories == null)
 							factories = new HashSet<QuickSearchEntryFactory>();
 						factories.add(factory);
-						id2Factories.put(id, factories);						
+						id2Factories.put(id, factories);
 					}
 				} catch (Exception e) {
 					logger.error("There occured an error during initalizing the class "+element.getAttribute(ATTRIBUTE_CLASS), e); //$NON-NLS-1$
-				}				
+				}
 			}
 		}
 	}

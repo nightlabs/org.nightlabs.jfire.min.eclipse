@@ -25,7 +25,7 @@ public class JMSQueueCombo extends XComboComposite<String> {
 	public JMSQueueCombo(Composite parent, int comboStyle, String caption) {
 		super(parent, comboStyle, caption);
 		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.j2ee.JMSQueueCombo.loadJob.name")) { //$NON-NLS-1$
-			@SuppressWarnings("unchecked") 
+			@SuppressWarnings("unchecked")
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				Login login = Login.getLogin();
@@ -36,7 +36,7 @@ public class JMSQueueCombo extends XComboComposite<String> {
 						setInput(queues);
 					}
 				});
-				return Status.OK_STATUS;				
+				return Status.OK_STATUS;
 			}
 		};
 		loadJob.schedule();

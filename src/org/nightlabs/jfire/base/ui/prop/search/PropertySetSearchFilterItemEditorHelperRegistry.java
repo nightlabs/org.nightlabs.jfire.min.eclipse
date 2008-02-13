@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This registry holds PropertySetSearchFilterItemEditorHelper 
+ * This registry holds PropertySetSearchFilterItemEditorHelper
  * linked to classes of PersonStructFields.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -45,7 +45,7 @@ public class PropertySetSearchFilterItemEditorHelperRegistry {
 	
 	/**
 	 * Adds a PropertySetSearchFilterItemEditorHelper linked to the
-	 * given class name to the registry. 
+	 * given class name to the registry.
 	 * 
 	 * @param itemClassName
 	 * @param itemEditor
@@ -74,7 +74,7 @@ public class PropertySetSearchFilterItemEditorHelperRegistry {
 	 * @return
 	 * @throws SearchFilterItemEditorNotFoundException
 	 */
-	public PropertySetSearchFilterItemEditorHelper createEditorHelper(Class structFieldClass) 
+	public PropertySetSearchFilterItemEditorHelper createEditorHelper(Class structFieldClass)
 	throws PropertySetSearchFilterItemEditorHelperNotFoundException {
 		PropertySetSearchFilterItemEditorHelperFactory<? extends PropertySetSearchFilterItemEditorHelper> factory = helperFactories.get(structFieldClass);
 		if (factory != null)

@@ -40,7 +40,7 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 		editLockTable = new ProcessEditLockTable(comp, SWT.NONE);
 		
 		editLockTable.setInput(editLockCarriers);
-		return comp;		
+		return comp;
 	}
 	
 	public void addEditLockCarrier(EditLockCarrier editLockCarrier) {
@@ -64,7 +64,7 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 			editLockMan.onCloseBlockingDueToInactivityDialog();
 			return true;
 		}
-		return false;		
+		return false;
 	}
 	
 	@Override
@@ -86,7 +86,7 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 		
 		for (EditLockCarrier carrier : editLockCarriers) {
 			editLockMan.processEditLockAction(carrier, ProcessLockAction.REFRESH_AND_CONTINUE);
-		}			
+		}
 	}
 	
 	

@@ -51,22 +51,22 @@ public class RoleGroupProvider extends JDOObjectProvider
   private static RoleGroupProvider _sharedInstance = null;
   private UserManager um;
   
-  public RoleGroupProvider() 
+  public RoleGroupProvider()
     throws RemoteException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
   }
   
-  public static RoleGroupProvider sharedInstance() 
+  public static RoleGroupProvider sharedInstance()
     throws RemoteException, LoginException, CreateException, NamingException
   {
-    if (_sharedInstance == null) 
+    if (_sharedInstance == null)
       _sharedInstance = new RoleGroupProvider();
 
     return _sharedInstance;
   }
 
-  public RoleGroupListCarrier getRoleGroups(String userID, String authorityID, String[] fetchgroups, int maxFetchDepths) 
+  public RoleGroupListCarrier getRoleGroups(String userID, String authorityID, String[] fetchgroups, int maxFetchDepths)
     throws RemoteException, ModuleException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();

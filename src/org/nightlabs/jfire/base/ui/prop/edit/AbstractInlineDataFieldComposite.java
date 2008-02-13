@@ -38,7 +38,7 @@ import org.nightlabs.jfire.prop.DataField;
  * Abstract base composite for composites that are supposed to edit a single {@link DataField} in an <b>inline</b> style,
  * that means they consist of a label for the respective data field and a single input element like a textbox. Extending this
  * class makes it easy to create different composites that look similar according to insets and spacing.
- *  
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
@@ -54,7 +54,7 @@ public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldE
 	public AbstractInlineDataFieldComposite(Composite parent, int style, Editor editor) {
 		super(parent, style);
 		this.editor = editor;
-		setLayout(getDefaultLayout());		
+		setLayout(getDefaultLayout());
 		title = new Label(this, SWT.NONE);
 		title.setLayoutData(createTitleLayoutData());
 	}
@@ -97,6 +97,6 @@ public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldE
 	}
 	
 //	protected final getInputControlLayoutData() {
-//		
+//
 //	}
 }

@@ -6,19 +6,19 @@ import org.eclipse.swt.widgets.Composite;
  * Object created by {@link EntryFactory}. {@link Entry}s are hold by {@link Category}s
  * which might choose to either display their entries by using
  * their descriptive information like {@link EntryFactory#getName()}, {@link EntryFactory#getImage()}
- * or ask the Entry itself to create the UI for its display ({@link #createComposite(Composite)}). 
+ * or ask the Entry itself to create the UI for its display ({@link #createComposite(Composite)}).
  * <p>
  * Additionally an {@link Entry} might create an {@link EntryViewer}
  * that can be used to show detailed information about the entry.
  * </p>
- *  
+ * 
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public interface Entry 
+public interface Entry
 {
 	/**
-	 * Performs what should be done when this {@link Entry} is activated. 
+	 * Performs what should be done when this {@link Entry} is activated.
 	 * This might be called when an item representing the Entry is double-clicked etc.
 	 */
 	void handleActivation();
@@ -44,12 +44,12 @@ public interface Entry
 	 * </p>
 	 * @return The {@link Composite} created by {@link #createComposite(Composite)}.
 	 */
-	Composite getComposite();	
+	Composite getComposite();
 	
 	/**
 	 * Create a new {@link EntryViewer} for this Entry.
 	 * For one Entry any number of {@link EntryViewer}s might be created.
-	 *  
+	 * 
 	 * @return A new {@link EntryViewer} linked to this Entry.
 	 */
 	EntryViewer createEntryViewer();

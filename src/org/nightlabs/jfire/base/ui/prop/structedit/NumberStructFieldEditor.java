@@ -15,7 +15,7 @@ public class NumberStructFieldEditor extends AbstractStructFieldEditor<NumberStr
 
 	@Override
 	protected Composite createSpecialComposite(Composite parent, int style) {
-		comp = new NumberStructFieldEditComposite(parent, style, this);		
+		comp = new NumberStructFieldEditComposite(parent, style, this);
 		return comp;
 	}
 

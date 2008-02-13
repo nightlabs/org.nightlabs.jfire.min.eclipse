@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.person.search.PersonStartsWithQuickSearch;
-import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -72,7 +71,7 @@ public class PropertySetStartsWithQuickSearchComposite extends Composite {
 				String ch;
 				ch = new String(new byte[]{(byte)i}, IOUtil.CHARSET_NAME_UTF_8);
 				
-				pswqs = createQuickSearch(resultFetcher, ch); 				
+				pswqs = createQuickSearch(resultFetcher, ch);
 				pswqs.createComposite(this);
 				quickSearches.add(pswqs);
 			}

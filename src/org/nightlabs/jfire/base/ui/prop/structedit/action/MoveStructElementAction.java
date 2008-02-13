@@ -22,14 +22,14 @@ import org.nightlabs.jfire.prop.StructField;
  * 
  * @author Marius Heinzmann [marius<at>NightLabs<dot>de]
  */
-public class MoveStructElementAction 
-	extends SelectionListenerAction 
+public class MoveStructElementAction
+	extends SelectionListenerAction
 {
 	private StructEditor editor;
 	private boolean up;
 
 	public MoveStructElementAction(StructEditor editor, boolean up) {
-		this(editor, up, null); 
+		this(editor, up, null);
 	}
 	
 	public MoveStructElementAction(StructEditor editor, boolean up, StructureChangedListener listener) {
@@ -57,7 +57,7 @@ public class MoveStructElementAction
 			if (up ? movingBlockIndex == 0 : movingBlockIndex == blockList.size()-1)
 				return;
 			
-			final int exchangeBlockIndex= up ? movingBlockIndex-1 : movingBlockIndex+1; 
+			final int exchangeBlockIndex= up ? movingBlockIndex-1 : movingBlockIndex+1;
 			final StructBlock exchangedBlock = blockList.get( exchangeBlockIndex );
 			blockList.set( exchangeBlockIndex, movingBlock );
 			blockList.set( movingBlockIndex, exchangedBlock );
@@ -69,7 +69,7 @@ public class MoveStructElementAction
 			final int movingFieldIndex = fieldList.indexOf(movingField);
 			if ( up ? movingFieldIndex == 0 : movingFieldIndex == fieldList.size()-1)
 				return;
-			final int exchangeFieldIndex = up ? movingFieldIndex-1 : movingFieldIndex+1; 
+			final int exchangeFieldIndex = up ? movingFieldIndex-1 : movingFieldIndex+1;
 
 			final StructField exchangedField = fieldList.get( exchangeFieldIndex );
 			fieldList.set( exchangeFieldIndex, movingField );

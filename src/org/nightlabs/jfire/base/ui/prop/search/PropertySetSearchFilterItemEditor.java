@@ -173,7 +173,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		if (idx == lastIdx)
 			return;
 		if (idx < 0)
-			return;			
+			return;
 		PropertySetSearchFilterItemEditorHelper helper = getCurrentHelper();
 		if (lastHelper != null) {
 			lastHelper.close();
@@ -181,7 +181,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 				lastHelper.getControl(null).dispose();
 			} catch (Throwable t) {
 				logger.error("Error disposing helper control.",t); //$NON-NLS-1$
-			}				
+			}
 		}
  		helper.getControl(wrapper);
 		wrapper.layout();

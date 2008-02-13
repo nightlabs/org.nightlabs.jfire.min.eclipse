@@ -45,13 +45,13 @@ public interface PropertySetSearchFilterItemEditorHelper {
 	
 	/**
 	 * Will be called to return results within
-	 * {@link org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getSearchFilterItem()}  
+	 * {@link org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getSearchFilterItem()}
 	 * @return
 	 */
 	public SearchFilterItem getSearchFilterItem();
 	
 	/**
-	 * Should return a string that can be displayed 
+	 * Should return a string that can be displayed
 	 * within the combo of PropertySetSearchFilterItemEditor.
 	 * 
 	 * @return
@@ -61,9 +61,9 @@ public interface PropertySetSearchFilterItemEditorHelper {
 	/**
 	 * Will be called when the
 	 * helper is closed. It should be
-	 * used for cleanup (removing listeners), 
+	 * used for cleanup (removing listeners),
 	 * not for disposing widgets.
-	 */	
+	 */
 	public void close();
 	
 	

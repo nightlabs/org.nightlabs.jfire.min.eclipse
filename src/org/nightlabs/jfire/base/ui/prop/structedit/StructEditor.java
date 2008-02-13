@@ -17,11 +17,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
-import org.jboss.util.property.Property;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
@@ -53,7 +51,7 @@ import org.nightlabs.util.reflect.ReflectUtil;
 
 /**
  * Editor to change the {@link Property} structure ({@link IStruct}) linked to
- * a certain {@link Class}. 
+ * a certain {@link Class}.
  * 
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
@@ -61,7 +59,7 @@ import org.nightlabs.util.reflect.ReflectUtil;
 public class StructEditor {
 	private StructTree structTree;
 	private StructPartEditor<?> currentStructPartEditor;
-	private StructBlockEditor structBlockEditor;	
+	private StructBlockEditor structBlockEditor;
 	private LanguageChooser languageChooser;
 	private TreeNode lastSelection;
 	private boolean ignoreChangeEvent;
@@ -89,7 +87,7 @@ public class StructEditor {
 	 * @param parent The parent to add the {@link Composite}.
 	 * @param style The style for the outer {@link Composite} of the Editors GUI.
 	 * @param createStructIDCombo Whether to create a {@link Combo} control that allows switching of the edited {@link IStruct}.
-	 * @return The newly created {@link StructEditorComposite}. 
+	 * @return The newly created {@link StructEditorComposite}.
 	 */
 	public StructEditorComposite createComposite(Composite parent, int style, boolean createStructIDCombo) {
 		if (structEditorComposite == null) {
@@ -103,8 +101,8 @@ public class StructEditor {
 				}
 			});
 			
-			structTree.addSelectionChangedListener(new ISelectionChangedListener() {				
-				@SuppressWarnings("unchecked") 
+			structTree.addSelectionChangedListener(new ISelectionChangedListener() {
+				@SuppressWarnings("unchecked")
 				public void selectionChanged(SelectionChangedEvent event) {
 					if (ignoreChangeEvent)
 						return;
@@ -114,7 +112,7 @@ public class StructEditor {
 						ignoreChangeEvent = true;
 						structTree.select(lastSelection);
 						ignoreChangeEvent = false;
-						return;						
+						return;
 					}
 					
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -140,12 +138,12 @@ public class StructEditor {
 						} catch (PropertyException e) {
 							e.printStackTrace();
 							throw new RuntimeException(e);
-						}						
+						}
 					} else if (selected instanceof StructBlockNode) {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);
 						structBlockEditor.setData(block);
-						currentStructPartEditor = structBlockEditor;						
+						currentStructPartEditor = structBlockEditor;
 					}
 					
 					I18nTextEditor partNameEditor = currentStructPartEditor.getPartNameEditor();
@@ -157,19 +155,19 @@ public class StructEditor {
 							structTree.refreshSelected();
 						}
 					});
-				}				
+				}
 			});
 		}
 		
 		// TODO load person struct on start up, makes testing easier...
 		// setCurrentStructLocalID(StructEditorUtil.getAvailableStructLocalIDs().toArray(new StructLocalID[1])[0]);
 		
-		return structEditorComposite; 
+		return structEditorComposite;
 	}
 	
 	public void setCurrentStructLocalID(final StructLocalID structLocalID) {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {						
+			public void run() {
 				structEditorComposite.setLoadingText();
 			}
 		});
@@ -185,7 +183,7 @@ public class StructEditor {
 				});
 				return Status.OK_STATUS;
 			}
-		}.schedule();		
+		}.schedule();
 	}
 	
 	protected IStruct fetchStructure(final StructLocalID structLocalID, ProgressMonitor monitor) {
@@ -213,14 +211,14 @@ public class StructEditor {
 	 * copied by {@link Util#cloneSerializable(Object)}.
 	 * </p>
 	 * @param struct The {@link IStruct} to be edited.
-	 * @param doCloneSerializable Whether the given struct should be cloned before editing. 
+	 * @param doCloneSerializable Whether the given struct should be cloned before editing.
 	 * 		Note, that if it is cloned {@link #getStruct()} will not return the same instance
-	 * 		that was passed to this method. 
+	 * 		that was passed to this method.
 	 */
 	public void setStruct(IStruct struct, boolean doCloneSerializable) {
-		currentStruct = doCloneSerializable ? Util.cloneSerializable(struct) : struct;  
+		currentStruct = doCloneSerializable ? Util.cloneSerializable(struct) : struct;
 		structEditorComposite.setStruct(currentStruct);
-//		structTree.setInput(currentStruct);				
+//		structTree.setInput(currentStruct);
 	}
 	
 	/**
@@ -248,7 +246,7 @@ public class StructEditor {
 					case SWT.YES:
 						structFieldEditor.restoreData();
 						return true;
-					case SWT.NO:					
+					case SWT.NO:
 						return false;
 				}
 			}
@@ -266,14 +264,14 @@ public class StructEditor {
 				if (dirtyObjectID.getObjectID().equals(currentStructID)) {
 					final IStruct struct = fetchStructure(currentStructID, getProgressMonitorWrapper());
 //				 TODO: Same problem as with ConfigModules: we cannot check whether the content of two IStructs are identical or not.
-//					if (currentStruct.equals(struct)) 
+//					if (currentStruct.equals(struct))
 //						return;
 						
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							setStruct(struct);
 						}
-					});						
+					});
 			
 				}
 			}
@@ -293,7 +291,7 @@ public class StructEditor {
 		return propertyManager;
 	}
 
-	public void storeStructure() {		
+	public void storeStructure() {
 		try {
 			ReflectUtil.findContainedObjectsByClass(
 					currentStruct, Serializable.class, false, true,
@@ -361,7 +359,7 @@ public class StructEditor {
 			throw new RuntimeException(e);
 		}
 		
-		structTree.select(newBlock);		
+		structTree.select(newBlock);
 	}
 
 	public void addStructField(StructBlock structBlock) {
@@ -373,7 +371,7 @@ public class StructEditor {
 			return;
 
 		StructFieldMetaData newFieldMetaData = wiz.getSelectedFieldMetaData();
-		addStructField(structBlock, newFieldMetaData, wiz.getDetailsWizardPage());		
+		addStructField(structBlock, newFieldMetaData, wiz.getDetailsWizardPage());
 	}
 	
 	private void addStructField(StructBlock toBlock, StructFieldMetaData newFieldMetaData, DynamicPathWizardPage detailsPage) {
@@ -416,7 +414,7 @@ public class StructEditor {
 				currentStruct.removeStructBlock(blockNode.getBlock());
 			} catch (IllegalStructureModificationException e) {
 				mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_ERROR | SWT.OK);
-				// TODO Shouldn't we simply rethrow this exception as RuntimeException and leave the work to our general exception handler? 
+				// TODO Shouldn't we simply rethrow this exception as RuntimeException and leave the work to our general exception handler?
 				mb.setMessage("Block could not be deleted: " + e.getMessage()); //$NON-NLS-1$
 				mb.setText("Deleting failed"); //$NON-NLS-1$
 				mb.open();

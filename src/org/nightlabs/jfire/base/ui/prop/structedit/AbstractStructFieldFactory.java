@@ -8,7 +8,7 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 public abstract class AbstractStructFieldFactory implements StructFieldFactory
 {
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
-	{		
+	{
 	}
 	
 	/**

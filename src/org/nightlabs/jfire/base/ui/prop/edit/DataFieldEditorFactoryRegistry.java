@@ -42,7 +42,7 @@ import org.nightlabs.jfire.prop.IStruct;
  * {@link org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor}s grouped by editorTypes.<br/>
  * 
  * As EPProcessor it processes extensions to org.nightlabs.jfire.base.ui.prop.edit.propDataFieldEditor.
- *  
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
@@ -106,7 +106,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 * context may be <code>null</code> to indicate the default context.
 	 * @param editorType
 	 * @param targetType
-	 *  
+	 * 
 	 * @return The registered DataFieldEditor for the given targetType
 	 * @throws DataFieldEditorNotFoundException
 	 */
@@ -127,7 +127,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	}
 	
 	/**
-	 * Find the DataFieldEditorFactory for the Class of the given dataField, 
+	 * Find the DataFieldEditorFactory for the Class of the given dataField,
 	 * editorType and context and invokes createPropDataFieldEditor(dataField, setData)
 	 * 
 	 * @param dataField
@@ -138,17 +138,17 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 * @throws DataFieldEditorNotFoundException
 	 */
 	public DataFieldEditor getNewEditorInstance(
-			IStruct struct, String editorType, 
+			IStruct struct, String editorType,
 			String context, DataField dataField, boolean setData
-		) 
-	throws DataFieldEditorNotFoundException 
+		)
+	throws DataFieldEditorNotFoundException
 	{
 		DataFieldEditorFactory fieldEditorFactry = getEditorFactory(editorType, dataField.getClass());
 		return fieldEditorFactry.createPropDataFieldEditor(struct, dataField, setData);
 	}
 	
 	/**
-	 * Find the DataFieldEditorFactory for the Class of the given dataField 
+	 * Find the DataFieldEditorFactory for the Class of the given dataField
 	 * and editorType and invokes createPropDataFieldEditor(dataField, true)
 	 * @param editorType
 	 * @param context may be null to indicate default context.
@@ -158,10 +158,10 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 * @throws DataFieldEditorNotFoundException
 	 */
 	public DataFieldEditor getNewEditorInstance(
-			IStruct struct, String editorType, 
+			IStruct struct, String editorType,
 			String context, DataField dataField
-		) 
-	throws DataFieldEditorNotFoundException 
+		)
+	throws DataFieldEditorNotFoundException
 	{
 		DataFieldEditorFactory fieldEditorFactory = getEditorFactory(editorType, dataField.getClass());
 		return fieldEditorFactory.createPropDataFieldEditor(struct, dataField, true);
@@ -181,7 +181,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	private static DataFieldEditorFactoryRegistry sharedInstance;
 	
 	/**
-	 * Returns the static shared instance of a DataFieldEditorFactoryRegistry. 
+	 * Returns the static shared instance of a DataFieldEditorFactoryRegistry.
 	 * @return The static shared instance of a DataFieldEditorFactoryRegistry.
 	 */
 	public static DataFieldEditorFactoryRegistry sharedInstance() {
@@ -212,7 +212,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 //				Class targetType = Class.forName(element.getAttribute("targetType"));
 //				if (targetType != fieldEditorFactory.getPropDataFieldType())
 //					throw new IllegalStateException("Target type from extension point does not match editorFactory's target type.");
-//				
+//
 //				String context = element.getAttribute("context");
 				sharedInstance().addDataFieldEditorFactory(fieldEditorFactory);
 			}

@@ -42,7 +42,7 @@ import org.nightlabs.jfire.prop.IStruct;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class ExpandableDataBlockGroupEditor 
+public class ExpandableDataBlockGroupEditor
 extends ExpandableComposite
 implements DataBlockEditorChangedListener
 {
@@ -78,7 +78,7 @@ implements DataBlockEditorChangedListener
 		
 		setClient(blockGroupEditor);
 		// TODO: genauer abchecken, was hier läuft :-)
-//		StructProvider provider = (StructProvider)PropStructProviderRegistry.sharedInstance().getPropStructProvider(linkClass); 
+//		StructProvider provider = (StructProvider)PropStructProviderRegistry.sharedInstance().getPropStructProvider(linkClass);
 		
 //		IStruct structure = provider.getStruct();
 //		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(linkClass.getName());
@@ -113,7 +113,7 @@ implements DataBlockEditorChangedListener
 	}
 	
 	public void refresh(DataBlockGroup blockGroup) {
-	}	
+	}
 	
 	private ScrolledForm owner = null;
 	

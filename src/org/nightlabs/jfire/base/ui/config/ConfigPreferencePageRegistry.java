@@ -41,7 +41,7 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class ConfigPreferencePageRegistry extends AbstractEPProcessor 
+public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 {
 	public static final String CLASS_ELEMENT = "class"; //$NON-NLS-1$
 	private static final String NAME_ELEMENT = "name"; //$NON-NLS-1$
@@ -52,9 +52,9 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	/**
 	 * LOG4J logger used by this class
 	 */
-	private static final Logger logger = Logger.getLogger(ConfigPreferencePageRegistry.class); 
+	private static final Logger logger = Logger.getLogger(ConfigPreferencePageRegistry.class);
 	
-	private ConfigPreferenceNode preferencesRootNode; 
+	private ConfigPreferenceNode preferencesRootNode;
 	
 	/**
 	 * key: String id<br/>
@@ -66,7 +66,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
 	 */
 	@Override
-	public String getExtensionPointID() 
+	public String getExtensionPointID()
 	{
 		return "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
 	}
@@ -88,7 +88,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#processElement(org.eclipse.core.runtime.IExtension, org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
-	public void processElement(IExtension extension, IConfigurationElement element) throws Exception 
+	public void processElement(IExtension extension, IConfigurationElement element) throws Exception
 	{
 		if (element.getName().equals(PAGE_ELEMENT)) {
 			String id = element.getAttribute(ID_ELEMENT);
@@ -96,7 +96,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 			if (id == null || "".equals(id)) //$NON-NLS-1$
 				throw new EPProcessorException("Element page has to define an attribute id."); //$NON-NLS-1$
 			String name = element.getAttribute(NAME_ELEMENT);
-			IWorkbenchPreferencePage page = null;			
+			IWorkbenchPreferencePage page = null;
 			try {
 				page = (IWorkbenchPreferencePage)element.createExecutableExtension(CLASS_ELEMENT);
 			} catch (Throwable e) {
@@ -109,7 +109,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 				return;
 			AbstractConfigModulePreferencePage configPage = (AbstractConfigModulePreferencePage) page;
 			ConfigPreferenceNode preferenceNode = new ConfigPreferenceNode(
-					id, name, category, 
+					id, name, category,
 					null, element,
 					configPage,
 					null // cfModIDs are set later when the merging takes place
@@ -131,14 +131,14 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 				null,
 				null,
 				null
-		);		
+		);
 		
 		preferenceNodesByIDs = new HashMap<String, ConfigPreferenceNode>();
 		super.process();
 		
 		for (Iterator iter = preferenceNodesByIDs.values().iterator(); iter.hasNext();) {
 			ConfigPreferenceNode node = (ConfigPreferenceNode) iter.next();
-			ConfigPreferenceNode parentNode = preferenceNodesByIDs.get(node.getCategoryID());			
+			ConfigPreferenceNode parentNode = preferenceNodesByIDs.get(node.getCategoryID());
 			if (parentNode != null)
 				parentNode.addChild(node);
 			else
@@ -149,7 +149,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	private static ConfigPreferencePageRegistry sharedInstance;
 	
 	public static ConfigPreferencePageRegistry sharedInstance() {
-		if (sharedInstance == null) 
+		if (sharedInstance == null)
 			sharedInstance = new ConfigPreferencePageRegistry();
 		return sharedInstance;
 	}

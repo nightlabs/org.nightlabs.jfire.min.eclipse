@@ -12,7 +12,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 /**
  * A ContentProvider that can be used with a TreeViewer that is driven by an {@link ActiveJDOObjectTreeController}.
  * It assumes the initial input of the ContentProvider is the {@link ActiveJDOObjectTreeController}
- * and uses the controller to serve element. 
+ * and uses the controller to serve element.
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
@@ -29,7 +29,7 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 		return getChildren(inputElement);
 	}
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getChildren(Object parentElement)
 	{
@@ -58,7 +58,7 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 			return res.toArray();
 	}
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof String)

@@ -41,7 +41,7 @@ import org.nightlabs.jfire.person.Person;
  */
 public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	/**
-	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String)} 
+	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String)}
 	 */
 	public PersonSearchComposite(Composite parent, int style,
 			String quickSearchText) {
@@ -49,7 +49,7 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	}
 		
 	/**
-	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String, boolean)} 
+	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String, boolean)}
 	 */
 	public PersonSearchComposite(Composite parent, int style,
 			String quickSearchText, boolean doIDSearchAndUsePropertySetCache) {

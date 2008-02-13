@@ -131,7 +131,7 @@ public class JFireBasePlugin
 	 * @param path the path
 	 * @return the image descriptor
 	 */
-	public static ImageDescriptor getImageDescriptor(String path) 
+	public static ImageDescriptor getImageDescriptor(String path)
 	{
 		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}

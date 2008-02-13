@@ -55,13 +55,13 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
 		
-//		this.editor = editor; 
-//		
+//		this.editor = editor;
+//
 //		Layout layout = createLayout();
 //		setLayout(layout);
 //		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 //		setLayoutData(gridData);
-//		
+//
 //		fieldName = new Label(this, SWT.NONE);
 //		fieldName.setLayoutData(createLabelLayoutData());
 		
@@ -117,7 +117,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		else
 			fieldText.setText(getEditor().getDataField().getText(Locale.getDefault()));
 		
-		// TODO set the text fields maximum line count to the one given by the struct field 
+		// TODO set the text fields maximum line count to the one given by the struct field
 		// ((TextStructField)editor.getDataField().getStructField()).getLineCount();
 	}
 	

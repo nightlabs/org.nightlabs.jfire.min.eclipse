@@ -21,8 +21,8 @@ import org.nightlabs.util.Util;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public abstract class ActiveJDOObjectTreeComposite<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode> 
-extends AbstractTreeComposite<JDOObject> 
+public abstract class ActiveJDOObjectTreeComposite<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode>
+extends AbstractTreeComposite<JDOObject>
 {
 
 	private static final Logger logger = Logger.getLogger(ActiveJDOObjectTreeComposite.class);
@@ -109,12 +109,12 @@ extends AbstractTreeComposite<JDOObject>
 		}
 		
 		/**
-		 * Uses the {@link ActiveJDOObjectTreeController} of this tree 
+		 * Uses the {@link ActiveJDOObjectTreeController} of this tree
 		 * to trigger/get data that needs to be expanded.
 		 * 
-		 * The {@link LoadListener} created here recurses into this method. 
+		 * The {@link LoadListener} created here recurses into this method.
 		 */
-		@SuppressWarnings("unchecked") 
+		@SuppressWarnings("unchecked")
 		private void internalExpand(Object root, Object elementOrTreePath, int level, int totalLevel, Set<LoadListener> listenerStack) {
 			LoadListener listener = new LoadListener(root, elementOrTreePath, level, totalLevel, listenerStack);
 			getJDOObjectTreeController().addJDOTreeNodesChangedListener(listener);
@@ -132,7 +132,7 @@ extends AbstractTreeComposite<JDOObject>
 		}
 		
 		/**
-		 * Makes the super expand method accessible 
+		 * Makes the super expand method accessible
 		 */
 		private void superExpandToLevel(Object elementOrTreePath, int level) {
 			super.expandToLevel(elementOrTreePath, level);
@@ -152,10 +152,10 @@ extends AbstractTreeComposite<JDOObject>
 		
 		public LoadListener(
 				Object root,
-				Object element, 
+				Object element,
 				int expandLevel, int totalLevel,
 				Set<LoadListener> listenerStack
-			) 
+			)
 		{
 			this.root = root;
 			this.element = element;
@@ -167,8 +167,8 @@ extends AbstractTreeComposite<JDOObject>
 
 		/**
 		 * Checks if theres need to recurse further and call {@link ActiveTreeViewer#internalExpand(Object, Object, int, int, Set)} if so.
-		 * If this listener was the last waiting for data it will trigger {@link ActiveTreeViewer#superExpandToLevel(Object, int)} 
-		 * with the original parameters.  
+		 * If this listener was the last waiting for data it will trigger {@link ActiveTreeViewer#superExpandToLevel(Object, int)}
+		 * with the original parameters.
 		 */
 		public void handleLoad(final List<TreeNode> children) {
 			getJDOObjectTreeController().removeJDOTreeNodesChangedListener(this);

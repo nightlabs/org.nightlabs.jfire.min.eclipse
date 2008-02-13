@@ -61,7 +61,7 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
  *  }
  * </pre>
  * And create the real WorkbenchPart contents in {@link org.nightlabs.base.ui.part.ControllablePart#createPartContents(Composite)}.
- *  
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
@@ -76,7 +76,7 @@ public class LSDPartController extends PartController implements LoginStateListe
 	 * @see org.nightlabs.base.ui.part.PartController#registerPart(org.nightlabs.base.ui.part.ControllablePart)
 	 */
 	@Override
-	public void registerPart(ControllablePart part) {		
+	public void registerPart(ControllablePart part) {
 		super.registerPart(part);
 		Login.loginAsynchronously();
 	}

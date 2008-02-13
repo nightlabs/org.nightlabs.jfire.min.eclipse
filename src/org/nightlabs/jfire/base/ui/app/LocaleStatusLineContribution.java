@@ -20,7 +20,7 @@ import org.nightlabs.base.ui.language.LanguageManager;
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class LocaleStatusLineContribution 
+public class LocaleStatusLineContribution
 extends AbstractContributionItem
 {
 	private XComposite wrapper;
@@ -52,9 +52,9 @@ extends AbstractContributionItem
 		wrapper.getGridLayout().numColumns = 2;
 		wrapper.getGridLayout().makeColumnsEqualWidth = false;
 		image = new Label(wrapper, SWT.ICON);
-		image.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage())); 
+		image.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage()));
 		image.setLayoutData(new GridData());
-		text = new Label(wrapper, SWT.NONE);		
+		text = new Label(wrapper, SWT.NONE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		text.setText(Locale.getDefault().getDisplayLanguage());
 		return wrapper;

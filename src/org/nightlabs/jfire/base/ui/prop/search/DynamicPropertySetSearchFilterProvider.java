@@ -61,6 +61,6 @@ public class DynamicPropertySetSearchFilterProvider extends
 	@Override
 	protected SearchFilter createSearchFilter() {
 		return new PropSearchFilter(SearchFilter.CONJUNCTION_DEFAULT);
-	}	
+	}
 
 }

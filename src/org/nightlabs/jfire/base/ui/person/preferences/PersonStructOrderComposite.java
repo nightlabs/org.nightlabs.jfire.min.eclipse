@@ -249,13 +249,13 @@ public class PersonStructOrderComposite extends Composite {
 		fieldDownButton.setLayoutData(buttonLData);
 		
 		// Blocks table
-		blocksTableViewer = new TableViewer(blocksTableComposite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);    
-		GridData tgd = new GridData(GridData.FILL_BOTH);    
-		Table t = blocksTableViewer.getTable(); 
+		blocksTableViewer = new TableViewer(blocksTableComposite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
+		GridData tgd = new GridData(GridData.FILL_BOTH);
+		Table t = blocksTableViewer.getTable();
 		t.setHeaderVisible(true);
 		t.setLinesVisible(true);
 		t.setLayoutData(tgd);
-		t.setLayout(new TableLayout());    
+		t.setLayout(new TableLayout());
 		blocksTableViewer.setContentProvider(new BlockOrderListContentProvider());
 		blocksTableViewer.setLabelProvider(new BlockOrderListLabelProvider());
 		new TableColumn(t, SWT.LEFT, 0).setText(Messages.getString("org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderComposite.blockTableColumn.text")); //$NON-NLS-1$
@@ -267,12 +267,12 @@ public class PersonStructOrderComposite extends Composite {
 		
 		// Fields table
 		fieldsTableViewer = new TableViewer(fieldsTableComposite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
-		tgd = new GridData(GridData.FILL_BOTH);    
-		t = fieldsTableViewer.getTable(); 
+		tgd = new GridData(GridData.FILL_BOTH);
+		t = fieldsTableViewer.getTable();
 		t.setHeaderVisible(true);
 		t.setLinesVisible(true);
 		t.setLayoutData(tgd);
-		t.setLayout(new TableLayout());    
+		t.setLayout(new TableLayout());
 		new TableColumn(t, SWT.LEFT, 0).setText(Messages.getString("org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderComposite.fieldTableColumn.text")); //$NON-NLS-1$
 		
 		this.layout();

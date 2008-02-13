@@ -29,9 +29,9 @@ import org.nightlabs.progress.NullProgressMonitor;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public class PersonPersonalDataWizardPage 
-extends DataBlockWizardPage 
-implements DataBlockEditorChangedListener 
+public class PersonPersonalDataWizardPage
+extends DataBlockWizardPage
+implements DataBlockEditorChangedListener
 {
 	private LabeledText displayName;
 	private Button autoCreateDisplayName;

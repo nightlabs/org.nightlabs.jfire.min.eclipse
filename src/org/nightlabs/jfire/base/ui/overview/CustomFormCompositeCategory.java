@@ -28,13 +28,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.ManagedForm;
-import org.eclipse.ui.forms.widgets.Form;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.form.NightlabsFormsToolkit;
 
 /**
- * A category that will not display its items in a table, but rather will 
+ * A category that will not display its items in a table, but rather will
  * ask all its entries to create a Composite for itself.
  * See {@link Entry#createComposite(Composite)}.
  * <p>
@@ -63,7 +62,7 @@ public class CustomFormCompositeCategory extends DefaultCategory {
 			Composite comp = entry.createComposite(managedForm.getForm().getBody());
 			if (comp.getLayoutData() == null) {
 				comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			}			
+			}
 			if (comp instanceof XComposite) {
 				((XComposite)comp).setToolkit(new NightlabsFormsToolkit(Display.getDefault()));
 				((XComposite)comp).adaptToToolkit();

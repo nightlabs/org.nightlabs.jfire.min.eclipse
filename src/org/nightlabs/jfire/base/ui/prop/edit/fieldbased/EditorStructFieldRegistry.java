@@ -60,8 +60,8 @@ public class EditorStructFieldRegistry {
 			list = new ArrayList();
 			registry.put(editorType,list);
 		}
-		return list;		
-	}	
+		return list;
+	}
 	
 	public void addEditorStructFieldID(String editorType, StructFieldID structFieldID) {
 		List list = getStructFieldList(editorType);

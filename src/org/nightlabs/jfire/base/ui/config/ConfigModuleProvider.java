@@ -35,7 +35,6 @@ import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.config.ConfigManager;
 import org.nightlabs.jfire.config.ConfigManagerUtil;
 import org.nightlabs.jfire.config.ConfigModule;
-import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.config.id.ConfigModuleID;
 
@@ -66,9 +65,9 @@ public class ConfigModuleProvider extends JDOObjectProvider {
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Could resolve ConfigModule class "+className, e); //$NON-NLS-1$
 		}
-		String cfModID = ConfigModule.getCfModIDOutOfCfModKey(moduleID.cfModKey);		
+		String cfModID = ConfigModule.getCfModIDOutOfCfModKey(moduleID.cfModKey);
 		ConfigID configID = ConfigID.create(moduleID.organisationID, moduleID.configKey, moduleID.configType);
-		ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();		
+		ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 		return configManager.getConfigModule(configID, cfModClass, cfModID, fetchGroups, maxFetchDepth);
 	}
 	
@@ -78,7 +77,7 @@ public class ConfigModuleProvider extends JDOObjectProvider {
 	 */
 	public ConfigModule getConfigModule(ConfigID config, Class cfModClass, String cfModID, String[] fetchGroups, int maxFetchDepth) {
 		return (ConfigModule)getJDOObject(
-				null, 
+				null,
 				ConfigModuleID.create(
 						config.organisationID,
 						config.configKey,
@@ -104,22 +103,22 @@ public class ConfigModuleProvider extends JDOObjectProvider {
 	 */
 	public ConfigModule getConfigModule(
 			String organiationID,
-			ObjectID linkObjectID, 
-			Class linkObjectClass, 
-			Class cfModClass, 
-			String cfModID, 
+			ObjectID linkObjectID,
+			Class linkObjectClass,
+			Class cfModClass,
+			String cfModID,
 			String[] fetchGroups,
 			int maxFetchDepth
-		) 
+		)
 	{
 		return getConfigModule(
 				ConfigID.create(
 						organiationID,
 						linkObjectID,
 						linkObjectClass
-					), 
-				cfModClass, 
-				cfModID, 
+					),
+				cfModClass,
+				cfModID,
 				fetchGroups,
 				maxFetchDepth
 			);
@@ -130,7 +129,7 @@ public class ConfigModuleProvider extends JDOObjectProvider {
 	public static ConfigModuleProvider sharedInstance() {
 		if (sharedInstance == null)
 			sharedInstance = new ConfigModuleProvider();
-		return sharedInstance;		
+		return sharedInstance;
 	}
 
 }

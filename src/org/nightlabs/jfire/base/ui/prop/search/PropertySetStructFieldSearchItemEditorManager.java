@@ -76,7 +76,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 				return helperControl;
 			
 		PropertySetSearchFilterItemEditorHelperRegistry registry = PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance();
-		if (personStructField == null)			
+		if (personStructField == null)
 			throw new IllegalStateException("Member personStructField is null. init(personStructField) might not have been called."); //$NON-NLS-1$
 		
 		try {
@@ -89,13 +89,13 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 		
 		if (helper instanceof PropertySetStructFieldSearchItemEditorHelper)
 			((PropertySetStructFieldSearchItemEditorHelper)helper).init(this.personStructField);
-		helperControl = helper.getControl(parent); 
+		helperControl = helper.getControl(parent);
 		return helperControl;
 	}
 
 	/**
 	 * Delegates to the helper from the registry.
-	 * @see #getControl(Composite)	
+	 * @see #getControl(Composite)
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getSearchFilterItem()
 	 */
 	@Override

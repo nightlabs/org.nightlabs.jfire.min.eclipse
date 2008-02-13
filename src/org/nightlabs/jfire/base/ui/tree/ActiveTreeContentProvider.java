@@ -21,7 +21,6 @@ import org.nightlabs.base.ui.tree.TreeContentProvider;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
@@ -170,7 +169,7 @@ extends TreeContentProvider
 	}
 	/**
 	 * You <b>must</b> call this method once you don't need this content provider anymore.
-	 * It performs some clean-ups, e.g. unregistering all listeners. 
+	 * It performs some clean-ups, e.g. unregistering all listeners.
 	 */
 	public void close()
 	{

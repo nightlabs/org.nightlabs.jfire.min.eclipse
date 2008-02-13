@@ -41,7 +41,7 @@ public class ProcessEditLockTable extends AbstractTableComposite<EditLockCarrier
 						public void widgetSelected(SelectionEvent e) {
 							fireApplyEditorValue();
 						}
-						public void widgetDefaultSelected(SelectionEvent e) {}					
+						public void widgetDefaultSelected(SelectionEvent e) {}
 					});
 				}
 			};
@@ -66,11 +66,11 @@ public class ProcessEditLockTable extends AbstractTableComposite<EditLockCarrier
 		protected void setValue(Object element, Object value) {
 			actionMap.put((EditLockCarrier) element, ProcessLockAction.getByDescription((String) value));
 			getViewer().update(element, null);
-		}		
+		}
 	};
 	
 	private ActionEditingSupport actionEditingSupport;
-	private Map<EditLockCarrier, ProcessLockAction> actionMap; 
+	private Map<EditLockCarrier, ProcessLockAction> actionMap;
 
 	public ProcessEditLockTable(Composite parent, int style) {
 		super(parent, style);

@@ -48,9 +48,9 @@ import org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderConfigMod
  * TODO @Carnage please decide which of these is still used (or whether both are necessary) If this class is used, please externalize the strings! I've marked them NON-NLS!
  */
 @Deprecated
-public class PersonStructOrderPreferencePage 
-extends 
-	PreferencePage 
+public class PersonStructOrderPreferencePage
+extends
+	PreferencePage
 implements
 	IWorkbenchPreferencePage
 {
@@ -76,12 +76,12 @@ implements
 			tmpLabel.setText("Not logged in! Login to use this page!"); //$NON-NLS-1$
 		}
   	
-  	return wrapperComposite;		
+  	return wrapperComposite;
   }
   
   protected void createWrapperComposite(Composite parent) {
   	if (wrapperComposite == null)
-  		wrapperComposite = new XComposite(parent, SWT.NONE, XComposite.LayoutMode.TIGHT_WRAPPER); 	
+  		wrapperComposite = new XComposite(parent, SWT.NONE, XComposite.LayoutMode.TIGHT_WRAPPER);
   }
 
 	/**
@@ -97,6 +97,6 @@ implements
 		super.performApply();
 		PersonStructOrderConfigModule.sharedInstance().setStructBlockDisplayOrder(
 				structOrderComposite.getStructBlockOrder()
-			);		
+			);
 	}
 }

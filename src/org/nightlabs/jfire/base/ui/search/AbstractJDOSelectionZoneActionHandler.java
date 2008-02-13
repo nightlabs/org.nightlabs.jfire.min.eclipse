@@ -15,8 +15,8 @@ import org.nightlabs.notification.NotificationEvent;
  * @author Daniel Mazurek - daniel <at> nightlabs <dot> de
  *
  */
-public abstract class AbstractJDOSelectionZoneActionHandler 
-extends AbstractSelectionZoneActionHandler 
+public abstract class AbstractJDOSelectionZoneActionHandler
+extends AbstractSelectionZoneActionHandler
 {
 	@Override
 	public void run() {
@@ -27,11 +27,11 @@ extends AbstractSelectionZoneActionHandler
 			subjectClassesToClear.add(getSearchResultProvider().getFactory().getResultTypeClass());
 			if (selectedObjects != null) {
 				SelectionManager.sharedInstance().notify(new NotificationEvent(
-						AbstractJDOSelectionZoneActionHandler.this, 
-						getSelectionZone(), 
-						selectedObjectIDs, 
+						AbstractJDOSelectionZoneActionHandler.this,
+						getSelectionZone(),
+						selectedObjectIDs,
 						subjectClassesToClear));
-			}			
+			}
 		}
 	}
 

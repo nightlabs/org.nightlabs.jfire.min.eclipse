@@ -43,7 +43,7 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class BlockOrderListContentProvider implements IStructuredContentProvider
 {
-	public BlockOrderListContentProvider() {		
+	public BlockOrderListContentProvider() {
 	}
 	
 	public Map structBlockDisplayOrder;
@@ -95,7 +95,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 	}
 	
 	protected void sortList() {
-		// sort it 
+		// sort it
 		Collections.sort(structBlockDisplayOrderEntryList,new Comparator() {
 			public int compare(Object o1, Object o2) {
 				if ((o1 instanceof Map.Entry) && (o2 instanceof Map.Entry)) {
@@ -104,13 +104,13 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 					p2 = ((Integer) ((Map.Entry)o2).getValue() ).intValue();
 					if (p1 < p2)
 						return -1;
-					else if (p1 > p2) 
+					else if (p1 > p2)
 						return 1;
-					else 
+					else
 						return 0;
 				}
 				return 0;
-			}			
+			}
 		});
 		
 	}
@@ -123,7 +123,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 			// get the list
 			refreshOrder();
 		}
-		// return the array 
+		// return the array
 		return structBlockDisplayOrderEntryList.toArray();
 //		return PersonStructOrderConfigModule.getSharedInstance().structBlockDisplayOrder().entrySet().toArray();
 	}
@@ -131,7 +131,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
-	public void dispose() {		
+	public void dispose() {
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 		Map result = new HashMap();
 		for (Iterator iter = structBlockDisplayOrderEntryList.iterator(); iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
-			result.put(entry.getKey(),entry.getValue());			
+			result.put(entry.getKey(),entry.getValue());
 		}
 		return result;
 	}

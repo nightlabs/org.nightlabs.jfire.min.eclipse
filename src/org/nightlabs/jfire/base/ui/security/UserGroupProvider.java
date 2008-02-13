@@ -51,22 +51,22 @@ public class UserGroupProvider extends JDOObjectProvider
   private static UserGroupProvider _sharedInstance = null;
   private UserManager um;
   
-  public UserGroupProvider() 
+  public UserGroupProvider()
     throws RemoteException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
   }
   
-  public static UserGroupProvider sharedInstance() 
+  public static UserGroupProvider sharedInstance()
     throws RemoteException, LoginException, CreateException, NamingException
   {
-    if (_sharedInstance == null) 
+    if (_sharedInstance == null)
       _sharedInstance = new UserGroupProvider();
 
     return _sharedInstance;
   }
 
-  public UserGroupListCarrier getUserGroups(String userID, String authorityID, String[] fetchgroups, int maxFetchDepth) 
+  public UserGroupListCarrier getUserGroups(String userID, String authorityID, String[] fetchgroups, int maxFetchDepth)
     throws RemoteException, ModuleException, LoginException, CreateException, NamingException
   {
     um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();

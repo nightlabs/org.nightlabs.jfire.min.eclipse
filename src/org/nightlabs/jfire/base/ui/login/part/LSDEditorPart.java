@@ -12,15 +12,15 @@ import org.nightlabs.jfire.base.ui.login.Login;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class LSDEditorPart 
+public abstract class LSDEditorPart
 extends EditorPart
-implements PartVisibilityListener, ControllablePart 
+implements PartVisibilityListener, ControllablePart
 {
-	public LSDEditorPart() 
+	public LSDEditorPart()
 	{
 		super();
 		// Register the view at the view-controller
-		LSDPartController.sharedInstance().registerPart(this);			
+		LSDPartController.sharedInstance().registerPart(this);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ implements PartVisibilityListener, ControllablePart
     LSDPartController.sharedInstance().createPartControl(this, parent);
     // Add this view as visibility listener (optional)
     PartVisibilityTracker.sharedInstance().addVisibilityListener(this, this);
-	}	
+	}
 	
 	public boolean canDisplayPart() {
     // This view can be displayed only when
@@ -37,10 +37,10 @@ implements PartVisibilityListener, ControllablePart
 	}
 	
 	public void partHidden(IWorkbenchPartReference partRef) {
-		// Inheritans can override this method if they want/need to react on hidden status 
+		// Inheritans can override this method if they want/need to react on hidden status
 	}
 
 	public void partVisible(IWorkbenchPartReference partRef) {
 		// Inheritans can override this method if they want/need to react on visible status
-	}	
+	}
 }

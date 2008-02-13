@@ -13,8 +13,8 @@ import org.nightlabs.util.RWLockable;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Marius Heinzmann -- Marius[at]NightLabs[dot]de
  */
-public class LoginConfiguration 
-implements Serializable, Cloneable, RWLockable 
+public class LoginConfiguration
+implements Serializable, Cloneable, RWLockable
 {
 	private static final long serialVersionUID = 5L;
 
@@ -30,7 +30,7 @@ implements Serializable, Cloneable, RWLockable
 	/**
 	 * TODO amend for use with automatic update
 	 *
-	 * @param _loginData 
+	 * @param _loginData
 	 */
 	public LoginConfiguration(LoginData _loginData, LoginConfigModule loginConfigModule)
 	{

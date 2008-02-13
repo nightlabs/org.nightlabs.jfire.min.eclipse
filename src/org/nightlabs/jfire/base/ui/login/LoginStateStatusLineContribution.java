@@ -26,7 +26,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class LoginStateStatusLineContribution 
+public class LoginStateStatusLineContribution
 extends AbstractContributionItem
 implements LoginStateListener
 {
@@ -68,7 +68,7 @@ implements LoginStateListener
 		image = new Label(wrapper, SWT.ICON);
 		image.setImage(SharedImages.getSharedImage(JFireBasePlugin.getDefault(), LoginAction.class, "Login")); //$NON-NLS-1$
 		image.setLayoutData(new GridData());
-		text = new Label(wrapper, SWT.NONE);		
+		text = new Label(wrapper, SWT.NONE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		// Set some dummy text to give the item some width.
 		text.setText("********@************ on *********************"); //$NON-NLS-1$
@@ -92,7 +92,7 @@ implements LoginStateListener
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void loginStateChanged(final int loginState, final IAction action) 
+	public void loginStateChanged(final int loginState, final IAction action)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -100,15 +100,15 @@ implements LoginStateListener
 
 				String txt = null;
 				switch (loginState) {
-					case Login.LOGINSTATE_LOGGED_IN: 
+					case Login.LOGINSTATE_LOGGED_IN:
 						txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
-						break; 
-					case Login.LOGINSTATE_LOGGED_OUT: 
+						break;
+					case Login.LOGINSTATE_LOGGED_OUT:
 						txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedOutStatus"); //$NON-NLS-1$
-						break; 
-					case Login.LOGINSTATE_OFFLINE: 
+						break;
+					case Login.LOGINSTATE_OFFLINE:
 						txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.offlineStatus"); //$NON-NLS-1$
-						break; 
+						break;
 				}
 
 				if (text == null || text.isDisposed()) {
@@ -122,5 +122,5 @@ implements LoginStateListener
 				}
 			}
 		});
-	}	
+	}
 }

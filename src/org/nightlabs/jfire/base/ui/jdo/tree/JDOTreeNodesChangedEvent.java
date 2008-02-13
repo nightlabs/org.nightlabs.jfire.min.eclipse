@@ -14,16 +14,16 @@ import java.util.Set;
  * <p>
  * Depending on the type of change tracked the appropriate members are filled:
  * <ul>
- * <li>One or more new objects were tracked for loaded parents. 
+ * <li>One or more new objects were tracked for loaded parents.
  * 	Then {@link #getParentsToRefresh()} contains the parent nodes of the new ojbects and
  * 	{@link #getLoadedTreeNodes()} contains the newly created nodes for the new objects.
  * </li>
- * <li>Changes were tracked to loaded objects. 
+ * <li>Changes were tracked to loaded objects.
  * 	Then {@link #getLoadedTreeNodes()} contains the nodes of the changed objects with the newly retieved JDOObjects.
  * </li>
  * <li>Deletion of objects was tracked.
- * 	Then {@link #getDeletedJDOObjects()}} contains the nodes with the formerly loaded and now deleted Objects. 
- * 	Also {@link #getParentsToRefresh()} contains their parent nodes. 
+ * 	Then {@link #getDeletedJDOObjects()}} contains the nodes with the formerly loaded and now deleted Objects.
+ * 	Also {@link #getParentsToRefresh()} contains their parent nodes.
  * </li>
  * </ul>
  *
@@ -76,7 +76,7 @@ public class JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> extends EventObject
 		if (deletedJDOObjects == null)
 			this.deletedJDOObjects = Collections.emptyMap();
 		else
-			this.deletedJDOObjects = Collections.unmodifiableMap(deletedJDOObjects);			
+			this.deletedJDOObjects = Collections.unmodifiableMap(deletedJDOObjects);
 	}
 
 	/**

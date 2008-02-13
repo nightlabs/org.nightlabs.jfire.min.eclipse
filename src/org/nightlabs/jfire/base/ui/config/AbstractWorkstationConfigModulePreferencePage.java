@@ -37,8 +37,8 @@ import org.nightlabs.jfire.workstation.id.WorkstationID;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public abstract class AbstractWorkstationConfigModulePreferencePage 
-extends AbstractConfigModulePreferencePage 
+public abstract class AbstractWorkstationConfigModulePreferencePage
+extends AbstractConfigModulePreferencePage
 {
 	private static final Logger logger = Logger.getLogger(AbstractWorkstationConfigModulePreferencePage.class);
 	
@@ -67,7 +67,7 @@ extends AbstractConfigModulePreferencePage
 
 	/**
 	 * Sets the current ConfigID to the workstation of currently logged in user.
-	 *  
+	 * 
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override

@@ -49,8 +49,8 @@ import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class DataBlockGroupEditor 
-extends XComposite 
+public class DataBlockGroupEditor
+extends XComposite
 implements DataBlockEditorChangedListener
 {
 	
@@ -70,13 +70,13 @@ implements DataBlockEditorChangedListener
 	public DataBlockGroupEditor(
 			IStruct struct,
 			DataBlockGroup blockGroup,
-			Composite parent 
+			Composite parent
 	) {
-		super(parent, SWT.NONE);		
-		this.blockGroup = blockGroup;		
+		super(parent, SWT.NONE);
+		this.blockGroup = blockGroup;
 				
 		scrolledComposite = new ScrolledComposite(this, SWT.V_SCROLL);
-		scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));		
+		scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		content = new XComposite(scrolledComposite, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
 		scrolledComposite.setContent(content);
 		scrolledComposite.setExpandHorizontal(true);
@@ -94,7 +94,7 @@ implements DataBlockEditorChangedListener
 		this.blockGroup = blockGroup;
 		this.struct = struct;
 		createDataBlockEditors(struct, content);
-		scrolledComposite.setMinSize(content.computeSize(SWT.DEFAULT, SWT.DEFAULT));		
+		scrolledComposite.setMinSize(content.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 		assert(dataBlockEditors.size() == blockGroup.getDataBlocks().size());
 		
@@ -118,7 +118,7 @@ implements DataBlockEditorChangedListener
 //			}
 //		}
 		content.layout(true, true);
-//		scrolledComposite.layout(true, true);		
+//		scrolledComposite.layout(true, true);
 	}
 	
 //	private SelectionListener addListener = new SelectionListener() {
@@ -127,14 +127,14 @@ implements DataBlockEditorChangedListener
 //			Button addButton = (Button) e.widget;
 //			int index = ((Integer) addButton.getData()) + 1;
 //			try {
-//				blockGroup.addDataBlock(struct, index).explode(struct);				
+//				blockGroup.addDataBlock(struct, index).explode(struct);
 //			} catch (DataBlockUniqueException e1) {
 //				e1.printStackTrace();
 //			}
 //			refresh(struct, blockGroup);
 //		}
 //	};
-//	
+//
 //	private SelectionListener removeListener = new SelectionListener() {
 //		public void widgetDefaultSelected(SelectionEvent e) {}
 //		public void widgetSelected(SelectionEvent e) {
@@ -165,7 +165,7 @@ implements DataBlockEditorChangedListener
 				Label sep = new Label(wrapper, SWT.SEPARATOR | SWT.HORIZONTAL);
 				GridData gd = new GridData(SWT.HORIZONTAL | SWT.FILL);
 				gd.horizontalSpan = 2;
-				sep.setLayoutData(gd);							
+				sep.setLayoutData(gd);
 			}
 
 			AbstractDataBlockEditor blockEditor = DataBlockEditorFactoryRegistry.sharedInstance().createDataBlockEditor(
@@ -182,7 +182,7 @@ implements DataBlockEditorChangedListener
 			blockEditor.addPropDataBlockEditorChangedListener(this);
 			dataBlockEditors.add(blockEditor);
 
-			if (! _struct.getStructBlock(blockGroup).isUnique()) {							
+			if (! _struct.getStructBlock(blockGroup).isUnique()) {
 				AddOrRemoveDataBlockGroupComposite manager = new AddOrRemoveDataBlockGroupComposite(wrapper, dataBlock, i);
 				manager.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER));
 				manager.setListener(new AddOrRemoveDataBlockGroupComposite.Listener() {
@@ -217,7 +217,7 @@ implements DataBlockEditorChangedListener
 		}
 	}
 	
-	private ListenerList changeListener = new ListenerList();	
+	private ListenerList changeListener = new ListenerList();
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}

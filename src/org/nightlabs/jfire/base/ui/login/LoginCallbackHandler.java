@@ -52,10 +52,10 @@ public class LoginCallbackHandler implements CallbackHandler {
 			for (int i = 0; i < callbacks.length; i++) {
 				// user interaction has been done in implementations of ILoginHandler
 				// so here we just pass the values
-				if (callbacks[i] instanceof NameCallback) 
-							((NameCallback)callbacks[i]).setName(Login.getLogin(false).getLoginData().getLoginDataURL());			
-				if (callbacks[i] instanceof PasswordCallback) 
-								((PasswordCallback)callbacks[i]).setPassword(Login.getLogin(false).getLoginData().getPassword().toCharArray());			
+				if (callbacks[i] instanceof NameCallback)
+							((NameCallback)callbacks[i]).setName(Login.getLogin(false).getLoginData().getLoginDataURL());
+				if (callbacks[i] instanceof PasswordCallback)
+								((PasswordCallback)callbacks[i]).setPassword(Login.getLogin(false).getLoginData().getPassword().toCharArray());
 			}
 		} catch (LoginException x) {
 			throw new RuntimeException("Login.getLogin(false) should never throw this exception!", x); //$NON-NLS-1$

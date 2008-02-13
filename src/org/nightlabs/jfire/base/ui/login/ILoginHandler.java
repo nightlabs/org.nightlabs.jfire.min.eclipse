@@ -30,16 +30,16 @@ import javax.security.auth.login.LoginException;
 
 import org.nightlabs.j2ee.LoginData;
 /**
- * Interface to handle client logins. This interface is used instead of 
+ * Interface to handle client logins. This interface is used instead of
  * {@link javax.security.auth.callback.CallbackHandler} to do the user interaction.
  * This way we can handle authentication failures and e.g. present the login screen
- * three times. 
+ * three times.
  * @author Alexander Bieber
  */
 public interface ILoginHandler {
 	
-	/** 
-	 * Implementors are obliged to set correct values for 
+	/**
+	 * Implementors are obliged to set correct values for
 	 * loginContext, loginConfigModule, and loginResult.</br>
 	 * As the values are not needed before the first server interaction
 	 * you may check the values by getting some bean before returning.

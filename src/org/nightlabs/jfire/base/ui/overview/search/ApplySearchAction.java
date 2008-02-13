@@ -10,16 +10,16 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class ApplySearchAction 
+public class ApplySearchAction
 extends WorkbenchPartAction
 {
-	public static final String ID = ApplySearchAction.class.getName(); 
+	public static final String ID = ApplySearchAction.class.getName();
 	private SearchEntryViewer searchViewer;
 
 	public ApplySearchAction() {
 		super();
 		init();
-	}	
+	}
 	
 	public ApplySearchAction(SearchEntryViewer searchController) {
 		super();
@@ -30,11 +30,11 @@ extends WorkbenchPartAction
 	protected void init() {
 		setId(ID);
 		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.ApplySearchAction.text")); //$NON-NLS-1$
-		setImageDescriptor(SharedImages.SEARCH_24x24);		
+		setImageDescriptor(SharedImages.SEARCH_24x24);
 	}
 	
 	@Override
-	public void run() 
+	public void run()
 	{
 		if (searchViewer != null)
 			searchViewer.search();

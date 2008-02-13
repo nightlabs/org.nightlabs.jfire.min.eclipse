@@ -57,7 +57,7 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 	 */
 	private static final Logger logger = Logger.getLogger(PersonalDataBlockEditor.class);
 	
-	public PersonalDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {		
+	public PersonalDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
 		super(struct, dataBlock, parent, style);
 		try {
 			setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -86,7 +86,7 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 		addDataFieldEditor(PersonStruct.PERSONALDATA_PHOTO,3);
 	}
 
-	private void addDataFieldEditor(StructFieldID fieldID, int horizontalSpan) 
+	private void addDataFieldEditor(StructFieldID fieldID, int horizontalSpan)
 	{
 		DataField field = null;
 		try {
@@ -95,12 +95,12 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 			logger.error("addDataFieldEditor(StructFieldID fieldID) DataField not found for fieldID continuing: "+fieldID.toString(),e); //$NON-NLS-1$
 		}
 		DataFieldEditor editor = null;
-		if (!hasFieldEditorFor(field)) { 
+		if (!hasFieldEditorFor(field)) {
 			try {
 				editor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
 						getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE,
 						"", // TODO: Context ?!? //$NON-NLS-1$
-						field					
+						field
 				);
 			} catch (DataFieldEditorNotFoundException e1) {
 				logger.error("addPersonalDataFieldEditor(PersonStructFieldID fieldID) PersonDataFieldEditor not found for fieldID continuing: "+fieldID.toString(),e1); //$NON-NLS-1$
@@ -127,7 +127,7 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 	}
 
 
-	public static class Factory implements DataBlockEditorFactory {  
+	public static class Factory implements DataBlockEditorFactory {
 		/**
 		 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonDataBlockEditorFactory#getProviderStructBlockID()
 		 */

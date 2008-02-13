@@ -18,13 +18,13 @@ import org.nightlabs.progress.ProgressMonitor;
  * Composite returned by {@link #createSearchComposite(org.eclipse.swt.widgets.Composite)}
  * and an implementation of {@link AbstractTableComposite} as Composite returned
  * by {@link #createResultComposite(org.eclipse.swt.widgets.Composite)}
- *  
+ * 
  * 
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class JDOQuerySearchEntryViewer 
-extends SearchEntryViewer 
+public abstract class JDOQuerySearchEntryViewer
+extends SearchEntryViewer
 {
 	public JDOQuerySearchEntryViewer(Entry entry) {
 		super(entry);
@@ -32,14 +32,14 @@ extends SearchEntryViewer
 
 	/**
 	 * takes the given result and calls setInput(Object input)
-	 * with it 
+	 * with it
 	 */
 	@Override
-	public void displaySearchResult(Object result) 
+	public void displaySearchResult(Object result)
 	{
 		if (getListComposite() != null) {
 			getListComposite().getTableViewer().setInput(result);
-		}				
+		}
 	}
 
 	@Override
@@ -66,7 +66,7 @@ extends SearchEntryViewer
 	 * @param parent the parent Composite
 	 * @return the {@link AbstractQueryFilterComposite} which is used as search composite
 	 */
-	public abstract AbstractQueryFilterComposite createFilterComposite(Composite parent); 
+	public abstract AbstractQueryFilterComposite createFilterComposite(Composite parent);
 	
 	/**
 	 * creates an {@link AbstractTableComposite} which is used as result composite
@@ -75,7 +75,7 @@ extends SearchEntryViewer
 	 * @param parent the parent Composite
 	 * @return the {@link AbstractTableComposite} which is used as result composite
 	 */
-	public abstract AbstractTableComposite createListComposite(Composite parent); 
+	public abstract AbstractTableComposite createListComposite(Composite parent);
 	
 	/**
 	 * This method is called by {@link #createSearchComposite(Composite)} with
@@ -86,7 +86,7 @@ extends SearchEntryViewer
 	 * </p>
 	 * @param tableComposite
 	 */
-	protected void addResultTableListeners(AbstractTableComposite  tableComposite) {		
+	protected void addResultTableListeners(AbstractTableComposite  tableComposite) {
 	}
 	
 	/**
@@ -99,7 +99,7 @@ extends SearchEntryViewer
 
 	/**
 	 * returns the {@link AbstractQueryFilterComposite} created by {@link #createFilterComposite(Composite)}
-	 * @return the {@link AbstractQueryFilterComposite} created by {@link #createFilterComposite(Composite)}  
+	 * @return the {@link AbstractQueryFilterComposite} created by {@link #createFilterComposite(Composite)}
 	 */
 	public AbstractQueryFilterComposite getFilterComposite() {
 		return (AbstractQueryFilterComposite) getSearchComposite();
@@ -121,7 +121,7 @@ extends SearchEntryViewer
 	 * 
 	 * @param queries a collection of {@link JDOQuery}s
 	 * @param monitor the {@link IProgressMonitor} to display the progress
-	 * @return the result of the queries 
+	 * @return the result of the queries
 	 */
 	protected abstract Object getQueryResult(Collection<JDOQuery> queries, ProgressMonitor monitor);
 
@@ -139,46 +139,46 @@ extends SearchEntryViewer
 	}
 	
 	/**
-	 * Implementation of an {@link AbstractQuickSearchEntry} which 
+	 * Implementation of an {@link AbstractQuickSearchEntry} which
 	 * takes the queries returned from the {@link AbstractQueryFilterComposite}
 	 * which should be returned by {@link SearchEntryViewer#createSearchComposite(org.eclipse.swt.widgets.Composite)}
 	 * and use these for searching
-	 *  
+	 * 
 	 * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
 	 */
 	private class AdvancedQuickSearchEntryType
-	extends AbstractQuickSearchEntry 
+	extends AbstractQuickSearchEntry
 	{
 		public AdvancedQuickSearchEntryType(QuickSearchEntryFactory factory) {
 			super(factory);
 		}
 		
-		public Object search(ProgressMonitor monitor) 
+		public Object search(ProgressMonitor monitor)
 		{
 			Display.getDefault().syncExec(new Runnable(){
 				public void run() {
-					getListComposite().getTableViewer().setInput(new String[] {Messages.getString("org.nightlabs.jfire.base.ui.overview.search.JDOQuerySearchEntryViewer.applySearch.listComposite_loading")}); //$NON-NLS-1$					
+					getListComposite().getTableViewer().setInput(new String[] {Messages.getString("org.nightlabs.jfire.base.ui.overview.search.JDOQuerySearchEntryViewer.applySearch.listComposite_loading")}); //$NON-NLS-1$
 				}
 			});
 			
 			final List<JDOQuery> queries = new ArrayList<JDOQuery>(2);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					queries.addAll(getFilterComposite().getJDOQueries());					
+					queries.addAll(getFilterComposite().getJDOQueries());
 				}
 			});
 			
 			for (JDOQuery query : queries) {
 				query.setFromInclude(getMinIncludeRange());
-				query.setToExclude(getMaxExcludeRange());				
+				query.setToExclude(getMaxExcludeRange());
 			}
 			
 			final Object result = getQueryResult(queries, monitor);
 			optimizeSearchResults(result);
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					getListComposite().getTableViewer().setInput(result);							
-				}					
+					getListComposite().getTableViewer().setInput(result);
+				}
 			});
 			
 			return result;

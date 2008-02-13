@@ -17,7 +17,7 @@ import org.nightlabs.l10n.DateFormatter;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserTable 
+public class UserTable
 extends AbstractTableComposite<User>
 {
 	/**
@@ -49,7 +49,7 @@ extends AbstractTableComposite<User>
 	}
 
 	@Override
-	protected void createTableColumns(TableViewer tableViewer, Table table) 
+	protected void createTableColumns(TableViewer tableViewer, Table table)
 	{
 		new TableColumn(table, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserTable.userID")); //$NON-NLS-1$
 		new TableColumn(table, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserTable.name")); //$NON-NLS-1$
@@ -66,13 +66,13 @@ extends AbstractTableComposite<User>
 		tableViewer.setLabelProvider(new UserTableLabelProvider());
 	}
 
-	class UserTableLabelProvider extends TableLabelProvider 
+	class UserTableLabelProvider extends TableLabelProvider
 	{
 		public UserTableLabelProvider() {
 			super();
 		}
 
-		public String getColumnText(Object element, int columnIndex) 
+		public String getColumnText(Object element, int columnIndex)
 		{
 			if (element instanceof User) {
 				User user = (User) element;
@@ -90,7 +90,7 @@ extends AbstractTableComposite<User>
 				}
 			}
 			return null;
-		}		
+		}
 	}
 	
 }

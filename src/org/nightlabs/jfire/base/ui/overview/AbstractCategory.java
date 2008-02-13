@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Composite;
-
 /**
  * Abstract {@link Category} that manages its entries.
  * <p>
  * This class is intended to be subclassed to define the {@link Composite}
- * used to display the entries. 
+ * used to display the entries.
  * </p>
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
@@ -80,12 +78,12 @@ public abstract class AbstractCategory implements Category {
 	}
 	
 	/**
-	 * Override this method to update the GUI 
+	 * Override this method to update the GUI
 	 * created with {@link Category#createComposite(Composite)}.
 	 * <p>
-	 * Note that this method should only do something, if the 
+	 * Note that this method should only do something, if the
 	 * Composite was already created!
-	 * </p> 
+	 * </p>
 	 */
 	protected void updateCategoryComposite() {
 	}

@@ -33,7 +33,7 @@ public class StructEditorComposite extends XComposite {
 	
 	private I18nTextEditor structNameEditor;
 	private Composite partEditorComposite;
-	private LanguageChooserCombo languageChooser;	
+	private LanguageChooserCombo languageChooser;
 	protected XComboComposite<StructLocalID> structIDComposite;
 
 	private static class StructLocalIDLabelProvider extends org.eclipse.jface.viewers.LabelProvider {
@@ -77,7 +77,7 @@ public class StructEditorComposite extends XComposite {
 	}
 
 	public StructEditorComposite(
-			Composite parent, int style, 
+			Composite parent, int style,
 			final StructEditor structEditor, StructTree structTree, boolean createStructIDCombo
 		) {
 		super(parent, style);
@@ -89,7 +89,7 @@ public class StructEditorComposite extends XComposite {
 		gd.horizontalAlignment = SWT.CENTER;
 
 		if (createStructIDCombo) {
-			structIDComposite = new XComboComposite<StructLocalID>(this, 
+			structIDComposite = new XComboComposite<StructLocalID>(this,
 					AbstractListComposite.getDefaultWidgetStyle(this), (String) null, new StructLocalIDLabelProvider());
 			structIDComposite.setLayoutData(gd);
 			structIDComposite.addSelectionListener(new StructIDComboSelectionListener());
@@ -111,7 +111,7 @@ public class StructEditorComposite extends XComposite {
 		languageChooser.setLayoutData(gd);
 
 		structNameEditor = new I18nTextEditor(nameWrapper, languageChooser);
-		structNameEditor.addModifyListener(new ModifyListener() {			
+		structNameEditor.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				structEditor.setChanged(true);
 			}
@@ -132,7 +132,7 @@ public class StructEditorComposite extends XComposite {
 				throw new RuntimeException(e);
 			}
 		}
-		partEditorComposite = new XComposite(this, SWT.NONE);		
+		partEditorComposite = new XComposite(this, SWT.NONE);
 	}
 	
 	public void setLoadingText() {

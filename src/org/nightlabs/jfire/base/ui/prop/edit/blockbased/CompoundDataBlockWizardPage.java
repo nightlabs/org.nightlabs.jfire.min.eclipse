@@ -58,8 +58,8 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 
 	XComposite wrapperComp;
 
-	public CompoundDataBlockWizardPage ( 
-			String pageName, 
+	public CompoundDataBlockWizardPage (
+			String pageName,
 			String title,
 			PropertySet prop,
 			List<StructBlockID> structBlockIDs
@@ -68,12 +68,12 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	}
 
 	/**
-	 * Creates a new CompoundDataBlockWizardPage for the 
-	 * StructBlock identified by the dataBlockID 
+	 * Creates a new CompoundDataBlockWizardPage for the
+	 * StructBlock identified by the dataBlockID
 	 */
 	public CompoundDataBlockWizardPage (
-			String pageName, 
-			String title, 
+			String pageName,
+			String title,
 			PropertySet propSet,
 			StructBlockID[] structBlockIDs
 	) {
@@ -114,7 +114,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		propDataBlockGroupEditors.clear();
 		for (int i = 0; i < structBlockIDs.length; i++) {
 			DataBlockGroup dataBlockGroup = propDataBlockGroups.get(structBlockIDs[i]);
-			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp); 
+			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp);
 			editor.refresh(propSet.getStructure(), dataBlockGroup);
 			propDataBlockGroupEditors.put(
 					structBlockIDs[i],
@@ -153,7 +153,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	 */
 	public DataBlockGroup getDataBlockGroup(StructBlockID structBlockID) {
 		return propDataBlockGroups.get(structBlockID);
-	}	
+	}
 
 	/**
 	 * Get the hint for the column count of the
@@ -192,11 +192,11 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 			} catch (DataBlockGroupNotFoundException e) {
 				throw new RuntimeException(e);
 			}
-		}		
+		}
 	}
 
 	/**
-	 * This implementation of createControl 
+	 * This implementation of createControl
 	 * calls {@link #createWrapper(Composite)} and {@link #createPropDataBlockEditors()}.
 	 * Subclasses can override and call this method themselves.
 	 * 
@@ -220,7 +220,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	}
 	
 	@Override
-	public void onShow() {		
+	public void onShow() {
 		super.onShow();
 		refresh(propSet);
 	}

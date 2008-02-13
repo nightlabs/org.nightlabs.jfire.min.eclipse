@@ -2,34 +2,31 @@ package org.nightlabs.jfire.base.ui.config;
 
 import java.util.Set;
 
-import org.nightlabs.jfire.config.Config;
-import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.progress.ProgressMonitor;
-import org.nightlabs.util.Util;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public interface IConfigModuleController 
+public interface IConfigModuleController
 {
 	
 	/**
-	 * @return The Class of ConfigModule this controller and its associated page is designed for.  
+	 * @return The Class of ConfigModule this controller and its associated page is designed for.
 	 */
 	public abstract Class<? extends ConfigModule> getConfigModuleClass();
 	
 	/**
 	 * This method should return all fetch groups necessary to display a detached {@link ConfigModule}
 	 * of type {@link #getConfigModuleClass()} for which this controller is designed for.
-	 * <p> 
-	 * Note: You should use {@link #getCommonConfigModuleFetchGroups()} and create a new Set of fetch 
-	 * 	groups out of the given ones and add the specific fetch groups necessary for this kind of 
+	 * <p>
+	 * Note: You should use {@link #getCommonConfigModuleFetchGroups()} and create a new Set of fetch
+	 * 	groups out of the given ones and add the specific fetch groups necessary for this kind of
 	 * 	<code>ConfigModule</code>.
 	 * </p>
-	 * @return the Set of fetch groups necessary to properly display a detached {@link ConfigModule} 
+	 * @return the Set of fetch groups necessary to properly display a detached {@link ConfigModule}
 	 * 	of this kind.
 	 */
 	public abstract Set<String> getConfigModuleFetchGroups();
@@ -37,15 +34,15 @@ public interface IConfigModuleController
 	/**
 	 * Returns the unlimited fetch depth. If subclasses need to restrict the fetch depth, then
 	 * they need overwrite this method.
-	 *  
+	 * 
 	 * @return the unlimited fetch depth.
 	 */
-	public int getConfigModuleMaxFetchDepth();	
+	public int getConfigModuleMaxFetchDepth();
 	
 	/**
 	 * returns the id object {@link ConfigID} of the {@link Config} where
 	 * the {@link ConfigModule} belongs to, which is controlled by this IConfigModuleController
-	 *    
+	 * 
 	 * @return the configID
 	 */
 	public ConfigID getConfigID();
@@ -53,7 +50,7 @@ public interface IConfigModuleController
 	/**
 	 * sets the configID
 	 * @param configID the configID to set
-	 * @param useNotAsPreferencePage whether or not the page corresponding to this Controller is used 
+	 * @param useNotAsPreferencePage whether or not the page corresponding to this Controller is used
 	 * 				inside the PreferencePage Dialog
 	 */
 	public void setConfigID(ConfigID configID, boolean useNotAsPreferencePage, String configModuleID);
@@ -71,13 +68,13 @@ public interface IConfigModuleController
 	public void setConfigModule(ConfigModule configModule);
 
 	/**
-	 * Returns the cfModID of the managed {@link ConfigModule}. 
+	 * Returns the cfModID of the managed {@link ConfigModule}.
 	 * @return the cfModID of the managed {@link ConfigModule}.
 	 */
 	public String getConfigModuleID();
 	
 	/**
-	 * adds an {@link IConfigModuleChangedListener} to listen for config changes 
+	 * adds an {@link IConfigModuleChangedListener} to listen for config changes
 	 * listener are notified when {@link #setConfigModule(ConfigModule)} is called
 	 * 
 	 * @param listener the listener to add
@@ -91,7 +88,7 @@ public interface IConfigModuleController
 	public void removeConfigModuleChangedListener(IConfigModuleChangedListener listener);
 	
 	/**
-	 * returns the AbstractConfigModulePreferencePage 
+	 * returns the AbstractConfigModulePreferencePage
 	 * @return the AbstractConfigModulePreferencePage
 	 */
 	public AbstractConfigModulePreferencePage getPreferencePage();
@@ -99,51 +96,51 @@ public interface IConfigModuleController
 	/**
 	 * Will be called to determine whether the given ConfigModule is allowed
 	 * to be edited. The default implementation will return false only when
-	 * the {@link ConfigGroup} of the given module's Config disallows the member to overwrite the 
+	 * the {@link ConfigGroup} of the given module's Config disallows the member to overwrite the
 	 * configuration.
-	 * This method is costly, since it calls {@link #checkIfIsGroupMember(ConfigModule)}, which needs 
-	 * to fetch data from the datastore. 
+	 * This method is costly, since it calls {@link #checkIfIsGroupMember(ConfigModule)}, which needs
+	 * to fetch data from the datastore.
 	 * 
-	 * @param configModule the {@link ConfigModule} to be checked whether it is editable or not. 
+	 * @param configModule the {@link ConfigModule} to be checked whether it is editable or not.
 	 * @return Whether the <code>configModule</code> is allowed to be edited.
 	 */
 	public boolean canEdit(ConfigModule configModule);
 	
 	/**
-	 * Checks if the configModule is member of a configGroup 
+	 * Checks if the configModule is member of a configGroup
 	 */
 	public boolean checkIfIsGroupMember(ConfigModule module);
 	
 	/**
-	 * Returns the ConfigModule of the the ConfigGroup, where the corresponding Config of the 
+	 * Returns the ConfigModule of the the ConfigGroup, where the corresponding Config of the
 	 * <code>memberModule</code> is in.
 	 * @param memberModule the ConfigModule for which to retrieve the GroupConfigModule.
-	 * @return the ConfigModule of the the ConfigGroup, where the corresponding Config of the 
+	 * @return the ConfigModule of the the ConfigGroup, where the corresponding Config of the
 	 * <code>memberModule</code> is in.
 	 */
 	public ConfigModule getGroupConfigModule(ConfigModule memberModule);
 	
 	/**
-	 * Fetches and returns the ConfigModule of the Config with {@link ConfigID} == <code>configID</code> from the 
-	 * cache with ConfigModuleClass == <code>getPreferencePage().getConfigModuleClassName()</code>, 
+	 * Fetches and returns the ConfigModule of the Config with {@link ConfigID} == <code>configID</code> from the
+	 * cache with ConfigModuleClass == <code>getPreferencePage().getConfigModuleClassName()</code>,
 	 * cfModID == <code>getPreferencePage().getConfigModuleCfModID()</code>,
-	 * the FetchGroups returned by <code>getPreferencePage().getConfigModuleFetchGroups()</code> and the FetchDepth returned by 
+	 * the FetchGroups returned by <code>getPreferencePage().getConfigModuleFetchGroups()</code> and the FetchDepth returned by
 	 * <code>getPreferencePage().getConfigModuleMaxFetchDepth()</code>.
 	 * 
 	 * @param monitor the monitor showing the progress of the operation.
 	 * @return the ConfigModule of the Config with ID = <code>configID</code> and the parameter as set
 	 * 	by the abstract getters (e.g. <code>getPreferencePage().getConfigModuleClassName()</code>).
-	 */	
+	 */
 	public ConfigModule retrieveConfigModule(ProgressMonitor monitor);
 	
 	/**
-	 * Sets the current version of the {@link ConfigModule} to display and updates the page 
-	 * accordingly. 
-	 * The given ConfigModule should be a copy of the one from the cache, otherwise changes to this 
+	 * Sets the current version of the {@link ConfigModule} to display and updates the page
+	 * accordingly.
+	 * The given ConfigModule should be a copy of the one from the cache, otherwise changes to this
 	 * module will corrupt the state of the one in the cache! Use {@link Util#cloneSerializable(Object)}
 	 * to create a copy.
 	 * 
 	 * @param configModule The {@link ConfigModule} to set.
-	 */	
+	 */
 	public void updateGuiWith(ConfigModule configModule);
 }

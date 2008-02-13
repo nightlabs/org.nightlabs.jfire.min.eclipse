@@ -22,8 +22,8 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 			throw new IllegalArgumentException("block must not be null!"); //$NON-NLS-1$
 
 		this.block = block;
-		fields = new LinkedList<StructFieldNode>();		
-	}	
+		fields = new LinkedList<StructFieldNode>();
+	}
 	
 	public void addField(StructFieldNode field)
 	{

@@ -68,18 +68,15 @@ import org.nightlabs.jfire.base.ui.editlock.EditLockMan;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.preferences.LSDPreferencePage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigManager;
 import org.nightlabs.jfire.config.ConfigManagerUtil;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
-import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.config.id.ConfigModuleID;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
-import org.nightlabs.util.Utils;
 
 /**
  * An abstract PreferencePage for ConfigModules.
@@ -87,7 +84,7 @@ import org.nightlabs.util.Utils;
  * the config module for you and provides callbacks
  * to present the module to the user.
  * <p>
- * See 
+ * See
  * <ul>
  * <li>{@link #createPreferencePage(Composite)}</li>
  * <li>{@link #updatePreferencePage()}</li>
@@ -123,21 +120,21 @@ extends LSDPreferencePage
 	private FadeableComposite fadableWrapper;
 	
 	/**
-	 * The container for the header and the body, which is shown when the ConfigModule is loaded. 
+	 * The container for the header and the body, which is shown when the ConfigModule is loaded.
 	 */
 	private XComposite loadingDone;
 	private XComposite body;
 	private XComposite header;
 	
 	/**
-	 * Shows a simple label telling the user that the information to display is currently being 
+	 * Shows a simple label telling the user that the information to display is currently being
 	 * fetched from the server.
 	 */
 	private XComposite loading;
 
 	/**
 	 * This <code>Button</code> is only instantiated, if we're currently editing a group's ConfigModule.
-	 * Otherwise, the {@link #inheritMemberConfigModule} will be created instead. 
+	 * Otherwise, the {@link #inheritMemberConfigModule} will be created instead.
 	 */
 	private Button checkBoxAllowOverwrite;
 
@@ -150,20 +147,20 @@ extends LSDPreferencePage
 	private InheritanceToggleButton inheritMemberConfigModule;
 	
 	/**
-	 * Whether the <code>currentConfigModule</code> is in a ConfigGroup and therefore underlies the 
+	 * Whether the <code>currentConfigModule</code> is in a ConfigGroup and therefore underlies the
 	 * inheritence constrains.
 	 */
 	protected boolean currentConfigIsGroupMember = false;
 	
 	/**
-	 * Whether the <code>currentConfigModule</code> can be edited by the user. This can be set by 
+	 * Whether the <code>currentConfigModule</code> can be edited by the user. This can be set by
 	 * {@link #canEdit(ConfigModule)}.
 	 */
 	protected boolean currentConfigModuleIsEditable = false;
 	
 	/**
 	 * Whether the <code>currentConfigModule</code> was modified by the user. It is only saved iff
-	 * <code>configChanged == true</code>. 
+	 * <code>configChanged == true</code>.
 	 */
 	protected boolean configChanged = false;
 
@@ -197,7 +194,7 @@ extends LSDPreferencePage
 	protected abstract IConfigModuleController createConfigModuleController();
 	 		
 	/**
-	 * Checks if the user is allowed to change configuration 
+	 * Checks if the user is allowed to change configuration
 	 * for groups or other users.
 	 * 
 	 * @return Weather the user is allowed to change other configurations
@@ -207,7 +204,7 @@ extends LSDPreferencePage
 	}
 	
 	/**
-	 * Implicit Listener for the cache. This is needed in order to get notified when the 
+	 * Implicit Listener for the cache. This is needed in order to get notified when the
 	 * {@link #currentConfigModule} changed in the database and to reflect this change in the GUI.
 	 */
 	private NotificationListener changeListener = new NotificationAdapterJob() {
@@ -216,12 +213,12 @@ extends LSDPreferencePage
 			Set<DirtyObjectID> dirtyObjectIDs = notificationEvent.getSubjects();
 			ConfigModuleID currentModuleID = (ConfigModuleID) JDOHelper.getObjectId(
 					getConfigModuleController().getConfigModule());
-//		 there aren't many open ConfigModulePages showing the same kind of ConfigModule, this loop is 
+//		 there aren't many open ConfigModulePages showing the same kind of ConfigModule, this loop is
 // 			therefore not as time consuming as one might think. But if the set of DirtyObjectIDs
 //			would be capable of efficiently checking whether a given ConfigID is contained inside itself,
 //			then this check would be a lot faster.
 			boolean moduleIsUpdated = false;
-			for (DirtyObjectID dirtyID : dirtyObjectIDs) { 
+			for (DirtyObjectID dirtyID : dirtyObjectIDs) {
 				if (! dirtyID.getObjectID().equals( currentModuleID ))
 					continue;
 				
@@ -248,7 +245,7 @@ extends LSDPreferencePage
 //			if (JDOHelper.getVersion(currentConfigModule) == JDOHelper.getVersion(updatedModule))
 			// --> not applicable, since change in ChildConfigModule results in new Version of GroupConfigModule
 //			if (currentConfigModule.isGroupConfigModule() && currentConfigModule.isContentEqual(updatedModule))
-			// --> not applicable either, since isContentEqual needs to rely on equals of the the members 
+			// --> not applicable either, since isContentEqual needs to rely on equals of the the members
 			//     of every ConfigModule and equals of JDOObjects is agreed to be true iff the corresponding
 			//     JDOObjectIDs are equal.
 			// TODO: Hence, we need a new way of checking whether the content of two given ConfigModules is equal! -> see Marcos comment about versioning above
@@ -262,7 +259,7 @@ extends LSDPreferencePage
 			final boolean updatedModuleIsEditable = getConfigModuleController().canEdit(updatedModule);
 			
 			if (updatedModuleIsGroupMember) {
-				if (! updatedModuleIsEditable || ! currentConfigModuleIsEditable) { 
+				if (! updatedModuleIsEditable || ! currentConfigModuleIsEditable) {
 					// simply update the view
 					Display.getDefault().asyncExec( new Runnable() {
 						public void run() {
@@ -285,7 +282,7 @@ extends LSDPreferencePage
 								getConfigModuleController().updateGuiWith(updatedModule);
 								setEditable(true);
 							}
-						});							
+						});
 					} // (inheritMemberConfigModule.getSelection())
 					else {
 						// the memberConfigModule does not want to inherit settings -> inform user
@@ -339,12 +336,12 @@ extends LSDPreferencePage
 			} // (! currentModuleIsEditable)
 		} // (! updatedModuleIsGroupMember)
 		
-		} // notify(NotificationEvent notificationEvent)		
+		} // notify(NotificationEvent notificationEvent)
 	}; // ConfigModuleChangeListener
 
 	/**
 	 * Whether the current config has changed since it was last set.
-	 *  
+	 * 
 	 * @return Whether the current config has changed since it was last set.
 	 */
 	public boolean isConfigChanged() {
@@ -373,7 +370,7 @@ extends LSDPreferencePage
 			recentlySaved = false;
 			notifyConfigChangedListeners();
 		}
-	} 
+	}
 
 	/**
 	 * doSetControl Whether to call super.setControl() wich is only needed, when inside the Preferences Dialog.
@@ -384,7 +381,7 @@ extends LSDPreferencePage
 	
 	@Override
 	@Implement
-	public void createPartContents(Composite parent) 
+	public void createPartContents(Composite parent)
 	{
 		fadableWrapper = new FadeableComposite(parent, SWT.NONE, LayoutMode.NONE, LayoutDataMode.NONE);
 		
@@ -414,10 +411,10 @@ extends LSDPreferencePage
 					public void run() {
 						if (currentConfigModuleIsEditable) {
 							if (doSetControl) {
-								lockHandle = EditLockMan.sharedInstance().acquireEditLock(JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG_MODULE, 
-										(ConfigModuleID) JDOHelper.getObjectId(getConfigModuleController().getConfigModule()), 
+								lockHandle = EditLockMan.sharedInstance().acquireEditLock(JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG_MODULE,
+										(ConfigModuleID) JDOHelper.getObjectId(getConfigModuleController().getConfigModule()),
 										Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.editLockWarning"), //$NON-NLS-1$
-										null, getShell(), getSubProgressMonitorWrapper(1));								
+										null, getShell(), getSubProgressMonitorWrapper(1));
 							}
 						}
 						setUpGui();
@@ -466,9 +463,9 @@ extends LSDPreferencePage
 	
 	/**
 	 * Initialises the main GUI elements: The header and the body of the preference page.
-	 * It will be called by the job fetching getConfigModuleController().getConfigModule() data.  
+	 * It will be called by the job fetching getConfigModuleController().getConfigModule() data.
 	 */
-	protected void setUpGui() 
+	protected void setUpGui()
 	{
 		if (getConfigModuleController().getConfigModule().isGroupConfigModule())
 			createConfigGroupHeader(header);
@@ -482,7 +479,7 @@ extends LSDPreferencePage
 	}
 
 	/**
-	 * Updates the {@link #header} of the preference page according to the state of 
+	 * Updates the {@link #header} of the preference page according to the state of
 	 * {@link #currentConfigModule}.
 	 */
 	public void updateConfigHeader() {
@@ -492,7 +489,7 @@ extends LSDPreferencePage
 			
 			checkBoxAllowOverwrite.setSelection(
 					(getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).getWritableByChildren()
-					& FieldMetaData.WRITABLEBYCHILDREN_YES) != 0); 
+					& FieldMetaData.WRITABLEBYCHILDREN_YES) != 0);
 			
 			checkBoxAllowOverwrite.setBackground(header.getBackground());
 		} else {
@@ -509,7 +506,7 @@ extends LSDPreferencePage
 			inheritMemberConfigModule.setSelection(
 					getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).isValueInherited());
 
-			inheritMemberConfigModule.setEnabled(currentConfigModuleIsEditable); 
+			inheritMemberConfigModule.setEnabled(currentConfigModuleIsEditable);
 
 			if (! currentConfigModuleIsEditable)
 				inheritMemberConfigModule.setCaption(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.GroupDisallowsOverwrite")); //$NON-NLS-1$
@@ -532,8 +529,8 @@ extends LSDPreferencePage
 	 */
 	protected void createConfigGroupHeader(Composite parent) {
 		checkBoxAllowOverwrite = new Button(parent, SWT.CHECK);
-		checkBoxAllowOverwrite.setSelection( 
-				(getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).getWritableByChildren() 
+		checkBoxAllowOverwrite.setSelection(
+				(getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).getWritableByChildren()
 						& FieldMetaData.WRITABLEBYCHILDREN_YES) != 0
 						);
 		checkBoxAllowOverwrite.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.WhetherGroupAllowsConfigOverwrite")); //$NON-NLS-1$
@@ -558,18 +555,18 @@ extends LSDPreferencePage
 	/**
 	 * Creates the header for {@link ConfigModule}s of non-{@link ConfigGroup}s.
 	 * <p>
-	 * The default implementation creates an {@link InheritanceToggleButton} with a apropriate 
+	 * The default implementation creates an {@link InheritanceToggleButton} with a apropriate
 	 * caption. <br>
 	 * @see #createConfigGroupHeader(Composite)
 	 * 
-	 * @param parent the Composite in which to place the header controls. It should be empty and have 
+	 * @param parent the Composite in which to place the header controls. It should be empty and have
 	 * 	a GridLayout.
 	 */
 	protected void createConfigMemberHeader(Composite parent) {
 		inheritMemberConfigModule = new InheritanceToggleButton(parent, ""); //$NON-NLS-1$
 		inheritMemberConfigModule.setSelection(getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).isValueInherited());
 			
-		inheritMemberConfigModule.setEnabled(currentConfigModuleIsEditable); 
+		inheritMemberConfigModule.setEnabled(currentConfigModuleIsEditable);
 
 		if (! currentConfigModuleIsEditable)
 			inheritMemberConfigModule.setCaption(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.GroupDisallowsOverwrite")); //$NON-NLS-1$
@@ -583,7 +580,7 @@ extends LSDPreferencePage
 					return;
 
 				boolean selected = inheritMemberConfigModule.getSelection();
-				getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).setValueInherited(selected);				
+				getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).setValueInherited(selected);
 				
 //				FIXME: The first time inheritance is triggered, the valueInherited value is here set to true (look deeper)
 				if (selected) {
@@ -593,16 +590,16 @@ extends LSDPreferencePage
 						protected IStatus run(ProgressMonitor monitor) {
 //						FIXME: and is in this job, when read, FALSE!!!! Damn f%&§$=! bug!
 //							ConfigID groupID = ConfigSetupRegistry.sharedInstance().getGroupForConfig(
-//									ConfigID.create(getConfigModuleController().getConfigModule().getOrganisationID(), 
-//											getConfigModuleController().getConfigModule().getConfigKey(), 
+//									ConfigID.create(getConfigModuleController().getConfigModule().getOrganisationID(),
+//											getConfigModuleController().getConfigModule().getConfigKey(),
 //											getConfigModuleController().getConfigModule().getConfigType()
 //									));
-//							ConfigModule(groupID, 
-//									getConfigModuleClass(), configModuleManager.getConfigModuleID(), getConfigModuleFetchGroups().toArray(new String[] {}), 
+//							ConfigModule(groupID,
+//									getConfigModuleClass(), configModuleManager.getConfigModuleID(), getConfigModuleFetchGroups().toArray(new String[] {}),
 //									getConfigModuleMaxFetchDepth(), monitor);
 							ConfigModule groupModule = ConfigModuleDAO.sharedInstance().getGroupsCorrespondingModule(
-									configModuleManager.getConfigID(), getConfigModuleController().getConfigModuleClass(), 
-									configModuleManager.getConfigModuleID(), getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[0]), 
+									configModuleManager.getConfigID(), getConfigModuleController().getConfigModuleClass(),
+									configModuleManager.getConfigModuleID(), getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[0]),
 									getConfigModuleController().getConfigModuleMaxFetchDepth(), monitor
 							);
 							
@@ -613,9 +610,9 @@ extends LSDPreferencePage
 								public void run() {
 									updatePreferencePage();
 									fadableWrapper.setFaded(false);
-									inheritMemberConfigModule.setSelection(true); 
-								}								
-							});							
+									inheritMemberConfigModule.setSelection(true);
+								}
+							});
 							return Status.OK_STATUS;
 						}
 					};
@@ -638,21 +635,21 @@ extends LSDPreferencePage
 	protected abstract void createPreferencePage(Composite parent);
 
 	/**
-	 * Will be called when the UI has to be updated with values of 
+	 * Will be called when the UI has to be updated with values of
 	 * a new ConfigModule.
 	 * 
 	 * @param configModule The currently edited ConfigModule
-	 */	
+	 */
 	protected abstract void updatePreferencePage();
 	
 	/**
 	 * Should change the GUI to either an editable
 	 * or an read-only version of the view of the current ConfigModule.
-	 * The default implementation recursively disables/enables 
-	 * all Buttons of this preference-page. 
+	 * The default implementation recursively disables/enables
+	 * all Buttons of this preference-page.
 	 * This is intended to be extended for different behaviour on canEdit() == false.
 	 */
-	protected void setEditable(boolean editable) 
+	protected void setEditable(boolean editable)
 	{
 		fadableWrapper.setEnabled(editable);
 		
@@ -660,7 +657,7 @@ extends LSDPreferencePage
 		// -> the fadableWrapper rekursively sets all elements enabled = true, although
 		// the togglebutton should not be enabled!
 		if (inheritMemberConfigModule != null && !currentConfigIsGroupMember)
-			inheritMemberConfigModule.setEnabled(false); 
+			inheritMemberConfigModule.setEnabled(false);
 	}
 
 	/**
@@ -669,7 +666,7 @@ extends LSDPreferencePage
 	 */
 	public abstract void updateConfigModule();
 
-	public String getSimpleClassName() 
+	public String getSimpleClassName()
 	{
 		int index = getConfigModuleController().getConfigModuleClass().getName().lastIndexOf("."); //$NON-NLS-1$
 		return getConfigModuleController().getConfigModuleClass().getName().substring(index+1, getConfigModuleController().getConfigModuleClass().getName().length()-1);
@@ -677,7 +674,7 @@ extends LSDPreferencePage
 	
 	/**
 	 * Should return the cfModID of the ConfigModule this preference page
-	 * does edit. This method is intended to be overridden. The default 
+	 * does edit. This method is intended to be overridden. The default
 	 * implementation returns null.
 	 * 
 	 * @return null
@@ -688,15 +685,15 @@ extends LSDPreferencePage
 	
 	/**
 	 * Default implementation does nothing. Subclasses (AbstractUser..., AbstractWorkstation...) have
-	 * to set the <code>configID</code> of the their context for this PreferencePage. The 
-	 * {@link AbstractUserConfigModulePreferencePage}, for example, sets the configID of the Config 
+	 * to set the <code>configID</code> of the their context for this PreferencePage. The
+	 * {@link AbstractUserConfigModulePreferencePage}, for example, sets the configID of the Config
 	 * attached to the current Userdata.
-	 * <p> 
-	 * This method is called by the PreferencePage-Framework of Eclipse but not by the Config-Framework 
-	 * of JFire. <br> 
+	 * <p>
+	 * This method is called by the PreferencePage-Framework of Eclipse but not by the Config-Framework
+	 * of JFire. <br>
 	 * 
 	 * If this page shall be embeded in another Context use {@link #createContents(Composite, ConfigID)}.
-	 *  
+	 * 
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
@@ -729,7 +726,7 @@ extends LSDPreferencePage
 
 			storeModule(doUpdateGUI);
 			configChanged = false;
-		} // if (isConfigCachanged()) 
+		} // if (isConfigCachanged())
 	}
 	
 	/**
@@ -750,11 +747,11 @@ extends LSDPreferencePage
 		try {
 			configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			ConfigModule storedConfigModule = configManager.storeConfigModule(
-					getConfigModuleController().getConfigModule(), true, getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[] {}), 
+					getConfigModuleController().getConfigModule(), true, getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[] {}),
 					getConfigModuleController().getConfigModuleMaxFetchDepth()
 			);
 
-			Cache.sharedInstance().put(null, storedConfigModule, getConfigModuleController().getConfigModuleFetchGroups(), 
+			Cache.sharedInstance().put(null, storedConfigModule, getConfigModuleController().getConfigModuleFetchGroups(),
 					getConfigModuleController().getConfigModuleMaxFetchDepth()
 			);
 //			getConfigModuleController().setConfigModule(Utils.cloneSerializable(storedConfigModule));
@@ -782,10 +779,10 @@ extends LSDPreferencePage
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				storeConfigModule(false);
 				return Status.OK_STATUS;
-			}			
+			}
 		};
 		
-		storeJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);		
+		storeJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 		storeJob.schedule();
 		
 		return true;
@@ -798,10 +795,10 @@ extends LSDPreferencePage
 	}
 
 	/**
-	 * A list of listeners that shall be triggered if this module changes.  
+	 * A list of listeners that shall be triggered if this module changes.
 	 * (see {@link #notifyConfigChangedListeners()})
 	 */
-	private List<ConfigPreferenceChangedListener> configChangedListeners = 
+	private List<ConfigPreferenceChangedListener> configChangedListeners =
 							new ArrayList<ConfigPreferenceChangedListener>();
 
 	/**

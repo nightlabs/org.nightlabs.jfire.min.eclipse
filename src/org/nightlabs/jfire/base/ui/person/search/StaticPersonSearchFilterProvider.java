@@ -97,7 +97,7 @@ public class StaticPersonSearchFilterProvider implements
 	
 	/**
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getComposite(org.eclipse.swt.widgets.Composite)
-	 */	
+	 */
 	public Composite createComposite(Composite parent) {
 		wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		
@@ -159,14 +159,14 @@ public class StaticPersonSearchFilterProvider implements
 				result.personID = tmpLong;
 				result.completeString.replace(toks[i], ""); //$NON-NLS-1$
 			} catch (NumberFormatException e) {}
-		} 
+		}
 		switch (toks.length) {
 			case 3:
 				result.company = toks[0];
 				result.name = toks[1];
 				result.firstName = toks[2];
 				break;
-			case 2: 
+			case 2:
 				result.company = ""; //$NON-NLS-1$
 				result.name = toks[0];
 				result.firstName = toks[1];

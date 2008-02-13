@@ -43,13 +43,13 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	
 	protected PropertySetStructFieldSearchItemEditorHelper() {
 		super();
-	}	
+	}
 	
 	/**
 	 * Constructs a new StructFieldSearchItemEditorHelper
 	 * and calls {@link #init(AbstractPersonStructField)}.
 	 * 
-	 * @param personStructField 
+	 * @param personStructField
 	 */
 	public PropertySetStructFieldSearchItemEditorHelper(StructField _personStructField) {
 		super();

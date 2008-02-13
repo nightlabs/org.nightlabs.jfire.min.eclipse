@@ -7,9 +7,6 @@ import org.nightlabs.base.ui.action.SelectionAction;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.prop.Struct;
-import org.nightlabs.jfire.prop.StructBlock;
-import org.nightlabs.jfire.prop.StructField;
 
 /**
  * Simple Action to remove a {@link Struct} element; a {@link StructBlock} or a {@link StructField}.

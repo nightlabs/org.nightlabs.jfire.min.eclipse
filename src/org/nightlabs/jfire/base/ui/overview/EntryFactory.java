@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Represents a factory which creates entries for a category.
  * <p>
- * {@link EntryFactory}s are registered as extensions an have 
+ * {@link EntryFactory}s are registered as extensions an have
  * the scope of a {@link CategoryFactory} (its id, in fact).
  * This way entries are linked to categories.
  * </p>
@@ -14,9 +14,9 @@ import org.eclipse.swt.graphics.Image;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public interface EntryFactory 
+public interface EntryFactory
 extends IExecutableExtension
-{	
+{
 	/**
 	 * Creates a new {@link Entry}.
 	 * 

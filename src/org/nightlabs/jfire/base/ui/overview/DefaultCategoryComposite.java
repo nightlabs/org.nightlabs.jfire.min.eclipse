@@ -33,34 +33,34 @@ public class DefaultCategoryComposite extends AbstractTableComposite<Entry> {
 	private class ContentProvider extends TableContentProvider {
 		
 		@Override
-		public Object[] getElements(Object inputElement) 
+		public Object[] getElements(Object inputElement)
 		{
 			if (inputElement instanceof List) {
 				return ((List<Entry>) inputElement).toArray();
 			}
 			return null;
-		}	
+		}
 	};
 
-	private class LabelProvider extends TableLabelProvider {	
-		public String getColumnText(Object element, int columnIndex) 
+	private class LabelProvider extends TableLabelProvider {
+		public String getColumnText(Object element, int columnIndex)
 		{
 			if (columnIndex == 1) {
 				Entry entry = (Entry) element;
-				return entry.getEntryFactory().getName();				
+				return entry.getEntryFactory().getName();
 			}
 			return null;
 		}
 
 		@Override
-		public Image getColumnImage(Object element, int columnIndex) 
+		public Image getColumnImage(Object element, int columnIndex)
 		{
 			if (columnIndex == 0) {
 				Entry entry = (Entry) element;
-				return entry.getEntryFactory().getImage();				
-			}			
+				return entry.getEntryFactory().getImage();
+			}
 			return null;
-		}	
+		}
 	};
 	
 	
@@ -85,7 +85,7 @@ public class DefaultCategoryComposite extends AbstractTableComposite<Entry> {
 	}
 	
 	@Override
-	protected void createTableColumns(TableViewer tableViewer, Table table) {					
+	protected void createTableColumns(TableViewer tableViewer, Table table) {
 		TableColumn iconColumn = new TableColumn(table, SWT.NONE);
 		iconColumn.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.DefaultCategoryComposite.iconTableColumn.text")); //$NON-NLS-1$
 		TableColumn nameItem = new TableColumn(table, SWT.NONE);
@@ -99,25 +99,25 @@ public class DefaultCategoryComposite extends AbstractTableComposite<Entry> {
 	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
 		tableViewer.setContentProvider(new ContentProvider());
-		tableViewer.setLabelProvider(new LabelProvider());		
+		tableViewer.setLabelProvider(new LabelProvider());
 //		tableViewer.addSelectionChangedListener(new SelectionListener());
-		tableViewer.addDoubleClickListener(new DoubleClickListener());	    	    
-	}	    	
+		tableViewer.addDoubleClickListener(new DoubleClickListener());
+	}
 
-	private class SelectionListener implements ISelectionChangedListener {	
+	private class SelectionListener implements ISelectionChangedListener {
 		public void selectionChanged(SelectionChangedEvent event) {
 			Entry entry = getFirstSelectedElement();
 			if (entry != null)
 				entry.handleActivation();
-		}	
+		}
 	};
 
-	private class DoubleClickListener implements IDoubleClickListener {	
+	private class DoubleClickListener implements IDoubleClickListener {
 		public void doubleClick(DoubleClickEvent event) {
 			Entry entry = getFirstSelectedElement();
 			if (entry != null)
 				entry.handleActivation();
-		}	
+		}
 	};
 	
 }

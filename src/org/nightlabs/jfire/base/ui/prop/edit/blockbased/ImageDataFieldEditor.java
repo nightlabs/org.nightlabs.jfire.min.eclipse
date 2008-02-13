@@ -47,8 +47,8 @@ import org.nightlabs.language.LanguageCf;
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class ImageDataFieldEditor 
-extends AbstractDataFieldEditor<ImageDataField> 
+public class ImageDataFieldEditor
+extends AbstractDataFieldEditor<ImageDataField>
 {
 	public static class Factory extends AbstractDataFieldEditorFactory<ImageDataField> {
 
@@ -120,7 +120,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 		filenameTextbox = new Text(group, XComposite.getBorderStyle(parent));
 		filenameTextbox.setEditable(false);
 		filenameTextbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		openFileChooserButton = new Button(group, SWT.NONE);		
+		openFileChooserButton = new Button(group, SWT.NONE);
 		sizeLabel = new Label(group, SWT.NONE);
 		
 		imageLabel = new Label(group, SWT.NONE);
@@ -145,9 +145,9 @@ extends AbstractDataFieldEditor<ImageDataField>
 		openFileChooserButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
-				File file; 
+				File file;
 				
-				String path  = fileDialog.open();				
+				String path  = fileDialog.open();
 				if (path != null) {
 					file = new File(path);
 					
@@ -167,7 +167,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 					
 					try {
 						ImageData data = new ImageData(path);
-						filenameTextbox.setText(path);					
+						filenameTextbox.setText(path);
 						fileDialog.setFilterPath(file.getParent());
 						setChanged(true);
 						
@@ -181,8 +181,8 @@ extends AbstractDataFieldEditor<ImageDataField>
 						messageBoxInvalidImageFile.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxInvalidImageFile.text")); //$NON-NLS-1$
 						messageBoxInvalidImageFile.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxInvalidImageFile.message")); //$NON-NLS-1$
 						messageBoxInvalidImageFile.open();
-					}										
-				}				
+					}
+				}
 			}
 		});
 		
@@ -217,9 +217,9 @@ extends AbstractDataFieldEditor<ImageDataField>
 		group.setText(imageStructField.getName().getText(language.getLanguageID()));
 		List<String> extList = imageStructField.getImageFormats();
 		
-		String[] extensions = new String[extList.size()];		
+		String[] extensions = new String[extList.size()];
 		int i = 0;
-		for (String ext : extList)		
+		for (String ext : extList)
 			extensions[i++] = "*." + ext; //$NON-NLS-1$
 		
 		Arrays.sort(extensions);
@@ -239,7 +239,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 						LOGGER.error(e);
 					}
 			}
-			displayImage(id);	
+			displayImage(id);
 		}
 
 		sizeLabel.setText(
@@ -268,7 +268,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 //		Display.getDefault().syncExec(new Runnable(){
 //			public void run() {
 				ImageDataField dataField = getDataField();
-				String path = filenameTextbox.getText();		
+				String path = filenameTextbox.getText();
 				if (path == null || "".equals(path)) //$NON-NLS-1$
 					throw new RuntimeException("Path must not be empty or null!"); //$NON-NLS-1$
 				
@@ -290,9 +290,9 @@ extends AbstractDataFieldEditor<ImageDataField>
 				} catch (IOException e) {
 					e.printStackTrace();
 					throw new RuntimeException(e);
-				}				
+				}
 //			}
-//		});		
+//		});
 	}
 	
 	public LanguageCf getLanguage() {

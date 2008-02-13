@@ -46,14 +46,14 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public abstract class LSDWorkbenchWindowActionDelegate 
-implements IWorkbenchWindowActionDelegate, LoginStateListener 
+public abstract class LSDWorkbenchWindowActionDelegate
+implements IWorkbenchWindowActionDelegate, LoginStateListener
 {
 	private static final Logger logger = Logger.getLogger(LSDWorkbenchWindowActionDelegate.class);
 	
 	/**
 	 * Default implementation of dispose removes this instance
-	 * as LoginStateListener, so make sure to always call super.dispose(). 
+	 * as LoginStateListener, so make sure to always call super.dispose().
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
 	 */
 	public void dispose() {
@@ -75,7 +75,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 
 	/**
 	 * Default implementation of init remembers the
-	 * passed IWorkbenchWindow and makes it accessible 
+	 * passed IWorkbenchWindow and makes it accessible
 	 * through {@link #getWindow()}
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
 	 */
@@ -112,7 +112,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 			}
 		};
 		try {
-			window.getActivePage().getActivePart().getSite().setSelectionProvider(test);	
+			window.getActivePage().getActivePart().getSite().setSelectionProvider(test);
 			test.setSelection(null);
 		} finally {
 			window.getActivePage().getActivePart().getSite().setSelectionProvider(oldProvider);
@@ -127,7 +127,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	
 	/**
 	 * Subclasses may override this but have to make sure
-	 * super.selectionChanged(action,selection) is called to 
+	 * super.selectionChanged(action,selection) is called to
 	 * further provide login-state-dependency
 	 * 
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
@@ -135,7 +135,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	public void selectionChanged(IAction action, ISelection selection) {
 		Login.sharedInstance().addLoginStateListener(this,action);
 //		if (Login.isLoggedIn()) {
-//			loginStateChanged(Login.sharedInstance().getLoginState(), action);						
+//			loginStateChanged(Login.sharedInstance().getLoginState(), action);
 //		}
 	}
 	
@@ -143,7 +143,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	 * Default implementation of loginStateChanged does nothing.
 	 * @see LoginStateListener#loginStateChanged(int, IAction)
 	 */
-	public void loginStateChanged(int loginState, IAction action) {	
+	public void loginStateChanged(int loginState, IAction action) {
 //		logger.info("loginStateChanged to "+loginState+" for action "+action.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 

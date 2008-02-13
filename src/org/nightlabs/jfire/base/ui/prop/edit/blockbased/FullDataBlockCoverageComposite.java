@@ -52,9 +52,9 @@ public class FullDataBlockCoverageComposite extends Composite {
 	private EditorStructBlockRegistry structBlockRegistry;
 	/**
 	 */
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public FullDataBlockCoverageComposite(
-			Composite parent, int style, 
+			Composite parent, int style,
 			PropertySet propertySet,
 			EditorStructBlockRegistry structBlockRegistry
 	) {
@@ -84,7 +84,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 		this.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		for (int i=0; i<numColumns; i++) {
-			XComposite wrapper = new XComposite(this,SWT.BORDER, XComposite.LayoutMode.TIGHT_WRAPPER);				
+			XComposite wrapper = new XComposite(this,SWT.BORDER, XComposite.LayoutMode.TIGHT_WRAPPER);
 			BlockBasedEditor propEditor = (BlockBasedEditor)propEditors.get(i);
 			propEditor.setPropertySet(propertySet);
 //			propEditor.setEditorDomain(editorScope,"#FullDatBlockCoverageComposite"+i);
@@ -109,7 +109,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 	 * is associated with.
 	 */
 	public void updatePropertySet() {
-		for (PropertySetEditor editor : propEditors) {			
+		for (PropertySetEditor editor : propEditors) {
 			editor.updatePropertySet();
 		}
 	}

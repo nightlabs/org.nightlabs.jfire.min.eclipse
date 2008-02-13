@@ -99,7 +99,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 //			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 //			gd.heightHint = 25;
 //			quickButton.setLayoutData(gd);
-//			
+//
 //			quickButton.addSelectionListener(
 //				new SelectionListener() {
 //					public void widgetSelected(SelectionEvent evt) {
@@ -185,7 +185,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	/**
 	 * Default implementation will always return a fresh and empty
 	 * PersonSearchFilter.
-	 *  
+	 * 
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getSearchFilter()
 	 */
 	public SearchFilter getSearchFilter() {

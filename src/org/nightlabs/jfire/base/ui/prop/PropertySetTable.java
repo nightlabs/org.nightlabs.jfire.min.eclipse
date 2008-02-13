@@ -53,7 +53,7 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
  * of the table.
  * </p>
  * <p>
- * To use this as a table for 
+ * To use this as a table for
  * </p>
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
@@ -75,7 +75,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 			}
 			return ""; //$NON-NLS-1$
 		}
-	}	
+	}
 
 	private IStruct struct;
 	private StructFieldID[] structFieldIDs;
@@ -110,7 +110,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Set a default {@link TableContentProvider} and 
+	 * Set a default {@link TableContentProvider} and
 	 * the internal {@link LabelProvider}.
 	 * </p>
 	 */
@@ -124,7 +124,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * Creates the StructFieldColumns columns for this table.
 	 * This method is called by {@link #createTableColumns(TableViewer, Table)}
 	 * if not overridden or can be used in custom implementations.
-	 *  
+	 * 
 	 * @param tableViewer The {@link TableViewer} of this table.
 	 * @param table The {@link Table} of this table.
 	 */
@@ -156,7 +156,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 		int[] weights = new int[table.getColumnCount()];
 		for (int i = 0; i < weights.length; i++) {
 			weights[i] = 1;
-		}		
+		}
 		table.setLayout(new WeightedTableLayout(weights));
 		// TODO: Better use SWT TableLayout ?
 	}
@@ -170,8 +170,8 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * a PropertySet from the given element.
 	 * </p>
 	 * <p>
-	 * The default implementation returns the element if it is an 
-	 * instance of {@link PropertySet}. 
+	 * The default implementation returns the element if it is an
+	 * instance of {@link PropertySet}.
 	 * </p>
 	 * 
 	 * @param element The element to extract the {@link PropertySet} from.
@@ -187,7 +187,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * Used by the {@link LabelProvider} of this table to display the
 	 * value of a StructField and may be used in custom implementations.
 	 * 
-	 * @param propertySet The {@link PropertySet} to get the field value from. 
+	 * @param propertySet The {@link PropertySet} to get the field value from.
 	 * @param structFieldIdx The index of the {@link StructFieldID} to get. (Array passed in the constructor).
 	 * @return The String representation of the {@link StructField} value for the given {@link PropertySet}.
 	 */

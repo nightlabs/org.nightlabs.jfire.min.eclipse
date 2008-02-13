@@ -29,7 +29,7 @@ public class StructTreeComposite extends AbstractTreeComposite implements Langua
 		getGridLayout().marginHeight = 2;
 		getGridLayout().marginWidth = 2;
 		langChooser.addLanguageChangeListener(this);
-		this.currLanguageId = langChooser.getLanguage().getLanguageID();		
+		this.currLanguageId = langChooser.getLanguage().getLanguageID();
 	}
 
 	@Override

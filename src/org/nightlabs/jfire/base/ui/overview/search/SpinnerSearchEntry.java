@@ -17,11 +17,11 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class SpinnerSearchEntry 
-extends XComposite 
+public class SpinnerSearchEntry
+extends XComposite
 {
 	public SpinnerSearchEntry(Composite parent, int style, LayoutMode layoutMode,
-			LayoutDataMode layoutDataMode, String text) 
+			LayoutDataMode layoutDataMode, String text)
 	{
 		super(parent, style, layoutMode, layoutDataMode);
 		this.text = text;
@@ -52,7 +52,7 @@ extends XComposite
 		return spinnerComposite;
 	}
 	
-	protected void createComposite(Composite parent) 
+	protected void createComposite(Composite parent)
 	{
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(text);
@@ -81,14 +81,14 @@ extends XComposite
 		});
 	}
 	
-	private SelectionListener activeButtonListener = new SelectionListener(){	
+	private SelectionListener activeButtonListener = new SelectionListener(){
 		public void widgetSelected(SelectionEvent e) {
 //			spinner.setEnabled(activeButton.getSelection());
 			spinnerComposite.setEnabled(activeButton.getSelection());
-		}	
+		}
 		public void widgetDefaultSelected(SelectionEvent e) {
 			widgetSelected(e);
-		}	
+		}
 	};
 		
 	public boolean isActive() {

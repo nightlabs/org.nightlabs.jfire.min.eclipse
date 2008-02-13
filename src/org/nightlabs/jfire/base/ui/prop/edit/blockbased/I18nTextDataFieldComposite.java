@@ -65,7 +65,7 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 //		layout.marginWidth = 2;
 //		GridData gridData = new GridData(GridData.FILL_BOTH);
 //		setLayoutData(gridData);
-//		
+//
 //		fieldName = new Label(this, SWT.NONE);
 //		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 //		nameData.grabExcessHorizontalSpace = true;
@@ -75,8 +75,8 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 	}
 	
 	private void createEditor(ModifyListener modListener) {
-		I18nTextStructField field = (I18nTextStructField) getEditor().getStructField();		
-		if (field.getLineCount() > 1)		
+		I18nTextStructField field = (I18nTextStructField) getEditor().getStructField();
+		if (field.getLineCount() > 1)
 			i18nTextEditor = new I18nTextEditorMultiLine(this, null, null, field.getLineCount());
 		else
 			i18nTextEditor = new I18nTextEditor(this);
@@ -107,7 +107,7 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 //		fieldName.setText(field.getName().getText());
 		i18nTextEditor.getI18nText().copyFrom(getEditor().getDataField().getI18nText());
 		i18nTextEditor.refresh();
-		// TODO set the text fields maximum line count to the one given by the struct field 
+		// TODO set the text fields maximum line count to the one given by the struct field
 		// ((TextStructField)editor.getDataField().getStructField()).getLineCount();
 	}
 	

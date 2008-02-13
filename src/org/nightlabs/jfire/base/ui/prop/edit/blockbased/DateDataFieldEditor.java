@@ -114,7 +114,7 @@ class DateDataFieldComposite extends AbstractInlineDataFieldComposite<DateDataFi
 		
 		dateTimeEdit = new DateTimeEdit(this, dateStructField.getDateTimeEditFlags(), (Date) null);
 		XComposite.configureLayout(LayoutMode.TIGHT_WRAPPER, dateTimeEdit.getGridLayout());
-		dateTimeEdit.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));		
+		dateTimeEdit.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		dateTimeEdit.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				getEditor().setChanged(true);

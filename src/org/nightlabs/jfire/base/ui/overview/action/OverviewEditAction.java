@@ -12,8 +12,8 @@ import org.nightlabs.base.ui.util.RCPUtil;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class OverviewEditAction 
-extends SelectionAction 
+public abstract class OverviewEditAction
+extends SelectionAction
 implements IOverviewEditAction
 {
 	public OverviewEditAction() {
@@ -47,7 +47,7 @@ implements IOverviewEditAction
 	public abstract String getEditorID();
 
 	/**
-	 * Opens an Editor with the ID returned by {@link #getEditorID()} 
+	 * Opens an Editor with the ID returned by {@link #getEditorID()}
 	 * with the input returned by {@link #getEditorInput()}
 	 */
 	@Override

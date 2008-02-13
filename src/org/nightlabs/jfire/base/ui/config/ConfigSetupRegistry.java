@@ -55,7 +55,7 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class ConfigSetupRegistry extends AbstractEPProcessor 
+public class ConfigSetupRegistry extends AbstractEPProcessor
 {
 	private static final String CLASS_ELEMENT = "class"; //$NON-NLS-1$
 	private static final String CONFIG_SETUP_TYPE_ELEMENT = "configSetupType"; //$NON-NLS-1$
@@ -63,7 +63,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.configsetupvisualiser"; //$NON-NLS-1$
 	
-	private static final String[] CONFIG_SETUP_FETCH_GROUPS = new String[] 
+	private static final String[] CONFIG_SETUP_FETCH_GROUPS = new String[]
 	  { FetchPlan.DEFAULT, ConfigSetup.FETCH_GROUP_CONFIG_MODULE_CLASSES };
 //	private static final String[] DEFAULT_FETCH_GROUP_CONFIGS = new String[]
 //    { FetchPlan.DEFAULT, Config.FETCH_GROUP_CONFIG_GROUP };
@@ -72,8 +72,8 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	 * IMPORTANT: The following registry does only work correctly if the following properties are true...<br>
 	 * 
 	 * <p>There can be at most one ConfigSetup linked to a given <code>Objectclass</code> in the JDO-Datastore.</p>
-	 * <p>This means that there is at most one ConfigSetup with the <code>configType</code> (exclusive)or 
-	 * 		<code>groupConfigType</code> equal to <code>Objectclass</code>.</p> 
+	 * <p>This means that there is at most one ConfigSetup with the <code>configType</code> (exclusive)or
+	 * 		<code>groupConfigType</code> equal to <code>Objectclass</code>.</p>
 	 */
 	
 	/**
@@ -108,7 +108,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	
 	/**
 	 * Returns a merged tree of ConfigPreferenceNodes.
-	 * The set contains all registered PreferencePages that edit a ConfigModule 
+	 * The set contains all registered PreferencePages that edit a ConfigModule
 	 * registered in the ConfigSetup holding Configs with a configType as of the given configID.
 	 * Additionally a ConfigPreferenceNode for all remaining ConfigModuleClasses
 	 * in the found ConfigSetup will be added to the returned node, but these
@@ -128,7 +128,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 		rootNode = new ConfigPreferenceNode("", "", "", null, null, null, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		Set<String> mergeModules = new HashSet<String>();
-		mergeModules.addAll(setup.getConfigModuleClasses());		
+		mergeModules.addAll(setup.getConfigModuleClasses());
 
 		for (Iterator iter = registeredRootNode.getChildren().iterator(); iter.hasNext();) {
 			ConfigPreferenceNode childNode = (ConfigPreferenceNode) iter.next();
@@ -151,17 +151,17 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	 * to a new ConfigPreferenceNode if the given ConfigSetup has a registration
 	 * for the appropriate ConfigModule-class. Stops in the tree when no registration
 	 * was found in the setup, so the further in the tree even if adequate will
-	 * not be found. 
+	 * not be found.
 	 */
 	private void mergeSetupNodes(
-			ConfigSetup setup, 
-			Set<String> mergeModules, 
+			ConfigSetup setup,
+			Set<String> mergeModules,
 			ConfigPreferenceNode orgNode,
-			ConfigPreferenceNode newNodeParent) 
+			ConfigPreferenceNode newNodeParent)
 	{
 		String nodeClassName = orgNode.getConfigModuleClass() != null ? orgNode.getConfigModuleClass().getName() : "";  //$NON-NLS-1$
-		boolean hasRegistration = setup.getConfigModuleClasses().contains(nodeClassName); 
-//			(orgNode.createPreferencePage() != null) && 
+		boolean hasRegistration = setup.getConfigModuleClasses().contains(nodeClassName);
+//			(orgNode.createPreferencePage() != null) &&
 		if (hasRegistration) {
 			mergeModules.remove(nodeClassName);
 			ConfigPreferenceNode newNode = new ConfigPreferenceNode(
@@ -172,7 +172,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 					orgNode.getElement(),
 					orgNode.getPreferencePage(),
 					null // FIXME: insert here the modID stuff?
-				);			
+				);
 			newNodeParent.addChild(newNode);
 			for (Iterator iter = orgNode.getChildren().iterator(); iter.hasNext();) {
 				ConfigPreferenceNode child = (ConfigPreferenceNode) iter.next();
@@ -189,18 +189,18 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 			if (notificationEvent.getFirstSubject() instanceof DirtyObjectID) {
 				DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
 				if (dirtyObjectID.getObjectID() instanceof ConfigSetupID) {
-					ConfigSetupID setupID = (ConfigSetupID)dirtyObjectID.getObjectID();				
+					ConfigSetupID setupID = (ConfigSetupID)dirtyObjectID.getObjectID();
 					try {
-						ConfigSetup newSetup = ConfigSetupDAO.sharedInstance().getConfigSetup(setupID, 
+						ConfigSetup newSetup = ConfigSetupDAO.sharedInstance().getConfigSetup(setupID,
 								CONFIG_SETUP_FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitorWrapper());
-//						integrateConfigSetup(newSetup);	
+//						integrateConfigSetup(newSetup);
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
 				}
 			}
 		}
-	};  
+	};
 	
 	
 	/**
@@ -213,7 +213,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	
 	/**
 	 * Returns the visualiser assosiated to the ConfigSetup the given Config
-	 * is part of, or null if it can't be found. 
+	 * is part of, or null if it can't be found.
 	 */
 	public ConfigSetupVisualiser getVisualiserForConfig(ConfigID configID, ProgressMonitor monitor) {
 		ConfigSetup setup = ConfigSetupDAO.sharedInstance().getConfigSetupForConfigType(configID, monitor);

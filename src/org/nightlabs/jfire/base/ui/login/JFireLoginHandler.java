@@ -50,7 +50,7 @@ public class JFireLoginHandler implements ILoginHandler {
 	private boolean autoLoginWithParams = true; // will be set false after it's done for the first time.
 
 	/**
-	 * Opens an instance of {@link LoginDialog}. 
+	 * Opens an instance of {@link LoginDialog}.
 	 * The dialog sets the loginResult and loginContext values.
 	 * A login verification is performed to be sure the user can
 	 * be identified by the credentials he specified.
@@ -92,7 +92,7 @@ public class JFireLoginHandler implements ILoginHandler {
 					coder.encode((long)(Math.random() * 14776335), 1)); // 14776335 is the highest value encoded in 4 digits ("zzzz")
 			
 			if (loginData.getPassword() != null) {
-				// login parameters were given via startup parameters 
+				// login parameters were given via startup parameters
 				//  -> initialise to last used configuration values if none were given
 				
 				loginConfigModule.acquireWriteLock();
@@ -129,7 +129,7 @@ public class JFireLoginHandler implements ILoginHandler {
 					if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol()))
 						loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
 
-					loginConfigModule.setLatestLoginConfiguration(loginData, null);				
+					loginConfigModule.setLatestLoginConfiguration(loginData, null);
 
 					// perform a test login
 					Login.AsyncLoginResult res = Login.testLogin(loginData);
@@ -157,10 +157,10 @@ public class JFireLoginHandler implements ILoginHandler {
 		handleSWTLogin(loginData, loginConfigModule, loginResult);
 	}
 
-	// TODO: should the creation and registration of login dialog be synchronized?? 
-	protected void handleSWTLogin(LoginData loginData, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult) 
-	throws LoginException 
-	{		
+	// TODO: should the creation and registration of login dialog be synchronized??
+	protected void handleSWTLogin(LoginData loginData, LoginConfigModule loginConfigModule, Login.AsyncLoginResult loginResult)
+	throws LoginException
+	{
 //		LoginDialog loginDialog = new LoginDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), loginResult, loginConfigModule, loginContext);
 		LoginDialog loginDialog = new LoginDialog(Display.getDefault().getActiveShell(), loginResult, loginConfigModule, loginData);
 		// LoginDialog does all the work

@@ -30,7 +30,7 @@ import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**
- * Abstract base class for all {@link DataFieldEditorFactory}s 
+ * Abstract base class for all {@link DataFieldEditorFactory}s
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */

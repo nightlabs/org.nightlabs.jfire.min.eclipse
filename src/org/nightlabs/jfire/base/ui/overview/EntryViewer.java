@@ -7,7 +7,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.base.ui.selection.SelectionProvider;
 
 /**
  * {@link EntryViewer}s might be used to create a detailed
@@ -47,7 +46,7 @@ public interface EntryViewer {
 	Composite getComposite();
 
 	/**
-	 * Returns the {@link Entry} that created this {@link EntryViewer}. 
+	 * Returns the {@link Entry} that created this {@link EntryViewer}.
 	 * @return The {@link Entry} that created this {@link EntryViewer}.
 	 */
 	Entry getEntry();
@@ -60,7 +59,7 @@ public interface EntryViewer {
 	
 	/**
 	 * Returns the optional {@link SelectionProvider}, may be null
-	 * @return The optional SelectionProvider 
+	 * @return The optional SelectionProvider
 	 */
 	ISelectionProvider getSelectionProvider();
 	

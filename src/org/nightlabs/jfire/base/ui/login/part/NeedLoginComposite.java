@@ -42,7 +42,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 public class NeedLoginComposite extends XComposite {
 
 	public NeedLoginComposite(Composite parent, int style) {
-		super(parent, style);		
+		super(parent, style);
 		Label label = new Label(this, SWT.WRAP);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.login.part.NeedLoginComposite.loginToUseView")); //$NON-NLS-1$
 		label.setLayoutData(new GridData());

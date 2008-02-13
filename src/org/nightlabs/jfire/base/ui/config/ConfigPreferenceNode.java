@@ -47,7 +47,7 @@ public class ConfigPreferenceNode {
 	private String configModuleCfModID;
 	private String categoryID;
 	private ConfigPreferenceNode parent;
-	private List<ConfigPreferenceNode> children = 
+	private List<ConfigPreferenceNode> children =
 		new ArrayList<ConfigPreferenceNode>();
 	
 	private AbstractConfigModulePreferencePage preferencePage;
@@ -145,7 +145,7 @@ public class ConfigPreferenceNode {
 	/**
 	 * Creates a new {@link AbstractConfigModulePreferencePage} by invoking
 	 * {@link IConfigurationElement#createExecutableExtension(String)} of
-	 * the element of the contributing extension. 
+	 * the element of the contributing extension.
 	 * 
 	 * @return A new {@link AbstractConfigModulePreferencePage}.
 	 * @throws CoreException If something fails.

@@ -92,7 +92,7 @@ class ImageStructFieldEditorComposite extends XComposite implements Serializable
 		this.editor = imageStructFieldEditor;
 		new Label(this, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldEditor.maximumSizeLabel.text")); //$NON-NLS-1$
 		sizeSpinner = new Spinner(this, getBorderStyle());
-		sizeSpinner.setMaximum(Integer.MAX_VALUE);		
+		sizeSpinner.setMaximum(Integer.MAX_VALUE);
 		
 		new Label(this, SWT.NONE); new Label(this, SWT.NONE); // Spacers
 		
@@ -115,7 +115,7 @@ class ImageStructFieldEditorComposite extends XComposite implements Serializable
 		gd.widthHint = 25;
 		final Button addButton = new Button(buttonComp, SWT.PUSH);
 		addButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldEditor.addButton.text")); //$NON-NLS-1$
-		addButton.setLayoutData(gd);		
+		addButton.setLayoutData(gd);
 		final Button remButton = new Button(buttonComp, SWT.PUSH);
 		remButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldEditor.removeButton.text")); //$NON-NLS-1$
 		remButton.setLayoutData(gd);
@@ -163,7 +163,7 @@ class ImageStructFieldEditorComposite extends XComposite implements Serializable
 			}
 			public void widgetSelected(SelectionEvent e) {}
 		});
-	}		
+	}
 	
 	protected void setField(ImageStructField field) {
 		if (field == null) {
@@ -175,7 +175,7 @@ class ImageStructFieldEditorComposite extends XComposite implements Serializable
 		
 		this.imageField = field;
 		formatList.setInput(imageField.getImageFormats());
-		sizeSpinner.setSelection((int) imageField.getMaxSizeKB());		
+		sizeSpinner.setSelection((int) imageField.getMaxSizeKB());
 	}
 	
 	protected boolean addExtension(String ext) {

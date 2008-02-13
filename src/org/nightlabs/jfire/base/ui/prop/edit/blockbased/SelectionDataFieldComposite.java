@@ -55,14 +55,14 @@ public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposit
 			public String getText(Object element) {
 				if (element instanceof StructFieldValue) {
 					StructFieldValue value = (StructFieldValue) element;
-					return value.getValueName().getText();					
+					return value.getValueName().getText();
 				}
 				return ""; //$NON-NLS-1$
 			}
 		};
 		
 		fieldValueCombo = new XComboComposite<StructFieldValue>(
-				this, 
+				this,
 				AbstractListComposite.getDefaultWidgetStyle(this),
 				(String) null,
 				labelProvider,

@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.prop.structfield.DateStructField;
 import org.nightlabs.jfire.prop.structfield.NumberStructField;
 
 class NumberStructFieldEditComposite extends XComposite {
@@ -100,10 +99,10 @@ class NumberStructFieldEditComposite extends XComposite {
 					return;
 				
 				convertSpinner(maxSpinner, newDigits);
-				convertSpinner(minSpinner, newDigits);				
+				convertSpinner(minSpinner, newDigits);
 				convertNumberField(newDigits);
 				
-				setSpinnerBounds();				
+				setSpinnerBounds();
 				editor.setChanged();
 				rearrange();
 			}
@@ -140,7 +139,7 @@ class NumberStructFieldEditComposite extends XComposite {
 //			public void modifyText(ModifyEvent e) {
 //				if (ignoreModify)
 //					return;
-//				
+//
 //				setSpinnerBounds();
 //				numberField.setSpinnerMin(minSpinner.getSelection());
 //				rearrange();
@@ -164,7 +163,7 @@ class NumberStructFieldEditComposite extends XComposite {
 //			public void modifyText(ModifyEvent e) {
 //				if (ignoreModify)
 //					return;
-//				
+//
 //				setSpinnerBounds();
 //				numberField.setSpinnerMax(maxSpinner.getSelection());
 //				rearrange();

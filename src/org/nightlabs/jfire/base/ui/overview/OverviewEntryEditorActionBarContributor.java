@@ -13,7 +13,7 @@ import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class OverviewEntryEditorActionBarContributor  
+public class OverviewEntryEditorActionBarContributor
 extends EditorActionBarContributor
 {
 	public OverviewEntryEditorActionBarContributor() {
@@ -21,21 +21,21 @@ extends EditorActionBarContributor
 	}
 	
 	@Override
-	public void contributeToCoolBar(ICoolBarManager coolBarManager) 
+	public void contributeToCoolBar(ICoolBarManager coolBarManager)
 	{
 		if (getApplySearchAction() != null)
 			coolBarManager.add(getApplySearchAction());
 	}
 
 	@Override
-	public void contributeToMenu(IMenuManager menuManager) 
+	public void contributeToMenu(IMenuManager menuManager)
 	{
 		if (getApplySearchAction() != null)
 			menuManager.add(getApplySearchAction());
 	}
 
 	@Override
-	public void contributeToToolBar(IToolBarManager toolBarManager) 
+	public void contributeToToolBar(IToolBarManager toolBarManager)
 	{
 		if (getApplySearchAction() != null)
 			toolBarManager.add(getApplySearchAction());
@@ -47,7 +47,7 @@ extends EditorActionBarContributor
 	}
 	
   @Override
-	public void setActiveEditor(IEditorPart targetEditor) 
+	public void setActiveEditor(IEditorPart targetEditor)
   {
   	if (targetEditor instanceof OverviewEntryEditor) {
   		editor = (OverviewEntryEditor) targetEditor;
@@ -61,7 +61,7 @@ extends EditorActionBarContributor
   
   protected boolean alreadyContributed = false;
   
-  protected EntryViewer getEntryViewer() 
+  protected EntryViewer getEntryViewer()
   {
   	if (editor != null)
   		return editor.getEntryViewer();

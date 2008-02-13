@@ -60,7 +60,7 @@ import org.nightlabs.progress.SubProgressMonitor;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public class ConfigPreferencesEditComposite2 
+public class ConfigPreferencesEditComposite2
 extends FadeableComposite
 implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 {
@@ -81,14 +81,14 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 	/**
 	 * (ConfigPreferenceNode, AbstractConfigModulePreferencePage)
 	 */
-	protected Map<ConfigPreferenceNode, AbstractConfigModulePreferencePage> 
-			involvedPages = new HashMap<ConfigPreferenceNode, AbstractConfigModulePreferencePage>(); 
+	protected Map<ConfigPreferenceNode, AbstractConfigModulePreferencePage>
+			involvedPages = new HashMap<ConfigPreferenceNode, AbstractConfigModulePreferencePage>();
 
 	protected Set<ConfigModule> dirtyConfigModules = new HashSet<ConfigModule>();
 	
-	/** 
-	 * Set of ConfigModules that have been updated on the server side and for which the update 
-	 * is not yet reflected by the gui.  
+	/**
+	 * Set of ConfigModules that have been updated on the server side and for which the update
+	 * is not yet reflected by the gui.
 	 */
 	private Set<ConfigModule> changedModules;
 
@@ -106,16 +106,16 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 		treeComposite = new ConfigPreferencesTreeComposite(wrapper, SWT.BORDER, false, null);
 		GridData treeGD = new GridData(GridData.FILL_BOTH);
 		treeComposite.setLayoutData(treeGD);
-		treeComposite.getTreeViewer().addSelectionChangedListener(new ISelectionChangedListener(){ 
+		treeComposite.getTreeViewer().addSelectionChangedListener(new ISelectionChangedListener(){
 			public void selectionChanged(SelectionChangedEvent event) {
 				ConfigPreferenceNode selection = treeComposite.getFirstSelectedElement();
 				if (selection == null || selection.getElement() == null) {
 					currentPage = null;
 					updatePreferencesComposite();
-					return;					
+					return;
 				}
 				try {
-					if (!involvedPages.containsKey(selection)) 
+					if (!involvedPages.containsKey(selection))
 					{
 						currentPage = selection.createPreferencePage();
 						currentcfModID = selection.getConfigModuleCfModID();
@@ -136,7 +136,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 				}
 				updateCurrentConfigModule();
 				updatePreferencesComposite();
-			}			
+			}
 		});
 		preferencesComposite = new ConfigPreferencesComposite(wrapper, SWT.NONE, true);
 		
@@ -150,13 +150,13 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 			return;
 		}
 
-		preferencesComposite.getStackLayout().topControl = selectedPage.getControl();		
+		preferencesComposite.getStackLayout().topControl = selectedPage.getControl();
 		preferencesComposite.getWrapper().layout();
 	}
 
 	private void updateCurrentConfigModule() {
 		if (currentConfigModule != null && currentPage != null) {
-			if (currentConfigModule.getClass().equals(currentPage.getConfigModuleController().getClass())) {				
+			if (currentConfigModule.getClass().equals(currentPage.getConfigModuleController().getClass())) {
 				currentPage.updateConfigModule();
 			}
 		}
@@ -204,7 +204,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 
 				EditLockMan.sharedInstance().acquireEditLock(
 						JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG, getCurrentConfigID(),
-						Messages.getString("org.nightlabs.jfire.base.ui.config.ConfigPreferencesEditComposite2.editLockWarning"), //$NON-NLS-1$ 
+						Messages.getString("org.nightlabs.jfire.base.ui.config.ConfigPreferencesEditComposite2.editLockWarning"), //$NON-NLS-1$
 						(EditLockCallback)null, new SubProgressMonitor(monitor, 1)
 				);
 
@@ -233,7 +233,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 	}
 
 	private String getCfModKey(AbstractConfigModulePreferencePage page) {
-		return ConfigModule.getCfModKey(page.getConfigModuleController().getConfigModuleClass(), 
+		return ConfigModule.getCfModKey(page.getConfigModuleController().getConfigModuleClass(),
 							page.getConfigModuleController().getConfigModuleID());
 	}
 	
@@ -275,7 +275,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 	}
 
 	/**
-	 * Stored the changed ConfigModule to ask the user later about whether to reload these modules or not.  
+	 * Stored the changed ConfigModule to ask the user later about whether to reload these modules or not.
 	 * @see org.nightlabs.jfire.base.ui.config.IStoreChangedConfigModule#addChangedConfigModule(org.nightlabs.jfire.config.ConfigModule)
 	 */
 	public void addChangedConfigModule(ConfigModule module) {

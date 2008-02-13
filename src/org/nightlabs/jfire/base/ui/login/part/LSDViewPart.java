@@ -17,14 +17,14 @@ import org.nightlabs.jfire.base.ui.login.Login;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class LSDViewPart 
-extends ViewPart 
-implements PartVisibilityListener, ControllablePart 
+public abstract class LSDViewPart
+extends ViewPart
+implements PartVisibilityListener, ControllablePart
 {
 	public LSDViewPart() {
 		super();
 		// Register the view at the view-controller
-		LSDPartController.sharedInstance().registerPart(this, new FillLayout());		
+		LSDPartController.sharedInstance().registerPart(this, new FillLayout());
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ implements PartVisibilityListener, ControllablePart
 	}
 
 	public void partHidden(IWorkbenchPartReference partRef) {
-		// Inheritans can override this method if they want/need to react on hidden status 
+		// Inheritans can override this method if they want/need to react on hidden status
 	}
 
 	public void partVisible(IWorkbenchPartReference partRef) {

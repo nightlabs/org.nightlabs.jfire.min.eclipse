@@ -80,7 +80,7 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}		
+		}
 	}
 	
 	private static class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
@@ -108,7 +108,7 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 	 * @param setLayoutData
 	 */
 	public ConfigPreferencesTreeComposite(Composite parent, int style, boolean setLayoutData, ConfigID configID) {
-		super(parent, SWT.BORDER, true, true, false); 
+		super(parent, SWT.BORDER, true, true, false);
 		setConfigID(configID, new NullProgressMonitor());
 		this.parentCode = Integer.toHexString(parent.hashCode());
 	}
@@ -128,7 +128,7 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 		if (configID == null || configID.equals(currentConfigID))
 			return;
 		this.currentConfigID = configID;
-		if (currentConfigID != null) {			
+		if (currentConfigID != null) {
 			final ConfigPreferenceNode rootNode;
 			try {
 				rootNode = ConfigSetupRegistry.sharedInstance().getMergedPreferenceRootNode(parentCode, currentConfigID, monitor);

@@ -119,7 +119,7 @@ public class StartupUpdateManager implements IProgressMonitor, Runnable
 //				SplashDialog.showSplashDialog(
 //						Messages.getString("org.nightlabs.jfire.base.ui.update.StartupUpdateManager.splashDialog.message_needRestart"), //$NON-NLS-1$
 //						new SplashDialog.DialogListener() {
-//							public boolean finish(SplashDialogResult dialogResult) 
+//							public boolean finish(SplashDialogResult dialogResult)
 //							{
 //								return true;
 //							}

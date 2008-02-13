@@ -40,7 +40,7 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
  */
 public class PersonEditorWizardPersonalPage extends PersonPersonalDataWizardPage {
 
-	public static final StructBlockID[] BLOCKIDS = 
+	public static final StructBlockID[] BLOCKIDS =
 		new StructBlockID[] {PersonStruct.PERSONALDATA};
 	
 	/**

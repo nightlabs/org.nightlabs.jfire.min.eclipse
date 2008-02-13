@@ -14,20 +14,20 @@ import org.nightlabs.jdo.ObjectID;
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public abstract class JDOObjectTreeLabelProvider<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode> 
-extends TableLabelProvider 
+public abstract class JDOObjectTreeLabelProvider<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode>
+extends TableLabelProvider
 {
 
 	public JDOObjectTreeLabelProvider() {
 	}
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public String getColumnText(Object element, int columnIndex)
 	{
 		if (element instanceof String)
 			return (String)element;
 		
-		TreeNode node = (TreeNode) element;		
+		TreeNode node = (TreeNode) element;
 		return getJDOObjectText((JDOObject) node.getJdoObject(), columnIndex);
 	}
 	
@@ -46,7 +46,7 @@ extends TableLabelProvider
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public Image getColumnImage(Object element, int columnIndex) {
 		if (element instanceof String)
 			return null;
