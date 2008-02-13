@@ -48,7 +48,7 @@ public class UserGroupsSection extends RestorableSectionPart {
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit) 
+	protected void createClient(Section section, FormToolkit toolkit)
 	{
 		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
@@ -100,7 +100,7 @@ public class UserGroupsSection extends RestorableSectionPart {
 //		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.col1")); //$NON-NLS-1$
 //		TableLayout tlayout = new TableLayout();
 //		tlayout.addColumnData(new ColumnWeightData(30, 30));
-//		tlayout.addColumnData(new ColumnWeightData(70, 70));		
+//		tlayout.addColumnData(new ColumnWeightData(70, 70));
 //		fTable.setLayout(tlayout);
 		fTable.setLayout(new WeightedTableLayout(new int[] {-1, 30, 70}, new int[] {20, -1, -1}));
 		fTable.setHeaderVisible(true);

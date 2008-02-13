@@ -55,7 +55,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 	
 	public CreateConfigGroupPage(String title, String configGroupType) {
 		super(CreateConfigGroupPage.class.getName(), title,
-				SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), 
+				SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(),
 						CreateConfigGroupPage.class));
 		this.configGroupType = configGroupType;
 	}
@@ -64,7 +64,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 	 * @see org.nightlabs.base.ui.wizard.DynamicPathWizardPage#createPageContents(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public Control createPageContents(Composite parent) 
+	public Control createPageContents(Composite parent)
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
 		configGroupName = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.configGroupName.labelText"), null); //$NON-NLS-1$
@@ -84,7 +84,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 		verifyInput();
 	}
 	
-	protected void verifyInput() 
+	protected void verifyInput()
 	{
 		if("".equals(getConfigGroupName())) //$NON-NLS-1$
 			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.errorConfigGroupNameMissing")); //$NON-NLS-1$
@@ -101,17 +101,17 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 		return !"".equals(getConfigGroupName()); //$NON-NLS-1$
 	}
 
-	public String getConfigGroupKey() 
+	public String getConfigGroupKey()
 	{
 		return configGroupKey.getText();
 	}
 	
-	public String getConfigGroupType() 
+	public String getConfigGroupType()
 	{
 		return configGroupType;
 	}
 	
-	public String getConfigGroupName() 
+	public String getConfigGroupName()
 	{
 		return configGroupName.getText();
 	}

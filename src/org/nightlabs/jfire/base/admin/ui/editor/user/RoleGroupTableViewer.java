@@ -38,7 +38,7 @@ public class RoleGroupTableViewer extends TableViewer
 	}
 
 	/**
-	 * Label provider for role groups. 
+	 * Label provider for role groups.
 	 */
 	private class RoleGroupsLabelProvider extends TableLabelProvider
 	{
@@ -95,7 +95,7 @@ public class RoleGroupTableViewer extends TableViewer
 		gd.heightHint = 100;
 		getTable().setLayoutData(gd);
 
-		// Table columns		
+		// Table columns
 		new TableColumn(getTable(), SWT.LEFT).setResizable(false); // total availability
 
 		TableViewerColumn col2 = new TableViewerColumn(this, SWT.CENTER);
@@ -118,7 +118,7 @@ public class RoleGroupTableViewer extends TableViewer
 			}
 		});
 
-		TableColumn col3 = new TableColumn(getTable(), SWT.NULL);		
+		TableColumn col3 = new TableColumn(getTable(), SWT.NULL);
 		col3.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.roleGroup")); //$NON-NLS-1$
 
 		TableColumn col4 = new TableColumn(getTable(), SWT.NULL);

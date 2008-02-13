@@ -20,8 +20,8 @@ import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
 
-public class EntityTreeCategoryWorkstationGroup 
-extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> 
+public class EntityTreeCategoryWorkstationGroup
+extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup>
 {
 
 	protected class LabelProvider extends TableLabelProvider {
@@ -49,15 +49,15 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup>
 		};
 	
 	@Override
-	protected Collection<ConfigGroup> retrieveJDOObjects(Set<ConfigID> configIDs, ProgressMonitor monitor) 
+	protected Collection<ConfigGroup> retrieveJDOObjects(Set<ConfigID> configIDs, ProgressMonitor monitor)
 	{
 		for (ConfigID configID : configIDs) {
 			if (!configID.configType.equals(WorkstationConfigSetup.CONFIG_GROUP_CONFIG_TYPE_WORKSTATION_CONFIG))
 //				objectIDs.remove(configID);
 				return null;
-		}		
+		}
 		return CollectionUtil.castCollection(
-				ConfigDAO.sharedInstance().getConfigs(configIDs, FETCH_GROUPS_WORKSTATIONGROUP, 
+				ConfigDAO.sharedInstance().getConfigs(configIDs, FETCH_GROUPS_WORKSTATIONGROUP,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor)
 				);
 	}
@@ -65,7 +65,7 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup>
 	@Override
 	protected Collection<ConfigGroup> retrieveJDOObjects(ProgressMonitor monitor) {
 		return CollectionUtil.castCollection(
-				ConfigDAO.sharedInstance().getConfigs(WorkstationConfigSetup.CONFIG_GROUP_CONFIG_TYPE_WORKSTATION_CONFIG, 
+				ConfigDAO.sharedInstance().getConfigs(WorkstationConfigSetup.CONFIG_GROUP_CONFIG_TYPE_WORKSTATION_CONFIG,
 											FETCH_GROUPS_WORKSTATIONGROUP, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor)
 				);
 	}
@@ -87,7 +87,7 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup>
 		if (o == null)
 			return null;
 		ConfigGroup configGroup = (ConfigGroup) o;
-		ConfigID configID = ConfigID.create(configGroup.getOrganisationID(), configGroup.getConfigKey(), 
+		ConfigID configID = ConfigID.create(configGroup.getOrganisationID(), configGroup.getConfigKey(),
 																				configGroup.getConfigType());
 		return new WorkstationGroupEditorInput(configID);
 	}

@@ -42,15 +42,15 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateWorkstationPage extends DynamicPathWizardPage implements FormularChangeListener 
+public class CreateWorkstationPage extends DynamicPathWizardPage implements FormularChangeListener
 {
 	private Text workstationID;
 	private Text workstationDescription;
 	
-	public CreateWorkstationPage(String title) 
+	public CreateWorkstationPage(String title)
 	{
 		super(CreateWorkstationPage.class.getName(), title,
-				SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), 
+				SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(),
 						CreateWorkstationPage.class));
 	}
 
@@ -58,7 +58,7 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 	 * @see org.nightlabs.base.ui.wizard.DynamicPathWizardPage#createPageContents(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public Control createPageContents(Composite parent) 
+	public Control createPageContents(Composite parent)
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
 		workstationID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.workstationID.labelText"), null); //$NON-NLS-1$
@@ -76,7 +76,7 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 		verifyInput();
 	}
 	
-	protected void verifyInput() 
+	protected void verifyInput()
 	{
 		if("".equals(getWorkstationID())) //$NON-NLS-1$
 			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDMissing")); //$NON-NLS-1$
@@ -84,12 +84,12 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 			updateStatus(null);
 	}
 
-	public String getWorkstationID() 
+	public String getWorkstationID()
 	{
 		return workstationID.getText();
 	}
 	
-	public String getWorkstationDescription() 
+	public String getWorkstationDescription()
 	{
 		return workstationDescription.getText();
 	}

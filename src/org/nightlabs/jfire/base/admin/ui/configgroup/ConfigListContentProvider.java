@@ -65,7 +65,7 @@ public class ConfigListContentProvider implements IStructuredContentProvider
 		ArrayList<Config> ret = new ArrayList<Config>();
 		ConfigSetup configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(id, new NullProgressMonitor());
 		List configs = configSetup.getConfigsForGroup(id.configKey);
-		for (Iterator iter = configs.iterator(); iter.hasNext();) 
+		for (Iterator iter = configs.iterator(); iter.hasNext();)
 			ret.add((Config) iter.next());
 		return ret;
 	}
@@ -75,7 +75,7 @@ public class ConfigListContentProvider implements IStructuredContentProvider
 		ArrayList<Config> ret = new ArrayList<Config>();
 		ConfigSetup configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(id, new NullProgressMonitor());
 		List configs = configSetup.getConfigsNotInGroup(id.configKey);
-		for (Iterator iter = configs.iterator(); iter.hasNext();) 
+		for (Iterator iter = configs.iterator(); iter.hasNext();)
 			ret.add((Config) iter.next());
 		return ret;
 	}

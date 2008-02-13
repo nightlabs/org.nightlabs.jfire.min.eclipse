@@ -14,7 +14,7 @@ public class UserPersonPreferencePage extends PersonPreferencesPage {
 
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link PersonPreferencesPage}. 
+	 * new instances of {@link PersonPreferencesPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 		public IFormPage createPage(FormEditor formEditor) {

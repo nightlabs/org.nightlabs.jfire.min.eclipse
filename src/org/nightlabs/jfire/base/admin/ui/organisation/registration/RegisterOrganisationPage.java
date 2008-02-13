@@ -88,7 +88,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 		private Organisation[] organisations = null;
 		private String[] messages = null;
 		@Override
-		@SuppressWarnings("unchecked") 
+		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 		{
 			organisations = null;
@@ -205,7 +205,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 
 		new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.RegisterOrganisationPage.loadOrganisationsJob.name")) { //$NON-NLS-1$
 			@Override
-			@SuppressWarnings("unchecked") 
+			@SuppressWarnings("unchecked")
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				try {

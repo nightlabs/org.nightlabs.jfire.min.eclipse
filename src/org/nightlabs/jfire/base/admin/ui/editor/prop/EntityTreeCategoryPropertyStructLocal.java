@@ -45,7 +45,6 @@ import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.StructLocalLifecycleListenerFilter;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructLocalID;
-import org.nightlabs.jfire.security.User;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**

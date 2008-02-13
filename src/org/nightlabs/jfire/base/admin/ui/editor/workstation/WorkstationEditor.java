@@ -12,7 +12,7 @@ import org.nightlabs.jfire.workstation.Workstation;
 import org.nightlabs.jfire.workstation.id.WorkstationID;
 
 public class WorkstationEditor
-extends EntityEditor 
+extends EntityEditor
 implements IConfigSetupEditor
 {
 	/**

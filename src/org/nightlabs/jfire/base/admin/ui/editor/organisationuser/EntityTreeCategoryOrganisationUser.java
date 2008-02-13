@@ -97,7 +97,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	}
 
 	public static final String[] FETCH_GROUPS_USER = {
-		User.FETCH_GROUP_THIS_USER, 
+		User.FETCH_GROUP_THIS_USER,
 		FetchPlan.DEFAULT
 		};
 

@@ -84,7 +84,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit, boolean showTotalAvailColumn) 
+	protected void createClient(Section section, FormToolkit toolkit, boolean showTotalAvailColumn)
 	{
 		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
@@ -137,7 +137,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 			}
 		});
 		section.setDescriptionControl(text);
-	}	
+	}
 	
 	public void setModel(final RoleGroupSecurityPreferencesModel model) {
 		this.model = model;

@@ -19,9 +19,9 @@ import org.nightlabs.jfire.base.admin.ui.editor.user.IConfigSetupEditor;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.config.id.ConfigID;
 
-public class WorkstationFeaturePreferencesTabPage 
-extends FormPage 
-{	
+public class WorkstationFeaturePreferencesTabPage
+extends FormPage
+{
 	public static final String ID_PAGE = WorkstationFeaturePreferencesTabPage.class.getName();
 	
 	private ConfigPreferencesSection preferencesSection;
@@ -67,11 +67,11 @@ extends FormPage
 		body.setLayoutData(new GridData(GridData.FILL_BOTH));
 	
 		if (! (getEditor() instanceof IConfigSetupEditor))
-			throw new IllegalStateException(ConfigPreferencesPage.class.getName() + 
+			throw new IllegalStateException(ConfigPreferencesPage.class.getName() +
 					" should only be used with a Editor implementing IConfigSetupEditor"); //$NON-NLS-1$
 		ConfigID configID = ((IConfigSetupEditor)getEditor()).getConfigID();
 		
 		preferencesSection = new ConfigPreferencesSection(this, body, configID);
 		getManagedForm().addPart(preferencesSection);
-	}	
+	}
 }

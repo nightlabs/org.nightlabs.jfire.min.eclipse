@@ -101,7 +101,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 				UserDAO.sharedInstance().getUsers(
 						objectIDs,
 						FETCH_GROUPS_USER_GROUP,
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						monitor));
 	}
 
@@ -112,7 +112,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 	{
 		return UserDAO.sharedInstance().getUserGroups(
 				FETCH_GROUPS_USER_GROUP,
-				NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
+				NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 				monitor);
 	}
 

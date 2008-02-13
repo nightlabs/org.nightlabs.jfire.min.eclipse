@@ -65,7 +65,7 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 	}
 
 	@Override
-	public void addPages() 
+	public void addPages()
 	{
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
 		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());

@@ -180,10 +180,10 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 
 				// load role groups
 				RoleGroupListCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroups(
-						userID, 
-						Authority.AUTHORITY_ID_ORGANISATION, 
-						new String[] {RoleGroup.FETCH_GROUP_THIS}, 
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
+						userID,
+						Authority.AUTHORITY_ID_ORGANISATION,
+						new String[] {RoleGroup.FETCH_GROUP_THIS},
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						pMonitor);
 				roleGroupModel.setRoleGroups(roleGroups.assigned);
 				roleGroupModel.setRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
@@ -198,10 +198,10 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
-		} finally { 
+		} finally {
 			monitor.done();
 			loading = false;
-		}	
+		}
 	}
 	
 	private Job reloadRoleGroupsFromUserGroupsJob;
@@ -213,9 +213,9 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 				ProgressMonitor pMonitor = new org.nightlabs.progress.NullProgressMonitor();
 				
 				Collection<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserGroups(
-						JDOHelper.getObjectIds(userModel.getUserGroups()), 
-						Authority.AUTHORITY_ID_ORGANISATION, 
-						new String[] {RoleGroup.FETCH_GROUP_THIS}, 
+						JDOHelper.getObjectIds(userModel.getUserGroups()),
+						Authority.AUTHORITY_ID_ORGANISATION,
+						new String[] {RoleGroup.FETCH_GROUP_THIS},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
 				
 				if (reloadRoleGroupsFromUserGroupsJob == this) {
@@ -256,7 +256,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		
 		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroups();
 		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAvailableRoleGroups());
-		excludedRoleGroups.removeAll(includedRoleGroups);		
+		excludedRoleGroups.removeAll(includedRoleGroups);
 		
 		int taskTicks = includedRoleGroups.size() + excludedRoleGroups.size() +	includedUserGroups.size() + excludedUserGroups.size();
 		

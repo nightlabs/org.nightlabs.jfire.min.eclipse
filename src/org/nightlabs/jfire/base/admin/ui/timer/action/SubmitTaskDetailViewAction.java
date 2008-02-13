@@ -9,7 +9,7 @@ import org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView;
 public class SubmitTaskDetailViewAction
 implements IViewActionDelegate
 {
-	private TaskDetailView taskDetailView; 
+	private TaskDetailView taskDetailView;
 
 	public void init(IViewPart view)
 	{

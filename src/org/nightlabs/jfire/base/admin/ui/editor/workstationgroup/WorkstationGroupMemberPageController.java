@@ -9,8 +9,8 @@ import org.nightlabs.jfire.base.admin.ui.editor.configgroup.AbstractConfigGroupP
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class WorkstationGroupMemberPageController 
-extends AbstractConfigGroupPageController 
+public class WorkstationGroupMemberPageController
+extends AbstractConfigGroupPageController
 {
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ extends AbstractConfigGroupPageController
 		monitor.done();
 	}
 
-	public void doSave(IProgressMonitor monitor) 
+	public void doSave(IProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof WorkstationGroupMemberPage) {
@@ -39,7 +39,7 @@ extends AbstractConfigGroupPageController
 					throw new RuntimeException(e);
 				}
 			}
-		}	
+		}
 	}
 
 }

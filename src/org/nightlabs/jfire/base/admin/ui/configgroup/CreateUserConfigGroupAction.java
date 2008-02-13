@@ -40,10 +40,10 @@ import org.nightlabs.jfire.config.UserConfigSetup;
  */
 public class CreateUserConfigGroupAction extends WorkbenchWindowAndViewActionDelegate
 {
-	public void run(IAction action) 
+	public void run(IAction action)
 	{
   	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(
-				getShell(), 
+				getShell(),
 				new CreateConfigGroupWizard(
 						UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG,
 						Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateUserConfigGroupAction.wizardTitle"), //$NON-NLS-1$

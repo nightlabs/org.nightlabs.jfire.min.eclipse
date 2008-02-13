@@ -46,8 +46,8 @@ import org.nightlabs.jfire.config.id.ConfigID;
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class ConfigPreferencesSection 
-extends RestorableSectionPart 
+public class ConfigPreferencesSection
+extends RestorableSectionPart
 implements IConfigModuleChangedListener
 {
 	/**
@@ -73,7 +73,7 @@ implements IConfigModuleChangedListener
 	{
 		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
 		this.page = page;
-		controller = ((EntityEditor)page.getEditor()).getController(); 
+		controller = ((EntityEditor)page.getEditor()).getController();
 		this.configID = configID;
 		createClient(getSection(), page.getEditor().getToolkit());
 	}
@@ -83,7 +83,7 @@ implements IConfigModuleChangedListener
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit) 
+	protected void createClient(Section section, FormToolkit toolkit)
 	{
 		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);

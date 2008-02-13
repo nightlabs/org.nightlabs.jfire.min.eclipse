@@ -14,12 +14,12 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserConfigGroupMemberPage 
-extends EntityEditorPageWithProgress 
+public class UserConfigGroupMemberPage
+extends EntityEditorPageWithProgress
 {
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link UserConfigGroupMemberPage}. 
+	 * new instances of {@link UserConfigGroupMemberPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 		public IFormPage createPage(FormEditor formEditor) {
@@ -41,16 +41,16 @@ extends EntityEditorPageWithProgress
 	}
 	
 	@Override
-	protected void addSections(Composite parent) 
+	protected void addSections(Composite parent)
 	{
 		userConfigGroupMemberSection = new UserConfigGroupMemberSection(this, parent);
 		getManagedForm().addPart(userConfigGroupMemberSection);
 	}
 
 	@Override
-	protected void asyncCallback() 
+	protected void asyncCallback()
 	{
-		final UserConfigGroupMemberPageController controller = (UserConfigGroupMemberPageController) getPageController(); 
+		final UserConfigGroupMemberPageController controller = (UserConfigGroupMemberPageController) getPageController();
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()

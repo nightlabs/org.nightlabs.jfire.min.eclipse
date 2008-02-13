@@ -59,7 +59,7 @@ public class CreateWorkstationWizard extends DynamicPathWizard {
 			workstation.setDescription(createWorkstationPage.getWorkstationDescription());
 			
 			WorkstationManager workstationManager = WorkstationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			workstationManager.storeWorkstation(workstation, false, null, -1);			
+			workstationManager.storeWorkstation(workstation, false, null, -1);
 			return true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

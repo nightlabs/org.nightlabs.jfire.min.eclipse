@@ -48,20 +48,20 @@ class CreateOrganisationPage extends WizardPage implements FormularChangeListene
   private Text password1;
   private Button isServerAdminButton;
 
-  public CreateOrganisationPage() 
+  public CreateOrganisationPage()
   {
     super(
-    	CreateOrganisationPage.class.getName(), 
+    	CreateOrganisationPage.class.getName(),
     	Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationPage.title"), //$NON-NLS-1$
     	SharedImages.getWizardPageImageDescriptor(
-    			BaseAdminPlugin.getDefault(), 
+    			BaseAdminPlugin.getDefault(),
     			CreateOrganisationPage.class
     		)
     );
     setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationPage.description")); //$NON-NLS-1$
   }
 
-  public void createControl(Composite parent) 
+  public void createControl(Composite parent)
   {
   	Formular f = new Formular(parent, SWT.NONE, this);
   	organisationID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationPage.organisationID.labelText"), null); //$NON-NLS-1$
@@ -77,7 +77,7 @@ class CreateOrganisationPage extends WizardPage implements FormularChangeListene
     setControl(f);
   }
   
-  private void dialogChanged() 
+  private void dialogChanged()
   {
     if ("".equals(getOrganisationID()))  //$NON-NLS-1$
       updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationPage.errorOrganisationIDMissing")); //$NON-NLS-1$
@@ -95,7 +95,7 @@ class CreateOrganisationPage extends WizardPage implements FormularChangeListene
     	updateStatus(null);
   }
   
-  private void updateStatus(String message) 
+  private void updateStatus(String message)
   {
     setErrorMessage(message);
     setPageComplete(message == null);

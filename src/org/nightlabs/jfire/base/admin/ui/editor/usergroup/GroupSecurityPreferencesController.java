@@ -38,7 +38,6 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -138,7 +137,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 						new String[] {
 								User.FETCH_GROUP_THIS_USER,
 								UserGroup.FETCH_GROUP_USERS,
-//								PropertySet.FETCH_GROUP_FULL_DATA 
+//								PropertySet.FETCH_GROUP_FULL_DATA
 								},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								pMonitor);
@@ -167,9 +166,9 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				// load role groups
 				RoleGroupListCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroups(
 						userGroupID,
-						Authority.AUTHORITY_ID_ORGANISATION, 
-						new String[] {RoleGroup.FETCH_GROUP_THIS}, 
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 
+						Authority.AUTHORITY_ID_ORGANISATION,
+						new String[] {RoleGroup.FETCH_GROUP_THIS},
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						pMonitor);
 				
 				roleGroupModel.setRoleGroups(roleGroups.assigned);
@@ -187,9 +186,9 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
-		} finally { 
+		} finally {
 			monitor.done();
-		}	
+		}
 	}
 
 	/**

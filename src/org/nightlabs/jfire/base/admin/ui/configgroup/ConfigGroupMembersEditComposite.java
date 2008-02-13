@@ -66,8 +66,8 @@ import org.nightlabs.progress.NullProgressMonitor;
  *
  */
 
-public class ConfigGroupMembersEditComposite 
-extends XComposite 
+public class ConfigGroupMembersEditComposite
+extends XComposite
 {
 	private XComposite wrapperComposite;
 
@@ -96,8 +96,8 @@ extends XComposite
 //	this(parent, style, setLayoutData, null);
 //	}
 
-	public ConfigGroupMembersEditComposite(Composite parent, int style, boolean setLayoutData, 
-			IDirtyStateManager dirtyStateManager, String availableMessage, String selectedMessage) 
+	public ConfigGroupMembersEditComposite(Composite parent, int style, boolean setLayoutData,
+			IDirtyStateManager dirtyStateManager, String availableMessage, String selectedMessage)
 	{
 		super(parent, style, LayoutMode.ORDINARY_WRAPPER, setLayoutData ? LayoutDataMode.GRID_DATA : null);
 		this.dirtyStateManager = dirtyStateManager;
@@ -107,7 +107,7 @@ extends XComposite
 		createContents(this);
 		try {
 			Login.getLogin();
-		} 
+		}
 		catch (LoginException e) {
 			throw new RuntimeException(e);
 		}
@@ -116,7 +116,7 @@ extends XComposite
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
 	 */
-	protected Control createContents(Composite parent) 
+	protected Control createContents(Composite parent)
 	{
 		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		wrapperComposite.getGridLayout().numColumns = 3;
@@ -136,13 +136,13 @@ extends XComposite
 		Button buttonAssign = new Button(buttonComp, SWT.PUSH);
 		buttonAssign.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.ConfigGroupMembersEditComposite.buttonAssign.text")); //$NON-NLS-1$
 		buttonAssign.addSelectionListener(
-				new SelectionListener() 
+				new SelectionListener()
 				{
-					public void widgetSelected(SelectionEvent event) 
+					public void widgetSelected(SelectionEvent event)
 					{
 						assignConfigs();
 					}
-					public void widgetDefaultSelected(SelectionEvent event) 
+					public void widgetDefaultSelected(SelectionEvent event)
 					{
 						assignConfigs();
 					}
@@ -152,13 +152,13 @@ extends XComposite
 		Button buttonRemove = new Button(buttonComp, SWT.PUSH);
 		buttonRemove.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.ConfigGroupMembersEditComposite.buttonRemove.text")); //$NON-NLS-1$
 		buttonRemove.addSelectionListener(
-				new SelectionListener() 
+				new SelectionListener()
 				{
-					public void widgetSelected(SelectionEvent event) 
+					public void widgetSelected(SelectionEvent event)
 					{
 						removeConfigs();
 					}
-					public void widgetDefaultSelected(SelectionEvent event) 
+					public void widgetDefaultSelected(SelectionEvent event)
 					{
 						removeConfigs();
 					}
@@ -182,7 +182,7 @@ extends XComposite
 		new TableColumn(t, SWT.LEFT, 0).setText("Label from ConfigSetupVisualiser"); //$NON-NLS-1$ // TODO obtain the correct label!
 		GridData tgd = new GridData(GridData.FILL_BOTH);
 		t.setLayoutData(tgd);
-		t.setLayout(new WeightedTableLayout(new int[] {1}));    
+		t.setLayout(new WeightedTableLayout(new int[] {1}));
 
 		positiveViewer = new TableViewer(wrapperComposite, SWT.BORDER | SWT.MULTI);
 		positiveViewer.setContentProvider(contentProvider);
@@ -192,7 +192,7 @@ extends XComposite
 		new TableColumn(t, SWT.LEFT, 0).setText("Label from ConfigSetupVisualiser"); //$NON-NLS-1$ // TODO obtain the correct label!
 		tgd = new GridData(GridData.FILL_BOTH);
 		t.setLayoutData(tgd);
-		t.setLayout(new WeightedTableLayout(new int[] {1}));    
+		t.setLayout(new WeightedTableLayout(new int[] {1}));
 
 		return wrapperComposite;
 	}
@@ -202,7 +202,7 @@ extends XComposite
 			setConfigGroupID((ConfigID)entity);
 	}
 
-	public void setConfigGroupID(final ConfigID configGroupID) 
+	public void setConfigGroupID(final ConfigID configGroupID)
 	{
 		if (currentConfigGroupID != null && currentConfigGroupID.equals(configGroupID))
 			return;
@@ -210,9 +210,9 @@ extends XComposite
 		configSetup = null;
 
 		Display.getDefault().syncExec(
-				new Runnable() 
+				new Runnable()
 				{
-					public void run() 
+					public void run()
 					{
 						if (currentConfigGroupID != null)
 						{
@@ -222,7 +222,7 @@ extends XComposite
 							labelProvider.setConfigGroupID(currentConfigGroupID);
 							positiveViewer.setInput(assignedConfigs);
 							negativeViewer.setInput(excludedConfigs);
-						}          	
+						}
 					}
 				}
 		);
@@ -249,7 +249,7 @@ extends XComposite
 			}
 			refresh();
 
-			if (dirtyStateManager != null) 
+			if (dirtyStateManager != null)
 				dirtyStateManager.markDirty();
 		}
 	}
@@ -275,9 +275,9 @@ extends XComposite
 			}
 			refresh();
 
-			if (dirtyStateManager != null) 
-				dirtyStateManager.markDirty();  	
-		}  	
+			if (dirtyStateManager != null)
+				dirtyStateManager.markDirty();
+		}
 	}
 
 	private void removeConfig(Config conf)
@@ -301,14 +301,14 @@ extends XComposite
 		}
 	}
 
-	protected void refreshConfigSetup() 
+	protected void refreshConfigSetup()
 	{
 		if (currentConfigGroupID == null)
 			throw new IllegalStateException("Can not retrieve ConfigSetup as no ConfigGroup is selected"); //$NON-NLS-1$
 		configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(currentConfigGroupID, new NullProgressMonitor());
 	}
 
-	protected ConfigSetup getConfigSetup() 
+	protected ConfigSetup getConfigSetup()
 	{
 		if (configSetup == null)
 			refreshConfigSetup();

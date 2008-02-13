@@ -12,9 +12,9 @@ import org.nightlabs.jfire.config.id.ConfigID;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserConfigGroupEditor 
-extends EntityEditor 
-implements IConfigSetupEditor 
+public class UserConfigGroupEditor
+extends EntityEditor
+implements IConfigSetupEditor
 {
 	/**
 	 * The editor id.
@@ -27,11 +27,11 @@ implements IConfigSetupEditor
 
 	public ConfigID getConfigID() {
 		return ((JDOObjectEditorInput<ConfigID>) getEditorInput()).getJDOObjectID();
-	}	
+	}
 	
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
 		super.firePropertyChange(PROP_TITLE);
-	}	
+	}
 }

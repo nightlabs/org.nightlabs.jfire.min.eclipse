@@ -63,7 +63,7 @@ public class CreateOrganisationWizard extends Wizard
 
 	private CreateOrganisationPage coPage;
 
-	public CreateOrganisationWizard() 
+	public CreateOrganisationWizard()
 	throws LoginException, NamingException, RemoteException, CreateException
 	{
 		super();
@@ -72,7 +72,7 @@ public class CreateOrganisationWizard extends Wizard
 	}
 
 	@Override
-	public void addPages() 
+	public void addPages()
 	{
 		coPage = new CreateOrganisationPage();
 		addPage(coPage);
@@ -81,7 +81,7 @@ public class CreateOrganisationWizard extends Wizard
 	@Override
 	public boolean performFinish()
 	{
-		final String organisationID = coPage.getOrganisationID(); 
+		final String organisationID = coPage.getOrganisationID();
 		final String organisationDisplayName = coPage.getOrganisationDisplayName();
 		final String userID = coPage.getUserID();
 		final String password = coPage.getPassword1();
@@ -104,7 +104,7 @@ public class CreateOrganisationWizard extends Wizard
 
 					OrganisationManager organisationManager = OrganisationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 					CreateOrganisationProgressID createOrganisationProgressID = organisationManager.createOrganisationAsync(
-							organisationID, 
+							organisationID,
 							organisationDisplayName,
 							userID,
 							password,
@@ -183,15 +183,15 @@ public class CreateOrganisationWizard extends Wizard
 
 		return false;
 
-//		IRunnableWithProgress op = new IRunnableWithProgress() 
+//		IRunnableWithProgress op = new IRunnableWithProgress()
 //		{
-//			public void run(IProgressMonitor monitor) 
-//			throws InvocationTargetException 
+//			public void run(IProgressMonitor monitor)
+//			throws InvocationTargetException
 //			{
 //				try
 //				{
 //					monitor.beginTask("Creating organisation", 100);
-//					organisationManager.createOrganisation(coPage.getOrganisationID(), 
+//					organisationManager.createOrganisation(coPage.getOrganisationID(),
 //							coPage.getOrganisationDisplayName(),
 //							coPage.getUserID(),
 //							coPage.getPassword1(),
@@ -209,11 +209,11 @@ public class CreateOrganisationWizard extends Wizard
 //				monitor.done();
 //			}
 //		};
-//		try 
+//		try
 //		{
 //			getContainer().run(false, false, op);
-//		} 
-//		catch (Exception e) 
+//		}
+//		catch (Exception e)
 //		{
 //			ExceptionHandlerRegistry.syncHandleException(e);
 //			return false;

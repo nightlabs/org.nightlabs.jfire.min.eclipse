@@ -102,7 +102,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	}
 
 	public static final String[] FETCH_GROUPS_USER = {
-		User.FETCH_GROUP_THIS_USER, 
+		User.FETCH_GROUP_THIS_USER,
 		FetchPlan.DEFAULT
 		};
 
@@ -110,8 +110,8 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	protected Collection<User> retrieveJDOObjects(Set<UserID> userIDs, ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsers(userIDs,
-			FETCH_GROUPS_USER, 
-			1, 
+			FETCH_GROUPS_USER,
+			1,
 			monitor);
 	}
 
@@ -119,8 +119,8 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	protected Collection<User> retrieveJDOObjects(ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsers(
-				FETCH_GROUPS_USER, 
-				1, 
+				FETCH_GROUPS_USER,
+				1,
 				monitor);
 	}
 

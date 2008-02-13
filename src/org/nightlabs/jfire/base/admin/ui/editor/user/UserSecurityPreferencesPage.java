@@ -50,7 +50,7 @@ public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 	
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link UserSecurityPreferencesPage}. 
+	 * new instances of {@link UserSecurityPreferencesPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 
@@ -73,7 +73,7 @@ public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 	 * page extension system.
 	 * 
 	 * @param editor The editor for which to create this
-	 * 		form page. 
+	 * 		form page.
 	 */
 	public UserSecurityPreferencesPage(FormEditor editor)
 	{

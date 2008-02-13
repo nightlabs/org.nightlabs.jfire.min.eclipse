@@ -12,8 +12,8 @@ import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public class SysAdminEntityTreeView 
-extends EntityTreeView 
+public class SysAdminEntityTreeView
+extends EntityTreeView
 {
 	public static final String ID_VIEW = SysAdminEntityTreeView.class.getName();
 	

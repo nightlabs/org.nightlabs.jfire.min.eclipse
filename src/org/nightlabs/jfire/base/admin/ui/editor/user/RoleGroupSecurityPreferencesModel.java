@@ -56,7 +56,7 @@ public class RoleGroupSecurityPreferencesModel extends BaseModel
 	public void setRoleGroupsFromUserGroups(Collection<RoleGroup> roleGroupsFromUserGroups) {
 		this.roleGroupsFromUserGroups = new HashSet<RoleGroup>(roleGroupsFromUserGroups);
 		modelChanged();
-	}	
+	}
 	
 	public void setAvailableRoleGroups(Collection<RoleGroup> availableRoleGroups) {
 		this.availableRoleGroups = new HashSet<RoleGroup>(availableRoleGroups);

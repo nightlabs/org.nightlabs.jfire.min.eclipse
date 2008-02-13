@@ -60,7 +60,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   private Text name;
   private Button autogenerateNameCheckbox;
 
-  public CreateUserPage() 
+  public CreateUserPage()
   {
     super(
     		CreateUserPage.class.getName(),
@@ -97,11 +97,11 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   	return f;
   }
   
-  private void verifyInput() 
+  private void verifyInput()
   {
     try
     {
-      if(getUserID().length() == 0) 
+      if(getUserID().length() == 0)
         updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDMissing")); //$NON-NLS-1$
       else if (getUserID().startsWith(User.USERID_PREFIX_TYPE_ORGANISATION))
       	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USERID_PREFIX_TYPE_ORGANISATION); //$NON-NLS-1$

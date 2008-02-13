@@ -24,7 +24,7 @@ public class StructLocalEditor extends EntityEditor {
 		if(getEditorInput() == null)
 			return super.getTitle();
 		
-		final StructLocalID structID = ((JDOObjectEditorInput<StructLocalID>)getEditorInput()).getJDOObjectID(); 
+		final StructLocalID structID = ((JDOObjectEditorInput<StructLocalID>)getEditorInput()).getJDOObjectID();
 		return structID.linkClass.substring(structID.linkClass.lastIndexOf(".")+1); //$NON-NLS-1$
 	}
 }

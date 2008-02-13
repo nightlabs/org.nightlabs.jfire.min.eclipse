@@ -9,8 +9,8 @@ import org.nightlabs.jfire.base.admin.ui.editor.configgroup.AbstractConfigGroupP
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserConfigGroupMemberPageController 
-//extends EntityEditorPageController 
+public class UserConfigGroupMemberPageController
+//extends EntityEditorPageController
 extends AbstractConfigGroupPageController
 {
 	public UserConfigGroupMemberPageController(EntityEditor editor) {
@@ -21,14 +21,14 @@ extends AbstractConfigGroupPageController
 		super(editor, startBackgroundLoading);
 	}
 
-	public void doLoad(IProgressMonitor monitor) 
+	public void doLoad(IProgressMonitor monitor)
 	{
 		monitor.beginTask("Load User Config Group Members", 2); //$NON-NLS-1$ // this is probably never shown since this method finishes really quickly (there's nothing to do) => we don't localise it
 		monitor.worked(1);
 		monitor.worked(1);
 	}
 
-	public void doSave(IProgressMonitor monitor) 
+	public void doSave(IProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof UserConfigGroupMemberPage) {
@@ -39,7 +39,7 @@ extends AbstractConfigGroupPageController
 					throw new RuntimeException(e);
 				}
 			}
-		}		
+		}
 	}
 
 }

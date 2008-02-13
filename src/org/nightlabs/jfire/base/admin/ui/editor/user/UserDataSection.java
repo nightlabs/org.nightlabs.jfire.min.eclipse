@@ -67,10 +67,10 @@ public class UserDataSection extends RestorableSectionPart {
 		layout.horizontalSpacing = 10;
 		layout.numColumns = 2;
 		
-		createLabel(container, "User ID", 2);		
+		createLabel(container, "User ID", 2);
 		userIdText = new Text(container, XComposite.getBorderStyle(container));
 		userIdText.setEditable(false);
-		userIdText.setLayoutData(getGridData(2));		
+		userIdText.setLayoutData(getGridData(2));
 		
 		createLabel(container,	"User name", 2);
 		userNameText = new Text(container, XComposite.getBorderStyle(container));
@@ -106,7 +106,7 @@ public class UserDataSection extends RestorableSectionPart {
 			public void modifyText(ModifyEvent e) {
 				if (!password0Text.getText().equals(password1Text.getText())) {
 					getManagedForm().getMessageManager().addMessage(UNEQUAL_PASSWORDS, "The confirmation password does not match the password.", null, IMessageProvider.ERROR, password1Text);
-				} else {					
+				} else {
 					getManagedForm().getMessageManager().removeMessage(UNEQUAL_PASSWORDS, password1Text);
 				}
 				passwordChanged = true;
@@ -156,7 +156,7 @@ public class UserDataSection extends RestorableSectionPart {
 				password0Text.setText(pw == null ? "" : pw);
 				password1Text.setText(pw == null ? "" : pw);
 
-				autogenerateNameCheckBox.setSelection(user.isAutogenerateName());				
+				autogenerateNameCheckBox.setSelection(user.isAutogenerateName());
 				userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
 
 				personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
@@ -169,7 +169,7 @@ public class UserDataSection extends RestorableSectionPart {
 				passwordChanged = false;
 				refreshing = false;
 			}
-		});		
+		});
 	}
 	
 	@Override
@@ -177,7 +177,7 @@ public class UserDataSection extends RestorableSectionPart {
 		if (!password0Text.getText().equals(password1Text.getText()))
 			return;
 		
-		super.commit(onSave);		
+		super.commit(onSave);
 		user.setDescription(userDescriptionText.getText());
 		user.setName(userNameText.getText());
 		user.setAutogenerateName(autogenerateNameCheckBox.getSelection());

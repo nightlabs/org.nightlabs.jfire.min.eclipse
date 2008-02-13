@@ -9,7 +9,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class StructLocalEditorPageController 
+public class StructLocalEditorPageController
 extends EntityEditorPageController
 {
 	private static final long serialVersionUID = 1L;
@@ -31,7 +31,7 @@ extends EntityEditorPageController
 		}
 	}
 
-	public void doSave(IProgressMonitor monitor) 
+	public void doSave(IProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof StructEditorPage) {
@@ -42,7 +42,7 @@ extends EntityEditorPageController
 					throw new RuntimeException(e);
 				}
 			}
-		}	
+		}
 	}
 
 }

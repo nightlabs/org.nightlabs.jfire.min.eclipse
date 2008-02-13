@@ -9,13 +9,13 @@ import org.nightlabs.jfire.config.id.ConfigID;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class AbstractConfigGroupPageController 
-extends EntityEditorPageController 
+public abstract class AbstractConfigGroupPageController
+extends EntityEditorPageController
 {
 
 	public AbstractConfigGroupPageController(EntityEditor editor) {
 		super(editor);
-		configID = ((JDOObjectEditorInput<ConfigID>)editor.getEditorInput()).getJDOObjectID();	
+		configID = ((JDOObjectEditorInput<ConfigID>)editor.getEditorInput()).getJDOObjectID();
 	}
 
 	public AbstractConfigGroupPageController(EntityEditor editor, boolean startBackgroundLoading) {

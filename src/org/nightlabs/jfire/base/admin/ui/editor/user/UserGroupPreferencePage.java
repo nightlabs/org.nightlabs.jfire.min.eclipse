@@ -23,7 +23,7 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link PersonPreferencesPage}. 
+	 * new instances of {@link PersonPreferencesPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 
@@ -42,7 +42,7 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 	 * page extension system.
 	 * 
 	 * @param editor The editor for which to create this
-	 * 		form page. 
+	 * 		form page.
 	 */
 	public UserGroupPreferencePage(FormEditor editor)
 	{

@@ -98,7 +98,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 											Login.getLogin().getInitialContextProperties()).create();
 							organisationManager.acceptRegistration(rs.getOrganisationID());
 							organisationManager.remove();
-						}							
+						}
 					}
 				}
 
@@ -127,7 +127,7 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 											Login.getLogin().getInitialContextProperties()).create();
 							organisationManager.cancelRegistration(rs.getOrganisationID());
 							organisationManager.remove();
-						}							
+						}
 					}
 				}
 

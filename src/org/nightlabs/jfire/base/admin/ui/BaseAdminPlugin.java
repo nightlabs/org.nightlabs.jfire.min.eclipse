@@ -32,7 +32,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class BaseAdminPlugin extends AbstractUIPlugin 
+public class BaseAdminPlugin extends AbstractUIPlugin
 {
 	//The shared instance.
 	private static BaseAdminPlugin plugin;
@@ -42,7 +42,7 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 	/**
 	 * The constructor.
 	 */
-	public BaseAdminPlugin() 
+	public BaseAdminPlugin()
 	{
 		super();
 		plugin = this;
@@ -52,15 +52,15 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 	 * This method is called upon plug-in activation
 	 */
 	@Override
-	public void start(BundleContext context) 
-	throws Exception 
+	public void start(BundleContext context)
+	throws Exception
 	{
 		super.start(context);
-//		try 
+//		try
 //		{
 //			resourceBundle = Platform.getResourceBundle(getBundle());
-//		} 
-//		catch (MissingResourceException x) 
+//		}
+//		catch (MissingResourceException x)
 //		{
 //			resourceBundle = null;
 //		}
@@ -70,8 +70,8 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 	 * This method is called when the plug-in is stopped
 	 */
 	@Override
-	public void stop(BundleContext context) 
-	throws Exception 
+	public void stop(BundleContext context)
+	throws Exception
 	{
 		super.stop(context);
 	}
@@ -79,7 +79,7 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 	/**
 	 * Returns the shared instance.
 	 */
-	public static BaseAdminPlugin getDefault() 
+	public static BaseAdminPlugin getDefault()
 	{
 		return plugin;
 	}
@@ -88,14 +88,14 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 //	 * Returns the string from the plugin's resource bundle,
 //	 * or 'key' if not found.
 //	 */
-//	public static String getResourceString(String key) 
+//	public static String getResourceString(String key)
 //	{
 //		ResourceBundle bundle = BaseAdminPlugin.getDefault().getResourceBundle();
-//		try 
+//		try
 //		{
 //			return (bundle != null) ? bundle.getString(key) : key;
-//		} 
-//		catch (MissingResourceException e) 
+//		}
+//		catch (MissingResourceException e)
 //		{
 //			return key;
 //		}
@@ -104,7 +104,7 @@ public class BaseAdminPlugin extends AbstractUIPlugin
 //	/**
 //	 * Returns the plugin's resource bundle,
 //	 */
-//	public ResourceBundle getResourceBundle() 
+//	public ResourceBundle getResourceBundle()
 //	{
 //		return resourceBundle;
 //	}

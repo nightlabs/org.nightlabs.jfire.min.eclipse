@@ -8,10 +8,10 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.jfire.base.admin.ui.editor.user.IConfigSetupEditor;
 import org.nightlabs.jfire.config.id.ConfigID;
 
-public class WorkstationGroupEditor 
-extends EntityEditor 
-implements IConfigSetupEditor 
-{		
+public class WorkstationGroupEditor
+extends EntityEditor
+implements IConfigSetupEditor
+{
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);

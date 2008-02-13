@@ -52,19 +52,19 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	private Text description;
 	private Text name;
 
-	public CreateUserGroupPage() 
+	public CreateUserGroupPage()
 	{
 		super(CreateUserGroupPage.class.getName(), Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.title"), null); //$NON-NLS-1$
 		setImageDescriptor(
 				SharedImages.getWizardPageImageDescriptor(
-						BaseAdminPlugin.getDefault(), 
+						BaseAdminPlugin.getDefault(),
 						CreateUserGroupPage.class
 				));
 		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.description")); //$NON-NLS-1$
 	}
 
 	@Override
-	public Control createPageContents(Composite parent) 
+	public Control createPageContents(Composite parent)
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
 		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$

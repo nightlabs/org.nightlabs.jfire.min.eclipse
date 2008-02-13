@@ -17,8 +17,8 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserConfigGroupMemberSection 
-extends RestorableSectionPart 
+public class UserConfigGroupMemberSection
+extends RestorableSectionPart
 {
 	public UserConfigGroupMemberSection(IFormPage page, Composite parent) {
 		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR);
@@ -29,11 +29,11 @@ extends RestorableSectionPart
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
-		((GridLayout)container.getLayout()).numColumns = 1;		
+		((GridLayout)container.getLayout()).numColumns = 1;
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		configGroupMembersEditComposite = new ConfigGroupMembersEditComposite(container,
-				SWT.NONE, true, this, 
+				SWT.NONE, true, this,
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberSection.configGroupMembersEditComposite.available"),  //$NON-NLS-1$
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberSection.configGroupMembersEditComposite.selected")); //$NON-NLS-1$
 	}

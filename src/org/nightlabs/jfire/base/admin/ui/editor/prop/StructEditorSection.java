@@ -28,11 +28,11 @@ import org.nightlabs.jfire.base.ui.prop.structedit.action.RemoveStructElementAct
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Marius Heinzmann marius[at]NightLabs[dot]de
  */
-public class StructEditorSection 
+public class StructEditorSection
 extends ToolBarSectionPart
 implements StructureChangedListener
 {
-	public StructEditorSection(IFormPage page, Composite parent) 
+	public StructEditorSection(IFormPage page, Composite parent)
 	{
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE,
 					Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.prop.StructEditorSection.title")); //$NON-NLS-1$
@@ -43,7 +43,7 @@ implements StructureChangedListener
 		structEditor.addStructureChangedListener(this);
 		
 		List<ContributionItem> actionList = new LinkedList<ContributionItem>();
-		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, true, this)) );		
+		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, true, this)) );
 		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, false, this)) );
 		actionList.add( new Separator() );
 		actionList.add( new ActionContributionItem(new AddStructBlockAction(structEditor)) );
@@ -70,7 +70,7 @@ implements StructureChangedListener
 //		((EntityEditorPageWithProgress)page).setMenu(popupMenu);
 	}
 	
-	private void addActionsToContributionManager(IContributionManager contributionManager, List<ContributionItem> actionList) 
+	private void addActionsToContributionManager(IContributionManager contributionManager, List<ContributionItem> actionList)
 	{
 		if (actionList == null)
 			return;
@@ -79,7 +79,7 @@ implements StructureChangedListener
 			if (item instanceof ActionContributionItem)
 //			 add only action, so that the manager wraps it in a new ActionContributionItem.
 //			 otherwise this item is used in the toolbar creating Toolbaritem, which is not usable in the MenuManager
-				contributionManager.add( ((ActionContributionItem) item).getAction() );  
+				contributionManager.add( ((ActionContributionItem) item).getAction() );
 			else
 				contributionManager.add( item );
 		}

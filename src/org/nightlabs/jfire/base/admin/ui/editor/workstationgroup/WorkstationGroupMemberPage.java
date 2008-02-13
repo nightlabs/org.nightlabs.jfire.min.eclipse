@@ -8,19 +8,18 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
-import org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberPage;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class WorkstationGroupMemberPage 
-extends EntityEditorPageWithProgress 
+public class WorkstationGroupMemberPage
+extends EntityEditorPageWithProgress
 {
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link UserConfigGroupMemberPage}. 
+	 * new instances of {@link UserConfigGroupMemberPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 		public IFormPage createPage(FormEditor formEditor) {
@@ -48,9 +47,9 @@ extends EntityEditorPageWithProgress
 	}
 
 	@Override
-	protected void asyncCallback() 
+	protected void asyncCallback()
 	{
-		final WorkstationGroupMemberPageController controller = (WorkstationGroupMemberPageController) getPageController(); 
+		final WorkstationGroupMemberPageController controller = (WorkstationGroupMemberPageController) getPageController();
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()

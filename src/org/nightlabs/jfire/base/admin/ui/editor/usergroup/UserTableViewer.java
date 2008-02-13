@@ -39,7 +39,7 @@ public class UserTableViewer extends TableViewer
 	}
 
 	/**
-	 * Label provider for users. 
+	 * Label provider for users.
 	 */
 	private class UsersLabelProvider extends TableLabelProvider
 	{
@@ -110,7 +110,7 @@ public class UserTableViewer extends TableViewer
 			}
 		});
 
-		TableColumn col2 = new TableColumn(getTable(), SWT.NULL);		
+		TableColumn col2 = new TableColumn(getTable(), SWT.NULL);
 		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.user")); //$NON-NLS-1$
 		
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, 100 }, new int[] { 20, -1 });

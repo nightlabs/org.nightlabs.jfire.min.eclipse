@@ -24,7 +24,7 @@ import org.nightlabs.util.CollectionUtil;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class EntityTreeCategoryUserConfigGroup 
+public class EntityTreeCategoryUserConfigGroup
 extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 
 	public EntityTreeCategoryUserConfigGroup() {
@@ -54,9 +54,9 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 		FetchPlan.DEFAULT, ConfigGroup.FETCH_GROUP_THIS_CONFIG_GROUP
 		};
 	
-	public static Comparator<ConfigGroup> configGroupComparator = new Comparator<ConfigGroup>() 
+	public static Comparator<ConfigGroup> configGroupComparator = new Comparator<ConfigGroup>()
 	{
-		public int compare(ConfigGroup o1, ConfigGroup o2) 
+		public int compare(ConfigGroup o1, ConfigGroup o2)
 		{
 			int res = o1.getOrganisationID().compareTo(o2.getOrganisationID());
 			if (res != 0)
@@ -69,13 +69,13 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 	@Override
 	protected Collection<ConfigGroup> retrieveJDOObjects(ProgressMonitor monitor) {
 		return CollectionUtil.castCollection(
-				ConfigDAO.sharedInstance().getConfigs(UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG, 
+				ConfigDAO.sharedInstance().getConfigs(UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG,
 						FETCH_GROUPS_USER_CONFIG_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor)
 				);
 	}
 
 	@Override
-	protected Collection<ConfigGroup> retrieveJDOObjects(Set<ConfigID> objectIDs, ProgressMonitor monitor) 	
+	protected Collection<ConfigGroup> retrieveJDOObjects(Set<ConfigID> objectIDs, ProgressMonitor monitor)
 	{
 		for (ConfigID configID : objectIDs) {
 			if (!configID.configType.equals(UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG))
@@ -83,22 +83,22 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 				return null;
 		}
 		return CollectionUtil.castCollection(
-				ConfigDAO.sharedInstance().getConfigs(objectIDs, FETCH_GROUPS_USER_CONFIG_GROUPS, 
+				ConfigDAO.sharedInstance().getConfigs(objectIDs, FETCH_GROUPS_USER_CONFIG_GROUPS,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor)
 				);
 	}
 
 	@Override
 	protected void sortJDOObjects(List<ConfigGroup> objects) {
-		Collections.sort(objects, configGroupComparator);		
+		Collections.sort(objects, configGroupComparator);
 	}
 
-	public IEditorInput createEditorInput(Object o) 
+	public IEditorInput createEditorInput(Object o)
 	{
 		ConfigGroup configGroup = (ConfigGroup) o;
 		ConfigID configID = ConfigID.create(
-				configGroup.getOrganisationID(), 
-				configGroup.getConfigKey(), 
+				configGroup.getOrganisationID(),
+				configGroup.getConfigKey(),
 				configGroup.getConfigType());
 		return new UserConfigGroupEditorInput(configID);
 	}

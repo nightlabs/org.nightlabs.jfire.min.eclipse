@@ -59,7 +59,7 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 					createConfigGroupPage.getConfigGroupName(),
 					false,
 					null, 0
-				);			
+				);
 			return true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

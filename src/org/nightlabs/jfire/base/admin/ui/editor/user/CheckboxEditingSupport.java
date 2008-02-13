@@ -26,7 +26,7 @@ public abstract class CheckboxEditingSupport<ElementType> extends EditingSupport
 
 	@Override
 	protected Object getValue(Object element) {
-		return doGetValue((ElementType) element); 
+		return doGetValue((ElementType) element);
 	}
 	
 	protected abstract boolean doGetValue(ElementType element);

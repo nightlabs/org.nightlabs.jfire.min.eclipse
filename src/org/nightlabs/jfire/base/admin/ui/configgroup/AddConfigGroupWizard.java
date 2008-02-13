@@ -93,7 +93,7 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 		
 		public LabeledText getGroupNameText() {
 			return groupNameText;
-		}		
+		}
 	}
 	
 	public AddConfigGroupWizard() {
@@ -112,7 +112,7 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 	public boolean performFinish() {
 		try {
 			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			configManager.addConfigGroup(					
+			configManager.addConfigGroup(
 				entryPage.getGroupIDText().getTextControl().getText(),
 				UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG,
 				entryPage.getGroupNameText().getTextControl().getText(),

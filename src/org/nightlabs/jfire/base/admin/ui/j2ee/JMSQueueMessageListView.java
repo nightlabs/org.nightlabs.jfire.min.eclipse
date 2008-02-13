@@ -45,7 +45,7 @@ public class JMSQueueMessageListView extends LSDViewPart
 	public void createPartContents(Composite parent) {
 		listComposite = new JMSQueueMessageList(parent, SWT.NONE);
 		autoUpdateAction.setChecked(true);
-		getViewSite().getActionBars().getToolBarManager().add(autoUpdateAction);		
+		getViewSite().getActionBars().getToolBarManager().add(autoUpdateAction);
 		autoUpdateAction.setChecked(false);
 	}
 

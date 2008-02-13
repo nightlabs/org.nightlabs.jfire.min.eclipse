@@ -33,7 +33,6 @@ import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection;
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesPage;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
@@ -53,7 +52,7 @@ public class GroupSecurityPreferencesPage extends EntityEditorPageWithProgress
 	
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link UserSecurityPreferencesPage}. 
+	 * new instances of {@link UserSecurityPreferencesPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 
@@ -76,7 +75,7 @@ public class GroupSecurityPreferencesPage extends EntityEditorPageWithProgress
 	 * page extension system.
 	 * 
 	 * @param editor The editor for which to create this
-	 * 		form page. 
+	 * 		form page.
 	 */
 	public GroupSecurityPreferencesPage(FormEditor editor)
 	{

@@ -53,7 +53,7 @@ public class ConfigPreferencesPage extends FormPage
 	
 	/**
 	 * The Factory is registered to the extension-point and creates
-	 * new instances of {@link ConfigPreferencesPage}. 
+	 * new instances of {@link ConfigPreferencesPage}.
 	 */
 	public static class Factory implements IEntityEditorPageFactory {
 		public IFormPage createPage(FormEditor formEditor) {
@@ -72,7 +72,7 @@ public class ConfigPreferencesPage extends FormPage
 	 * page extension system.
 	 * 
 	 * @param editor The editor for which to create this
-	 * 		form page. 
+	 * 		form page.
 	 */
 	public ConfigPreferencesPage(FormEditor editor)
 	{
@@ -97,7 +97,7 @@ public class ConfigPreferencesPage extends FormPage
 	 * @param managedForm The managed form
 	 * @param toolkit The tookit to use
 	 */
-	private void fillBody(IManagedForm managedForm, FormToolkit toolkit) 
+	private void fillBody(IManagedForm managedForm, FormToolkit toolkit)
 	{
 		Composite body = managedForm.getForm().getBody();
 		GridLayout layout = new GridLayout();
@@ -110,7 +110,7 @@ public class ConfigPreferencesPage extends FormPage
 		body.setLayout(layout);
 		body.setLayoutData(new GridData(GridData.FILL_BOTH));
 		if (! (getEditor() instanceof IConfigSetupEditor))
-			throw new IllegalStateException(ConfigPreferencesPage.class.getName() + 
+			throw new IllegalStateException(ConfigPreferencesPage.class.getName() +
 					" should only be used with a Editor implementing IConfigSetupEditor"); //$NON-NLS-1$
 		ConfigID configID = ((IConfigSetupEditor)getEditor()).getConfigID();
  		managedForm.addPart(new ConfigPreferencesSection(this, body, configID));

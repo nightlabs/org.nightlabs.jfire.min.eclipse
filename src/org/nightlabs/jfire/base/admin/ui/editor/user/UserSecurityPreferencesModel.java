@@ -39,7 +39,7 @@ import org.nightlabs.jfire.security.id.UserID;
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Niklas Schiffler <nick@nightlabs.de>
- * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de --> 
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	/**

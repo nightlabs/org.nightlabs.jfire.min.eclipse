@@ -51,10 +51,10 @@ public class UserGroupDataSection extends RestorableSectionPart {
 		layout.horizontalSpacing = 10;
 		layout.numColumns = 3;
 		
-		createLabel(container, "User group ID", 3);		
+		createLabel(container, "User group ID", 3);
 		userGroupIdText = new Text(container, XComposite.getBorderStyle(container));
 		userGroupIdText.setEditable(false);
-		userGroupIdText.setLayoutData(getGridData(3));		
+		userGroupIdText.setLayoutData(getGridData(3));
 		
 		createLabel(container,	"User group name", 3);
 		userGroupNameText = new Text(container, XComposite.getBorderStyle(container));
@@ -101,7 +101,7 @@ public class UserGroupDataSection extends RestorableSectionPart {
 				userGroupNameText.addModifyListener(dirtyListener);
 				userGroupDescriptionText.addModifyListener(dirtyListener);
 			}
-		});		
+		});
 	}
 	
 	@Override

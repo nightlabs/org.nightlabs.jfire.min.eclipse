@@ -87,7 +87,7 @@ public class UsersSection extends RestorableSectionPart
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit) 
+	protected void createClient(Section section, FormToolkit toolkit)
 	{
 		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
@@ -108,7 +108,7 @@ public class UsersSection extends RestorableSectionPart
 //		Label l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroups.UsersSection.notAssigned")); //$NON-NLS-1$
 //		l = toolkit.createLabel(container, ""); //$NON-NLS-1$
 //		l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroups.UsersSection.assigned")); //$NON-NLS-1$
-//		
+//
 //		excludedUsersViewer = new TableViewer(createUsersTable(toolkit, container));
 //		excludedUsersViewer.setContentProvider(new UsersContentProvider());
 //		excludedUsersViewer.setLabelProvider(new UsersLabelProvider());
@@ -141,7 +141,7 @@ public class UsersSection extends RestorableSectionPart
 			}
 		});
 		section.setDescriptionControl(text);
-	}	
+	}
 //	private void createUserButtons(Composite client, FormToolkit toolkit)
 //	{
 //		Composite container = toolkit.createComposite(client);

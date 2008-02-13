@@ -81,7 +81,7 @@ implements ISelectionProvider // needed for updating ViewActions
 
 	private NotificationListener changeListener = new NotificationAdapterCallerThread() {
 		public void notify(org.nightlabs.notification.NotificationEvent notificationEvent) {
-			DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject(); 
+			DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
 			TaskID taskID = (TaskID) dirtyObjectID.getObjectID();
 			if (taskID != null && taskID.equals(getTaskID())) {
 				// cause a reload from server
@@ -325,7 +325,7 @@ implements ISelectionProvider // needed for updating ViewActions
 	 * task (fetch-groups like {@link #FETCH_GROUPS_TASK}).
 	 *
 	 */
-	public void setTask(Task task) { 
+	public void setTask(Task task) {
 		this.task = task;
 		updateUI();
 	}

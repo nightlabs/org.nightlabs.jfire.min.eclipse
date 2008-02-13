@@ -21,7 +21,7 @@ import org.nightlabs.jfire.security.UserGroup;
 public class UserGroupTableViewer extends TableViewer {
 	
 	/**
-	 * Content provider for user groups. 
+	 * Content provider for user groups.
 	 */
 	private final class UserGroupsContentProvider extends TableContentProvider
 	{
@@ -34,7 +34,7 @@ public class UserGroupTableViewer extends TableViewer {
 	}
 
 	/**
-	 * Label provider for user groups. 
+	 * Label provider for user groups.
 	 */
 	private class UserGroupsLabelProvider extends TableLabelProvider
 	{
@@ -95,7 +95,7 @@ public class UserGroupTableViewer extends TableViewer {
 					model.removeUserGroup(element);
 				
 				UserGroupTableViewer.this.dirtyStateManager.markDirty();
-			}	
+			}
 		});
 		
 		new TableColumn(table, SWT.LEFT).setText("Name");

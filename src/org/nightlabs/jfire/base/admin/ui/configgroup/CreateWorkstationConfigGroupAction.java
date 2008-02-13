@@ -40,10 +40,10 @@ import org.nightlabs.jfire.config.WorkstationConfigSetup;
  */
 public class CreateWorkstationConfigGroupAction extends WorkbenchWindowAndViewActionDelegate
 {
-	public void run(IAction action) 
+	public void run(IAction action)
 	{
   	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(
-  			getShell(), 
+  			getShell(),
 				new CreateConfigGroupWizard(
 						WorkstationConfigSetup.CONFIG_GROUP_CONFIG_TYPE_WORKSTATION_CONFIG,
 						Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.wizardTitle"), //$NON-NLS-1$

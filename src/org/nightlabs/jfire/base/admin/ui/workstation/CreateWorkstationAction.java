@@ -41,7 +41,7 @@ public class CreateWorkstationAction extends WorkbenchWindowAndViewActionDelegat
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
-	public void run(IAction action) 
+	public void run(IAction action)
 	{
   	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getShell(), new CreateWorkstationWizard());
     wzd.open();

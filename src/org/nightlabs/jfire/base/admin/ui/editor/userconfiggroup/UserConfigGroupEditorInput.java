@@ -7,8 +7,8 @@ import org.nightlabs.jfire.config.id.ConfigID;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public class UserConfigGroupEditorInput 
-extends JDOObjectEditorInput<ConfigID> 
+public class UserConfigGroupEditorInput
+extends JDOObjectEditorInput<ConfigID>
 {
 	public UserConfigGroupEditorInput(ConfigID configID) {
 		super(configID);

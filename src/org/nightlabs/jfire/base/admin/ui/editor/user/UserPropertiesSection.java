@@ -84,7 +84,7 @@ public class UserPropertiesSection extends RestorableSectionPart
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit) 
+	protected void createClient(Section section, FormToolkit toolkit)
 	{
 		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserPropertiesSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
@@ -108,7 +108,7 @@ public class UserPropertiesSection extends RestorableSectionPart
 //	public void setUser(final User user) {
 //		Display.getDefault().asyncExec(new Runnable() {
 //			public void run() {
-//				if(user.getPerson() == null) 
+//				if(user.getPerson() == null)
 //					user.setPerson(new Person(user.getOrganisationID(), Property.TEMPORARY_PROP_ID));
 //				IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(Person.class.getName());
 //				struct.explodeProperty(user.getPerson());

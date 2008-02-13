@@ -28,7 +28,7 @@ import org.nightlabs.jfire.timer.Task;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public class TaskDetailSection 
+public class TaskDetailSection
 extends RestorableSectionPart
 {
 	private static final Logger logger = Logger.getLogger(TaskDetailSection.class);
@@ -62,7 +62,7 @@ extends RestorableSectionPart
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, IToolkit toolkit) 
+	protected void createClient(Section section, IToolkit toolkit)
 	{
 		section.setText(title);
 		section.setExpanded(true);
@@ -95,7 +95,7 @@ extends RestorableSectionPart
 		XComposite above = new XComposite(container, SWT.NONE, XComposite.LayoutMode.TIGHT_WRAPPER);
 		above.getGridData().grabExcessHorizontalSpace = true;
 		above.getGridData().grabExcessVerticalSpace = false;
-		above.getGridLayout().numColumns = 2;		
+		above.getGridLayout().numColumns = 2;
 		enabled = new Button(above, SWT.CHECK);
 		enabled.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailSection.enabled.text")); //$NON-NLS-1$
 		enabled.addSelectionListener(new SelectionListener() {

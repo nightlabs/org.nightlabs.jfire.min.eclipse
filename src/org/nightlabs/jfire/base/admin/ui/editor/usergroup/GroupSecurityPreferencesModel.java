@@ -59,7 +59,7 @@ public class GroupSecurityPreferencesModel extends BaseModel
 	//	 * The included users the users had before changes.
 	//	 */
 	//	private Collection<User> includedUsersUnchanged;
-	//	
+	//
 	//	/**
 	//	 * The excluded users the group had before changes.
 	//	 */
@@ -69,7 +69,7 @@ public class GroupSecurityPreferencesModel extends BaseModel
 	//	 * The included users.
 	//	 */
 	//	private Collection<User> includedUsers;
-	//	
+	//
 	//	/**
 	//	 * The excluded users.
 	//	 */
@@ -84,7 +84,7 @@ public class GroupSecurityPreferencesModel extends BaseModel
 	//	 * The included role groups from the users user groups.
 	//	 */
 	//	private Collection<RoleGroup> includedRoleGroupsFromUserGroups;
-	//	
+	//
 	//	/**
 	//	 * The excluded role groups.
 	//	 */
