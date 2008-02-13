@@ -89,7 +89,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 		super();
 		language = new LanguageCf(Locale.getDefault().getLanguage());
 		
-		fileDialog = new FileDialog(RCPUtil.getActiveWorkbenchShell());
+		fileDialog = new FileDialog(RCPUtil.getActiveShell());
 	}
 	
 	@Override
@@ -154,7 +154,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 					// check if the image fulfills the size requirements
 					ImageStructField imageStructField = (ImageStructField) getStructField();
 					if (!imageStructField.validateSize(file.length()/1024)) {
-						MessageBox messageBoxImageExceedsMaxSizeKB = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.OK | SWT.ICON_ERROR);
+						MessageBox messageBoxImageExceedsMaxSizeKB = new MessageBox(RCPUtil.getActiveShell(), SWT.OK | SWT.ICON_ERROR);
 						messageBoxImageExceedsMaxSizeKB.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.text")); //$NON-NLS-1$
 						messageBoxImageExceedsMaxSizeKB.setMessage(
 								String.format(
@@ -177,7 +177,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 							top = top.getParent();
 						top.layout(true, true); // this is necessary, because otherwise a bigger image doesn't cause the widgets to grow and is therefore cut
 					} catch(SWTException swtex) {
-						MessageBox messageBoxInvalidImageFile = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_ERROR | SWT.OK);
+						MessageBox messageBoxInvalidImageFile = new MessageBox(RCPUtil.getActiveShell(), SWT.ICON_ERROR | SWT.OK);
 						messageBoxInvalidImageFile.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxInvalidImageFile.text")); //$NON-NLS-1$
 						messageBoxInvalidImageFile.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxInvalidImageFile.message")); //$NON-NLS-1$
 						messageBoxInvalidImageFile.open();

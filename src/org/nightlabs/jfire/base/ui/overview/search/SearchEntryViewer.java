@@ -336,7 +336,7 @@ extends AbstractEntryViewer
 	{
 		if (getQuickSearchEntryFactories() != null && !getQuickSearchEntryFactories().isEmpty()) {
 			Collection<QuickSearchEntryFactory> quickSearchEntryFactories = getQuickSearchEntryFactories();
-			final Menu menu = new Menu(RCPUtil.getActiveWorkbenchShell(), SWT.POP_UP);
+			final Menu menu = new Menu(RCPUtil.getActiveShell(), SWT.POP_UP);
 			for (final QuickSearchEntryFactory quickSearchEntryFactory : quickSearchEntryFactories) {
 				final MenuItem menuItem = new MenuItem(menu, SWT.CHECK);
 				menuItem.setText(quickSearchEntryFactory.getName());

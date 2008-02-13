@@ -18,6 +18,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.dialog.CenteredDialog;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.UserManager;
@@ -94,7 +95,7 @@ public class ChangePasswordDialog extends CenteredDialog {
 		
 		try {
 			if (!currentPasswordText.getText().equals(Login.getLogin().getPassword())) {
-				MessageDialog.openError(Display.getDefault().getActiveShell(), "Authentication error", "The current password is invalid.");
+				MessageDialog.openError(RCPUtil.getActiveShell(), "Authentication error", "The current password is invalid.");
 				return;
 			}
 		} catch (LoginException e1) {
@@ -105,7 +106,7 @@ public class ChangePasswordDialog extends CenteredDialog {
 			UserManager um = UserManagerUtil.getHome(SecurityReflector.getInitialContextProperties()).create();
 			um.setUserPassword(password0Text.getText());
 			Login.sharedInstance().setPassword(password0Text.getText());
-			MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Password changed", "Your password has been changed successfully");
+			MessageDialog.openInformation(RCPUtil.getActiveShell(), "Password changed", "Your password has been changed successfully");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -114,7 +115,7 @@ public class ChangePasswordDialog extends CenteredDialog {
 	}
 
 	public static void openDialog() {
-		ChangePasswordDialog dialog = new ChangePasswordDialog(Display.getDefault().getActiveShell());
+		ChangePasswordDialog dialog = new ChangePasswordDialog(RCPUtil.getActiveShell());
 		dialog.open();
 	}
 }

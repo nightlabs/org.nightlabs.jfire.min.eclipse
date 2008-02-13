@@ -236,7 +236,7 @@ public class StructEditor {
 		if (currentStructPartEditor instanceof StructFieldEditor<?>) {
 			StructFieldEditor<?> structFieldEditor = (StructFieldEditor<?>) currentStructPartEditor;
 			if (!structFieldEditor.validateInput()) {
-				MessageBox mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.YES | SWT.NO );
+				MessageBox mb = new MessageBox(RCPUtil.getActiveShell(), SWT.YES | SWT.NO );
 				mb.setMessage(
 						String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.messageBoxInvalidInput.message"), //$NON-NLS-1$
 						new Object[] { structFieldEditor.getErrorMessage() })
@@ -405,7 +405,7 @@ public class StructEditor {
 	}
 	
 	private void removeStructBlock(StructBlockNode blockNode) {
-		MessageBox mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+		MessageBox mb = new MessageBox(RCPUtil.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 		mb.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.messageBoxRemoveStructBlockConfirmation.message")); //$NON-NLS-1$
 		mb.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.messageBoxRemoveStructBlockConfirmation.text")); //$NON-NLS-1$
 		int result = mb.open();
@@ -413,7 +413,7 @@ public class StructEditor {
 			try {
 				currentStruct.removeStructBlock(blockNode.getBlock());
 			} catch (IllegalStructureModificationException e) {
-				mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_ERROR | SWT.OK);
+				mb = new MessageBox(RCPUtil.getActiveShell(), SWT.ICON_ERROR | SWT.OK);
 				// TODO Shouldn't we simply rethrow this exception as RuntimeException and leave the work to our general exception handler?
 				mb.setMessage("Block could not be deleted: " + e.getMessage()); //$NON-NLS-1$
 				mb.setText("Deleting failed"); //$NON-NLS-1$
@@ -427,7 +427,7 @@ public class StructEditor {
 	}
 
 	private void removeStructField(StructFieldNode fieldNode) {
-		MessageBox mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+		MessageBox mb = new MessageBox(RCPUtil.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 		String fieldName = fieldNode.getI18nText().getText(languageChooser.getLanguage().getLanguageID());
 		long dataFieldInstanceCount;
 		dataFieldInstanceCount = StructEditorUtil.getDataFieldInstanceCount(fieldNode.getField().getStructFieldIDObj());
@@ -444,7 +444,7 @@ public class StructEditor {
 				structTree.removeStructField(fieldNode.getParentBlock(), fieldNode);
 				currentStructPartEditor.setData(null);
 			} catch (IllegalStructureModificationException e) {
-				mb = new MessageBox(RCPUtil.getActiveWorkbenchShell(), SWT.ICON_ERROR | SWT.OK);
+				mb = new MessageBox(RCPUtil.getActiveShell(), SWT.ICON_ERROR | SWT.OK);
 				// TODO this message contradicts the information above which says "[...] instances of this struct field will be also deleted if you continue."
 				// Maybe we should simply rethrow this exception and have our exception-handling-framework handle it? Is this exception really expected?
 				mb.setMessage("You cannot delete a struct block that has already been persisted."); //$NON-NLS-1$

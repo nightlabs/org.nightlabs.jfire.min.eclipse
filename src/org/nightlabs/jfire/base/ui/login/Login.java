@@ -395,7 +395,7 @@ extends AbstractEPProcessor
 						{
 							public void run()
 							{
-								Shell shell = RCPUtil.getActiveWorkbenchShell();
+								Shell shell = RCPUtil.getActiveShell();
 								MessageDialog.openInformation(
 										shell,
 										Messages.getString("org.nightlabs.jfire.base.ui.login.Login.rebootDialogTitle"), //$NON-NLS-1$

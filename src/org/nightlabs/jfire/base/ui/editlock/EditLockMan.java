@@ -107,7 +107,7 @@ public class EditLockMan
 							switch (inactivityAction) {
 							case DIALOG_ABOUT_TO_EXPIRE:
 								if (editLockAboutToExpireDialog == null) {
-									editLockAboutToExpireDialog = new EditLockAboutToExpireDueToUserInactivityDialog(EditLockMan.this, Display.getDefault().getActiveShell());
+									editLockAboutToExpireDialog = new EditLockAboutToExpireDueToUserInactivityDialog(EditLockMan.this, RCPUtil.getActiveShell());
 									editLockAboutToExpireDialog.setBlockOnOpen(false);
 									editLockAboutToExpireDialog.open();
 								}
@@ -116,7 +116,7 @@ public class EditLockMan
 								break;
 							case DIALOG_BLOCKING_DUE_TO_INACTIVITY:
 								if (blockingDueToInactivityDialog == null) {
-									blockingDueToInactivityDialog = new BlockingDueToInactivityDialog(EditLockMan.this, Display.getDefault().getActiveShell());
+									blockingDueToInactivityDialog = new BlockingDueToInactivityDialog(EditLockMan.this, RCPUtil.getActiveShell());
 									blockingDueToInactivityDialog.setBlockOnOpen(false);
 									blockingDueToInactivityDialog.open();
 								}
@@ -311,7 +311,7 @@ public class EditLockMan
 	 * @param objectID The ID of the object that shall be locked.
 	 * @param description A human-readable description describing the object that is locked.
 	 * @param editLockCallback Either <code>null</code> or your callback-implementation.
-	 * @param parentShell Can be <code>null</code>. If it's undefined, {@link RCPUtil#getActiveWorkbenchShell()} will be used to obtain the parent shell. This shell will be used as parent for the collision-dialog, if the object is already locked by someone else. It is not used
+	 * @param parentShell Can be <code>null</code>. If it's undefined, {@link RCPUtil#getActiveShell()} will be used to obtain the parent shell. This shell will be used as parent for the collision-dialog, if the object is already locked by someone else. It is not used
 	 * @param monitor As this method synchronously communicates with the server (if necessary), it takes this "tagging" parameter.
 	 * 
 	 * @return An {@link EditLockHandle} on the acquired lock that serves to conveniently refresh or release the lock.
@@ -378,7 +378,7 @@ public class EditLockMan
 					public void run() {
 						Shell pshell = parentShell;
 						if (pshell == null)
-							pshell = RCPUtil.getActiveWorkbenchShell();
+							pshell = RCPUtil.getActiveShell();
 
 						EditLockCollisionWarningDialog dialog = new EditLockCollisionWarningDialog(pshell, acquireEditLockResult);
 						dialog.open();

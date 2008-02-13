@@ -37,7 +37,7 @@ extends CenteredDialog // IconAndMessageDialog
 {
 	
 	private ChangedConfigModulePagesDialog() {
-		super(RCPUtil.getActiveWorkbenchShell());
+		super(RCPUtil.getActiveShell());
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		setBlockOnOpen(false);
 //		message = "The following configurations changed. Mark the Modules that shall be reloaded.";

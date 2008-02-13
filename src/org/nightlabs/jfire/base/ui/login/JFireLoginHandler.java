@@ -30,8 +30,8 @@ import javax.security.auth.login.LoginException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.NLBasePlugin;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.math.Base62Coder;
 
@@ -162,7 +162,7 @@ public class JFireLoginHandler implements ILoginHandler {
 	throws LoginException
 	{
 //		LoginDialog loginDialog = new LoginDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), loginResult, loginConfigModule, loginContext);
-		LoginDialog loginDialog = new LoginDialog(Display.getDefault().getActiveShell(), loginResult, loginConfigModule, loginData);
+		LoginDialog loginDialog = new LoginDialog(RCPUtil.getActiveShell(), loginResult, loginConfigModule, loginData);
 		// LoginDialog does all the work
 		loginDialog.open();
 	}
