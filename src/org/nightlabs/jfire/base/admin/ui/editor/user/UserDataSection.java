@@ -1,11 +1,11 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
-import javax.security.auth.login.LoginException;
-
-import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -20,24 +20,28 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DisplayNameChangedListener;
 import org.nightlabs.jfire.security.User;
+import org.nightlabs.jfire.security.UserLocal;
 
 public class UserDataSection extends RestorableSectionPart {
 
 	private Text userIdText;
 	private Text userNameText;
 	private Text userDescriptionText;
-	private Text password0Text;
-	private Text password1Text;
+//	private Text password0Text;
+//	private Text password1Text;
+	private Button passwordButton;
 	private Button autogenerateNameCheckBox;
+	private String newPassword;
 	
 	private User user;
 	private boolean refreshing = false;
-	private boolean passwordChanged = false;
+//	private boolean passwordChanged = false;
 	
 	ModifyListener dirtyListener = new ModifyListener() {
 		public void modifyText(ModifyEvent e) {
@@ -92,30 +96,57 @@ public class UserDataSection extends RestorableSectionPart {
 		userDescriptionText.setLayoutData(getGridData(3));
 		
 		createLabel(container, "Password", 2);
-		password0Text = new Text(container, XComposite.getBorderStyle(container));
-		password0Text.setLayoutData(getGridData(2));
-		password0Text.setEchoChar('*');
-		
-		createLabel(container, "Password confirm", 2);
-		password1Text = new Text(container, XComposite.getBorderStyle(container));
-		password1Text.setLayoutData(getGridData(2));
-		password1Text.setEchoChar('*');
-		
-		ModifyListener passwordModifyListener = new ModifyListener() {
-			private static final String UNEQUAL_PASSWORDS = "unequalPasswords";
-			public void modifyText(ModifyEvent e) {
-				if (!password0Text.getText().equals(password1Text.getText())) {
-					getManagedForm().getMessageManager().addMessage(UNEQUAL_PASSWORDS, "The confirmation password does not match the password.", null, IMessageProvider.ERROR, password1Text);
-				} else {
-					getManagedForm().getMessageManager().removeMessage(UNEQUAL_PASSWORDS, password1Text);
+		passwordButton = new Button(container, SWT.PUSH);
+		passwordButton.setText("Set password...");
+		passwordButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IInputValidator newPasswordValidator = new IInputValidator() {
+					@Override
+					public String isValid(String password) {
+						if (password.length() < UserLocal.MIN_PASSWORD_LENGTH)
+							return "Minimum password length: " + UserLocal.MIN_PASSWORD_LENGTH;
+						if (password.matches("\\*+"))
+							return "Passwords only consisting of '*' are not valid.";
+
+						return null;
+					}
+				};
+				
+				ChangePasswordDialog dialog = new ChangePasswordDialog(RCPUtil.getActiveShell(), newPasswordValidator, null);
+				if (dialog.open() == Window.OK) {
+					newPassword = dialog.getConfirmedPassword();
+					markDirty();
 				}
-				passwordChanged = true;
 			}
-		};
-		password0Text.addModifyListener(passwordModifyListener);
-		password1Text.addModifyListener(passwordModifyListener);
-		password0Text.addModifyListener(dirtyListener);
-		password1Text.addModifyListener(dirtyListener);
+		});
+//		password0Text = new Text(container, XComposite.getBorderStyle(container));
+//		password0Text.setLayoutData(getGridData(2));
+//		password0Text.setEchoChar('*');
+//
+//		createLabel(container, "Password confirm", 2);
+//		password1Text = new Text(container, XComposite.getBorderStyle(container));
+//		password1Text.setLayoutData(getGridData(2));
+//		password1Text.setEchoChar('*');
+		
+//		ModifyListener passwordModifyListener = new ModifyListener() {
+//			private static final String UNEQUAL_PASSWORDS = "unequalPasswords";
+//			public void modifyText(ModifyEvent e) {
+//				if (refreshing)
+//					return;
+//
+//				if (!password0Text.getText().equals(password1Text.getText())) {
+//					getManagedForm().getMessageManager().addMessage(UNEQUAL_PASSWORDS, "The confirmation password does not match the password.", null, IMessageProvider.ERROR, password1Text);
+//				} else {
+//					getManagedForm().getMessageManager().removeMessage(UNEQUAL_PASSWORDS, password1Text);
+//				}
+//				passwordChanged = true;
+//			}
+//		};
+//		password0Text.addModifyListener(passwordModifyListener);
+//		password1Text.addModifyListener(passwordModifyListener);
+//		password0Text.addModifyListener(dirtyListener);
+//		password1Text.addModifyListener(dirtyListener);
 	}
 	
 	private void createLabel(Composite container, String text, int span) {
@@ -151,10 +182,12 @@ public class UserDataSection extends RestorableSectionPart {
 					userDescriptionText.setText(user.getDescription());
 
 				String pw = user.getUserLocal().getPassword();
-				password0Text.setEnabled(pw != null);
-				password1Text.setEnabled(pw != null);
-				password0Text.setText(pw == null ? "" : pw);
-				password1Text.setText(pw == null ? "" : pw);
+//				password0Text.setEnabled(pw != null);
+//				password1Text.setEnabled(pw != null);
+//				password0Text.setText(pw == null ? "" : pw);
+//				password1Text.setText(pw == null ? "" : pw);
+				
+				passwordButton.setEnabled(pw != null);
 
 				autogenerateNameCheckBox.setSelection(user.isAutogenerateName());
 				userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
@@ -166,7 +199,7 @@ public class UserDataSection extends RestorableSectionPart {
 						refreshing = false;
 					}
 				});
-				passwordChanged = false;
+//				passwordChanged = false;
 				refreshing = false;
 			}
 		});
@@ -174,23 +207,34 @@ public class UserDataSection extends RestorableSectionPart {
 	
 	@Override
 	public void commit(boolean onSave) {
-		if (!password0Text.getText().equals(password1Text.getText()))
-			return;
+//		if (!password0Text.getText().equals(password1Text.getText()))
+//			return;
 		
 		super.commit(onSave);
 		user.setDescription(userDescriptionText.getText());
 		user.setName(userNameText.getText());
 		user.setAutogenerateName(autogenerateNameCheckBox.getSelection());
+		if (newPassword != null)
+			user.getUserLocal().setNewPassword(newPassword);
 		
-		if (passwordChanged) {
-			user.getUserLocal().setPasswordPlain(password0Text.getText());
-			try {
-				if (user.getUserID().equals(Login.getLogin().getUserID()) && user.getOrganisationID().equals(Login.getLogin().getOrganisationID()))
-					Login.getLogin().setPassword(password0Text.getText());
-			} catch (LoginException e) {
-				throw new RuntimeException(e);
-			}
-		}
+//		if (passwordChanged) {
+//			user.getUserLocal().setPasswordPlain(password0Text.getText());
+//			try {
+//				if (user.getUserID().equals(Login.getLogin().getUserID()) && user.getOrganisationID().equals(Login.getLogin().getOrganisationID()))
+//					Login.getLogin().setPassword(password0Text.getText());
+//			} catch (LoginException e) {
+//				throw new RuntimeException(e);
+//			}
+//		}
+		
+//		if (!user.getUserLocal().getPassword().equals(UserLocal.UNCHANGED_PASSWORD)) {
+//			try {
+//				if (user.getUserID().equals(Login.getLogin().getUserID()) && user.getOrganisationID().equals(Login.getLogin().getOrganisationID()))
+//					Login.getLogin().setPassword(user.getUserLocal().getPassword());
+//			} catch (LoginException e) {
+//				throw new RuntimeException(e);
+//			}
+//		}
 	}
 	
 	void updateDisplayName() {
