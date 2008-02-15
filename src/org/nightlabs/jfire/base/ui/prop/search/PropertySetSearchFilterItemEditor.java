@@ -27,7 +27,6 @@
 package org.nightlabs.jfire.base.ui.prop.search;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -68,7 +67,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	private static final Logger logger = Logger.getLogger(PropertySetSearchFilterItemEditor.class);
 
 	private XComposite wrapper;
-	private List searchFieldList;
+	private List<PropertySetStructFieldSearchItemEditorHelper> searchFieldList;
 	private Combo comboSearchField;
 	
 	/**
@@ -111,8 +110,11 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 				}
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
+						if (comboSearchField.isDisposed())
+							return;
+						
 						for (int i = 0; i<searchFieldList.size()-1; i++) {
-							PropertySetSearchFilterItemEditorHelper helper = (PropertySetSearchFilterItemEditorHelper) searchFieldList.get(i);
+							PropertySetSearchFilterItemEditorHelper helper = searchFieldList.get(i);
 							comboSearchField.add(helper.getDisplayName());
 						}
 						comboSearchField.select(0);
@@ -132,14 +134,12 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	 * 
 	 * @return
 	 */
-	protected List buildSearchFieldList(ProgressMonitor monitor) {
-		List<PropertySetStructFieldSearchItemEditorManager> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorManager>();
+	protected List<PropertySetStructFieldSearchItemEditorHelper> buildSearchFieldList(ProgressMonitor monitor) {
+		List<PropertySetStructFieldSearchItemEditorHelper> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorHelper>();
 		// We query the Struct instead of the StructLocal, and search for common features
 		// TODO I think this is OK right now, but there should be a possibility to search for structfields defined in StructLocals
-		for (Iterator iter = StructDAO.sharedInstance().getStruct(Person.class.getName(), monitor).getStructBlocks().iterator(); iter.hasNext();) {
-			StructBlock structBlock = (StructBlock) iter.next();
-			for (Iterator iterator = structBlock.getStructFields().iterator(); iterator.hasNext();) {
-				StructField structField = (StructField) iterator.next();
+		for (StructBlock structBlock : StructDAO.sharedInstance().getStruct(Person.class.getName(), monitor).getStructBlocks()) {
+			for (StructField structField : structBlock.getStructFields()) {
 				if (PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().hasHelper(structField.getClass()))
 					helperList.add(new PropertySetStructFieldSearchItemEditorManager(structField));
 			}
@@ -165,7 +165,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		int idx = comboSearchField.getSelectionIndex();
 		if ((idx < 0) || (idx >= searchFieldList.size()))
 			throw new ArrayIndexOutOfBoundsException("Selection index of search field combo is out of range of searchFieldList.S"); //$NON-NLS-1$
-		return (PropertySetSearchFilterItemEditorHelper) searchFieldList.get(idx);
+		return searchFieldList.get(idx);
 	}
 	
 	private void onComboChange() {
