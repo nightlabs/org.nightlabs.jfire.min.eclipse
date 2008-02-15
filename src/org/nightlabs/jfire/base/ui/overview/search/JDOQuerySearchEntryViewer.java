@@ -43,7 +43,7 @@ extends SearchEntryViewer
 	}
 
 	@Override
-	public QuickSearchEntryFactory getDefaultQuickSearchEntryFactory() {
+	public QuickSearchEntryFactory getAdvancedQuickSearchEntryFactory() {
 		return new AdvancedQuickSearchEntryFactory();
 	}
 

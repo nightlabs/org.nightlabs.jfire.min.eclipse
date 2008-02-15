@@ -124,7 +124,7 @@ extends AbstractEntryViewer
 		sashform.setWeights(new int[] {1, 10});
 		
 		configureQuickSearchEntries(searchItem);
-		searchEntryType = getDefaultQuickSearchEntryFactory().createQuickSearchEntry();
+//		searchEntryType = getDefaultQuickSearchEntryFactory().createQuickSearchEntry();
 		
 		return sashform;
 	}
@@ -164,7 +164,7 @@ extends AbstractEntryViewer
 		wrapper.setLayout(wrapperLayout);
 		Label searchLabel = new Label(wrapper, SWT.NONE);
 		searchLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchLabel.text")); //$NON-NLS-1$
-		searchText = new Text(wrapper, SWT.BORDER);
+		searchText = new Text(wrapper, SWT.NONE);
 		searchText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		searchText.addSelectionListener(searchTextListener);
 		ToolItem textItem = new ToolItem(searchTextToolBar, SWT.SEPARATOR);
@@ -177,13 +177,13 @@ extends AbstractEntryViewer
 		Composite rangeWrapper = new XComposite(searchTextToolBar, SWT.NONE,
 				LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.NONE, 2);
 		new Label(rangeWrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.limitLabel.text")); //$NON-NLS-1$
-		limit = new Spinner(rangeWrapper, SWT.BORDER);
+		limit = new Spinner(rangeWrapper, SWT.NONE);
 		limit.setMinimum(0);
 		limit.setMaximum(Integer.MAX_VALUE);
-		limit.setSelection(00);
+		limit.setSelection(0);
 		ToolItem rangeItem = new ToolItem(searchTextToolBar, SWT.SEPARATOR);
 		rangeItem.setControl(rangeWrapper);
-		rangeItem.setWidth(350);
+		rangeItem.setWidth(360);
 		
 		ToolBar toolBar = new ToolBar(toolBarWrapper, SWT.NONE);
 		toolBarManager = new ToolBarManager(toolBar);
@@ -231,17 +231,10 @@ extends AbstractEntryViewer
 			@Override
 			protected IStatus run(final ProgressMonitor monitor)
 			{
-				if (searchEntryType != null) {
-					Display.getDefault().syncExec(new Runnable(){
-						public void run() {
-							searchEntryType.setSearchText(searchText.getText());
-							if (limit.getSelection() > 0)
-								searchEntryType.setResultRange(0, limit.getSelection());
-							else
-								searchEntryType.setResultRange(0, Long.MAX_VALUE);
-						}
-					});
-					final Object result = searchEntryType.search(monitor);
+				final QuickSearchEntry entry = getActiveQuickSearchEntry();
+				
+				if (entry != null) {
+					final Object result = entry.search(monitor);
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							displaySearchResult(result);
@@ -253,7 +246,7 @@ extends AbstractEntryViewer
 		}.schedule();
 	}
 	
-	private QuickSearchEntry searchEntryType;
+	private QuickSearchEntry selectedQuickSearchEntry;
 	
 	/**
 	 * will be called after the search of the current {@link QuickSearchEntry}
@@ -313,6 +306,7 @@ extends AbstractEntryViewer
 			doExpand();
 		}
 	};
+	private Button advancedSectionActiveButton;
 		
 	protected void doExpand()
 	{
@@ -325,11 +319,15 @@ extends AbstractEntryViewer
 		if (searchCriteriaSection.isExpanded()) {
 			searchHeight = initalSearchHeight + searchComposite.getSize().y;
 		} else {
-			searchHeight = initalSearchHeight;
+			searchHeight = initalSearchHeight;			
 		}
 		resultHeight = completeHeight - searchHeight;
 		sashform.setWeights(new int[] {searchHeight, resultHeight});
 		sashform.layout(true, true);
+		advancedSectionActiveButton.setSelection(searchCriteriaSection.isExpanded());
+		advancedSectionActiveButton.setEnabled(searchCriteriaSection.isExpanded());
+		RCPUtil.setControlEnabledRecursive(searchTextToolBar, !advancedSectionActiveButton.getSelection());
+		RCPUtil.setControlEnabledRecursive(searchComposite, advancedSectionActiveButton.getSelection());
 	}
 	
 	protected void configureQuickSearchEntries(final ToolItem searchItem)
@@ -337,15 +335,23 @@ extends AbstractEntryViewer
 		if (getQuickSearchEntryFactories() != null && !getQuickSearchEntryFactories().isEmpty()) {
 			Collection<QuickSearchEntryFactory> quickSearchEntryFactories = getQuickSearchEntryFactories();
 			final Menu menu = new Menu(RCPUtil.getActiveShell(), SWT.POP_UP);
+			QuickSearchEntry firstEntry = null;
+			
 			for (final QuickSearchEntryFactory quickSearchEntryFactory : quickSearchEntryFactories) {
 				final MenuItem menuItem = new MenuItem(menu, SWT.CHECK);
 				menuItem.setText(quickSearchEntryFactory.getName());
 				menuItem.setImage(quickSearchEntryFactory.getImage());
 				final QuickSearchEntry quickSearchEntry = quickSearchEntryFactory.createQuickSearchEntry();
 				menuItem.setData(quickSearchEntry);
+				
+				if (firstEntry == null) {
+					firstEntry = quickSearchEntry;
+					menuItem.setSelection(true);
+				}
+				
 				menuItem.addSelectionListener(new SelectionListener(){
 					public void widgetSelected(SelectionEvent e) {
-						searchEntryType = quickSearchEntry;
+						selectedQuickSearchEntry = quickSearchEntry;
 						for (int i=0; i<menu.getItems().length; i++) {
 							MenuItem mi = menu.getItem(i);
 							mi.setSelection(false);
@@ -356,7 +362,7 @@ extends AbstractEntryViewer
 					public void widgetDefaultSelected(SelectionEvent e) {
 						widgetSelected(e);
 					}
-				});
+				});				
 			}
 			searchItem.addListener(SWT.Selection, new Listener(){
 	  		public void handleEvent(Event event) {
@@ -369,6 +375,8 @@ extends AbstractEntryViewer
 	  			}
 	  		}
 			});
+			
+			selectedQuickSearchEntry = firstEntry;
 		}
 	}
 	
@@ -394,13 +402,46 @@ extends AbstractEntryViewer
 		return factories;
 	}
 	
+	protected QuickSearchEntry getActiveQuickSearchEntry() {
+		final QuickSearchEntry[] activeEntry = new QuickSearchEntry[1];
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				QuickSearchEntry entry;
+				if (advancedSectionActiveButton.getSelection())
+					entry = getAdvancedQuickSearchEntryFactory().createQuickSearchEntry();
+				else {
+					entry = selectedQuickSearchEntry;					
+					entry.setSearchText(searchText.getText());					
+				}
+				
+				if (limit.getSelection() > 0)
+					entry.setResultRange(0, limit.getSelection());
+				else
+					entry.setResultRange(0, Long.MAX_VALUE);
+				
+				activeEntry[0] = entry;
+			}
+		});
+		
+		return activeEntry[0];
+	}
+	
+//	/**
+//	 * Subclasses must implement this method to return at least one
+//	 * {@link QuickSearchEntryFactory} which will be used for searching by default
+//	 * 
+//	 * @return the {@link QuickSearchEntryFactory} which is used by this implementation by default
+//	 */
+//	protected abstract QuickSearchEntryFactory getDefaultQuickSearchEntryFactory();
+	
 	/**
-	 * Subclasses must implement this method to return at least one
-	 * {@link QuickSearchEntryFactory} which will be used for searching by default
+	 * Subclasses must implement this method to return the {@link QuickSearchEntryFactory} that
+	 * should be used when searching with the advanced search section.
 	 * 
-	 * @return the {@link QuickSearchEntryFactory} which is used by this implementation by default
+	 * @return The {@link QuickSearchEntryFactory} which is used when searching through the advanced section.
 	 */
-	protected abstract QuickSearchEntryFactory getDefaultQuickSearchEntryFactory();
+	protected abstract QuickSearchEntryFactory getAdvancedQuickSearchEntryFactory();
 	
 //	/**
 //	 * Subclasses my override this method to return the default search entry factory
@@ -413,22 +454,24 @@ extends AbstractEntryViewer
 		
 	protected void configureSection(final Section section)
 	{
-		Button activeButton = new Button(section, SWT.CHECK);
-		activeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.AbstractQueryFilterComposite.activeButton.text")); //$NON-NLS-1$
-		activeButton.setSelection(false);
-		activeButton.addSelectionListener(new SelectionListener(){
+		advancedSectionActiveButton = new Button(section, SWT.CHECK);
+		advancedSectionActiveButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.AbstractQueryFilterComposite.activeButton.text")); //$NON-NLS-1$
+		advancedSectionActiveButton.setSelection(false);
+		advancedSectionActiveButton.setEnabled(false);
+		advancedSectionActiveButton.addSelectionListener(new SelectionListener(){
 			public void widgetSelected(SelectionEvent e) {
 				Button b = (Button) e.getSource();
-				section.setExpanded(b.getSelection());
-				doExpand();
+//				section.setExpanded(b.getSelection());
+//				doExpand();
 				RCPUtil.setControlEnabledRecursive(searchTextToolBar, !b.getSelection());
+				RCPUtil.setControlEnabledRecursive(searchComposite, b.getSelection());
 //				searchTextToolBar.setEnabled(!b.getSelection());
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 		});
-		section.setTextClient(activeButton);
+		section.setTextClient(advancedSectionActiveButton);
 	}
 	
 	public void expand() {
