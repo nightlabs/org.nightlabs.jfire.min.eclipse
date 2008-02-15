@@ -616,8 +616,12 @@ public class LoginDialog extends TitleAreaDialog
 	 */
 	private void enableDialogUI(boolean enable)
 	{
-		if (getShell() != null && !getShell().isDisposed())
+		if (getShell() != null && !getShell().isDisposed()) {
 			getShell().setEnabled(enable);
+			getButton(IDialogConstants.OK_ID).setEnabled(enable);
+			getButton(IDialogConstants.CANCEL_ID).setEnabled(enable);
+			getButton(DETAILS_ID).setEnabled(enable);
+		}
 	}
 
 	private void updateUIAfterLogin()
@@ -629,6 +633,13 @@ public class LoginDialog extends TitleAreaDialog
 			// login failed
 			if (loginResult.isWasAuthenticationErr()) {
 				setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorauthenticationFailed")); //$NON-NLS-1$
+				
+				// Pause for a while to prevent users from trying out passwords
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// ok
+				}
 			}
 			else if (loginResult.isWasCommunicationErr()) {
 				Throwable error = loginResult.getException();
@@ -723,6 +734,7 @@ public class LoginDialog extends TitleAreaDialog
 			final LoginStateListener loginStateListener)
 	{
 		boolean hadError = true;
+		setErrorMessage(null);
 		setInfoMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.tryingLogin")); //$NON-NLS-1$
 		enableDialogUI(false);
 		try {
@@ -784,8 +796,8 @@ public class LoginDialog extends TitleAreaDialog
 		Runnable runnable = new Runnable() {
 			public void run()
 			{
-				enableDialogUI(true);
 				updateUIAfterLogin();
+				enableDialogUI(true);
 			}
 		};
 
