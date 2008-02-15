@@ -407,20 +407,22 @@ extends LSDPreferencePage
 				currentConfigIsGroupMember = getConfigModuleController().checkIfIsGroupMember(getConfigModuleController().getConfigModule());
 				currentConfigModuleIsEditable = getConfigModuleController().canEdit(getConfigModuleController().getConfigModule());
 
-				Display.getDefault().asyncExec(new Runnable() {
+				monitor.worked(1);
+				
+				if (currentConfigModuleIsEditable) {
+					if (doSetControl) {
+						lockHandle = EditLockMan.sharedInstance().acquireEditLock(JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG_MODULE,
+								(ConfigModuleID) JDOHelper.getObjectId(getConfigModuleController().getConfigModule()),
+								Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.editLockWarning"), //$NON-NLS-1$
+								null, null, createSubProgressMonitorWrapper(1));
+					}
+				}
+				
+				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						if (currentConfigModuleIsEditable) {
-							if (doSetControl) {
-								lockHandle = EditLockMan.sharedInstance().acquireEditLock(JFireBaseEAR.EDIT_LOCK_TYPE_ID_CONFIG_MODULE,
-										(ConfigModuleID) JDOHelper.getObjectId(getConfigModuleController().getConfigModule()),
-										Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.editLockWarning"), //$NON-NLS-1$
-										null, getShell(), getSubProgressMonitorWrapper(1));
-							}
-						}
 						setUpGui();
 						updateConfigHeader();
 						updatePreferencePage();
-						getProgressMonitorWrapper().worked(1);
 						fadableWrapper.setFaded(false);
 						setEditable(currentConfigModuleIsEditable);
 					}
