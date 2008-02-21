@@ -123,11 +123,11 @@ extends XComposite
 	/**
 	 * @return All active {@link JDOQuery}s obtained by the {@link JDOQueryComposite}.
 	 */
-	public List<JDOQuery> getJDOQueries()
+	public List<JDOQuery<?>> getJDOQueries()
 	{
 		if (queryComposites != null)
 		{
-			List<JDOQuery> queries = new ArrayList<JDOQuery>(queryComposites.size());
+			List<JDOQuery<?>> queries = new ArrayList<JDOQuery<?>>(queryComposites.size());
 			for (JDOQueryComposite comp : queryComposites) {
 				if (comp.isActive())
 					queries.add(comp.getJDOQuery());

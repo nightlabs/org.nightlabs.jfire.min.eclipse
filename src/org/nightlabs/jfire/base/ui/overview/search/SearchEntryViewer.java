@@ -43,6 +43,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.jdo.query.JDOQuery;
 import org.nightlabs.jfire.base.ui.overview.AbstractEntryViewer;
 import org.nightlabs.jfire.base.ui.overview.Entry;
 import org.nightlabs.jfire.base.ui.resource.Messages;
@@ -235,6 +236,9 @@ extends AbstractEntryViewer
 				
 				if (entry != null) {
 					final Object result = entry.search(monitor);
+					if (result instanceof JDOQuery)
+						throw new IllegalStateException("QuickSearchEntry.search(...) of class " + entry.getClass().getName() + " is implemented incorrectly! It should return a result - not a query!");
+
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							displaySearchResult(result);

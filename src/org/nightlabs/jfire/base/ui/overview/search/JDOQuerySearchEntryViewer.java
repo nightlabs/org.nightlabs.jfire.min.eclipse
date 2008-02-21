@@ -123,7 +123,7 @@ extends SearchEntryViewer
 	 * @param monitor the {@link IProgressMonitor} to display the progress
 	 * @return the result of the queries
 	 */
-	protected abstract Object getQueryResult(Collection<JDOQuery> queries, ProgressMonitor monitor);
+	protected abstract Object getQueryResult(Collection<? extends JDOQuery> queries, ProgressMonitor monitor); // TODO need to add generic type info for JDOQuery - maybe add type info to the SearchEntryViewer already. Should be consequent. 
 
 	private class AdvancedQuickSearchEntryFactory
 	extends AbstractQuickSearchEntryFactory
@@ -161,7 +161,7 @@ extends SearchEntryViewer
 				}
 			});
 			
-			final List<JDOQuery> queries = new ArrayList<JDOQuery>(2);
+			final List<JDOQuery<?>> queries = new ArrayList<JDOQuery<?>>(2);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					queries.addAll(getFilterComposite().getJDOQueries());
