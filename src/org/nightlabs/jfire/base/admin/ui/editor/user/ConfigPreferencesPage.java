@@ -50,7 +50,7 @@ public class ConfigPreferencesPage extends FormPage
 	 * The id of this page.
 	 */
 	public static final String ID_PAGE = ConfigPreferencesPage.class.getName();
-	
+
 	/**
 	 * The Factory is registered to the extension-point and creates
 	 * new instances of {@link ConfigPreferencesPage}.
@@ -64,7 +64,7 @@ public class ConfigPreferencesPage extends FormPage
 			return new ConfigPreferencesController(editor);
 		}
 	}
-	
+
 	/**
 	 * Create an instance of ConfigPreferencesPage.
 	 * <p>
@@ -113,6 +113,6 @@ public class ConfigPreferencesPage extends FormPage
 			throw new IllegalStateException(ConfigPreferencesPage.class.getName() +
 					" should only be used with a Editor implementing IConfigSetupEditor"); //$NON-NLS-1$
 		ConfigID configID = ((IConfigSetupEditor)getEditor()).getConfigID();
- 		managedForm.addPart(new ConfigPreferencesSection(this, body, configID));
+		managedForm.addPart(new ConfigPreferencesSection(this, body, configID));
 	}
 }
