@@ -22,6 +22,7 @@ import org.eclipse.ui.PartInitException;
 import org.nightlabs.base.ui.celleditor.ComboBoxCellEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
+import org.nightlabs.base.ui.entity.editor.EntityEditorStaleHandler;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageStaleHandler;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
@@ -458,20 +459,55 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		doLoad(monitor);
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				getEntityEditor().editorDirtyStateChanged();
+				if (!disposed) {
+					getEntityEditor().editorDirtyStateChanged();
+				}
 			}
 		});
 	}
 
+	private boolean disposed = false;
+	/**
+	 * Removes the entityChangeListener
+	 */
+	@Override
+	public void dispose() {
+		if (entityChangeListener != null) {
+			JDOLifecycleManager.sharedInstance().removeNotificationListener(controllerObjectClass, entityChangeListener);
+		}		
+		super.dispose();
+		disposed = true;
+	}
 	
+	/**
+	 * Returns the text that will be set as the load Jobs name.
+	 * <p>
+	 * Subclasses may override.
+	 * </p>
+	 * @return The text that will be set as the load Jobs name.
+	 */
 	protected String getLoadJobName() {
 		return "Loading entity...";
 	}
 	
+	/**
+	 * Returns the text that will be set as the save Jobs name.
+	 * <p>
+	 * Subclasses may override.
+	 * </p>
+	 * @return The text that will be set as the save Jobs name.
+	 */
 	protected String getSaveJobName() {
 		return "Saving entity...";
 	}
 	
+	/**
+	 * Returns the text that will be set as the name of the Job that processes entity changes.
+	 * <p>
+	 * Subclasses may override.
+	 * </p>
+	 * @return The text that will be set as the name of the Job that processes entity changes.
+	 */
 	protected String getProcessChangesJobName() {
 		return "Processing entity changes...";
 	}
