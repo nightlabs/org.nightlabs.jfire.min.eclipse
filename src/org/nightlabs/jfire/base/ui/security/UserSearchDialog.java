@@ -87,9 +87,17 @@ extends CenteredDialog
 	};
 	
 	@Override
-	public boolean close() {
+	protected void okPressed()
+	{
 		selectedUser = userSearchComposite.getSelectedUser();
-		return super.close();
+		super.okPressed();
+	}
+	
+	@Override
+	protected void cancelPressed()
+	{
+		selectedUser = null;
+		super.cancelPressed();
 	}
 	
 	private IDoubleClickListener userDoubleClickListener = new IDoubleClickListener(){

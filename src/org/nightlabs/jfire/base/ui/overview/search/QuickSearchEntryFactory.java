@@ -1,10 +1,8 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.overview.search;
 
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.swt.graphics.Image;
+import org.nightlabs.jdo.query.AbstractSearchQuery;
 
 /**
  * An QuickSearchEntryFactory holds decorative data, like
@@ -15,8 +13,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  *
  */
-public interface QuickSearchEntryFactory
-extends IExecutableExtension
+public interface QuickSearchEntryFactory<R, Q extends AbstractSearchQuery<? extends R>>
+	extends IExecutableExtension
 {
 	/**
 	 * returns the optional image, may be null
@@ -56,5 +54,11 @@ extends IExecutableExtension
 	 * returns an instance of {@link QuickSearchEntry}
 	 * @return an instance of {@link QuickSearchEntry}
 	 */
-	QuickSearchEntry createQuickSearchEntry();
+	QuickSearchEntry<R,Q> createQuickSearchEntry();
+	
+	/**
+	 * Returns the class of the query type needed by me to perform the filter setup.
+	 * @return the class of the query type needed by me to perform the filter setup.
+	 */
+	Class<? extends Q> getQueryType();
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.overview.search;
 
 import java.util.HashMap;

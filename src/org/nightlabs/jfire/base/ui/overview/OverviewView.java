@@ -3,6 +3,7 @@ package org.nightlabs.jfire.base.ui.overview;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
+import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 
 /**
  * Abstract base {@link ViewPart} that will display an {@link OverviewShelf}
@@ -12,15 +13,17 @@ import org.eclipse.ui.part.ViewPart;
  *
  */
 public abstract class OverviewView
-extends ViewPart
+extends LSDViewPart
 {
 	public OverviewView() {
 		super();
 	}
 
 	private OverviewShelf overviewShelf;
+	
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartContents(Composite parent)
+	{
 		overviewShelf = new OverviewShelf(parent, SWT.NONE) {
 			@Override
 			protected OverviewRegistry getOverviewRegistry() {
@@ -28,9 +31,12 @@ extends ViewPart
 			}
 		};
 	}
-
+	
 	@Override
 	public void setFocus() {
+		if (overviewShelf == null)
+			return;
+		
 		overviewShelf.setFocus();
 	}
 

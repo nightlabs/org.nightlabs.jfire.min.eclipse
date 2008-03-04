@@ -28,6 +28,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.User;
@@ -221,7 +222,7 @@ extends XComposite
 			protected IStatus run(ProgressMonitor monitor){
 				try {
 					UserManager um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-					final Collection<UserQuery> queries = new ArrayList<UserQuery>(1);
+					final QueryCollection<User, UserQuery> queries = new QueryCollection<User, UserQuery>();
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getUserQuery());

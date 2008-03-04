@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.overview.search;
 
 import org.eclipse.core.runtime.CoreException;
@@ -9,14 +6,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
+import org.nightlabs.jdo.query.AbstractSearchQuery;
 
 /**
  * Abstract base class for {@link QuickSearchEntryFactory}s
  * 
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  */
-public abstract class AbstractQuickSearchEntryFactory
-implements QuickSearchEntryFactory
+public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearchQuery<R>>
+	implements QuickSearchEntryFactory<R, Q>
 {
 //	private Image composedDecoratorImage = null;
 	private Image image = null;

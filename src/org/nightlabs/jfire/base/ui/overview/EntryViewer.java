@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.overview;
 
 import org.eclipse.jface.action.MenuManager;

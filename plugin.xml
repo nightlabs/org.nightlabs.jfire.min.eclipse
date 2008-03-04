@@ -49,6 +49,7 @@
 	/>
    <extension-point id="overview" name="overview" schema="schema/overview.exsd"/>
    <extension-point id="quickSearchEntry" name="quickSearchEntry" schema="schema/quicksearchentry.exsd"/>
+   <extension-point id="queryFilterComposite" name="QueryFilterComposite" schema="schema/queryFilterComposite.exsd"/>
 	
 	
    <!-- Extensions -->	
@@ -356,6 +357,4 @@
             categoryID="org.nightlabs.jfire.base.ui.category1"
             name="org.nightlabs.jfire.base.ui.category1"/>
    </extension>
-   
-
 </plugin>

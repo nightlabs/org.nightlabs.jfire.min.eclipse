@@ -3,7 +3,6 @@
  */
 package org.nightlabs.jfire.base.ui.workstation;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
@@ -25,6 +24,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.workstation.Workstation;
 import org.nightlabs.jfire.workstation.WorkstationManager;
@@ -128,7 +128,7 @@ public class WorkstationSearchComposite extends XComposite {
 			protected IStatus run(ProgressMonitor monitor){
 				try {
 					WorkstationManager um = WorkstationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-					final Collection<WorkstationQuery> queries = new ArrayList<WorkstationQuery>(1);
+					final QueryCollection<Workstation, WorkstationQuery> queries = new QueryCollection<Workstation, WorkstationQuery>();
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getWorkstationQuery());
