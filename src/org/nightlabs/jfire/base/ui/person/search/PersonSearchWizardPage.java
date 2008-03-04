@@ -35,7 +35,6 @@ import org.nightlabs.progress.NullProgressMonitor;
  *
  */
 public class PersonSearchWizardPage extends WizardHopPage {
-
 	private PersonEditorWizardHop editorWizardHop;
 	private PersonSearchComposite searchComposite;
 	private String quickSearchText;
@@ -76,10 +75,10 @@ public class PersonSearchWizardPage extends WizardHopPage {
 					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());
 					newPerson.inflate(structLocal);
 					editorWizardHop = new PersonEditorWizardHop();
-					editorWizardHop.initialise(newPerson);
+					editorWizardHop.initialise(newPerson);					
 				}
 				getWizardHop().addHopPage(editorWizardHop.getEntryPage());
-				getContainer().updateButtons();
+				personSelectionChanged();
 				getContainer().showPage(getNextPage());
 			}
 		});
@@ -89,19 +88,31 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		searchComposite.createSearchButton(buttonBar);
 		searchComposite.getResultTable().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				getContainer().updateButtons();
+				personSelectionChanged();
 			}
 		});
 		searchComposite.getResultTable().getTableViewer().addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
-				if (getContainer() instanceof WizardDialog) {
-					if (getWizard().performFinish()) {
-						((WizardDialog) getContainer()).close();
-					}
-				}
+				personDoubleClicked();
 			}
 		});
 		return searchComposite;
+	}
+	
+	protected void personDoubleClicked() {
+		if (getContainer() instanceof WizardDialog) {
+			if (getWizard().performFinish()) {
+				((WizardDialog) getContainer()).close();
+			}
+		}
+	}
+	
+	protected void personSelectionChanged() {
+		getContainer().updateButtons();
+		onPersonSelectionChanged();
+	}
+	
+	protected void onPersonSelectionChanged() {		
 	}
 
 	@Override
@@ -135,5 +146,4 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	protected String getCreateNewButtonText() {
 		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.createNewButton.text"); //$NON-NLS-1$
 	}
-	
 }
