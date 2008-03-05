@@ -195,4 +195,13 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 		assert queryProvider != null;
 		this.queryProvider = queryProvider;
 	}
+	
+	/**
+	 * Returns the query provider
+	 * @return the query provider
+	 */
+	public QueryProvider<R, ? super Q> getQueryProvider()
+	{
+		return queryProvider;
+	}
 }

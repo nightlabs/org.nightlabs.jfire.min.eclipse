@@ -99,10 +99,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	
 	private XComposite searchWrapper = null;
 	private SashForm sashform = null;
-//	private ScrolledComposite scrollComp = null;
 	private ToolItem searchItem = null;
 	private ToolBar searchTextToolBar = null;
-//	private Section searchCriteriaSection = null;
 	
 	public Composite createComposite(Composite parent)
 	{
@@ -131,12 +129,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		Menu contextMenu = menuManager.createContextMenu(parent);
 		resultComposite.setMenu(contextMenu);
 				
-//		configureSash(sashform);
-		sashform.layout(true, true);
 		sashform.setWeights(calculateSashWeights(null));
-		sashform.layout(true, true);
-		
-//		searchEntryType = getDefaultQuickSearchEntryFactory().createQuickSearchEntry();
 		
 		return sashform;
 	}
@@ -156,12 +149,17 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		for (QueryFilterFactory factory : registeredComposites)
 		{
 			advancedSearchSection = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
-			configureSection(advancedSearchSection, factory);
-//			advancedSearchSection.setLayout(new GridLayout());
-//			advancedSearchSection.setText(factory.getSectionTitle());
-//			advancedSearchSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//			advancedSearchSection.addExpansionListener(expansionListener);
+			advancedSearchSection.setLayout(new GridLayout());
+			advancedSearchSection.setText(factory.getSectionTitle());
+			advancedSearchSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			advancedSearchSection.addExpansionListener(expansionListener);
 			
+			Button advancedSectionActiveButton = new Button(advancedSearchSection, SWT.CHECK);
+			advancedSectionActiveButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.AbstractQueryFilterComposite.activeButton.text")); //$NON-NLS-1$
+			advancedSectionActiveButton.setSelection(false);
+			
+			advancedSearchSection.setTextClient(advancedSectionActiveButton);
+
 			ScrolledComposite scrollComp = new ScrolledComposite(advancedSearchSection, SWT.NONE | SWT.H_SCROLL | SWT.V_SCROLL);
 			scrollComp.setExpandHorizontal(true);
 			scrollComp.setExpandVertical(true);
@@ -175,25 +173,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			scrollComp.setContent(filterComposite);
 			advancedSearchSection.setClient(scrollComp);
 			scrollComp.setMinSize(filterComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			
+			advancedSectionActiveButton.addSelectionListener( new ActiveButtonSelectionListener(advancedSearchSection, filterComposite) );
 		}
-		
-//		searchCriteriaSection = toolkit.createSection(searchWrapper, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
-//		searchCriteriaSection.setLayout(new GridLayout());
-//		searchCriteriaSection.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchCriteriaSection.text")); //$NON-NLS-1$
-//		searchCriteriaSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		searchCriteriaSection.addExpansionListener(expansionListener);
-//		configureSection(searchCriteriaSection);
-		
-//		scrollComp = new ScrolledComposite(searchCriteriaSection, SWT.NONE | SWT.H_SCROLL | SWT.V_SCROLL);
-//		scrollComp.setExpandHorizontal(true);
-//		scrollComp.setExpandVertical(true);
-//		scrollComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		scrollComp.setLayout(new GridLayout());
-//		searchComposite = createSearchComposite(scrollComp);
-//		searchComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		scrollComp.setContent(searchComposite);
-//		searchCriteriaSection.setClient(scrollComp);
-//		scrollComp.setMinSize(searchComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 	
 	public Composite getComposite() {
@@ -279,14 +261,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		
 	protected Text searchText = null;
 	
-//	/**
-//	 * Implement this method for displaying the search criteria
-//	 * 
-//	 * @param parent the parent {@link Composite}
-//	 * @return a Composite which displays the search criteria
-//	 */
-//	public abstract Composite createSearchComposite(Composite parent);
-	
 	/**
 	 * Implement this method for displaying the result of a search
 	 * 
@@ -318,13 +292,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			@Override
 			protected IStatus run(final ProgressMonitor monitor)
 			{
-//				final QuickSearchEntry entry = getActiveQuickSearchEntry();
-//				
-//				if (entry != null) {
-//					final Object result = entry.search(monitor);
-//					if (result instanceof AbstractJDOQuery)
-//						throw new IllegalStateException("QuickSearchEntry.search(...) of class " + entry.getClass().getName() + " is implemented incorrectly! It should return a result - not a query!");
-
 				final Collection<R> result = doSearch(queryMap, monitor);
 					Display.getDefault().syncExec(new Runnable()
 					{
@@ -349,8 +316,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * @param result the search result to display
 	 */
 	public abstract void displaySearchResult(Object result);
-	
-//	private QuickSearchEntry selectedQuickSearchEntry;
 	
 	private MenuManager menuManager;
 	public MenuManager getMenuManager() {
@@ -401,32 +366,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		public void expansionStateChanged(ExpansionEvent e)
 		{
 			final Section section = (Section) e.getSource();
-//			final Button activeButton = (Button) section.getTextClient();
-//			activeButton.setSelection(section.isExpanded());
-//			doExpand(section);
 			sashform.setWeights(calculateSashWeights(section));
 			sashform.layout(true, true);
 		}
 	};
 		
-//	protected void doExpand(Section searchCriteriaSection)
-//	{
-//		if (initalSearchHeight == -1) {
-//			initalSearchHeight = searchWrapper.getSize().y;
-//		}
-//		int completeHeight = sashform.getSize().y;
-//		int searchHeight = initalSearchHeight;
-//		if (searchCriteriaSection.isExpanded())
-//		{
-//			searchHeight += searchCriteriaSection.getSize().y;
-//		}
-//		int resultHeight = completeHeight - searchHeight;
-//		sashform.setWeights(new int[] { searchHeight, resultHeight });
-//		sashform.layout(true, true);
-////		RCPUtil.setControlEnabledRecursive(searchTextToolBar, !advancedSectionActiveButton.getSelection());
-////		RCPUtil.setControlEnabledRecursive(searchComposite, advancedSectionActiveButton.getSelection());
-//	}
-	
 	/**
 	 * @param expandedStateChangedSection the section that has changed its expanded state.
 	 * @return the two weights for the search and the result composite.
@@ -550,15 +494,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}
 	};
 	
-//	/**
-//	 * Subclasses can return here their implementations of {@link QuickSearchEntryFactory}
-//	 * which can be used for searching
-//	 *
-//	 * @return a List of {@link QuickSearchEntryFactory}s will can be used for quick searching
-//	 */
-//	protected List<QuickSearchEntryFactory> getQuickSearchEntryFactories() {
-//		return Collections.EMPTY_LIST;
-//	}
 	/**
 	 * Subclasses can return here their implementations of {@link QuickSearchEntryFactory}
 	 * which can be used for searching
@@ -572,107 +507,36 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		return factories;
 	}
 	
-//	protected QuickSearchEntry getActiveQuickSearchEntry() {
-//		final QuickSearchEntry[] activeEntry = new QuickSearchEntry[1];
-//		Display.getDefault().syncExec(new Runnable() {
-//			@Override
-//			public void run() {
-//				QuickSearchEntry entry;
-//				if (advancedSectionActiveButton.getSelection())
-//					entry = getQuickSearchEntryFactory().createQuickSearchEntry();
-//				else {
-//					entry = selectedQuickSearchEntry;					
-//					entry.setSearchConditionValue(searchText.getText());					
-//				}
-//				
-//				if (limit.getSelection() > 0)
-//					entry.setResultRange(0, limit.getSelection());
-//				else
-//					entry.setResultRange(0, Long.MAX_VALUE);
-//				
-//				activeEntry[0] = entry;
-//			}
-//		});
-//		
-//		return activeEntry[0];
-//	}
-	
-//	/**
-//	 * Subclasses must implement this method to return at least onejop
-//	 * {@link QuickSearchEntryFactory} which will be used for searching by default
-//	 * 
-//	 * @return the {@link QuickSearchEntryFactory} which is used by this implementation by default
-//	 */
-//	protected abstract QuickSearchEntryFactory getDefaultQuickSearchEntryFactory();
-	
-	/**
-	 * Subclasses must implement this method to return the {@link QuickSearchEntryFactory} that
-	 * should be used when searching with the advanced search section.
-	 * @param factory 
-	 * 
-	 * @return The {@link QuickSearchEntryFactory} which is used when searching through the advanced section.
-	 */
-	// FIXME: This shouldn't be a factory but the Factories from the registry that define the advanced search options.
-//	protected abstract QuickSearchEntryFactory getQuickSearchEntryFactory();
-	
-//	/**
-//	 * Subclasses my override this method to return the default search entry factory
-//	 * by default the {@link QuickSearchEntryFactory} returned by
-//	 * {@link #getAdvancedQuickSearchEntryFactory()} is used
-//	 */
-//	protected QuickSearchEntryFactory getDefaultSearchEntryFactory() {
-//		return getAdvancedQuickSearchEntryFactory();
-//	}
-		
-	protected void configureSection(final Section section, QueryFilterFactory<?,?> factory)
-	{
-		Button advancedSectionActiveButton = new Button(section, SWT.CHECK);
-		advancedSectionActiveButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.AbstractQueryFilterComposite.activeButton.text")); //$NON-NLS-1$
-		advancedSectionActiveButton.setSelection(false);
-//		advancedSectionActiveButton.setEnabled(false);
-		section.setLayout(new GridLayout());
-		section.setText(factory.getSectionTitle());
-		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		section.addExpansionListener(expansionListener);
-
-		advancedSectionActiveButton.addSelectionListener( new ActiveButtonSelectionListener(section) );
-//			new SelectionAdapter()
-//		{
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				final Button b = (Button) e.getSource();
-////				section.setExpanded(b.getSelection());
-////				doExpand();
-////				RCPUtil.setControlEnabledRecursive(searchTextToolBar, !b.getSelection());
-////				RCPUtil.setControlEnabledRecursive(searchComposite, b.getSelection());
-////				searchTextToolBar.setEnabled(!b.getSelection());
-//			}
-//		});
-		section.setTextClient(advancedSectionActiveButton);
-	}
-
 	protected class ActiveButtonSelectionListener
 		extends SelectionAdapter
 	{
 		private Section correspondingSection;
+		private AbstractQueryFilterComposite<? extends R,? extends Q> filterComposite;
 		
 		/**
 		 * @param correspondingSection The section that corresponds to the button this listener is
 		 * 	added to.
+		 * @param filterComposite 
 		 */
-		public ActiveButtonSelectionListener(Section correspondingSection)
+		public ActiveButtonSelectionListener(Section correspondingSection, AbstractQueryFilterComposite<? extends R,? extends Q> filterComposite)
 		{
 			assert correspondingSection != null;
+			assert filterComposite != null;
 			this.correspondingSection = correspondingSection;
+			this.filterComposite = filterComposite;
 		}
 
 		@Override
 		public void widgetSelected(SelectionEvent e)
 		{
 			final Button b = (Button) e.getSource();
-			if (b.getSelection() != correspondingSection.isExpanded())
+			final boolean active = b.getSelection();
+			
+			filterComposite.setActive(active);
+			
+			if (active != correspondingSection.isExpanded())
 			{
-				correspondingSection.setExpanded(b.getSelection());
+				correspondingSection.setExpanded(active);
 				sashform.setWeights(calculateSashWeights(correspondingSection));
 			}
 		}
@@ -696,5 +560,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	public QueryCollection<R, Q> getManagedQueries()
 	{
 		return queryMap;
+	}
+	
+	@Override
+	public Class<? extends R> getBaseViewerClass()
+	{
+		return getResultType();
 	}
 }
