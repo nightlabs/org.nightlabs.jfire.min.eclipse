@@ -12,44 +12,26 @@ import org.nightlabs.jfire.prop.exception.StructFieldValueNotFoundException;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
 import org.nightlabs.jfire.prop.structfield.StructFieldValue;
 
-public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor> {
-
-//	private Label fieldName;
+public class SelectionDataFieldComposite 
+extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor> 
+{
 	private XComboComposite<StructFieldValue> fieldValueCombo;
-//	private SelectionDataFieldEditor editor;
 	private ModifyListener modifyListener;
 	
 	/**
-	 * Assumes to have a parent composite with GridLaout and
+	 * Assumes to have a parent composite with GridLayout and
 	 * adds it own GridData.
-	 * @param editor
-	 * @param parent
-	 * @param style
+	 * @param editor the SelectionDataFieldEditor
+	 * @param parent the parent composite
+	 * @param style the SWT style
 	 */
-	public SelectionDataFieldComposite(final SelectionDataFieldEditor editor, Composite parent, int style,
-			ModifyListener modListener) {
+	public SelectionDataFieldComposite(final SelectionDataFieldEditor editor, 
+			Composite parent, int style, ModifyListener modListener) 
+	{
 		super(parent, style, editor);
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
-		
-//		this.editor = editor;
-		
-//		GridLayout layout = new GridLayout();
-//		setLayout(layout);
-//		layout.horizontalSpacing = 0;
-//		layout.verticalSpacing = 0;
-//		layout.marginHeight = 0;
-//		layout.marginWidth = 0;
-//		setLayout(createLayout());
-		
-//		GridData gridData = new GridData(GridData.FILL_BOTH);
-//		setLayoutData(gridData);
-		
-//		fieldName = new Label(this, SWT.NONE);
-//		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
-//		nameData.grabExcessHorizontalSpace = true;
-//		fieldName.setLayoutData(nameData);
-		
+				
 		LabelProvider labelProvider = new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -67,13 +49,8 @@ public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposit
 				(String) null,
 				labelProvider,
 				LayoutMode.TIGHT_WRAPPER
-//				, LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.NONE
-				);
-		
-//		SelectionStructField field = (SelectionStructField) editor.getStructField();
-//		refresh();
-//		fieldValueCombo.setInput(field.getStructFieldValues());
-		
+		);
+				
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;
 		fieldValueCombo.setLayoutData(textData);
@@ -87,17 +64,26 @@ public class SelectionDataFieldComposite extends AbstractInlineDataFieldComposit
 	@Override
 	public void _refresh() {
 		SelectionStructField field = (SelectionStructField) getEditor().getStructField();
-//		fieldName.setText(field.getName().getText());
 		fieldValueCombo.setInput( field.getStructFieldValues() );
 		if (getEditor().getDataField().getStructFieldValueID() != null) {
 			try {
 				fieldValueCombo.selectElement(field.getStructFieldValue(getEditor().getDataField().getStructFieldValueID()));
 			} catch (StructFieldValueNotFoundException e) {
-				fieldValueCombo.selectElementByIndex(-1);
+				if (fieldValueCombo.getItemCount() > 0) {
+					fieldValueCombo.selectElementByIndex(0);
+				}
+				else {
+					fieldValueCombo.selectElementByIndex(-1);
+				}
 				throw new RuntimeException("Could not find the referenced structFieldValue with id "+getEditor().getDataField().getStructFieldValueID()); //$NON-NLS-1$
 			}
 		} else {
-			fieldValueCombo.selectElementByIndex(-1);
+			if (fieldValueCombo.getItemCount() > 0) {
+				fieldValueCombo.selectElementByIndex(0);
+			}
+			else {
+				fieldValueCombo.selectElementByIndex(-1);
+			}
 		}
 	}
 	
