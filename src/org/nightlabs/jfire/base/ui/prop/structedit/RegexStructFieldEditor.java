@@ -44,12 +44,12 @@ public class RegexStructFieldEditor extends AbstractStructFieldEditor<RegexStruc
 		if (validateInput())
 			comp.saveData();
 	}
-	
+
 	@Override
 	public void saveData() {
 		comp.saveData();
 	}
-	
+
 	@Override
 	public void restoreData() {
 		comp.restoreData();
@@ -69,7 +69,7 @@ class RegexStructFieldEditComposite extends XComposite {
 		new Label(this, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.RegexStructFieldEditor.regexLabel.text")); //$NON-NLS-1$
 		regexTextField = new Text(this, getBorderStyle());
 		regexTextField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		regexTextField.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				if (regexField.validateRegex(regexTextField.getText()))
@@ -78,7 +78,7 @@ class RegexStructFieldEditComposite extends XComposite {
 			}
 		});
 	}
-	
+
 	private void updateErrorLabel() {
 		regexField.validateData(regexTextField.getText());
 		editor.setErrorMessage(regexField.getValidationError());
@@ -87,21 +87,21 @@ class RegexStructFieldEditComposite extends XComposite {
 	protected void saveData() {
 		if (regexField == null)
 			return;
-		
+
 		regexOrig = regexField.getRegex();
 	}
-	
+
 	protected void restoreData() {
 		regexField.setRegex(regexOrig);
 	}
 
 	/**
 	 * Sets the currently display field.
-	 * 
+	 *
 	 * @param field The {@link RegexStructField} to be displayed.
 	 */
 	public void setField(RegexStructField field) {
-		
+
 		regexField = field;
 		if (regexField == null) {
 			this.setEnabled(false);

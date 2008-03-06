@@ -41,14 +41,14 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	protected FullDataBlockCoverageComposite fullDataBlockCoverageComposite;
 	protected PropertySet prop;
 	protected EditorStructBlockRegistry editorStructBlockRegistry;
-	
+
 	/**
 	 * @param pageName
 	 * @param title
 	 */
 	public FullDataBlockCoverageWizardPage(
 			String pageName, String title, PropertySet propSet, EditorStructBlockRegistry editorStructBlockRegistry
-			
+
 	) {
 		super(pageName, title);
 		this.prop = propSet;
@@ -68,7 +68,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	public boolean isPageComplete() {
 		return super.isPageComplete();
 	}
-	
+
 	/**
 	 * See {@link FullDataBlockCoverageComposite#updatePropertySet()}
 	 */
@@ -84,13 +84,13 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 		if (fullDataBlockCoverageComposite != null)
 			fullDataBlockCoverageComposite.refresh(propertySet);
 	}
-	
+
 	@Override
 	public void onShow() {
 		super.onShow();
 		refresh(prop);
 	}
-	
+
 	@Override
 	public void onHide() {
 		super.onHide();
