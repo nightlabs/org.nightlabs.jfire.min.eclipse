@@ -31,7 +31,7 @@ public abstract class JDOQuerySearchEntryViewer<R, Q extends AbstractSearchQuery
 	protected void displaySearchResult(Object result)
 	{
 		if (getListComposite() != null) {
-			getListComposite().getTableViewer().setInput(result);
+			getListComposite().setInput(result);
 		}
 	}
 
