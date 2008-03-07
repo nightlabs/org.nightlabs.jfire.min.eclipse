@@ -21,6 +21,7 @@ public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearc
 	private Image decoratorImage = null;
 	private String name = null;
 	private String id = null;
+	private boolean isDefault = false;
 	
 	public Image getDecoratorImage() {
 		return decoratorImage;
@@ -57,6 +58,10 @@ public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearc
 	public void setName(String name) {
 		this.name = name;
 	}
+	public boolean isDefault()
+	{
+		return isDefault;
+	}
 	
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
 	throws CoreException
@@ -66,6 +71,8 @@ public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearc
 			String iconString = config.getAttribute(QuickSearchEntryRegistry.ATTRIBUTE_IMAGE);
 			String name = config.getAttribute(QuickSearchEntryRegistry.ATTRIBUTE_NAME);
 			String idString = config.getAttribute(QuickSearchEntryRegistry.ATTRIBUTE_ID);
+			String isDefault = config.getAttribute(QuickSearchEntryRegistry.ATTRIBUTE_DEFAULT);
+			
 			if (AbstractEPProcessor.checkString(name)) {
 				this.name = name;
 			}
@@ -84,7 +91,16 @@ public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearc
 			if (AbstractEPProcessor.checkString(idString)) {
 				id = idString;
 			}
+			if (AbstractEPProcessor.checkString(isDefault))
+			{
+				this.isDefault = Boolean.parseBoolean(isDefault);
+			}
 		}
 	}
 	
+	@Override
+	public int compareTo(QuickSearchEntryFactory<R, Q> o)
+	{
+		return getName().compareTo(o.getName());
+	}
 }

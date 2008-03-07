@@ -14,7 +14,7 @@ import org.nightlabs.jdo.query.AbstractSearchQuery;
  *
  */
 public interface QuickSearchEntryFactory<R, Q extends AbstractSearchQuery<? extends R>>
-	extends IExecutableExtension
+	extends IExecutableExtension, Comparable<QuickSearchEntryFactory<R, Q>>
 {
 	/**
 	 * returns the optional image, may be null
@@ -55,6 +55,15 @@ public interface QuickSearchEntryFactory<R, Q extends AbstractSearchQuery<? exte
 	 * @return an instance of {@link QuickSearchEntry}
 	 */
 	QuickSearchEntry<R,Q> createQuickSearchEntry();
+	
+	/**
+	 * Returns whether the quick search entries created by this factory are considered the default of
+	 * all quick search entries to the related object.
+	 * 
+	 * @return whether the quick search entries created by this factory are considered the default of
+	 * all quick search entries to the related object.
+	 */
+	boolean isDefault();
 	
 	/**
 	 * Returns the class of the query type needed by me to perform the filter setup.

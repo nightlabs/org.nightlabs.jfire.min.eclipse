@@ -1,7 +1,9 @@
 package org.nightlabs.jfire.base.ui.overview.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -42,7 +44,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
-import org.nightlabs.base.ui.form.NightlabsFormsToolkit;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
@@ -97,7 +98,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 */
 	protected QueryMap<R, Q> queryMap;
 	
-	private XComposite searchWrapper = null;
+	private ScrolledComposite scrollableSearchWrapper;
+	private XComposite toolbarAndAdvancedSearchWrapper = null;
 	private SashForm sashform = null;
 	private ToolItem searchItem = null;
 	private ToolBar searchTextToolBar = null;
@@ -105,24 +107,42 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	public Composite createComposite(Composite parent)
 	{
 		sashform = new SashForm(parent, SWT.VERTICAL);
-		IToolkit toolkit = new NightlabsFormsToolkit(Display.getDefault());
+		IToolkit toolkit = XComposite.retrieveToolkit(parent);
 		
-		searchWrapper = new XComposite(sashform, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER);
-		searchWrapper.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		createToolBar(searchWrapper, toolkit);
+		scrollableSearchWrapper = new ScrolledComposite(sashform, SWT.V_SCROLL);
+		scrollableSearchWrapper.setExpandHorizontal(true);
+		scrollableSearchWrapper.setExpandVertical(true);
+		GridLayout searchLayout = XComposite.getLayout(LayoutMode.TOTAL_WRAPPER);
+		searchLayout.verticalSpacing = 70;
+		scrollableSearchWrapper.setLayout(searchLayout);
+
+		toolbarAndAdvancedSearchWrapper = new XComposite(scrollableSearchWrapper, SWT.NONE,
+			LayoutMode.TOP_BOTTOM_WRAPPER);
 		
-		createAdvancedSearchSections(searchWrapper, toolkit);
-		
+		createToolBar(toolbarAndAdvancedSearchWrapper, toolkit);
+		createAdvancedSearchSections(toolbarAndAdvancedSearchWrapper, toolkit);
 		resultComposite = createResultComposite(sashform);
+		scrollableSearchWrapper.setContent(toolbarAndAdvancedSearchWrapper);
+		scrollableSearchWrapper.setMinHeight(toolbarAndAdvancedSearchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
 		if (parent.getLayout() instanceof GridLayout)
 			sashform.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		// Form Look & Feel
-		searchWrapper.setToolkit(toolkit);
-		searchWrapper.adaptToToolkit();
+		toolbarAndAdvancedSearchWrapper.setToolkit(toolkit);
+		toolbarAndAdvancedSearchWrapper.adaptToToolkit();
+		if (resultComposite instanceof XComposite)
+		{
+			final XComposite resultXComposite = (XComposite) resultComposite;
+			resultXComposite.setToolkit(toolkit);
+			resultXComposite.adaptToToolkit();
+		}
+		else if (toolkit != null)
+		{
+			toolkit.adapt(resultComposite);
+		}
 		
-		configureQuickSearchEntries(searchItem);
+		createQuickSearchEntries(searchItem);
 				
 		// Context Menu
 		menuManager = new MenuManager();
@@ -135,20 +155,39 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	}
 
 	/**
-	 * @param toolkit
+	 * List of all sections containing advanced search information.
+	 */
+	private List<Section> advancedSearchSections;
+	
+	/**
+	 * @param parent the Composite to create the sections into.
+	 * @param toolkit the toolkit to use for section creation, etc.
 	 */
 	protected void createAdvancedSearchSections(Composite parent, IToolkit toolkit)
 	{
 		SortedSet<QueryFilterFactory> registeredComposites =
 			QueryFilterCompositeRegistry.sharedInstance().getQueryFilterCompositesFor(getResultType());
 		
-		if (registeredComposites == null)
+		if (registeredComposites == null || registeredComposites.isEmpty())
+		{
+			advancedSearchSections = Collections.emptyList();
 			return;
+		}
+		
+		advancedSearchSections = new ArrayList<Section>(registeredComposites.size());
 		
 		Section advancedSearchSection;
 		for (QueryFilterFactory factory : registeredComposites)
 		{
-			advancedSearchSection = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
+			final int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT;
+			if (toolkit != null)
+			{
+				advancedSearchSection = toolkit.createSection(parent, sectionStyle);
+			}
+			else
+			{
+				advancedSearchSection = new Section(parent, sectionStyle);
+			}
 			advancedSearchSection.setLayout(new GridLayout());
 			advancedSearchSection.setText(factory.getSectionTitle());
 			advancedSearchSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -160,34 +199,41 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			
 			advancedSearchSection.setTextClient(advancedSectionActiveButton);
 
-			ScrolledComposite scrollComp = new ScrolledComposite(advancedSearchSection, SWT.NONE | SWT.H_SCROLL | SWT.V_SCROLL);
-			scrollComp.setExpandHorizontal(true);
-			scrollComp.setExpandVertical(true);
-			scrollComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			scrollComp.setLayout(XComposite.getLayout(LayoutMode.TOTAL_WRAPPER));
 			AbstractQueryFilterComposite<? extends R, ? extends Q> filterComposite =
 				factory.createQueryFilter(
-					scrollComp, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, this
+					advancedSearchSection, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, this
 					);
 			filterComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			scrollComp.setContent(filterComposite);
-			advancedSearchSection.setClient(scrollComp);
-			scrollComp.setMinSize(filterComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			advancedSearchSection.setClient(filterComposite);
 			
 			advancedSectionActiveButton.addSelectionListener( new ActiveButtonSelectionListener(advancedSearchSection, filterComposite) );
+			advancedSearchSections.add(advancedSearchSection);
 		}
 	}
 	
-	public Composite getComposite() {
+	/**
+	 * @eturn The sashform containing the search part (toolbar & advanced search sections) and the
+	 * 	result composite (displaying the found elements).
+	 */
+	public Composite getComposite()
+	{
 		if (sashform == null)
 			throw new IllegalStateException("createComposite() was not called before getComposite()!"); //$NON-NLS-1$
+		
 		return sashform;
 	}
 		
 	private ToolBarManager toolBarManager = null;
-	public ToolBarManager getToolBarManager() {
+	
+	/**
+	 * @return the ToolBarManager used for the search tool bar with the quick search entries.
+	 */
+	public ToolBarManager getToolBarManager()
+	{
 		return toolBarManager;
 	}
+	
+	protected Text searchText = null;
 	
 	private Spinner limit;
 	
@@ -199,68 +245,83 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * @param searchComposite the parent Composite where the toolbar will be located in
 	 * @param toolkit the toolkit to use
 	 */
-	protected void createToolBar(final Composite searchComposite, IToolkit toolkit)
+	protected void createToolBar(final XComposite searchComposite, IToolkit toolkit)
 	{
 		XComposite toolBarWrapper = new XComposite(searchComposite, SWT.NONE,
-				LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
-		toolBarWrapper.setToolkit(toolkit);
-		toolkit.adapt(toolBarWrapper);
+				LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 5);
+		int toolbarStyle = SWT.WRAP | SWT.HORIZONTAL;
+		if (toolkit != null)
+		{
+			toolbarStyle |= SWT.FLAT;
+		}
+		int borderStyle = searchComposite.getBorderStyle();
 		
-		searchTextToolBar = new ToolBar(toolBarWrapper, SWT.FLAT | SWT.WRAP | SWT.HORIZONTAL);
-		searchTextToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
-		XComposite wrapper = new XComposite(searchTextToolBar, SWT.NONE,
-				LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.NONE, 2);
-		GridLayout wrapperLayout = XComposite.getLayout(LayoutMode.TOP_BOTTOM_WRAPPER,
-				wrapper.getGridLayout(), 2);
-		wrapperLayout.marginTop = 3;
-		wrapper.setLayout(wrapperLayout);
-		wrapper.setToolkit(toolkit);
-		Label searchLabel = new Label(wrapper, SWT.NONE);
+		XComposite quickSeachTextComp = new XComposite(toolBarWrapper, SWT.NONE,
+				LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.NONE, 2);
+		GridLayout gridLayout = quickSeachTextComp.getGridLayout();
+		gridLayout.marginLeft = gridLayout.marginWidth;
+		gridLayout.marginWidth = 0;
+		gridLayout.marginRight = 0;
+		Label searchLabel = new Label(quickSeachTextComp, SWT.NONE);
 		searchLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchLabel.text")); //$NON-NLS-1$
-		searchText = new Text(wrapper, SWT.NONE);
-		searchText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		searchText = new Text(quickSeachTextComp, borderStyle);
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.minimumWidth = 200;
+		searchText.setLayoutData(gridData);
 		searchText.addSelectionListener(searchTextListener);
 		searchText.addModifyListener(new ModifyListener()
 		{
 			@Override
 			public void modifyText(ModifyEvent event)
 			{
+				if (activeMenuItem == null)
+					return;
+				
 				QuickSearchEntry<?, ?> activeQuickSearchEntry = (QuickSearchEntry<?, ?>) activeMenuItem.getData();
 				activeQuickSearchEntry.setSearchConditionValue(searchText.getText());
 			}
 		});
-		ToolItem textItem = new ToolItem(searchTextToolBar, SWT.SEPARATOR);
-		textItem.setControl(wrapper);
-		textItem.setWidth(300);
+		
+		searchTextToolBar = new ToolBar(toolBarWrapper, toolbarStyle);
+		
 		searchItem = new ToolItem(searchTextToolBar, SWT.DROP_DOWN);
 		searchItem.setImage(SharedImages.SEARCH_16x16.createImage());
 		searchItem.addSelectionListener(searchItemListener);
-		wrapper.adaptToToolkit();
 		
-		XComposite rangeWrapper = new XComposite(searchTextToolBar, SWT.NONE,
-				LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.NONE, 2);
-		rangeWrapper.setToolkit(toolkit);
+		XComposite rangeWrapper = new XComposite(toolBarWrapper, SWT.NONE,
+				LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.NONE, 2);
 		new Label(rangeWrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.limitLabel.text")); //$NON-NLS-1$
-		limit = new Spinner(rangeWrapper, SWT.NONE);
+		limit = new Spinner(rangeWrapper, borderStyle);
 		limit.setMinimum(0);
 		limit.setMaximum(Integer.MAX_VALUE);
-		limit.setSelection(0);
-		ToolItem rangeItem = new ToolItem(searchTextToolBar, SWT.SEPARATOR);
-		rangeItem.setControl(rangeWrapper);
-		rangeItem.setWidth(400);
-		rangeWrapper.adaptToToolkit();
+		limit.addModifyListener(new ModifyListener()
+		{
+			@Override
+			public void modifyText(ModifyEvent e)
+			{
+				queryMap.setToExclude( limit.getSelection() );
+			}
+		});
+		limit.setSelection(25);
 		
-		ToolBar toolBar = new ToolBar(toolBarWrapper, SWT.FLAT | SWT.WRAP | SWT.HORIZONTAL);
+		Label spacerLabel = new Label(toolBarWrapper, SWT.NONE);
+		spacerLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		ToolBar toolBar = new ToolBar(toolBarWrapper, toolbarStyle);
+		toolBar.setLayoutData(new GridData(SWT.END, SWT.FILL, false, true));
 		toolBarManager = new ToolBarManager(toolBar);
-		toolkit.adapt(toolBar);
-		toolBar.setBackground( toolBarWrapper.getBackground() );
-		searchTextToolBar.setBackground( toolBarWrapper.getBackground() );
-//		toolBarWrapper.adaptToToolkit();
+		if (toolkit != null)
+		{
+			toolBarWrapper.setToolkit(toolkit);
+			toolBarWrapper.adaptToToolkit();
+			quickSeachTextComp.setToolkit(toolkit);
+			quickSeachTextComp.adaptToToolkit();
+			rangeWrapper.setToolkit(toolkit);
+			rangeWrapper.adaptToToolkit();
+			toolkit.adapt(toolBar);
+		}
 	}
 		
-	protected Text searchText = null;
-	
 	/**
 	 * Implement this method for displaying the result of a search
 	 * 
@@ -306,6 +367,13 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}.schedule();
 	}
 	
+	/**
+	 * The actual search should be done here. It is advised to do it via the DAOs.
+	 * 
+	 * @param queryMap the {@link QueryCollection} containing all queries managed by this viewer.
+	 * @param monitor the monitor to show the progress.
+	 * @return a collection of all elements matching the cascaded queries of the <code>queryMap</code>.
+	 */
 	protected abstract Collection<R> doSearch(QueryMap<R, ? extends Q> queryMap, ProgressMonitor monitor);
 
 	/**
@@ -315,39 +383,30 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * 
 	 * @param result the search result to display
 	 */
-	public abstract void displaySearchResult(Object result);
+	protected abstract void displaySearchResult(Object result);
 	
 	private MenuManager menuManager;
 	public MenuManager getMenuManager() {
 		return menuManager;
 	}
 	
-	public ISelectionProvider getSelectionProvider() {
-		if (resultComposite instanceof AbstractTableComposite) {
+	public ISelectionProvider getSelectionProvider()
+	{
+		if (resultComposite instanceof AbstractTableComposite)
+		{
 			AbstractTableComposite<?> tableComposite = (AbstractTableComposite<?>) resultComposite;
 			return tableComposite.getTableViewer();
 		}
 		return null;
 	}
 	
-	protected void configureSash(SashForm sashform) {
-		int searchHeight = searchWrapper.getSize().y;
-		int resultHeight = resultComposite.getSize().y;
-		sashform.setWeights(new int[] {searchHeight, resultHeight});
-	}
-	
-	public Composite createCategoryEntryComposite(Composite parent) {
-		throw new UnsupportedOperationException("SearchEntryViewer does not support custom Composites" +
-				"for the Category."); //$NON-NLS-1$
-	}
-
-	private SelectionListener searchItemListener = new SelectionListener(){
-		public void widgetSelected(SelectionEvent e) {
+	private SelectionListener searchItemListener = new SelectionAdapter()
+	{
+		@Override
+		public void widgetSelected(SelectionEvent e)
+		{
 			if (e.detail != SWT.ARROW)
 				search();
-		}
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
 		}
 	};
 	
@@ -367,7 +426,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		{
 			final Section section = (Section) e.getSource();
 			sashform.setWeights(calculateSashWeights(section));
-			sashform.layout(true, true);
+			scrollableSearchWrapper.setMinHeight(scrollableSearchWrapper.getSize().y);
 		}
 	};
 		
@@ -383,34 +442,125 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		if (expandedStateChangedSection == null)
 		{
 			// we need to initialise size values because these composites haven't been layed out correctly. 
-			searchHeight = searchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y;
+			searchHeight = scrollableSearchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y;
+			if (searchHeight < 0)
+			{
+				searchHeight = 100;
+			}
 			// NOTE: we cannot compute the size of the sashform, since in the parent tree, the bounds/ available size are/is not known yet.
+//			completeHeight = sashform.getParent().computeSize(SWT.DEFAULT, SWT.DEFAULT).y - sashform.SASH_WIDTH;
 			completeHeight = sashform.getParent().getSize().y - sashform.getParent().getBorderWidth() - sashform.SASH_WIDTH;
+			if (completeHeight <= 0)
+			{
+				completeHeight = 5 * searchHeight;
+			}
 		}
 		else
 		{
 			completeHeight = sashform.getClientArea().height - sashform.SASH_WIDTH;
-			searchHeight = searchWrapper.getSize().y;			
+			scrollableSearchWrapper.layout(true, true);
+//			searchHeight = scrollableSearchWrapper.getSize().y; // computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+			searchHeight = calculateSearchAreaHeight(completeHeight);
 		}
 		
-		if (expandedStateChangedSection != null)
+		
+		// only move the sash if after the adjustment of the sash, the result composite 
+		// still has some height left (at least 50 pixels).
+		if (searchHeight + 50 > completeHeight)
 		{
-			if (expandedStateChangedSection.isExpanded())
-			{
-				searchHeight += expandedStateChangedSection.getClient().getSize().y;				
-			}
-			else
-			{
-				searchHeight -= expandedStateChangedSection.getClient().getSize().y;				
-			}
+			return sashform.getWeights();
 		}
+		
 		int resultHeight = completeHeight - searchHeight;
 		return new int[] { searchHeight, resultHeight };
 	}
+
+	/**
+	 * @param completeHeight 
+	 * @return
+	 */
+	private int calculateSearchAreaHeight(int completeHeight)
+	{
+		int searchHeight = toolBarManager.getControl().getSize().y;
+		
+		// spacing used as a buffer for minimum area heights
+		final int verticalSpacing;
+		if (toolbarAndAdvancedSearchWrapper.getLayout() instanceof GridLayout)
+		{
+			GridLayout gridLayout = (GridLayout) toolbarAndAdvancedSearchWrapper.getLayout();
+			verticalSpacing = gridLayout.verticalSpacing;
+		}
+		else
+		{
+			verticalSpacing = 10;
+		}
+
+		for (Section section : advancedSearchSections)
+		{
+			searchHeight += section.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+//			int sectionContentHeight = section.getClient().getSize().y;
+//			if (section.isExpanded())
+//			{
+//				final int maxHeight = completeHeight - 50; // min 50 pixel for the result composite.
+//				if (searchHeight + sectionContentHeight < maxHeight)
+//				{
+//					searchHeight += section.getClient().getSize().y;					
+//				}
+//				else
+//				{
+//					searchHeight = maxHeight;
+//				}
+//			}
+//			else
+//			{
+//				final int sectionHeaderHeight = section.getTextClientHeightDifference() == 0 ?
+//					section.getDescriptionControl().getSize().y :
+//						section.getTextClient().getSize().y;
+//					
+//					final int toolBarHeight = getToolBarManager().getControl().getSize().y;
+//					
+//					int minHeight = toolBarHeight;
+//					final int multiplier = advancedSearchSectionCount > 0 ? advancedSearchSectionCount : 1;
+//					minHeight += multiplier * sectionHeaderHeight;
+//					minHeight += multiplier * verticalSpacing;
+//					minHeight += multiplier * 10; //magical spacing needed due to section spacings.
+//					
+//					// only shorten the searchComposite height if we still show at least one section with a little bit of spacing		
+//					if (searchHeight - sectionContentHeight > minHeight)
+//					{
+//						searchHeight -= section.getClient().getSize().y;
+//					}
+//					else
+//					{
+//						searchHeight = minHeight;
+//					}
+//			}
+		}
+		
+		// add the spacing inbetween the sections
+		searchHeight += advancedSearchSections.size() * verticalSpacing;
+		searchHeight += advancedSearchSections.size() * 5; //magical spacing needed due to section spacings.
+		return searchHeight;
+	}
 	
+	/**
+	 * Reference to the menu containing all quick search items.
+	 */
 	protected Menu quickSearchMenu;
 	
-	protected void configureQuickSearchEntries(final ToolItem searchItem)
+	/**
+	 * Pointer to the currently active MenuItem
+	 */
+	private MenuItem activeMenuItem = null;
+	
+	/**
+	 * Gets all registered {@link QuickSearchEntryFactory}s and adds the entries created by these 
+	 * factories to the {@link #quickSearchMenu}.
+	 * 
+	 * @param searchItem the ToolBar item that acts as the button to trigger the drop down list of
+	 * 	quick search entries.
+	 */
+	protected void createQuickSearchEntries(final ToolItem searchItem)
 	{
 		if (getQuickSearchEntryFactories() == null || getQuickSearchEntryFactories().isEmpty())
 			return;
@@ -418,7 +568,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		Collection<QuickSearchEntryFactory> quickSearchEntryFactories = getQuickSearchEntryFactories();
 		quickSearchMenu = new Menu(RCPUtil.getActiveShell(), SWT.POP_UP);
 
-		boolean isFirstElement = true;
 		for (final QuickSearchEntryFactory quickSearchEntryFactory : quickSearchEntryFactories) {
 			final MenuItem menuItem = new MenuItem(quickSearchMenu, SWT.CHECK);
 			menuItem.setText(quickSearchEntryFactory.getName());
@@ -431,10 +580,28 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			menuItem.addSelectionListener(dropDownMenuSelectionAdapter);
 			
 			// initialise the first query and set empty condition
-			if (isFirstElement)
+			if (quickSearchEntryFactory.isDefault())
 			{
-				quickSearchEntry.setSearchConditionValue("");
+				if (activeMenuItem != null) // there is already an item declared as default.
+				{
+					logger.warn("There is already a quick search entry marked as default! This entry wit id="+
+						quickSearchEntryFactory.getId() + " and with name=" +quickSearchEntryFactory.getName() +
+					" is also declared as 'default'! This declaration is ignored.");
+				}
+				else
+				{
+					quickSearchEntry.setSearchConditionValue("");
+					activeMenuItem = menuItem;
+					activeMenuItem.setSelection(true);
+				}
 			}
+		}
+		
+		if (activeMenuItem == null && quickSearchMenu.getItems().length > 0)
+		{
+			activeMenuItem = quickSearchMenu.getItem(0);
+			activeMenuItem.setSelection(true);
+			((QuickSearchEntry)activeMenuItem.getData()).setSearchConditionValue("");
 		}
 		
 		searchItem.addListener(SWT.Selection, new Listener()
@@ -451,16 +618,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 				}
 			}
 		});
-
-//		selectedQuickSearchEntry = firstEntry;
-		activeMenuItem = quickSearchMenu.getItem(0);
-		activeMenuItem.setSelection(true);
 	}
-	
-	/**
-	 * Pointer to the currently active MenuItem
-	 */
-	private MenuItem activeMenuItem = null;
 	
 	protected SelectionListener dropDownMenuSelectionAdapter = new SelectionAdapter()
 	{
@@ -500,11 +658,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * 
 	 * @return a List of {@link QuickSearchEntryFactory}s will can be used for quick searching
 	 */
-	protected Collection<QuickSearchEntryFactory> getQuickSearchEntryFactories()
+	protected SortedSet<QuickSearchEntryFactory> getQuickSearchEntryFactories()
 	{
-		Set<QuickSearchEntryFactory> factories =	
-			QuickSearchEntryRegistry.sharedInstance().getFactories(this.getClass().getName());
-		return factories;
+		return QuickSearchEntryRegistry.sharedInstance().getFactories(this.getClass().getName());
 	}
 	
 	protected class ActiveButtonSelectionListener
@@ -542,15 +698,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}
 	}
 	
-	// FIXME: What is this for?? Shouldn't the sections to the expansion themselves?
-//	protected void expand(Section searchCriteriaSection) {
-//		if (searchCriteriaSection.isExpanded())
-//			return;
-//		searchCriteriaSection.setExpanded(true);
-//		doExpand(searchCriteriaSection);
-//	}
-
-//	public <ReqQuery extends AbstractSearchQuery<? extends R>> ReqQuery getQueryOfType(Class<ReqQuery> queryClass)
 	@Override
 	public <ReqQuery extends Q> ReqQuery getQueryOfType(Class<ReqQuery> queryClass)
 	{

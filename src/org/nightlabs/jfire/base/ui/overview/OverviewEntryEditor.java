@@ -7,15 +7,29 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.EditorActionBarContributor;
 import org.nightlabs.base.ui.action.registry.editor.XEditorActionBarContributor;
-import org.nightlabs.jfire.base.ui.login.part.LSDEditorPart;
+import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.base.ui.part.ControllablePart;
+import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
 
 /**
  * Editor displaying the {@link EntryViewer} of an {@link Entry}.
@@ -26,12 +40,16 @@ import org.nightlabs.jfire.base.ui.login.part.LSDEditorPart;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class OverviewEntryEditor
-extends LSDEditorPart
+	extends FormEditor
+	implements ControllablePart
 {
 	private static final Logger logger = Logger.getLogger(OverviewEntryEditor.class);
 	
 	public OverviewEntryEditor() {
 		super();
+		
+		// Register the view at the view-controller
+		LSDPartController.sharedInstance().registerPart(this);
 	}
 	
 	@Override
@@ -75,26 +93,9 @@ extends LSDEditorPart
 	private Composite composite;
 	public void createPartContents(Composite parent)
 	{
-		if (entryViewer != null) {
-			composite = entryViewer.createComposite(parent);
-			if (entryViewer.getSelectionProvider() != null) {
-				getSite().setSelectionProvider(entryViewer.getSelectionProvider());
-				entryViewer.getSelectionProvider().addSelectionChangedListener(selectionChangedListener);
-			}
-			
-			if (getEditorSite().getActionBarContributor() != null &&
-					getEditorSite().getActionBarContributor() instanceof XEditorActionBarContributor)
-			{
-				XEditorActionBarContributor editorActionBarContributor =
-					(XEditorActionBarContributor) getEditorSite().getActionBarContributor();
-				addSelectionChangedListener(editorActionBarContributor);
-			}
-			
-			updateContextMenu();
-			updateToolbar();
-		}
+		addPages();
 	}
-		
+	
 	@Override
 	public void setFocus() {
 		if (composite != null && !composite.isDisposed())
@@ -223,4 +224,127 @@ extends LSDEditorPart
 			listener.selectionChanged(event);
 		}
 	}
+
+	/**
+	 * Returns the name of the search page.
+	 * @return the name of the search page.
+	 */
+	protected String getSearchPageName()
+	{
+		if (entryViewer == null)
+			return "";
+		
+		return entryViewer.getEntry().getEntryFactory().getName();
+	}
+	
+	@Override
+	protected void addPages()
+	{
+		if (entryViewer != null) {
+			FormPage searchPage = new FormPage(this, "SearchPage", getSearchPageName())
+			{
+				@Override
+				protected void createFormContent(IManagedForm managedForm)
+				{
+					ScrolledForm form = managedForm.getForm();
+					Composite formBody = form.getBody();
+					formBody.setLayout(XComposite.getLayout(LayoutMode.TOP_BOTTOM_WRAPPER));
+					composite = entryViewer.createComposite(form.getBody());
+					GridData resultData = new GridData(SWT.FILL, SWT.FILL, true, true);
+					
+					// FIXME: this is a workaround for growing tables in FromPages that works, at least under GNU+Linux / GTK very well.
+					// more information about this can be found at: https://bugs.eclipse.org/bugs/show_bug.cgi?id=215997#c4
+					resultData.heightHint = 1;
+					resultData.widthHint = 1;
+					
+					composite.setLayoutData(resultData);
+					if (entryViewer.getSelectionProvider() != null) {
+						getSite().setSelectionProvider(entryViewer.getSelectionProvider());
+						entryViewer.getSelectionProvider().addSelectionChangedListener(selectionChangedListener);
+					}
+					
+					if (getEditorSite().getActionBarContributor() != null &&
+						getEditorSite().getActionBarContributor() instanceof XEditorActionBarContributor)
+					{
+						XEditorActionBarContributor editorActionBarContributor =
+							(XEditorActionBarContributor) getEditorSite().getActionBarContributor();
+						addSelectionChangedListener(editorActionBarContributor);
+					}
+					
+					updateContextMenu();
+					updateToolbar();
+				}
+			};
+			
+			try
+			{
+				addPage(searchPage);
+			}
+			catch (PartInitException e)
+			{
+				throw new RuntimeException("Couldn't initialise searchFormPage!", e);
+			}
+		}
+		
+    // Ensures that this editor will only display the page's tab
+    // area if there are more than one page
+    //
+    getContainer().addControlListener
+      (new ControlAdapter()
+       {
+        boolean guard = false;
+        @Override
+        public void controlResized(ControlEvent event)
+        {
+          if (!guard)
+          {
+            guard = true;
+            hideTabs();
+            guard = false;
+          }
+        }
+       });
+	}
+
+	@Override
+	public boolean canDisplayPart()
+	{
+		return Login.isLoggedIn();
+	}
+	
+  /**
+   * If there is just one page in the multi-page editor part,
+   * this hides the single tab at the bottom.
+   */
+  protected void hideTabs()
+  {
+    if (getPageCount() <= 1)
+    {
+      setPageText(0, "");
+      if (getContainer() instanceof CTabFolder)
+      {
+        ((CTabFolder)getContainer()).setTabHeight(1);
+        Point point = getContainer().getSize();
+        getContainer().setSize(point.x, point.y + 6);
+      }
+    }
+  }
+
+  /**
+   * If there is more than one page in the multi-page editor part,
+   * this shows the tabs at the bottom.
+   */
+  protected void showTabs()
+  {
+    if (getPageCount() > 1)
+    {
+      setPageText(0, getSearchPageName());
+      if (getContainer() instanceof CTabFolder)
+      {
+        ((CTabFolder)getContainer()).setTabHeight(SWT.DEFAULT);
+        Point point = getContainer().getSize();
+        getContainer().setSize(point.x, point.y - 6);
+      }
+    }
+  }
 }

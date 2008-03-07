@@ -1,9 +1,9 @@
 package org.nightlabs.jfire.base.ui.overview.search;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 
 /**
- * registry for the extension-point org.nightlabs.jfire.base.ui.quickSearchEntry
+ * Registry for the extension-point org.nightlabs.jfire.base.ui.quickSearchEntry
  * 
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  */
@@ -26,6 +26,7 @@ extends AbstractEPProcessor
 	public static String ATTRIBUTE_ID = "id";
 	public static String ATTRIBUTE_NAME = "name";
 	public static String ATTRIBUTE_IMAGE = "image";
+	public static String ATTRIBUTE_DEFAULT = "default";
 	public static String ATTRIBUTE_DECORATOR_IMAGE = "decoratorImage";
 	
 	private static QuickSearchEntryRegistry sharedInstance;
@@ -40,7 +41,8 @@ extends AbstractEPProcessor
 		return sharedInstance;
 	}
 	
-	private Map<String, Set<QuickSearchEntryFactory>> id2Factories = new HashMap<String, Set<QuickSearchEntryFactory>>();
+	private Map<String, SortedSet<QuickSearchEntryFactory>> id2Factories =
+		new HashMap<String, SortedSet<QuickSearchEntryFactory>>();
 			
 	@Override
 	public String getExtensionPointID() {
@@ -57,9 +59,9 @@ extends AbstractEPProcessor
 					QuickSearchEntryFactory factory = (QuickSearchEntryFactory) element.createExecutableExtension(ATTRIBUTE_CLASS);
 					if (factory != null && factory.getId() != null) {
 						String id = factory.getId();
-						Set<QuickSearchEntryFactory> factories = id2Factories.get(id);
+						SortedSet<QuickSearchEntryFactory> factories = id2Factories.get(id);
 						if (factories == null)
-							factories = new HashSet<QuickSearchEntryFactory>();
+							factories = new TreeSet<QuickSearchEntryFactory>();
 						factories.add(factory);
 						id2Factories.put(id, factories);
 					}
@@ -70,7 +72,7 @@ extends AbstractEPProcessor
 		}
 	}
 
-	public Set<QuickSearchEntryFactory> getFactories(String id) {
+	public SortedSet<QuickSearchEntryFactory> getFactories(String id) {
 		checkProcessing();
 		return id2Factories.get(id);
 	}
