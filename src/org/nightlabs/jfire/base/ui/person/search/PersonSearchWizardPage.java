@@ -91,7 +91,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 				personSelectionChanged();
 			}
 		});
-		searchComposite.getResultTable().getTableViewer().addDoubleClickListener(new IDoubleClickListener() {
+		searchComposite.getResultTable().addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
 				personDoubleClicked();
 			}

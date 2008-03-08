@@ -365,7 +365,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		resultLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.resultLabel.text")); //$NON-NLS-1$
 		
 		resultTable = createResultTable(resultWrapper);
-		resultTable.getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+		resultTable.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent arg0) {
 //				selectedLegalEntity = resultTable.getSelectedLegalEntity();
 			}

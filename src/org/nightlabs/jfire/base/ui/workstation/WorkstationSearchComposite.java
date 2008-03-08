@@ -85,8 +85,8 @@ public class WorkstationSearchComposite extends XComposite {
 		}
 				
 		workstationTable = new WorkstationTable(this, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER : AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
-		workstationTable.getTableViewer().getTable().setLinesVisible(true);
-		workstationTable.getTableViewer().getTable().setHeaderVisible(true);
+		workstationTable.setLinesVisible(true);
+		workstationTable.setHeaderVisible(true);
 	}
 	
 	protected boolean isMultiSelelect() {

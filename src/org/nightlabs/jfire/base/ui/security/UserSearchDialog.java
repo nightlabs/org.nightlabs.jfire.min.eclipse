@@ -56,7 +56,7 @@ extends CenteredDialog
 		if (searchText != null && !searchText.trim().equals("")) { //$NON-NLS-1$
 			userSearchComposite.getUserIDText().setText(searchText);
 		}
-		userSearchComposite.getUserTable().getTableViewer().addDoubleClickListener(userDoubleClickListener);
+		userSearchComposite.getUserTable().addDoubleClickListener(userDoubleClickListener);
 		return userSearchComposite;
 	}
 	

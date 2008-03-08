@@ -173,8 +173,8 @@ extends XComposite
 		}
 				
 		userTable = new UserTable(parent, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER : AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
-		userTable.getTableViewer().getTable().setLinesVisible(true);
-		userTable.getTableViewer().getTable().setHeaderVisible(true);
+		userTable.setLinesVisible(true);
+		userTable.setHeaderVisible(true);
 		userTable.addSelectionChangedListener(userTableSelectionListener);
 	}
 	
