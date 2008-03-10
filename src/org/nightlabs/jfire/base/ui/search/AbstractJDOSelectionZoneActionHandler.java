@@ -22,6 +22,7 @@ extends AbstractSelectionZoneActionHandler
 	public void run() {
 		Collection selectedObjects = getSearchResultProvider().getSelectedObjects();
 		if (selectedObjects != null) {
+			// TODO: before use NLJDOHelper.getObjectIDSet check if maybe already ObjectIDs are contained  
 			Collection selectedObjectIDs = NLJDOHelper.getObjectIDSet(selectedObjects);
 			Collection<Class> subjectClassesToClear = new ArrayList<Class>();
 			subjectClassesToClear.add(getSearchResultProvider().getFactory().getResultTypeClass());
