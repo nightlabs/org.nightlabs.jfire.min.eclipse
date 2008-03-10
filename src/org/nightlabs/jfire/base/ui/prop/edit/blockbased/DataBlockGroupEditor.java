@@ -179,7 +179,7 @@ implements DataBlockEditorChangedListener
 //			GridData gd = (GridData) blockEditor.getLayoutData();
 //			gd.verticalAlignment = SWT.BEGINNING;
 //			blockEditor.setLayoutData(gd);
-			blockEditor.addPropDataBlockEditorChangedListener(this);
+			blockEditor.addDataBlockEditorChangedListener(this);
 			dataBlockEditors.add(blockEditor);
 
 			if (! _struct.getStructBlock(blockGroup).isUnique()) {

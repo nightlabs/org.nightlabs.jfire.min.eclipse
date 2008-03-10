@@ -38,14 +38,14 @@ import org.nightlabs.jfire.prop.DataField;
  * Abstract base composite for composites that are supposed to edit a single {@link DataField} in an <b>inline</b> style,
  * that means they consist of a label for the respective data field and a single input element like a textbox. Extending this
  * class makes it easy to create different composites that look similar according to insets and spacing.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldEditor<? extends DataField>> extends XComposite {
 	private Editor editor;
 	private Label title;
-	
+
 	/**
 	 * @param parent
 	 * @param style
@@ -58,30 +58,30 @@ public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldE
 		title = new Label(this, SWT.NONE);
 		title.setLayoutData(createTitleLayoutData());
 	}
-	
+
 	/**
 	 * Do not override this method, use {@link #_refresh()} instead.
 	 */
-	public void refresh() {
+	public final void refresh() {
 		if (getEditor().getStructField() != null)
 			title.setText(getEditor().getStructField().getName().getText());
-		
+
 		_refresh();
 	}
-	
+
 	protected abstract void _refresh();
-	
+
 	protected Editor getEditor() {
 		return this.editor;
 	}
-	
-	
+
+
 	protected Object createTitleLayoutData() {
 		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 		nameData.grabExcessHorizontalSpace = true;
 		return nameData;
 	}
-	
+
 	/**
 	 * Creates a standard {@link GridLayout} for DataFieldEditComposites.
 	 * @return a standard {@link GridLayout} to be used in DataFieldEditors
@@ -95,7 +95,7 @@ public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldE
 		layout.marginWidth = 2;
 		return layout;
 	}
-	
+
 //	protected final getInputControlLayoutData() {
 //
 //	}

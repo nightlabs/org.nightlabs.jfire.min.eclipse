@@ -46,7 +46,7 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 
 /**
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
@@ -56,7 +56,7 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 	 * LOG4J logger used by this class
 	 */
 	private static final Logger logger = Logger.getLogger(PersonalDataBlockEditor.class);
-	
+
 	public PersonalDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
 		super(struct, dataBlock, parent, style);
 		try {
@@ -69,13 +69,13 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 			this.setLayout(thisLayout);
 
 			createFieldEditors();
-			
+
 			this.layout();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createFieldEditors() {
 		addDataFieldEditor(PersonStruct.PERSONALDATA_NAME,3);
 		addDataFieldEditor(PersonStruct.PERSONALDATA_FIRSTNAME,3);
@@ -134,7 +134,7 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 		public StructBlockID getProviderStructBlockID() {
 			return PersonStruct.PERSONALDATA;
 		}
-		
+
 		/**
 		 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonDataBlockEditorFactory#createPersonDataBlockEditor(org.nightlabs.jfire.base.ui.person.PersonDataBlock, org.eclipse.swt.widgets.Composite, int)
 		 */
@@ -142,6 +142,4 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 			return new PersonalDataBlockEditor(struct, dataBlock, parent, style);
 		}
 	}
-
-
 }

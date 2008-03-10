@@ -1,7 +1,9 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
+
+import java.util.List;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,6 +20,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
@@ -56,7 +59,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		super(parent, page.getEditor().getToolkit(), sectionType);
 		createClient(getSection(), page.getEditor().getToolkit(), sectionDescriptionText);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.AbstractFormPart#commit(boolean)
 	 */
@@ -80,6 +83,13 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
 		blockBasedPersonEditor = new BlockBasedEditor(true);
+		blockBasedPersonEditor.setValidationResultManager(new IValidationResultManager() {
+			@Override
+			public void setValidationResults(List<ValidationResult> validationResults) {
+				// TODO process validation results with
+				// getManagedForm().getMessageManager().
+			}
+		});
 		blockBasedPersonEditorControl = blockBasedPersonEditor.createControl(container, false);
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 		blockBasedPersonEditor.setChangeListener(new DataBlockEditorChangedListener() {
@@ -93,7 +103,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 			}
 		});
 	}
-	
+
 	public void setProperty(final PropertySet property, final IStruct struct) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -111,7 +121,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 
 		section.setText(sectionDescriptionText);
 	}
-	
+
 	public void setDisplayNameChangedListener(DisplayNameChangedListener listener) {
 		blockBasedPersonEditor.setDisplayNameChangedListener(listener);
 	}

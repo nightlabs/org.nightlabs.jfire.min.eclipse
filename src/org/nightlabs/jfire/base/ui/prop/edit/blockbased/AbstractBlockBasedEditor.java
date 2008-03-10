@@ -48,26 +48,26 @@ import org.nightlabs.progress.ProgressMonitor;
  * Abstract base for block based {@link PropertySetEditor}s.
  * It manages (holds) the {@link PropertySet} to edit and the StructBlocks
  * that should be visible when editing the propertySet.
- * 
+ *
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
  * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractBlockBasedEditor implements PropertySetEditor { // extends ScrolledComposite {
-	
+
 	protected PropertySet propertySet;
 	protected EditorStructBlockRegistry structBlockRegistry;
-		
+
 	public AbstractBlockBasedEditor() {
 		this (null, null);
 	}
-	
+
 	/**
 	 * Create a new {@link AbstractBlockBasedEditor} for the given
 	 * propertySet.
-	 * 
+	 *
 	 * @param prop
 	 * @param propStruct
 	 */
@@ -80,9 +80,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 			structBlockRegistry = new EditorStructBlockRegistry(propStruct.getLinkClass(), scope);
 		}
 	}
-	
-	
-	
+
 	/**
 	 * Sets the current propertySet of this editor.
 	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
@@ -95,7 +93,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		if (refresh)
 			refreshControl();
 	}
-	
+
 	/**
 	 * Will only set the propertySet, no changes to the UI will be made.
 	 * @param propertySet
@@ -115,7 +113,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * Returns a version of the {@link Struct}.
 	 * @return
 	 */
-	protected IStruct getPropStructure(ProgressMonitor monitor) {
+	protected IStruct getStructure(ProgressMonitor monitor) {
 		if (propertySet.isInflated())
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractBlockBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
@@ -125,17 +123,17 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		monitor.worked(1);
 		return structure;
 	}
-	
-	
+
+
 	/**
 	 * Refreshes the UI-Representation of the given Property.
-	 * 
+	 *
 	 * @param changeListener
 	 */
 	public abstract void refreshControl();
-	
+
 	private String editorName;
-	
+
 	/**
 	 * Sets the editor domain for this editor and additionally
 	 * registeres structBlocks to display in {@link PropE}
@@ -147,9 +145,9 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		this.editorName = editorName;
 		this.structBlockRegistry = structBlockRegistry;
 	}
-	
+
 	private List<StructBlockID> domainPropStructBlocks;
-	
+
 	protected boolean shouldDisplayStructBlock(DataBlockGroup blockGroup) {
 		// default is all PropStructBlocks
 		if (domainPropStructBlocks == null)
@@ -157,7 +155,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		else
 			return domainPropStructBlocks.contains(StructBlockID.create(blockGroup.getStructBlockOrganisationID(),blockGroup.getStructBlockID()));
 	}
-	
+
 	protected void buildDomainDataBlockGroups() {
 		if (domainPropStructBlocks == null) {
 			if (editorName != null && structBlockRegistry != null) {
@@ -167,15 +165,15 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 			}
 		}
 	}
-	
+
 	/**
 	 * Shortcut to set the list of PropStructBlocks this editor should display.
 	 * After this was set to a non null value this editor
 	 * will not care about registrations in {@link EditorStructBlockRegistry}.
-	 * 
+	 *
 	 * @param structBlockList
 	 */
-	public void setEditorPropStructBlockList(List<StructBlockID> structBlockIDs) {
+	public void setEditorStructBlockList(List<StructBlockID> structBlockIDs) {
 		if (structBlockIDs != null && structBlockIDs.size() > 0)
 		{
 			domainPropStructBlocks = structBlockIDs;
@@ -185,13 +183,13 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 			domainPropStructBlocks = null;
 		}
 	}
-	
-	
+
+
 	protected Iterator<DataBlockGroup> getDataBlockGroupsIterator() {
 		buildDomainDataBlockGroups();
 		return propertySet.getDataBlockGroups().iterator();
 	}
-	
+
 	public Map<String, Integer> getStructBlockDisplayOrder(IStruct struct) {
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structBlockDisplayOrder();
 		List<StructBlock> structBlocks = struct.getStructBlocks();
@@ -201,17 +199,17 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		}
 		return result;
 	}
-	
+
 	protected Iterator<DataBlockGroup> getOrderedDataBlockGroupsIterator() {
 		buildDomainDataBlockGroups();
-	
+
 		IStruct struct = propertySet.getStructure();
 		if (struct == null)
 			throw new IllegalStateException("The PropertySet was not exploded yet"); //$NON-NLS-1$
 		int allStructBlockCount = struct.getStructBlocks().size();
 		List<DataBlockGroup> result = new LinkedList<DataBlockGroup>();
 		Map<String, Integer> structBlockOrder = getStructBlockDisplayOrder(struct);
-		
+
 		int unmentionedCount = 0;
 		// all datablocks of this propertySet
 		for (Iterator<DataBlockGroup> it = propertySet.getDataBlockGroups().iterator(); it.hasNext(); ) {

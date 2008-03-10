@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -53,35 +54,36 @@ import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
  * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class BlockBasedEditor extends AbstractBlockBasedEditor {
-	
+
 	public static final String EDITORTYPE_BLOCK_BASED = "block-based"; //$NON-NLS-1$
-	
+
 	private GroupedContentComposite groupedContentComposite;
 	private XComposite displayNameComp;
 	private Text displayNameText;
 	private Button autogenerateNameCheckbox;
 	private boolean showDisplayNameComposite;
-	
+
 	private class ContentProvider implements GroupedContentProvider {
 		private DataBlockGroupEditor groupEditor;
 		private DataBlockGroup blockGroup;
 		private IStruct struct;
-		
+
 		public ContentProvider(DataBlockGroup blockGroup, IStruct struct) {
 			this.blockGroup = blockGroup;
 			this.struct = struct;
 		}
-		
+
 		public Image getGroupIcon() {
 			return null;
 		}
@@ -107,7 +109,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
@@ -115,7 +117,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public BlockBasedEditor(boolean showDisplayNameComp) {
 		this(null, null, showDisplayNameComp);
 	}
-	
+
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
 	 * @param propSet The {@link PropertySet} to be managed.
@@ -126,14 +128,14 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		super(propSet, propStruct);
 		this.showDisplayNameComposite = showDisplayNameComp;
 	}
-	
+
 	private Map<String, ContentProvider> groupContentProvider = new HashMap<String, ContentProvider>();
-	
-	
+
+
 	private boolean refreshing = false;
 	/**
 	 * Refreshes the UI-Representation of the given Property.
-	 * 
+	 *
 	 * @param changeListener
 	 */
 	@Override
@@ -144,12 +146,12 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					refreshing = true;
 					if (groupedContentComposite == null || groupedContentComposite.isDisposed())
 						return;
-					
+
 					refreshDisplayNameComp();
-					
+
 					if (!propertySet.isInflated())
-						propertySet.inflate(getPropStructure(new NullProgressMonitor()));
-					
+						propertySet.inflate(getStructure(new NullProgressMonitor()));
+
 					// get the ordered dataBlocks
 					for (Iterator<DataBlockGroup> it = BlockBasedEditor.this.getOrderedDataBlockGroupsIterator(); it.hasNext(); ) {
 						DataBlockGroup blockGroup = it.next();
@@ -173,50 +175,54 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	}
 
 //	private DataBlockEditorChangedListener changeListener;
-	
+
 	public Control createControl(Composite parent, DataBlockEditorChangedListener changeListener, boolean refresh) {
 		setChangeListener(changeListener);
 		return createControl(parent, refresh);
 	}
-	
+
 	private class ChangeListenerProxy implements DataBlockEditorChangedListener {
 		private DataBlockEditorChangedListener changeListener;
-		
+
 		public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 			if (!refreshing) {
 				updatePropertySet();
 				refreshDisplayNameComp();
-				
+
 				if (changeListener != null)
 					changeListener.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
+
+				List<ValidationResult> validationResults = dataBlockEditor.getDataBlock().validate(getStructure(new NullProgressMonitor()));
+				if (validationResults != null && !validationResults.isEmpty() && validationResultManager != null)
+					validationResultManager.setValidationResults(validationResults);
 			}
 		}
-		
+
 		public void setChangeListener(DataBlockEditorChangedListener changeListener) {
 			this.changeListener = changeListener;
 		}
-		
+
 		public ChangeListenerProxy getChangeListenerProxy() {
 			return changeListenerProxy;
 		}
 	}
 	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
 	private DisplayNameChangedListener displayNameChangedListener;
-	
+
 	/**
 	 * @param changeListener The changeListener to set.
 	 */
 	public void setChangeListener(final DataBlockEditorChangedListener changeListener) {
 		changeListenerProxy.setChangeListener(changeListener);
 	}
-	
+
 	public void setDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
 		this.displayNameChangedListener = displayNameChangedListener;
 	}
-	
+
 	protected void fireDataBlockEditorChangedEvent(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		changeListenerProxy.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
-		
+
 		if (!refreshing)
 			refreshControl();
 	}
@@ -226,13 +232,13 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			if (showDisplayNameComposite) {
 				displayNameComp = new XComposite(parent, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 				displayNameComp.getGridLayout().numColumns = 2;
-				
+
 				Label label = new Label(displayNameComp, SWT.NONE);
 				label.setText("Name");
 				GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 				gd.horizontalSpan = 2;
 				label.setLayoutData(gd);
-				
+
 				displayNameText = new Text(displayNameComp, XComposite.getBorderStyle(displayNameComp));
 				displayNameText.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent e) {
@@ -246,7 +252,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				displayNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				autogenerateNameCheckbox = new Button(displayNameComp, SWT.CHECK);
 				autogenerateNameCheckbox.setText("Autogenerate");
-				
+
 				autogenerateNameCheckbox.addSelectionListener(new SelectionListener() {
 					public void widgetSelected(SelectionEvent e) {
 						updatePropertySet();
@@ -255,7 +261,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					public void widgetDefaultSelected(SelectionEvent e) {}
 				});
 			}
-			
+
 			groupedContentComposite = new GroupedContentComposite(parent, SWT.NONE, true);
 			groupedContentComposite.setGroupTitle("propTail"); //$NON-NLS-1$
 		}
@@ -267,10 +273,10 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void disposeControl() {
 		if (groupedContentComposite != null && !groupedContentComposite.isDisposed())
 				groupedContentComposite.dispose();
-		
+
 		if (displayNameComp != null && !displayNameComp.isDisposed())
 			displayNameComp.dispose();
-		
+
 		groupedContentComposite = null;
 		displayNameComp = null;
 	}
@@ -309,5 +315,15 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			if (!wasRefreshing)
 				refreshing = false;
 		}
+	}
+
+	private IValidationResultManager validationResultManager;
+
+	public void setValidationResultManager(IValidationResultManager validationResultManager) {
+		this.validationResultManager = validationResultManager;
+	}
+
+	public IValidationResultManager getValidationResultManager() {
+		return validationResultManager;
 	}
 }

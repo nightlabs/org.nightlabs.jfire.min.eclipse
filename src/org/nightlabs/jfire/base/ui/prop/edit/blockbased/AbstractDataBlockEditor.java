@@ -42,56 +42,57 @@ import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * A Composite presenting all fields a propertySet has within a DataBlock to
  * the user for editing.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractDataBlockEditor extends Composite implements DataFieldEditorChangeListener {
-	
+
 	private IStruct struct;
-	
+
 	protected AbstractDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
 		super(parent,style);
 		this.dataBlock = dataBlock;
 		this.struct = struct;
 	}
-	
+
 	public abstract void refresh(IStruct struct, DataBlock block);
 
 	protected DataBlock dataBlock;
-	
+
 	/**
 	 * key: String DataField.getPropRelativePK<br/>
 	 * value: DataFieldEditor fieldEditor
 	 */
 	private Map<String, DataFieldEditor<? extends DataField>> fieldEditors = new HashMap<String, DataFieldEditor<? extends DataField>>();
-	
-	
+
+
 	protected void addFieldEditor(DataField dataField, DataFieldEditor<? extends DataField> fieldEditor) {
 		addFieldEditor(dataField, fieldEditor, true);
 	}
-	
+
 	protected void addFieldEditor(DataField dataField, DataFieldEditor<? extends DataField> fieldEditor, boolean addListener) {
 		fieldEditors.put(dataField.getPropRelativePK(),fieldEditor);
 		fieldEditor.addDataFieldEditorChangedListener(this);
 	}
-	
+
 	protected DataFieldEditor<? extends DataField> getFieldEditor(DataField dataField) {
 		return fieldEditors.get(dataField.getPropRelativePK());
 	}
-	
+
 	protected boolean hasFieldEditorFor(DataField dataField) {
 		return fieldEditors.containsKey(dataField.getPropRelativePK());
 	}
-	
+
 	private Collection<DataBlockEditorChangedListener> changeListener = new LinkedList<DataBlockEditorChangedListener>();
-	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
+	public synchronized void addDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
-	public synchronized void removePropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
+	public synchronized void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
@@ -110,17 +111,21 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 			fieldOrdering.put(field.getPrimaryKey(), index);
 			index++;
 		}
-		
+
 		return fieldOrdering;
 	}
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener#dataFieldEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
 	 */
 	public void dataFieldEditorChanged(DataFieldEditor<? extends DataField> editor) {
 		notifyChangeListeners(editor);
+
+		List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
+		if (validationResults != null && !validationResults.isEmpty() && getValidationResultManager() != null)
+			getValidationResultManager().setValidationResults(validationResults);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Iterator<DataField> getOrderedPropDataFieldsIterator() {
 		List<DataField> result = new LinkedList<DataField>();
@@ -140,11 +145,11 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 	protected IStruct getStruct() {
 		return struct;
 	}
-	
+
 	protected void setStruct(IStruct struct) {
 		this.struct = struct;
 	}
-	
+
 	@Override
 	public void dispose() {
 		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {
@@ -153,7 +158,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		fieldEditors.clear();
 		super.dispose();
 	}
-	
+
 	/**
 	 * Default implementation of updateProp() iterates through all
 	 * DataFieldEditor s added by {@link #addFieldEditor(DataField, DataFieldEditor)}
@@ -168,5 +173,15 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 
 	public DataBlock getDataBlock() {
 		return dataBlock;
+	}
+
+	private IValidationResultManager validationResultManager;
+
+	public void setValidationResultManager(IValidationResultManager validationResultManager) {
+		this.validationResultManager = validationResultManager;
+	}
+
+	public IValidationResultManager getValidationResultManager() {
+		return validationResultManager;
 	}
 }
