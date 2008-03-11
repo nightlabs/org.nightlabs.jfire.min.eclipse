@@ -398,14 +398,16 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		EntityType oldControllerObject = null;
 		monitor.beginTask(getLoadJobName(), 100);
 		synchronized (mutex) {
-			oldControllerObject = controllerObject;
+			oldControllerObject = getControllerObject();
 			ProgressMonitorWrapper pMonitor = new ProgressMonitorWrapper(monitor);
-			controllerObject = retrieveEntity(new SubProgressMonitor(pMonitor, 100));
-			if (controllerObject != null) {
-				controllerObject = Util.cloneSerializable(controllerObject);
-				if (controllerObjectClass != null && !controllerObjectClass.equals(controllerObject.getClass())) {
-					throw new IllegalStateException("The implementation of ActiveEntityEditorPageController '" + this.getClass().getSimpleName() + "' returned different types of objects on retrieveEntity (" + controllerObjectClass.getName() + " and " + controllerObject.getClass().getName() + ").");
+			EntityType newObj = retrieveEntity(new SubProgressMonitor(pMonitor, 100));
+			if (newObj == null)
+				controllerObject = newObj;
+			else {
+				if (controllerObjectClass != null && !controllerObjectClass.equals(newObj.getClass())) {
+					throw new IllegalStateException("The implementation of ActiveEntityEditorPageController '" + this.getClass().getSimpleName() + "' returned different types of objects on retrieveEntity (" + controllerObjectClass.getName() + " and " + newObj.getClass().getName() + ").");
 				}
+				setControllerObject(Util.cloneSerializable(newObj));
 				controllerObjectClass = controllerObject.getClass();
 				if (entityChangeListener == null && ENABLE_LISTENER) {
 					entityChangeListener = new EntityChangeListener(getProcessChangesJobName());
