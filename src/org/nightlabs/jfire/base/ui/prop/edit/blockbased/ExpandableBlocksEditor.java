@@ -56,11 +56,11 @@ import org.nightlabs.progress.ProgressMonitor;
  * for all StructBlock/DataBlock it gets assosiated with.<br/>
  * Control wich blocks a editor displays by associating a list of blocks
  * to a editor-domain.
- * 
+ *
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
  * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class ExpandableBlocksEditor implements PropertySetEditor { // extends ScrolledComposite {
@@ -69,18 +69,20 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	public ExpandableBlocksEditor() {
 		this(null);
 	}
-	
+
 	public ExpandableBlocksEditor(PropertySet prop) {
 		this.prop = prop;
 		structBlockRegistry = new EditorStructBlockRegistry(prop.getStructLocalLinkClass(), prop.getStructLocalScope());
 	}
 
-	
+
 	private FormToolkit toolkit = null;
-	
+
 	private PropertySet prop;
 	private EditorStructBlockRegistry structBlockRegistry;
-	
+
+	private IValidationResultManager validationResultManager;
+
 	/**
 	 * Sets the current propertySet of this editor.
 	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
@@ -94,7 +96,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		if (refresh)
 			refreshControl();
 	}
-	
+
 	/**
 	 * Will only set the propertySet, no changes to the UI will be made.
 	 * @param propertySet
@@ -119,17 +121,17 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	public ScrolledForm getForm() {
 		return form;
 	}
-	
+
 	/**
 	 * Holds the GroupEditors.
 	 */
 	private Map<String, ExpandableDataBlockGroupEditor> groupEditors = new HashMap<String, ExpandableDataBlockGroupEditor>();
-	
-	
+
+
 	public Map<String, ExpandableDataBlockGroupEditor> getGroupEditors() {
 		return groupEditors;
 	}
-	
+
 	protected IStruct getPropStructure(ProgressMonitor monitor) {
 		if (prop.isInflated())
 			return prop.getStructure();
@@ -140,15 +142,15 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		monitor.worked(1);
 		return structure;
 	}
-	
-	
+
+
 //	public void refreshControl() {
 //		refreshControl(null);
 //	}
-	
+
 	/**
 	 * Refreshes the UI-Representation of the given Property.
-	 * 
+	 *
 	 * @param changeListener
 	 */
 	public void refreshControl() {
@@ -157,13 +159,13 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 				public void run() {
 					if (!prop.isInflated())
 						prop.inflate(getPropStructure(new NullProgressMonitor()));
-					
+
 					// get the ordered dataBlocks
 					for (Iterator<DataBlockGroup> it = ExpandableBlocksEditor.this.getOrderedDataBlockGroupsIterator(); it.hasNext(); ) {
 						DataBlockGroup blockGroup = it.next();
 						if (shouldDisplayStructBlock(blockGroup)) {
 							if (!groupEditors.containsKey(blockGroup.getStructBlockKey())) {
-								ExpandableDataBlockGroupEditor groupEditor = new ExpandableDataBlockGroupEditor(prop.getStructure(), blockGroup, form.getBody());
+								ExpandableDataBlockGroupEditor groupEditor = new ExpandableDataBlockGroupEditor(prop.getStructure(), blockGroup, form.getBody(), getValidationResultManager());
 								groupEditor.setOwner(form);
 								if (ExpandableBlocksEditor.this.changeListener != null)
 									groupEditor.addPropDataBlockEditorChangedListener(ExpandableBlocksEditor.this.changeListener);
@@ -180,9 +182,9 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 			}
 		);
 	}
-	
+
 	private DataBlockEditorChangedListener changeListener;
-	
+
 	public ScrolledForm createForm(Composite parent, DataBlockEditorChangedListener changeListener, boolean refresh) {
 		return (ScrolledForm)createControl(parent,changeListener,refresh);
 	}
@@ -190,7 +192,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	 * Creates the Form.
 	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
 	 * will be called.
-	 * 
+	 *
 	 * @param parent
 	 * @param changeListener
 	 * @param refresh
@@ -202,7 +204,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		if (toolkit == null)
 			toolkit = new FormToolkit(parent.getDisplay());
 		this.changeListener = changeListener;
-		
+
 		form = toolkit.createScrolledForm(parent);
 		form.setBackground(parent.getBackground());
 		form.setForeground(parent.getForeground());
@@ -214,14 +216,14 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		form.getBody().setLayout(layout);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		form.getBody().setLayoutData(gd);
-		
+
 		if (refresh)
 			refreshControl();
 		return form;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#disposeControl()
 	 */
 	public void disposeControl() {
@@ -233,7 +235,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 
 	/**
 	 * Will only create the Form. No propertySet data will be displayed
-	 * 
+	 *
 	 * @param parent
 	 * @param changeListener
 	 * @return
@@ -241,18 +243,18 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	public ScrolledForm createForm(Composite parent, DataBlockEditorChangedListener changeListener) {
 		return createForm(parent,changeListener,false);
 	}
-	
+
 	/**
 	 * Will create the form. No change listener will be set and
 	 * no propertySet data will be displayed.
-	 * 
+	 *
 	 * @param parent
 	 * @return
 	 */
 	public ScrolledForm createForm(Composite parent) {
 		return createForm(parent, null);
 	}
-	
+
 	public ScrolledForm createForm(Composite parent, boolean refresh) {
 		return createForm(parent, null, refresh);
 	}
@@ -263,14 +265,14 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 
 	private String editorScope;
 	private String editorName;
-	
+
 	/**
 	 * Set the scope and the name of the editor.
 	 * This can be used by to limit the PropStructBlocks
 	 * a editor shows by registering it in the {@link EditorStructBlockRegistry}
 	 * and calling this function with the appropriate values.<br/>
 	 * Default will be all PropStructBlocks.
-	 * 
+	 *
 	 * @param editorScope
 	 * @param editorName
 	 */
@@ -278,7 +280,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		this.editorScope = editorScope;
 		this.editorName = editorName;
 	}
-	
+
 	/**
 	 * Sets the editor domain for this editor and additionally
 	 * registeres structBlocks to display in {@link PropE}
@@ -290,9 +292,9 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		setEditorDomain(editorScope,editorName);
 		structBlockRegistry.addEditorStructBlocks(editorName,propStructBlockKeys);
 	}
-	
+
 	private List<StructBlockID> domainPropStructBlocks;
-	
+
 	protected boolean shouldDisplayStructBlock(DataBlockGroup blockGroup) {
 		// default is all PropStructBlocks
 		if (domainPropStructBlocks == null)
@@ -300,7 +302,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		else
 			return domainPropStructBlocks.contains(StructBlockID.create(blockGroup.getStructBlockOrganisationID(),blockGroup.getStructBlockID()));
 	}
-	
+
 	protected void buildDomainDataBlockGroups() {
 		if (domainPropStructBlocks == null) {
 			if ((editorScope != null ) && (editorName != null)) {
@@ -310,13 +312,13 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 			}
 		}
 	}
-	
+
 	/**
 	 * Shortcut of setting the list of PropStructBlocks
 	 * this editor should display.
 	 * After this was set to a non null value this editor
 	 * will not care about registrations in {@link EditorStructBlockRegistry}.
-	 * 
+	 *
 	 * @param structBlockList
 	 */
 	public void setEditorPropStructBlockList(List<StructBlockID> structBlockList) {
@@ -329,25 +331,25 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 			domainPropStructBlocks = null;
 		}
 	}
-	
-	
+
+
 	protected Iterator<DataBlockGroup> getDataBlockGroupsIterator() {
 		buildDomainDataBlockGroups();
 		return prop.getDataBlockGroups().iterator();
 	}
-	
+
 	public Map<String, Integer> getStructBlockDisplayOrder() {
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structBlockDisplayOrder();
 		return new HashMap<String, Integer>();
 	}
-	
+
 	protected Iterator<DataBlockGroup> getOrderedDataBlockGroupsIterator() {
 		buildDomainDataBlockGroups();
 
 		int allStructBlockCount = prop.getStructure().getStructBlocks().size();
 		List<DataBlockGroup> result = new LinkedList<DataBlockGroup>();
 		Map<String, Integer> structBlockOrder = getStructBlockDisplayOrder();
-		
+
 //		int maxIndex = 0;
 		int unmentionedCount = 0;
 		// all datablocks of this propertySet
@@ -373,5 +375,12 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 			groupEditor.updateProp();
 		}
 	}
-	
+
+	public void setValidationResultManager(IValidationResultManager validationResultManager) {
+		this.validationResultManager = validationResultManager;
+	}
+
+	public IValidationResultManager getValidationResultManager() {
+		return validationResultManager;
+	}
 }

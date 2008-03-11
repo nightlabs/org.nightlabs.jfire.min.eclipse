@@ -32,14 +32,14 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
  * A WizardPage to define values for one DataBlock.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class DataBlockWizardPage extends CompoundDataBlockWizardPage {
 
 	private StructBlockID structBlockID;
-		
-	
+
+
 	/**
 	 * Creates a new DataBlockWizardPage for the
 	 * StructBlock identified by the dataBlockID
@@ -54,16 +54,16 @@ public class DataBlockWizardPage extends CompoundDataBlockWizardPage {
 		super(pageName, title, prop, new StructBlockID[]{structBlockID});
 		this.structBlockID = structBlockID;
 	}
-	
-	
+
+
 	/**
 	 * Returns the PropsStructBlockID this WizardPage is
 	 * associated to.
-	 * 
+	 *
 	 * @return
 	 */
 	public StructBlockID getStructBlockID() {
 		return structBlockID;
 	}
-	
+
 }

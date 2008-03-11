@@ -3,19 +3,19 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.List;
-
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
+import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -70,6 +70,8 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		blockBasedPersonEditor.updatePropertySet();
 	}
 
+	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey";
+
 	/**
 	 * Create the content for this section.
 	 * @param section The section to fill
@@ -83,11 +85,16 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
 		blockBasedPersonEditor = new BlockBasedEditor(true);
-		blockBasedPersonEditor.setValidationResultManager(new IValidationResultManager() {
+		blockBasedPersonEditor.setValidationResultManager(new ValidationResultManager() {
 			@Override
-			public void setValidationResults(List<ValidationResult> validationResults) {
-				// TODO process validation results with
-				// getManagedForm().getMessageManager().
+			public void setValidationResult(ValidationResult validationResult) {
+				IMessageManager messageManager = getManagedForm().getMessageManager();
+				if (validationResult == null) {
+					messageManager.removeMessage(VALIDATION_RESULT_MESSAGE_KEY);
+				} else {
+					int type = ValidationUtil.getIMessageProviderType(validationResult.getType());
+					messageManager.addMessage(VALIDATION_RESULT_MESSAGE_KEY, validationResult.getMessage(), null, type);
+				}
 			}
 		});
 		blockBasedPersonEditorControl = blockBasedPersonEditor.createControl(container, false);

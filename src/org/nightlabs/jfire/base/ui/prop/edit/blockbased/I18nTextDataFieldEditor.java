@@ -37,11 +37,11 @@ import org.nightlabs.jfire.prop.datafield.I18nTextDataField;
 /**
  * Represents an editor for {@link TextDataField} within a
  * block based ExpandableBlocksEditor.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDataField> {
-	
+
 	public I18nTextDataFieldEditor() {
 	}
 
@@ -68,14 +68,14 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 			return I18nTextDataFieldEditor.class;
 		}
 	}
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
 	 */
 	public String getEditorType() {
 		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
 	}
-	
+
 	private I18nTextDataFieldComposite composite;
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
@@ -83,12 +83,12 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 	@Override
 	public Control createControl(Composite parent) {
 		if (composite == null) {
-			composite = new I18nTextDataFieldComposite(this, parent, SWT.NONE, this);
+			composite = new I18nTextDataFieldComposite(this, parent, SWT.NONE, getSwtModifyListener());
 		}
 		composite.refresh();
 		return composite;
 	}
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
 	 */

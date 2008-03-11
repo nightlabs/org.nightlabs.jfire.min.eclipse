@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -54,7 +53,6 @@ import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.validation.ValidationResult;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -92,7 +90,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			return blockGroup.getStructBlock(struct).getName().getText();
 		}
 		public Composite createGroupContent(Composite parent) {
-			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent);
+			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultManager);
 			if (changeListenerProxy.getChangeListenerProxy() != null)
 				groupEditor.addPropDataBlockEditorChangedListener(changeListenerProxy.getChangeListenerProxy());
 			return groupEditor;
@@ -191,10 +189,6 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 				if (changeListener != null)
 					changeListener.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
-
-				List<ValidationResult> validationResults = dataBlockEditor.getDataBlock().validate(getStructure(new NullProgressMonitor()));
-				if (validationResults != null && !validationResults.isEmpty() && validationResultManager != null)
-					validationResultManager.setValidationResults(validationResults);
 			}
 		}
 

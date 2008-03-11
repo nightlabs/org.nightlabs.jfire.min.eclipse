@@ -42,7 +42,9 @@ import org.nightlabs.jfire.prop.DataField;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldEditor<? extends DataField>> extends XComposite {
+public abstract class AbstractInlineDataFieldComposite<Editor extends DataFieldEditor<? extends DataField>>
+extends XComposite
+{
 	private Editor editor;
 	private Label title;
 

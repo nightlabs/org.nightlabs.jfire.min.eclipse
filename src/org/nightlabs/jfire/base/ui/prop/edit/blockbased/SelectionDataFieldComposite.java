@@ -1,23 +1,26 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.XComboComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
+import org.nightlabs.jfire.prop.ModifyListener;
 import org.nightlabs.jfire.prop.exception.StructFieldValueNotFoundException;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
 import org.nightlabs.jfire.prop.structfield.StructFieldValue;
 
-public class SelectionDataFieldComposite 
-extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor> 
+public class SelectionDataFieldComposite
+extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 {
 	private XComboComposite<StructFieldValue> fieldValueCombo;
-	private ModifyListener modifyListener;
-	
+
 	/**
 	 * Assumes to have a parent composite with GridLayout and
 	 * adds it own GridData.
@@ -25,13 +28,13 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 	 * @param parent the parent composite
 	 * @param style the SWT style
 	 */
-	public SelectionDataFieldComposite(final SelectionDataFieldEditor editor, 
-			Composite parent, int style, ModifyListener modListener) 
+	public SelectionDataFieldComposite(final SelectionDataFieldEditor editor,
+			Composite parent, int style, final ModifyListener modifyListener)
 	{
 		super(parent, style, editor);
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
-				
+
 		LabelProvider labelProvider = new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -42,7 +45,7 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 				return ""; //$NON-NLS-1$
 			}
 		};
-		
+
 		fieldValueCombo = new XComboComposite<StructFieldValue>(
 				this,
 				AbstractListComposite.getDefaultWidgetStyle(this),
@@ -50,12 +53,25 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 				labelProvider,
 				LayoutMode.TIGHT_WRAPPER
 		);
-				
+
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;
 		fieldValueCombo.setLayoutData(textData);
-		this.modifyListener = modListener;
-		fieldValueCombo.addModifyListener(modifyListener);
+
+		final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				modifyListener.modifyData();
+			}
+		};
+
+		fieldValueCombo.addSelectionChangedListener(selectionChangedListener);
+		fieldValueCombo.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				fieldValueCombo.removeSelectionChangedListener(selectionChangedListener);
+			}
+		});
 	}
 
 	/**
@@ -79,21 +95,15 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 			}
 		} else {
 			if (fieldValueCombo.getItemCount() > 0) {
-				fieldValueCombo.selectElementByIndex(0);
+				fieldValueCombo.selectElementByIndex(-1);
 			}
 			else {
 				fieldValueCombo.selectElementByIndex(-1);
 			}
 		}
 	}
-	
+
 	public XComboComposite<StructFieldValue> getFieldValueCombo() {
 		return fieldValueCombo;
-	}
-	
-	@Override
-	public void dispose() {
-		fieldValueCombo.removeModifyListener(modifyListener);
-		super.dispose();
 	}
 }

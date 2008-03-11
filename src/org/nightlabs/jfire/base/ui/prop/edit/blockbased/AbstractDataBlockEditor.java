@@ -122,7 +122,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 		notifyChangeListeners(editor);
 
 		List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
-		if (validationResults != null && !validationResults.isEmpty() && getValidationResultManager() != null)
+		if (getValidationResultManager() != null)
 			getValidationResultManager().setValidationResults(validationResults);
 	}
 

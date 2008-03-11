@@ -30,7 +30,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
+import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -60,7 +62,16 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	 */
 	@Override
 	public Control createPageContents(Composite parent) {
-		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry);
+		IValidationResultManager resultManager = new ValidationResultManager() {
+			@Override
+			public void setValidationResult(ValidationResult validationResult) {
+				if (validationResult == null)
+					setMessage(null);
+				else
+					setMessage(validationResult.getMessage(), ValidationUtil.getIMessageProviderType(validationResult.getType()));
+			}
+		};
+		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry, resultManager);
 		return fullDataBlockCoverageComposite;
 	}
 

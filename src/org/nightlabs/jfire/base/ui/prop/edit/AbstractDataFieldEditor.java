@@ -30,31 +30,28 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.ModifyListener;
 import org.nightlabs.jfire.prop.StructField;
-import org.nightlabs.language.LanguageCf;
 
 /**
  * Abstract base class for all  {@link DataFieldEditor} s with implementations for the listener stuff and other
  * common things for all field editors.<br/>
- * This class as well already implements ModifyListener so it can be used as listener for Text Widgets.
  * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractDataFieldEditor<F extends DataField> implements DataFieldEditor<F>, ModifyListener
 {
-	private StructField structField;
+	private StructField<F> structField;
 	private IStruct struct;
-	private LanguageCf language;
-	
+
 	public AbstractDataFieldEditor()
 	{
 //		this.refStruct = refStruct;
 	}
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -64,11 +61,11 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	 * Extendors should use this field to store the data field they are currently handeling.
 	 */
 	private F dataField;
-	
+
 	/**
 	 * Not intended to be overridden.<br/>
 	 * Subclasses should overwrite {@link #setDataField()} to react on changes.
-	 * 
+	 *
 	 * @see #setDataField()
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setData(StructField)
 	 */
@@ -81,11 +78,11 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 			refreshing = false;
 		}
 	}
-	
+
 	public F getDataField() {
 		return dataField;
 	}
-	
+
 	/**
 	 * Subclasses can do things when data changes here.
 	 * @param dataField
@@ -94,18 +91,18 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		this.dataField = dataField;
 		setChanged(false);
 	}
-	
+
 	/**
 	 * Subclasses should perfom refreshing <b>here<b> and not override
 	 * {@link #refresh(DataField)}
 	 */
 	public abstract void doRefresh();
-	
+
 	private boolean refreshing = false;
-	
+
 	/**
 	 * Not intended to be overridden.
-	 * 
+	 *
 	 * @see #doRefresh(DataField)
 	 */
 	public final void refresh() {
@@ -116,31 +113,31 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 			refreshing = false;
 		}
 	}
-	
+
 	private Collection<DataFieldEditorChangeListener> changeListener = new LinkedList<DataFieldEditorChangeListener>();
 	/**
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
 	 */
 	public synchronized void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
 		changeListener.add(listener);
 	}
 	/**
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
 	 */
 	public synchronized void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
 		changeListener.add(listener);
 	}
-	
+
 	protected synchronized void notifyChangeListeners() {
 		// TODO: Rewrite to noitfy listener asynchronously
 		for (DataFieldEditorChangeListener listener : changeListener)
 			listener.dataFieldEditorChanged(this);
 	}
-	
+
 	private boolean changed;
-	
+
 	/**
 	 * Sets the changed state of this editor.
 	 * @see  org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setChanged(boolean)
@@ -153,7 +150,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks if this editors value has changed.
 	 * @see  org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#isChanged()
@@ -161,17 +158,17 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	public boolean isChanged() {
 		return changed;
 	}
-	
+
 	/**
 	 * Returns the PropStructField this editor is associated with.
-	 * 
+	 *
 	 * @return
 	 */
-	public StructField getStructField() {
+	public StructField<F> getStructField() {
 		if (structField == null) {
 			if (dataField != null) {
 				try {
-					structField = struct.getStructField(
+					structField = (StructField<F>) struct.getStructField(
 							dataField.getStructBlockOrganisationID(), dataField.getStructBlockID(),
 							dataField.getStructFieldOrganisationID(), dataField.getStructFieldID()
 						);
@@ -180,36 +177,53 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 				}
 			}
 		}
-		
+
 		if (structField == null)
 			throw new IllegalStateException("The StructField can only be retrieved if the Editor has already been assigned a DataField."); //$NON-NLS-1$
-		
+
 		return structField;
 	}
-	
-	public void modifyText(ModifyEvent arg0) {
-		setChanged(true);
-	}
 
-	protected DataFieldEditorFactory factory;
-	
+	protected DataFieldEditorFactory<F> factory;
+
 	/**
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getPropDataFieldEditorFactory()
 	 */
-	public DataFieldEditorFactory getPropDataFieldEditorFactory() {
+	public DataFieldEditorFactory<F> getPropDataFieldEditorFactory() {
 		return factory;
 	}
 
 	/**
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setPropDataFieldEditorFactory(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory)
 	 */
-	public void setPropDataFieldEditorFactory(DataFieldEditorFactory factory) {
+	public void setPropDataFieldEditorFactory(DataFieldEditorFactory<F> factory) {
 		this.factory = factory;
 	}
-	
+
 	protected IStruct getStruct() {
 		return struct;
+	}
+
+	@Override
+	public void modifyData() {
+		notifyChangeListeners();
+	}
+
+	private org.eclipse.swt.events.ModifyListener swtModifyListener = new org.eclipse.swt.events.ModifyListener(){
+		@Override
+		public void modifyText(ModifyEvent e) {
+			modifyData();
+		}
+	};
+
+	/**
+	 * This method returns a {@link org.eclipse.swt.events.ModifyListener} that can be used for SWT text widgets
+	 * and delegates to the method {@link #modifyData()} of the PropertyFramework {@link ModifyListener} interface.
+	 * @return
+	 */
+	protected org.eclipse.swt.events.ModifyListener getSwtModifyListener() {
+		return swtModifyListener;
 	}
 }

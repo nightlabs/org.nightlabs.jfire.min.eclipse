@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
@@ -16,7 +16,7 @@ import org.nightlabs.jfire.prop.datafield.SelectionDataField;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionDataField> {
-	
+
 	public static class Factory extends AbstractDataFieldEditorFactory<SelectionDataField> {
 
 		/**
@@ -36,15 +36,15 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 		public Class<SelectionDataField> getPropDataFieldType() {
 			return SelectionDataField.class;
 		}
-		
+
 	};
-	
+
 	private SelectionDataFieldComposite composite;
-	
+
 	public SelectionDataFieldEditor() {
 		super();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
@@ -64,7 +64,7 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 		if (composite != null)
 			composite.refresh();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()

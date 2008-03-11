@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -53,16 +52,16 @@ public class DataBlockGroupEditor
 extends XComposite
 implements DataBlockEditorChangedListener
 {
-	
-	private static final Logger LOGGER = Logger.getLogger(DataBlockGroupEditor.class);
-	
+
 	private DataBlockGroup blockGroup;
-	
+
 	private IStruct struct;
-	
+
 	private List<Composite> blockComposites = new LinkedList<Composite>();
-	
-	
+
+	private IValidationResultManager validationResultManager;
+
+
 	/**
 	 * @param parent
 	 * @param style
@@ -70,43 +69,47 @@ implements DataBlockEditorChangedListener
 	public DataBlockGroupEditor(
 			IStruct struct,
 			DataBlockGroup blockGroup,
-			Composite parent
+			Composite parent,
+			IValidationResultManager validationResultManager
 	) {
 		super(parent, SWT.NONE);
 		this.blockGroup = blockGroup;
-				
+
 		scrolledComposite = new ScrolledComposite(this, SWT.V_SCROLL);
 		scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		content = new XComposite(scrolledComposite, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
 		scrolledComposite.setContent(content);
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
-		
+
+		this.validationResultManager = validationResultManager;
+
 		refresh(struct, blockGroup);
 	}
-	
+
 	private ScrolledComposite scrolledComposite;
 	private XComposite content;
-	
+
 	private List<AbstractDataBlockEditor> dataBlockEditors = new LinkedList<AbstractDataBlockEditor>();
-	
+
 	public void refresh(IStruct struct, DataBlockGroup blockGroup) {
 		this.blockGroup = blockGroup;
 		this.struct = struct;
 		createDataBlockEditors(struct, content);
 		scrolledComposite.setMinSize(content.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		
+
 		assert(dataBlockEditors.size() == blockGroup.getDataBlocks().size());
-		
+
 		Iterator<AbstractDataBlockEditor> editorIt = dataBlockEditors.iterator();
 		Iterator<DataBlock> blockIt = blockGroup.getDataBlocks().iterator();
-		
+
 		while (editorIt.hasNext()) {
 			AbstractDataBlockEditor dataBlockEditor = editorIt.next();
+			dataBlockEditor.setValidationResultManager(validationResultManager);
 			DataBlock block = blockIt.next();
 			dataBlockEditor.refresh(struct, block);
 		}
-		
+
 //		for (int i=0; i<dataBlockEditors.size(); i++){
 //			AbstractDataBlockEditor dataBlockEditor = (AbstractDataBlockEditor)dataBlockEditors.get(i);
 //			try {
@@ -120,7 +123,7 @@ implements DataBlockEditorChangedListener
 		content.layout(true, true);
 //		scrolledComposite.layout(true, true);
 	}
-	
+
 //	private SelectionListener addListener = new SelectionListener() {
 //		public void widgetDefaultSelected(SelectionEvent e) {}
 //		public void widgetSelected(SelectionEvent e) {
@@ -147,14 +150,14 @@ implements DataBlockEditorChangedListener
 //			refresh(struct, blockGroup);
 //		}
 //	};
-	
+
 	protected void createDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
 		for (Composite comp : blockComposites) {
 			comp.dispose();
 		}
 		dataBlockEditors.clear();
 		blockComposites.clear();
-		
+
 		List<DataBlock> dataBlocks = blockGroup.getDataBlocks();
 		for (int i = 0; i < dataBlocks.size(); i++) {
 			DataBlock dataBlock = dataBlocks.get(i);
@@ -216,38 +219,38 @@ implements DataBlockEditorChangedListener
 			}
 		}
 	}
-	
+
 	private ListenerList changeListener = new ListenerList();
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
-	
+
 	public synchronized void removePropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
-	
+
 	protected synchronized void notifyChangeListeners(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
 			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(dataBlockEditor,dataFieldEditor);
 		}
 	}
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener#dataBlockEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractDataBlockEditor, org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
 	 */
 	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		notifyChangeListeners(dataBlockEditor,dataFieldEditor);
 	}
-	
+
 	public void updatePropertySet() {
 		for (AbstractDataBlockEditor blockEditor : dataBlockEditors) {
 			blockEditor.updatePropertySet();
 		}
 	}
-	
+
 	public IStruct getStruct() {
 		return struct;
 	}
-	
+
 }

@@ -56,7 +56,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 	public FullDataBlockCoverageComposite(
 			Composite parent, int style,
 			PropertySet propertySet,
-			EditorStructBlockRegistry structBlockRegistry
+			EditorStructBlockRegistry structBlockRegistry, IValidationResultManager validationResultManager
 	) {
 		super(parent, style);
 		this.numColumns = 1;
@@ -67,7 +67,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 			this.structBlockRegistry = new EditorStructBlockRegistry(propertySet.getStructLocalLinkClass(), propertySet.getStructLocalScope());
 		}
 		StructBlockID[] fullCoverageBlockIDs = this.structBlockRegistry.getUnassignedBlockKeyArray();
-		createPropEditors();
+		createPropEditors(validationResultManager);
 		List<StructBlockID>[] splitBlockIDs = new List[numColumns];
 		for (int i=0; i<numColumns; i++) {
 			splitBlockIDs[i] = new ArrayList<StructBlockID>();
@@ -75,14 +75,14 @@ public class FullDataBlockCoverageComposite extends Composite {
 		for (int i=0; i<fullCoverageBlockIDs.length; i++){
 			splitBlockIDs[i % numColumns].add(fullCoverageBlockIDs[i]);
 		}
-		
+
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.numColumns = numColumns;
 		thisLayout.makeColumnsEqualWidth = true;
 		this.setLayout(thisLayout);
-		
+
 		this.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		for (int i=0; i<numColumns; i++) {
 			XComposite wrapper = new XComposite(this,SWT.BORDER, XComposite.LayoutMode.TIGHT_WRAPPER);
 			BlockBasedEditor propEditor = (BlockBasedEditor)propEditors.get(i);
@@ -94,16 +94,18 @@ public class FullDataBlockCoverageComposite extends Composite {
 			propEditorControl.setLayoutData(editorControlGD);
 		}
 	}
-	
+
 	private List<PropertySetEditor> propEditors = new LinkedList<PropertySetEditor>();
-	
-	private void createPropEditors() {
+
+	private void createPropEditors(IValidationResultManager validationResultManager) {
 		propEditors.clear();
 		for (int i=0; i<numColumns; i++) {
-			propEditors.add(new BlockBasedEditor(true));
+			BlockBasedEditor blockBasedEditor = new BlockBasedEditor(true);
+			blockBasedEditor.setValidationResultManager(validationResultManager);
+			propEditors.add(blockBasedEditor);
 		}
 	}
-	
+
 	/**
 	 * Set the values from the editor to the PropertySet it
 	 * is associated with.
@@ -113,10 +115,10 @@ public class FullDataBlockCoverageComposite extends Composite {
 			editor.updatePropertySet();
 		}
 	}
-	
+
 	/**
 	 * Link the Composite to a PropertySet and refresh the Control.
-	 * 
+	 *
 	 * @param propertySet The PropertySet to link to.
 	 */
 	public void refresh(PropertySet propertySet) {
@@ -124,6 +126,6 @@ public class FullDataBlockCoverageComposite extends Composite {
 			editor.setPropertySet(propertySet, true);
 		}
 	}
-	
-	
+
+
 }

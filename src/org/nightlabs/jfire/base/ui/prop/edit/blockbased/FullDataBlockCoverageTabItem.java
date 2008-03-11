@@ -42,7 +42,7 @@ public class FullDataBlockCoverageTabItem extends TabItem {
 			EditorStructBlockRegistry editorStructBlockRegistry
 	) {
 		super(parent, style);
-		FullDataBlockCoverageComposite comp = new FullDataBlockCoverageComposite(parent, style, propertySet, editorStructBlockRegistry);
+		FullDataBlockCoverageComposite comp = new FullDataBlockCoverageComposite(parent, style, propertySet, editorStructBlockRegistry, null);
 		setControl(comp);
 	}
 

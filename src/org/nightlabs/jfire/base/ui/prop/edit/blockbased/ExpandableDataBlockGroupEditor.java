@@ -46,14 +46,14 @@ public class ExpandableDataBlockGroupEditor
 extends ExpandableComposite
 implements DataBlockEditorChangedListener
 {
-	
-	
+
+
 	private DataBlockGroupEditor blockGroupEditor;
 //	/**
 //	 * The class whose properties are to be edited.
 //	 */
 //	private Class<?> linkClass;
-	
+
 	/**
 	 * @param parent
 	 * @param style
@@ -62,31 +62,32 @@ implements DataBlockEditorChangedListener
 	public ExpandableDataBlockGroupEditor(
 			IStruct struct,
 			DataBlockGroup blockGroup,
-			Composite parent
+			Composite parent,
+			IValidationResultManager validationResultManager
 	) {
 		super(parent, SWT.NONE);
-		blockGroupEditor = new DataBlockGroupEditor(struct, blockGroup, this);
-		
+		blockGroupEditor = new DataBlockGroupEditor(struct, blockGroup, this, validationResultManager);
+
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.verticalSpacing = 0;
 		thisLayout.horizontalSpacing= 0;
 		setLayout(thisLayout);
-		
+
 		//		TableWrapData thisLayoutData = new TableWrapData();
 		GridData thisLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		setLayoutData(thisLayoutData);
-		
+
 		setClient(blockGroupEditor);
 		// TODO: genauer abchecken, was hier läuft :-)
 //		StructProvider provider = (StructProvider)PropStructProviderRegistry.sharedInstance().getPropStructProvider(linkClass);
-		
+
 //		IStruct structure = provider.getStruct();
 //		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(linkClass.getName());
 		if (blockGroup.getStructBlock(struct).getName().getText() == null)
 			setText(blockGroup.getStructBlock(struct).getStructBlockID());
 		else
 			setText(blockGroup.getStructBlock(struct).getName().getText());
-		
+
 		addExpansionListener(new ExpansionAdapter() {
 			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
@@ -94,31 +95,31 @@ implements DataBlockEditorChangedListener
 					ExpandableDataBlockGroupEditor.this.owner.reflow(true);
 			}
 		});
-		
+
 	}
 
 	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		blockGroupEditor.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
 	}
-	
+
 	public void updateProp() {
 		blockGroupEditor.updatePropertySet();
 	}
-	
+
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		blockGroupEditor.addPropDataBlockEditorChangedListener(listener);
 	}
 	public synchronized void removePropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		blockGroupEditor.removePropDataBlockEditorChangedListener(listener);
 	}
-	
+
 	public void refresh(DataBlockGroup blockGroup) {
 	}
-	
+
 	private ScrolledForm owner = null;
-	
+
 	public void setOwner(ScrolledForm owner) {
 		this.owner = owner;
 	}
-	
+
 }
