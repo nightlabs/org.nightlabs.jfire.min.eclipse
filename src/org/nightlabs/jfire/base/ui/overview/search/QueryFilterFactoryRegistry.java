@@ -15,13 +15,13 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public class QueryFilterCompositeRegistry
+public class QueryFilterFactoryRegistry
 	extends AbstractEPProcessor
 {
 	/**
 	 * The logger used in this class.
 	 */
-//	private static final Logger logger = Logger.getLogger(QueryFilterCompositeRegistry.class);
+//	private static final Logger logger = Logger.getLogger(QueryFilterFactoryRegistry.class);
 	
 	private static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.queryFilterComposite";
 	private static final String ELEMENT_NAME = "QueryFilter";
@@ -29,25 +29,25 @@ public class QueryFilterCompositeRegistry
 	public static final String ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS = "queryFilterFactoryClass";
 	public static final String ATTRIBUTE_SECTION_TITLE = "sectionTitle";
 	
-	private static QueryFilterCompositeRegistry sharedInstance = null;
+	private static QueryFilterFactoryRegistry sharedInstance = null;
 
 	/**
 	 * @return The shared Instance of this class.
 	 */
-	public static QueryFilterCompositeRegistry sharedInstance()
+	public static QueryFilterFactoryRegistry sharedInstance()
 	{
 		if (sharedInstance == null)
 		{
-			synchronized (QueryFilterCompositeRegistry.class)
+			synchronized (QueryFilterFactoryRegistry.class)
 			{
 				if (sharedInstance == null)
-					sharedInstance = new QueryFilterCompositeRegistry();
+					sharedInstance = new QueryFilterFactoryRegistry();
 			}
 		}
 		return sharedInstance;
 	}
 	
-	protected QueryFilterCompositeRegistry()
+	protected QueryFilterFactoryRegistry()
 	{
 		queryFilters = new HashMap<Class, SortedSet<QueryFilterFactory>>();
 	}

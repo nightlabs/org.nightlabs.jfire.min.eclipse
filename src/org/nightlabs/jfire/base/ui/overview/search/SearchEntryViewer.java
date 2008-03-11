@@ -165,19 +165,19 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 */
 	protected void createAdvancedSearchSections(Composite parent, IToolkit toolkit)
 	{
-		SortedSet<QueryFilterFactory> registeredComposites =
-			QueryFilterCompositeRegistry.sharedInstance().getQueryFilterCompositesFor(getResultType());
+		SortedSet<QueryFilterFactory> queryFilterFactories =
+			QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(getResultType());
 		
-		if (registeredComposites == null || registeredComposites.isEmpty())
+		if (queryFilterFactories == null || queryFilterFactories.isEmpty())
 		{
 			advancedSearchSections = Collections.emptyList();
 			return;
 		}
 		
-		advancedSearchSections = new ArrayList<Section>(registeredComposites.size());
+		advancedSearchSections = new ArrayList<Section>(queryFilterFactories.size());
 		
 		Section advancedSearchSection;
-		for (QueryFilterFactory factory : registeredComposites)
+		for (QueryFilterFactory factory : queryFilterFactories)
 		{
 			final int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT;
 			if (toolkit != null)

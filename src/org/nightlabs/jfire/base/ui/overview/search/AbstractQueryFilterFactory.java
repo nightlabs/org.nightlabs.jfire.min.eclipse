@@ -36,13 +36,13 @@ public abstract class AbstractQueryFilterFactory<R, Q extends AbstractSearchQuer
 		throws CoreException
 	{
 		if (AbstractEPProcessor.checkString(
-			config.getAttribute(QueryFilterCompositeRegistry.ATTRIBUTE_ELEMENT_CLASS))
+			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_ELEMENT_CLASS))
 			)
 		{
 			try
 			{
 				final String viewerBaseClassName = 
-					config.getAttribute(QueryFilterCompositeRegistry.ATTRIBUTE_ELEMENT_CLASS);
+					config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_ELEMENT_CLASS);
 				
 				viewerBaseClass = JFireBasePlugin.getDefault().getBundle().loadClass(viewerBaseClassName);
 			}
@@ -65,10 +65,10 @@ public abstract class AbstractQueryFilterFactory<R, Q extends AbstractSearchQuer
 		}
 		
 		if (AbstractEPProcessor.checkString(
-			config.getAttribute(QueryFilterCompositeRegistry.ATTRIBUTE_SECTION_TITLE))
+			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_SECTION_TITLE))
 			)
 		{
-			sectionTitle = config.getAttribute(QueryFilterCompositeRegistry.ATTRIBUTE_SECTION_TITLE);
+			sectionTitle = config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_SECTION_TITLE);
 		}
 		else
 		{
