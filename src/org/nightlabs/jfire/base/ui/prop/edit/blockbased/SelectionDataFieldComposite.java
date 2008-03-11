@@ -94,12 +94,10 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 				throw new RuntimeException("Could not find the referenced structFieldValue with id "+getEditor().getDataField().getStructFieldValueID()); //$NON-NLS-1$
 			}
 		} else {
-			if (fieldValueCombo.getItemCount() > 0) {
+			if (field.getDefaultValue() != null)
+				fieldValueCombo.selectElement(field.getDefaultValue());
+			else
 				fieldValueCombo.selectElementByIndex(-1);
-			}
-			else {
-				fieldValueCombo.selectElementByIndex(-1);
-			}
 		}
 	}
 
