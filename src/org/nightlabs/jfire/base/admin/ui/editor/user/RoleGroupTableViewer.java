@@ -16,9 +16,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.resource.SharedImages;
-import org.nightlabs.base.ui.table.CheckboxCellEditorHelper;
+import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
 import org.nightlabs.base.ui.table.TableContentProvider;
-import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
@@ -40,12 +39,16 @@ public class RoleGroupTableViewer extends TableViewer
 	/**
 	 * Label provider for role groups.
 	 */
-	private class RoleGroupsLabelProvider extends TableLabelProvider
+	private class RoleGroupsLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
 	{
+		public RoleGroupsLabelProvider(TableViewer viewer) {
+			super(viewer);
+		}
+
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			switch (columnIndex) {
-			case 1: return CheckboxCellEditorHelper.getCellEditorImage(model.getRoleGroups().contains(element), false);
+			case 1: return getCheckBoxImage(model.getRoleGroups().contains(element));
 			case 2:	return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), RoleGroupsLabelProvider.class);
 			default: return null;
 			}
@@ -123,7 +126,7 @@ public class RoleGroupTableViewer extends TableViewer
 
 		TableColumn col4 = new TableColumn(getTable(), SWT.NULL);
 		col4.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.description")); //$NON-NLS-1$
-		
+
 		int column1Width = showTotalColum ? 30 : 0;
 
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, 20, -1, -1 });
@@ -134,7 +137,7 @@ public class RoleGroupTableViewer extends TableViewer
 		new TableColumn(table, SWT.LEFT).setText("Description");
 
 		setContentProvider(new RoleGroupsContentProvider());
-		setLabelProvider(new RoleGroupsLabelProvider());
+		setLabelProvider(new RoleGroupsLabelProvider(this));
 	}
 
 	public void setModel(RoleGroupSecurityPreferencesModel model) {
