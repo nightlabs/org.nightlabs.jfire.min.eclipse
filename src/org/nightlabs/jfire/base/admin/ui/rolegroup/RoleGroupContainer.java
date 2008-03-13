@@ -32,18 +32,18 @@ import org.nightlabs.jfire.security.RoleGroup;
  * @author Niklas Schiffler <nick@nightlabs.de>
  *
  */
-public class RoleGroupContainer implements Comparable
+public class RoleGroupContainer implements Comparable<RoleGroupContainer>
 {
 	private RoleGroup roleGroup;
 	private boolean assignedToUser = false;
 	private boolean assignedToUserGroup = false;
-	
-	
+
+
 	public RoleGroupContainer(RoleGroup rg)
 	{
 		this.roleGroup = rg;
 	}
-	
+
 	public boolean isAssignedToUser()
 	{
 		return assignedToUser;
@@ -63,17 +63,14 @@ public class RoleGroupContainer implements Comparable
 	{
 		this.assignedToUserGroup = b;
 	}
-	
+
 	public RoleGroup getRoleGroup()
 	{
 		return roleGroup;
 	}
 
-  public int compareTo(Object o)
+  public int compareTo(RoleGroupContainer container)
   {
-    if(o instanceof RoleGroupContainer)
-      return this.roleGroup.compareTo(((RoleGroupContainer)o).getRoleGroup());
-    else
-      throw new IllegalArgumentException("Can only compare to an instance of class " + this.getClass().getName()); //$NON-NLS-1$
+     return this.roleGroup.compareTo((container).getRoleGroup());
   }
 }

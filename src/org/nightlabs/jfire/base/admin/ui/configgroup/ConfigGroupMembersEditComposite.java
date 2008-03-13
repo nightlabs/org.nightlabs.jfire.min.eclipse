@@ -243,9 +243,9 @@ extends XComposite
 				assignConfig((Config)negativeViewer.getSelection());
 			else
 			{
-				Iterator i = ((IStructuredSelection)negativeViewer.getSelection()).iterator();
+				Iterator<Config> i = ((IStructuredSelection)negativeViewer.getSelection()).iterator();
 				while(i.hasNext())
-					assignConfig((Config)i.next());
+					assignConfig(i.next());
 			}
 			refresh();
 
@@ -269,9 +269,9 @@ extends XComposite
 				removeConfig((Config)positiveViewer.getSelection());
 			else
 			{
-				Iterator i = ((IStructuredSelection)positiveViewer.getSelection()).iterator();
+				Iterator<Config> i = ((IStructuredSelection)positiveViewer.getSelection()).iterator();
 				while(i.hasNext())
-					removeConfig((Config)i.next());
+					removeConfig(i.next());
 			}
 			refresh();
 

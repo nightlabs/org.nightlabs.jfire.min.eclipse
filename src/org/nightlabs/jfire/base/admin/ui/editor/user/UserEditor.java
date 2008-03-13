@@ -39,7 +39,7 @@ import org.nightlabs.progress.NullProgressMonitor;
 
 /**
  * A form editor for {@link User}s.
- * 
+ *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
@@ -81,7 +81,7 @@ public class UserEditor extends EntityEditor implements IConfigSetupEditor
 		User user = UserDAO.sharedInstance().getUser(userID, new String[] {FetchPlan.DEFAULT}, 1, new NullProgressMonitor());
 		if (user.getName() != null && !"".equals(user.getName())) //$NON-NLS-1$
 			return user.getName();
-		
+
 		return user.getUserID();
 	}
 
@@ -101,7 +101,7 @@ public class UserEditor extends EntityEditor implements IConfigSetupEditor
 	public String getTitleToolTip()
 	{
 		// TODO: Better tool-tip
-		return ((UserID)((JDOObjectEditorInput)getEditorInput()).getJDOObjectID()).userID;
+		return ((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID().userID;
 	}
 
 	public ConfigID getConfigID() {
@@ -109,6 +109,6 @@ public class UserEditor extends EntityEditor implements IConfigSetupEditor
 	}
 
 	public UserID getUserID() {
-		return ((UserID)((JDOObjectEditorInput)getEditorInput()).getJDOObjectID());
+		return (((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID());
 	}
 }

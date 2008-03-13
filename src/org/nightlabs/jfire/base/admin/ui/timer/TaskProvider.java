@@ -48,7 +48,7 @@ public class TaskProvider
 			timerManager = TimerManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			try {
 				List<TaskID> promoterIDs = timerManager.getTaskIDs();
-	
+
 				return (List<Task>) getJDOObjects(null, promoterIDs, fetchGroups, maxFetchDepth);
 			} finally {
 				timerManager = null;

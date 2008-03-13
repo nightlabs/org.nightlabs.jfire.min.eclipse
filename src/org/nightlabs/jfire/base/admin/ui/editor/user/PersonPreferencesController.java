@@ -44,7 +44,7 @@ import org.nightlabs.progress.SubProgressMonitor;
 
 /**
  * A controller that loads a user with its person.
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class PersonPreferencesController extends EntityEditorPageController
@@ -56,7 +56,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 		User.FETCH_GROUP_PERSON,
 		PropertySet.FETCH_GROUP_FULL_DATA}
 	;
-	
+
 	private static final long serialVersionUID = -1651161683093714800L;
 
 	/**
@@ -83,7 +83,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	 * The structLocal to use.
 	 */
 	private StructLocal structLocal;
-	
+
 	/**
 	 * Create an instance of this controller for
 	 * an {@link UserEditor} and load the data.
@@ -91,7 +91,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	public PersonPreferencesController(EntityEditor editor)
 	{
 		super(editor);
-		this.userID = (UserID)((JDOObjectEditorInput)editor.getEditorInput()).getJDOObjectID();
+		this.userID = ((JDOObjectEditorInput<UserID>)editor.getEditorInput()).getJDOObjectID();
 		this.editor = editor;
 	}
 
@@ -188,7 +188,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	public User getUser() {
 		return user;
 	}
-	
+
 	public StructLocal getStructLocal() {
 		return structLocal;
 	}

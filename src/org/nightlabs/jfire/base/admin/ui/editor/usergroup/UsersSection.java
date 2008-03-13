@@ -23,8 +23,6 @@
  ******************************************************************************/
 package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -42,11 +40,10 @@ import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.security.User;
 
 /**
  * The section containing the users controls.
- * 
+ *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Niklas Schiffler <nick@nightlabs.de>
@@ -54,22 +51,12 @@ import org.nightlabs.jfire.security.User;
 
 public class UsersSection extends RestorableSectionPart
 {
-//	/**
-//	 * The viewer for included users.
-//	 */
-//	TableViewer includedUsersViewer;
-//
-//	/**
-//	 * The viewer for excluded users.
-//	 */
-//	TableViewer excludedUsersViewer;
-	
 	UserTableViewer userTableViewer;
 
-	/**
-	 * The model for the usergroup
-	 */
-	private GroupSecurityPreferencesModel model;
+//	/**
+//	 * The model for the usergroup
+//	 */
+//	private GroupSecurityPreferencesModel model;
 
 	/**
 	 * Create an instance of RoleGroupsSection.
@@ -95,32 +82,9 @@ public class UsersSection extends RestorableSectionPart
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		createDescriptionControl(section, toolkit);
-		
-		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
-		
-		ViewerComparator userComparator = new ViewerComparator() {
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				return ((User)e1).getName().compareTo(((User)e2).getName());
-			}
-		};
 
-//		Label l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroups.UsersSection.notAssigned")); //$NON-NLS-1$
-//		l = toolkit.createLabel(container, ""); //$NON-NLS-1$
-//		l = toolkit.createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroups.UsersSection.assigned")); //$NON-NLS-1$
-//
-//		excludedUsersViewer = new TableViewer(createUsersTable(toolkit, container));
-//		excludedUsersViewer.setContentProvider(new UsersContentProvider());
-//		excludedUsersViewer.setLabelProvider(new UsersLabelProvider());
-//		excludedUsersViewer.setComparator(userComparator);
-//
-//		createUserButtons(container, toolkit);
-//
-//		includedUsersViewer = new TableViewer(createUsersTable(toolkit, container));
-//		includedUsersViewer.setContentProvider(new UsersContentProvider());
-//		includedUsersViewer.setLabelProvider(new UsersLabelProvider());
-//		includedUsersViewer.setComparator(userComparator);
-		
+		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
+
 		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);
 		toolkit.paintBordersFor(fTable);
 		userTableViewer = new UserTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this));
@@ -142,97 +106,13 @@ public class UsersSection extends RestorableSectionPart
 		});
 		section.setDescriptionControl(text);
 	}
-//	private void createUserButtons(Composite client, FormToolkit toolkit)
-//	{
-//		Composite container = toolkit.createComposite(client);
-//		GridLayout layout = new GridLayout();
-//		layout.marginHeight = 10;
-//		container.setLayout(layout);
-//		container.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-//
-//		Button fAddButton = toolkit.createButton(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.toRight"), SWT.PUSH); //$NON-NLS-1$
-//		fAddButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		fAddButton.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				usersAdd();
-//			}
-//		});
-//
-//		Button fRemoveButton = toolkit.createButton(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.toLeft"), SWT.PUSH); //$NON-NLS-1$
-//		fRemoveButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		fRemoveButton.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				usersRemove();
-//			}
-//		});
-//
-//		toolkit.paintBordersFor(container);
-//	}
-
-//	private Table createUsersTable(FormToolkit toolkit, Composite container)
-//	{
-//		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);
-//		GridData gd = new GridData(GridData.FILL_BOTH);
-//		gd.heightHint = 100;
-//		fTable.setLayoutData(gd);
-//		TableColumn col1 = new TableColumn(fTable, SWT.NULL);
-//		col1.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.user")); //$NON-NLS-1$
-////		TableColumn col2 = new TableColumn(fTable, SWT.NULL);
-////		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.description")); //$NON-NLS-1$
-//		TableLayout tlayout = new TableLayout();
-//		tlayout.addColumnData(new ColumnWeightData(100, 100));
-////		tlayout.addColumnData(new ColumnWeightData(30, 30));
-////		tlayout.addColumnData(new ColumnWeightData(70, 70));
-//		fTable.setLayout(tlayout);
-//		fTable.setHeaderVisible(true);
-//		toolkit.paintBordersFor(fTable);
-//		return fTable;
-//	}
 
 	public void setModel(final GroupSecurityPreferencesModel model) {
-		this.model = model;
+//		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-//				excludedUsersViewer.setInput(model.getExcludedUsers());
-//				includedUsersViewer.setInput(model.getIncludedUsers());
 				userTableViewer.setModel(model);
 			}
 		});
 	}
-
-//	private void usersAdd()
-//	{
-//		ISelection s = excludedUsersViewer.getSelection();
-//		if(s.isEmpty())
-//			return;
-//		IStructuredSelection selection = (IStructuredSelection)s;
-//		Object[] a = selection.toArray();
-//		List l = selection.toList();
-////		model.getExcludedUsers().removeAll(l);
-//		excludedUsersViewer.remove(a);
-//		model.getIncludedUsers().addAll(l);
-//		includedUsersViewer.add(a);
-//		includedUsersViewer.setSelection(selection);
-//		includedUsersViewer.reveal(l.get(0));
-//		markDirty();
-//	}
-//
-//	private void usersRemove()
-//	{
-//		ISelection s = includedUsersViewer.getSelection();
-//		if(s.isEmpty())
-//			return;
-//		IStructuredSelection selection = (IStructuredSelection)s;
-//		Object[] a = selection.toArray();
-//		List l = selection.toList();
-//		model.getIncludedUsers().removeAll(l);
-//		includedUsersViewer.remove(a);
-////		model.getExcludedUsers().addAll(l);
-//		excludedUsersViewer.add(a);
-//		excludedUsersViewer.setSelection(selection);
-//		excludedUsersViewer.reveal(l.get(0));
-//		markDirty();
-//	}
 }

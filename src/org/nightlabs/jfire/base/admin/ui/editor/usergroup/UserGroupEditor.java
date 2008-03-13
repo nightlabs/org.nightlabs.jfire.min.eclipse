@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
@@ -20,13 +20,13 @@ public class UserGroupEditor extends UserEditor {
 	public UserGroupEditor() {
 		super();
 	}
-	
+
 	@Override
 	public String getTitle() {
 		if(getEditorInput() == null)
 			return super.getTitle();
-		
-		final UserID groupID = (UserID)((JDOObjectEditorInput)getEditorInput()).getJDOObjectID();
+
+		final UserID groupID = ((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID();
 		// given that the User had to be loaded to be shown in the tree, this should not take long.
 		User userGroup  = UserDAO.sharedInstance().getUser(groupID, new String[] {FetchPlan.DEFAULT}, 1, new NullProgressMonitor());
 		if (userGroup.getName() != null && !"".equals(userGroup.getName())) //$NON-NLS-1$

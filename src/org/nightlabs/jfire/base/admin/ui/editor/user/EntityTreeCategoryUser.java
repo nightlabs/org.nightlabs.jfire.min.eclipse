@@ -44,7 +44,7 @@ import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * Entity tree category for {@link User}s.
- * 
+ *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author marco schulze - marco at nightlabs dot de
@@ -63,13 +63,13 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 //				return UserUtil.getUserDisplayName((User)o);
 				if (user.getName() != null && ! "".equals(user.getName())) //$NON-NLS-1$
 					return user.getName();
-				
+
 				return user.getUserID();
 			} else {
 				return super.getText(o);
 			}
 		}
-		
+
 	}
 
 	public IEditorInput createEditorInput(Object o)
@@ -84,7 +84,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	}
 
 	@Override
-	protected Class getJDOObjectClass()
+	protected Class<User> getJDOObjectClass()
 	{
 		return User.class;
 	}

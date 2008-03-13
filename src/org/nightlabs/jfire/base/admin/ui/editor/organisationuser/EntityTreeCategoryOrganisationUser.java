@@ -79,7 +79,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	}
 
 	@Override
-	protected Class getJDOObjectClass()
+	protected Class<User> getJDOObjectClass()
 	{
 		return User.class;
 	}

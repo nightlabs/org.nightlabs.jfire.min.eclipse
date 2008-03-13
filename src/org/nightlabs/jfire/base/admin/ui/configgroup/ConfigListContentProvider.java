@@ -47,7 +47,7 @@ public class ConfigListContentProvider implements IStructuredContentProvider
 	public Object[] getElements(Object o)
 	{
 		if(o instanceof ArrayList)
-			return ((ArrayList)o).toArray();
+			return ((ArrayList<Object>)o).toArray();
 		else
 			return new Object[0];
 	}
@@ -64,9 +64,9 @@ public class ConfigListContentProvider implements IStructuredContentProvider
 	{
 		ArrayList<Config> ret = new ArrayList<Config>();
 		ConfigSetup configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(id, new NullProgressMonitor());
-		List configs = configSetup.getConfigsForGroup(id.configKey);
-		for (Iterator iter = configs.iterator(); iter.hasNext();)
-			ret.add((Config) iter.next());
+		List<Config> configs = configSetup.getConfigsForGroup(id.configKey);
+		for (Iterator<Config> iter = configs.iterator(); iter.hasNext();)
+			ret.add(iter.next());
 		return ret;
 	}
 
@@ -74,9 +74,9 @@ public class ConfigListContentProvider implements IStructuredContentProvider
 	{
 		ArrayList<Config> ret = new ArrayList<Config>();
 		ConfigSetup configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(id, new NullProgressMonitor());
-		List configs = configSetup.getConfigsNotInGroup(id.configKey);
-		for (Iterator iter = configs.iterator(); iter.hasNext();)
-			ret.add((Config) iter.next());
+		List<Config> configs = configSetup.getConfigsNotInGroup(id.configKey);
+		for (Iterator<Config> iter = configs.iterator(); iter.hasNext();)
+			ret.add(iter.next());
 		return ret;
 	}
 }

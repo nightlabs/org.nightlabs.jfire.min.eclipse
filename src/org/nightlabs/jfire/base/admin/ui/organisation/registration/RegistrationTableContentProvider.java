@@ -45,22 +45,22 @@ import org.nightlabs.jfire.organisation.RegistrationStatus;
 public class RegistrationTableContentProvider
 	implements IStructuredContentProvider
 {
-	private Object[] registrationStati;
-	
+	private Object[] registrationStatus;
+
 	public RegistrationTableContentProvider()
 	{
 		loadData(); // TODO should be done asynchronously!
 	}
-	
+
 	public void loadData()
 	{
 		try {
 			OrganisationManager organisationManager = OrganisationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			Collection registrationStatusCollection =
+			Collection<Object> registrationStatusCollection =
 					organisationManager.getPendingRegistrations(
 							new String[]{FetchPlan.DEFAULT, RegistrationStatus.FETCH_GROUP_USERS}, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
 
-			registrationStati = registrationStatusCollection.toArray();
+			registrationStatus = registrationStatusCollection.toArray();
 			organisationManager.remove();
 		} catch (RuntimeException x) {
 			ExceptionHandlerRegistry.asyncHandleException(x);
@@ -76,10 +76,10 @@ public class RegistrationTableContentProvider
 	 */
 	public Object[] getElements(Object inputElement)
 	{
-		if (inputElement != this || registrationStati == null)
+		if (inputElement != this || registrationStatus == null)
 			return new Object[0];
 
-		return registrationStati;
+		return registrationStatus;
 	}
 
 	/**

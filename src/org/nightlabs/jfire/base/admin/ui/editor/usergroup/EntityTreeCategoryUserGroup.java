@@ -45,7 +45,7 @@ import org.nightlabs.util.CollectionUtil;
 
 /**
  * Entity tree category for {@link UserGroup}s.
- * 
+ *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
@@ -64,7 +64,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 				return o.toString();
 		}
 	}
-	
+
 	public IEditorInput createEditorInput(Object o)
 	{
 		UserGroup userGroup = (UserGroup)o;
@@ -77,7 +77,7 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 	}
 
 	@Override
-	protected Class getJDOObjectClass()
+	protected Class<UserGroup> getJDOObjectClass()
 	{
 		return UserGroup.class;
 	}

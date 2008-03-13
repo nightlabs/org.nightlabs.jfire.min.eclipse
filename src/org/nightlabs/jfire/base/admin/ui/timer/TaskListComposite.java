@@ -49,7 +49,7 @@ import org.nightlabs.l10n.DateFormatter;
 import org.nightlabs.notification.NotificationEvent;
 
 public class TaskListComposite
-		extends AbstractTableComposite
+		extends AbstractTableComposite<Task>
 {
 	protected static class TaskListContentProvider
 			extends TableContentProvider
@@ -138,12 +138,12 @@ public class TaskListComposite
 				IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 
 				Set<Task> _selectedTasks = new HashSet<Task>();
-				for (Iterator it = sel.iterator(); it.hasNext(); ) {
-					_selectedTasks.add((Task) it.next());
+				for (Iterator<Task> it = sel.iterator(); it.hasNext(); ) {
+					_selectedTasks.add(it.next());
 				}
 				selectedTasks = _selectedTasks;
 
-				ArrayList<Class> classes = new ArrayList<Class>();
+				ArrayList<Class<Task>> classes = new ArrayList<Class<Task>>();
 				classes.add(Task.class);
 				SelectionManager.sharedInstance().notify(
 						new ChangeEvent(TaskListComposite.this, getSelectionZone(), _selectedTasks, classes));
@@ -166,8 +166,8 @@ public class TaskListComposite
 			if (taskSet == null)
 				return;
 
-			for (Iterator it = notificationEvent.getSubjects().iterator(); it.hasNext();) {
-				DirtyObjectID dirtyObjectID = (DirtyObjectID) it.next();
+			for (Iterator<DirtyObjectID> it = notificationEvent.getSubjects().iterator(); it.hasNext();) {
+				DirtyObjectID dirtyObjectID = it.next();
 				TaskID taskID = (TaskID) dirtyObjectID.getObjectID();
 				Task task = TaskProvider.sharedInstance().getTask(taskID,
 						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
@@ -404,7 +404,7 @@ public class TaskListComposite
 	{
 		tableViewer.setContentProvider(new TaskListContentProvider());
 		tableViewer.setLabelProvider(new TaskListLabelProvider());
-		setInput(new LinkedList());
+		setInput(new LinkedList<Task>());
 	}
 
 	private Set<Task> taskSet = null;

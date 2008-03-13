@@ -30,7 +30,7 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 	public EntityTreeCategoryUserConfigGroup() {
 		super();
 	}
-	
+
 	protected class LabelProvider extends TableLabelProvider {
 		public String getColumnText(Object o, int columnIndex) {
 			// check for string first, so we don't need to be logged in when dsplaying a simple string
@@ -44,16 +44,16 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 			}
 		}
 	}
-	
+
 	@Override
-	protected Class getJDOObjectClass() {
+	protected Class<ConfigGroup> getJDOObjectClass() {
 		return ConfigGroup.class;
 	}
 
 	public static final String[] FETCH_GROUPS_USER_CONFIG_GROUPS = {
 		FetchPlan.DEFAULT, ConfigGroup.FETCH_GROUP_THIS_CONFIG_GROUP
 		};
-	
+
 	public static Comparator<ConfigGroup> configGroupComparator = new Comparator<ConfigGroup>()
 	{
 		public int compare(ConfigGroup o1, ConfigGroup o2)
@@ -61,11 +61,11 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 			int res = o1.getOrganisationID().compareTo(o2.getOrganisationID());
 			if (res != 0)
 				return res;
-			
+
 			return o1.getConfigKey().compareTo(o2.getConfigKey());
 		}
 	};
-	
+
 	@Override
 	protected Collection<ConfigGroup> retrieveJDOObjects(ProgressMonitor monitor) {
 		return CollectionUtil.castCollection(
@@ -106,5 +106,5 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 	public ITableLabelProvider createLabelProvider() {
 		return new LabelProvider();
 	}
-	
+
 }

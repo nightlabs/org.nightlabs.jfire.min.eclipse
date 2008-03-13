@@ -19,7 +19,7 @@ implements IConfigSetupEditor
 	 * The editor id.
 	 */
 	public static final String EDITOR_ID = WorkstationEditor.class.getName();
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.entityeditor.EntityEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
 	 */
@@ -38,7 +38,7 @@ implements IConfigSetupEditor
 	{
 		if(getEditorInput() == null)
 			return super.getTitle();
-		return ((WorkstationID)((JDOObjectEditorInput)getEditorInput()).getJDOObjectID()).workstationID;
+		return (((JDOObjectEditorInput<WorkstationID>)getEditorInput()).getJDOObjectID()).workstationID;
 	}
 
 	/* (non-Javadoc)
@@ -57,15 +57,15 @@ implements IConfigSetupEditor
 	public String getTitleToolTip()
 	{
 		// TODO: Better tool-tip
-		return ((WorkstationID)((JDOObjectEditorInput)getEditorInput()).getJDOObjectID()).workstationID;
+		return (((JDOObjectEditorInput<WorkstationID>)getEditorInput()).getJDOObjectID()).workstationID;
 	}
 
 	public ConfigID getConfigID() {
 		return ConfigID.create(getWorkstationID().organisationID, getWorkstationID(), Workstation.class);
 	}
-	
+
 	public WorkstationID getWorkstationID() {
 		return ((WorkstationEditorInput)getEditorInput()).getJDOObjectID();
 	}
-	
+
 }

@@ -41,7 +41,7 @@ import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
 public class RegisterInRootOrganisationAction implements IWorkbenchWindowActionDelegate
 {
 
-	private IWorkbenchWindow window;
+//	private IWorkbenchWindow window;
 
 	public RegisterInRootOrganisationAction()
 	{
@@ -59,7 +59,7 @@ public class RegisterInRootOrganisationAction implements IWorkbenchWindowActionD
 	 */
 	public void init(IWorkbenchWindow window)
 	{
-		this.window = window;
+//		this.window = window;
 	}
 
 	/**

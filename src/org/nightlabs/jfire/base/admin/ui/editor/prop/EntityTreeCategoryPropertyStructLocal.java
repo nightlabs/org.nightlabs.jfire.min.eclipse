@@ -49,7 +49,7 @@ import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * Entity tree category for {@link StructLocal}s.
- * 
+ *
  * @version $Revision: 5032 $ - $Date: 2006-11-20 18:46:17 +0100 (Mo, 20 Nov 2006) $
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
@@ -70,7 +70,7 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 					return ""; //$NON-NLS-1$
 				}
 			}
-			
+
 		}
 
 	public IEditorInput createEditorInput(Object o)
@@ -84,7 +84,7 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 	}
 
 	@Override
-	protected Class getJDOObjectClass()
+	protected Class<StructLocal> getJDOObjectClass()
 	{
 		return StructLocal.class;
 	}

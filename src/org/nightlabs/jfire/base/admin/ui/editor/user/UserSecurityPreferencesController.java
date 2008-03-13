@@ -63,7 +63,7 @@ import org.nightlabs.progress.SubProgressMonitor;
 
 /**
  * Controller class for the security preferences of a user.
- * 
+ *
  * @version $Revision: 4472 $ - $Date: 2006-08-28 20:21:33 +0000 (Mon, 28 Aug 2006) $
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Niklas Schiffler <nick@nightlabs.de>
@@ -96,7 +96,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 	 * The user security preference model.
 	 */
 	RoleGroupSecurityPreferencesModel roleGroupModel;
-	
+
 	private boolean loading = false;
 
 	/**
@@ -111,7 +111,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		this.userModel = new UserSecurityPreferencesModel(userID);
 		this.roleGroupModel = new RoleGroupSecurityPreferencesModel();
 		JDOLifecycleManager.sharedInstance().addNotificationListener(User.class, userChangedListener);
-		
+
 		userModel.addModelChangeListener(new ModelChangeListener() {
 			public void modelChanged(ModelChangeEvent event) {
 				if (!loading) {
@@ -128,7 +128,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		JDOLifecycleManager.sharedInstance().removeNotificationListener(User.class, userChangedListener);
 		super.dispose();
 	}
-	
+
 	private NotificationListener userChangedListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.loadingChangedUser")) //$NON-NLS-1$
 	{
 		public void notify(NotificationEvent notificationEvent) {
@@ -175,7 +175,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 
 				Collection<UserGroup> includedUserGroups = new HashSet<UserGroup>(user.getUserGroups());
 				userModel.setUserGroups(includedUserGroups);
-				
+
 				userModel.setAvailableUserGroups(availableUserGroups);
 
 				// load role groups
@@ -187,12 +187,12 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 						pMonitor);
 				roleGroupModel.setRoleGroups(roleGroups.assigned);
 				roleGroupModel.setRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
-				
+
 				Collection<RoleGroup> availableRoleGroups = new LinkedList<RoleGroup>(roleGroups.assigned);
 				availableRoleGroups.addAll(roleGroups.assignedByUserGroup);
 				availableRoleGroups.addAll(roleGroups.excluded);
 				roleGroupModel.setAvailableRoleGroups(availableRoleGroups);
-				
+
 				logger.info("Loading user "+userID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				fireModifyEvent(null, user);
 			}
@@ -203,30 +203,28 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 			loading = false;
 		}
 	}
-	
+
 	private Job reloadRoleGroupsFromUserGroupsJob;
-	
+
 	public void reloadRoleGroupsFromUserGroups() {
 		Job loadJob = new Job("Reloading role groups...") {
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
-				ProgressMonitor pMonitor = new org.nightlabs.progress.NullProgressMonitor();
-				
 				Collection<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserGroups(
 						JDOHelper.getObjectIds(userModel.getUserGroups()),
 						Authority.AUTHORITY_ID_ORGANISATION,
 						new String[] {RoleGroup.FETCH_GROUP_THIS},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
-				
+
 				if (reloadRoleGroupsFromUserGroupsJob == this) {
 					roleGroupModel.setRoleGroupsFromUserGroups(roleGroups);
 					fireModifyEvent(null, roleGroupModel);
 				}
-				
+
 				return Status.OK_STATUS;
 			}
 		};
-	
+
 		reloadRoleGroupsFromUserGroupsJob = loadJob;
 		loadJob.schedule();
 	}
@@ -249,17 +247,17 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		}
 		logger.info("Saving user "+userID.userID); //$NON-NLS-1$
 		ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
-		
+
 		Collection<UserGroup> includedUserGroups = userModel.getUserGroups();
 		Collection<UserGroup> excludedUserGroups = new HashSet<UserGroup>(userModel.getAvailableUserGroups());
 		excludedUserGroups.removeAll(includedUserGroups);
-		
+
 		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroups();
 		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAvailableRoleGroups());
 		excludedRoleGroups.removeAll(includedRoleGroups);
-		
+
 		int taskTicks = includedRoleGroups.size() + excludedRoleGroups.size() +	includedUserGroups.size() + excludedUserGroups.size();
-		
+
 		pMonitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.doSave.monitor.taskName"), taskTicks); //$NON-NLS-1$
 		try	{
 			User user = userModel.getUser();
@@ -294,7 +292,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(pMonitor, 1));
 				}
 			}
-			
+
 			monitor.done();
 			logger.info("Saving user "+userID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch(Exception e) {

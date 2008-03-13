@@ -78,7 +78,7 @@ public class UserTableViewer extends TableViewer
 
 		this.dirtyStateManager = dirtyStateManager;
 
-		ViewerComparator roleGroupComparator = new ViewerComparator() {
+		ViewerComparator userComparator = new ViewerComparator() {
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				User u1 = (User) e1;
@@ -87,7 +87,7 @@ public class UserTableViewer extends TableViewer
 			}
 		};
 
-		setComparator(roleGroupComparator);
+		setComparator(userComparator);
 
 		// Layout stuff
 		GridData gd = new GridData(GridData.FILL_BOTH);

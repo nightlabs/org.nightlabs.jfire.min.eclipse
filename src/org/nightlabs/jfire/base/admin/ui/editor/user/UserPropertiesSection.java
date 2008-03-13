@@ -117,7 +117,7 @@ public class UserPropertiesSection extends RestorableSectionPart
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		blockBasedPersonEditor.setChangeListener(new DataBlockEditorChangedListener() {
-			public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor dataFieldEditor) {
+			public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<?> dataFieldEditor) {
 				markDirty();
 			}
 		});

@@ -38,16 +38,16 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup>
 			}
 		}
 	}
-	
+
 	@Override
-	protected Class getJDOObjectClass() {
+	protected Class<ConfigGroup> getJDOObjectClass() {
 		return ConfigGroup.class;
 	}
 
 	public static final String[] FETCH_GROUPS_WORKSTATIONGROUP = {
 		FetchPlan.DEFAULT, ConfigGroup.FETCH_GROUP_THIS_CONFIG_GROUP
 		};
-	
+
 	@Override
 	protected Collection<ConfigGroup> retrieveJDOObjects(Set<ConfigID> configIDs, ProgressMonitor monitor)
 	{
@@ -77,7 +77,7 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup>
 				int res = o1.getOrganisationID().compareTo(o2.getOrganisationID());
 				if (res != 0)
 					return res;
-				
+
 				return o1.getConfigKey().compareTo(o2.getConfigKey());
 			}
 		});
