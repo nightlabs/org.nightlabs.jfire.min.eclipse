@@ -96,7 +96,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * A mapping from query type to all used queries.
 	 * ? extends AbstractSearchQuery<? extends R>
 	 */
-	protected QueryMap<R, Q> queryMap;
+	private QueryMap<R, Q> queryMap;
 	
 	private ScrolledComposite scrollableSearchWrapper;
 	private XComposite toolbarAndAdvancedSearchWrapper = null;
@@ -713,5 +713,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	public Class<? extends R> getBaseViewerClass()
 	{
 		return getResultType();
+	}
+
+	protected QueryMap<R, Q> getQueryMap() {
+		return queryMap;
 	}
 }
