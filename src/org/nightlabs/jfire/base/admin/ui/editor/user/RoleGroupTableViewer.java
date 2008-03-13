@@ -129,7 +129,7 @@ public class RoleGroupTableViewer extends TableViewer
 
 		int column1Width = showTotalColum ? 30 : 0;
 
-		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, 20, -1, -1 });
+		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, 22, -1, -1 });
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
