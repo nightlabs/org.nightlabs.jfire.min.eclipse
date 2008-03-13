@@ -54,7 +54,7 @@ public interface QuickSearchEntryFactory<R, Q extends AbstractSearchQuery<? exte
 	 * returns an instance of {@link QuickSearchEntry}
 	 * @return an instance of {@link QuickSearchEntry}
 	 */
-	QuickSearchEntry<R,Q> createQuickSearchEntry();
+	QuickSearchEntry<R, Q> createQuickSearchEntry();
 	
 	/**
 	 * Returns whether the quick search entries created by this factory are considered the default of

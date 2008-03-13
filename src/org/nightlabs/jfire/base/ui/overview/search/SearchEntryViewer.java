@@ -50,8 +50,8 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
+import org.nightlabs.jdo.query.DefaultQueryProvider;
 import org.nightlabs.jdo.query.QueryCollection;
-import org.nightlabs.jdo.query.QueryMap;
 import org.nightlabs.jdo.query.QueryProvider;
 import org.nightlabs.jfire.base.ui.overview.AbstractEntryViewer;
 import org.nightlabs.jfire.base.ui.overview.Entry;
@@ -83,20 +83,22 @@ import org.nightlabs.progress.ProgressMonitor;
  */
 public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? extends R>>
 	extends AbstractEntryViewer
-	implements QueryProvider<R, Q>
 {
 	public static final Logger logger = Logger.getLogger(SearchEntryViewer.class);
 	
 	public SearchEntryViewer(Entry entry) {
 		super(entry);
-		queryMap = new QueryMap<R, Q>();
+		queryProvider = new DefaultQueryProvider<R, Q>();
+		
+		// WORKAROUND: see StatableSeachFilterFactory
+		queryProvider.setViewerBaseClass(getResultType());
 	}
 	
 	/**
 	 * A mapping from query type to all used queries.
 	 * ? extends AbstractSearchQuery<? extends R>
 	 */
-	private QueryMap<R, Q> queryMap;
+	protected QueryProvider<R, Q> queryProvider;
 	
 	private ScrolledComposite scrollableSearchWrapper;
 	private XComposite toolbarAndAdvancedSearchWrapper = null;
@@ -120,10 +122,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			LayoutMode.TOP_BOTTOM_WRAPPER);
 		
 		createToolBar(toolbarAndAdvancedSearchWrapper, toolkit);
+		createQuickSearchEntries(searchItem);
 		createAdvancedSearchSections(toolbarAndAdvancedSearchWrapper, toolkit);
-		resultComposite = createResultComposite(sashform);
 		scrollableSearchWrapper.setContent(toolbarAndAdvancedSearchWrapper);
 		scrollableSearchWrapper.setMinHeight(toolbarAndAdvancedSearchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+		resultComposite = createResultComposite(sashform);
 		
 		if (parent.getLayout() instanceof GridLayout)
 			sashform.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -142,7 +145,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			toolkit.adapt(resultComposite);
 		}
 		
-		createQuickSearchEntries(searchItem);
 				
 		// Context Menu
 		menuManager = new MenuManager();
@@ -201,7 +203,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 
 			AbstractQueryFilterComposite<? extends R, ? extends Q> filterComposite =
 				factory.createQueryFilter(
-					advancedSearchSection, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, this
+					advancedSearchSection, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER,
+					LayoutDataMode.GRID_DATA_HORIZONTAL, queryProvider
 					);
 			filterComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			advancedSearchSection.setClient(filterComposite);
@@ -212,7 +215,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	}
 	
 	/**
-	 * @eturn The sashform containing the search part (toolbar & advanced search sections) and the
+	 * @return The sashform containing the search part (toolbar & advanced search sections) and the
 	 * 	result composite (displaying the found elements).
 	 */
 	public Composite getComposite()
@@ -299,7 +302,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			@Override
 			public void modifyText(ModifyEvent e)
 			{
-				queryMap.setToExclude( limit.getSelection() );
+				queryProvider.getManagedQueries().setToExclude( limit.getSelection() );
 			}
 		});
 		limit.setSelection(25);
@@ -353,7 +356,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			@Override
 			protected IStatus run(final ProgressMonitor monitor)
 			{
-				final Collection<R> result = doSearch(queryMap, monitor);
+				final Collection<R> result = doSearch(queryProvider.getManagedQueries(), monitor);
 					Display.getDefault().syncExec(new Runnable()
 					{
 						public void run()
@@ -374,7 +377,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * @param monitor the monitor to show the progress.
 	 * @return a collection of all elements matching the cascaded queries of the <code>queryMap</code>.
 	 */
-	protected abstract Collection<R> doSearch(QueryMap<R, ? extends Q> queryMap, ProgressMonitor monitor);
+	protected abstract Collection<R> doSearch(QueryCollection<R, ? extends Q> queryMap, ProgressMonitor monitor);
 
 	/**
 	 * will be called after the search of the current {@link QuickSearchEntry}
@@ -574,7 +577,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			menuItem.setImage(quickSearchEntryFactory.getImage());
 			// FIXME: Wie kann man denn Factories aus einem ExtensionPoint erzeugen, die typisierte elemente liefern??? (marius)
 			final QuickSearchEntry<R, ? extends Q> quickSearchEntry = quickSearchEntryFactory.createQuickSearchEntry();
-			quickSearchEntry.setQueryProvider(this);
+			quickSearchEntry.setQueryProvider(queryProvider);
 			menuItem.setData(quickSearchEntry);
 
 			menuItem.addSelectionListener(dropDownMenuSelectionAdapter);
@@ -698,24 +701,13 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}
 	}
 	
-	@Override
-	public <ReqQuery extends Q> ReqQuery getQueryOfType(Class<ReqQuery> queryClass)
-	{
-		return queryMap.getQueryOfType(queryClass);
-	}
-	
+	/**
+	 * Returns the collection of queries managed by this viewer.  
+	 * @return the collection of queries managed by this viewer.
+	 */
 	public QueryCollection<R, Q> getManagedQueries()
 	{
-		return queryMap;
+		return queryProvider.getManagedQueries();
 	}
 	
-	@Override
-	public Class<? extends R> getBaseViewerClass()
-	{
-		return getResultType();
-	}
-
-	protected QueryMap<R, Q> getQueryMap() {
-		return queryMap;
-	}
 }

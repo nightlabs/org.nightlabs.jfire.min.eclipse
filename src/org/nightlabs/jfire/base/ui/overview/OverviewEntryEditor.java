@@ -251,13 +251,13 @@ public class OverviewEntryEditor
 					formBody.setLayout(XComposite.getLayout(LayoutMode.TOP_BOTTOM_WRAPPER));
 					composite = entryViewer.createComposite(form.getBody());
 					GridData resultData = new GridData(SWT.FILL, SWT.FILL, true, true);
+					composite.setLayoutData(resultData);
 					
 					// FIXME: this is a workaround for growing tables in FromPages that works, at least under GNU+Linux / GTK very well.
 					// more information about this can be found at: https://bugs.eclipse.org/bugs/show_bug.cgi?id=215997#c4
 					resultData.heightHint = 1;
 					resultData.widthHint = 1;
 					
-					composite.setLayoutData(resultData);
 					if (entryViewer.getSelectionProvider() != null) {
 						getSite().setSelectionProvider(entryViewer.getSelectionProvider());
 						entryViewer.getSelectionProvider().addSelectionChangedListener(selectionChangedListener);
