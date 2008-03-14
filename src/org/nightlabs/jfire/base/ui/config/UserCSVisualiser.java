@@ -30,12 +30,12 @@ import javax.jdo.FetchPlan;
 
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.security.UserProvider;
 import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigSetup;
 import org.nightlabs.jfire.config.dao.ConfigSetupDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.security.User;
+import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
@@ -54,7 +54,8 @@ public class UserCSVisualiser implements ConfigSetupVisualiser
 	public String getKeyObjectName(ConfigID configID) {
 		try {
 			UserID userID = new UserID(configID.configKey);
-			User user = UserProvider.sharedInstance().getUser(userID, USER_FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+			User user = UserDAO.sharedInstance().getUser(userID, USER_FETCH_GROUPS, 
+					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor());
 			return String.format(Messages.getString("org.nightlabs.jfire.base.ui.config.UserCSVisualiser.keyObjectName"), user.getUserID(), user.getName()); //$NON-NLS-1$
 		} catch (Exception e) {
 			return configID.configKey;
