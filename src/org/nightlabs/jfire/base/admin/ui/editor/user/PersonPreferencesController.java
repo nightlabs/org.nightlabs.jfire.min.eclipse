@@ -41,6 +41,7 @@ import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.progress.SubProgressMonitor;
+import org.nightlabs.util.Util;
 
 /**
  * A controller that loads a user with its person.
@@ -114,7 +115,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 				);
 				monitor.worked(1);
 				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new ProgressMonitorWrapper(monitor));
-				this.user = user;
+				this.user = Util.cloneSerializable(user);
 				logger.info("Loading user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.info("Loading user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
@@ -151,6 +152,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 					user, true, FETCH_GROUPS,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(new ProgressMonitorWrapper(monitor), 5)
 			);
+			user = Util.cloneSerializable(user);
 			fireModifyEvent(oldUser, getUser());
 
 			logger.info("Saving user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
