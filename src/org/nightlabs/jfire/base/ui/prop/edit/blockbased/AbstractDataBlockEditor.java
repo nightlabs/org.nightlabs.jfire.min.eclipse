@@ -104,10 +104,10 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 	public Map<String, Integer> getStructFieldDisplayOrder() {
 		// TODO re-enable this
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structFieldDisplayOrder();
-		List<StructField> fields = struct.getStructBlock(dataBlock.getDataBlockGroup()).getStructFields();
+		List<StructField<? extends DataField>> fields = struct.getStructBlock(dataBlock.getDataBlockGroup()).getStructFields();
 		Map<String, Integer> fieldOrdering = new HashMap<String, Integer>(fields.size());
 		int index = 0;
-		for (StructField field : fields) {
+		for (StructField<? extends DataField> field : fields) {
 			fieldOrdering.put(field.getPrimaryKey(), index);
 			index++;
 		}

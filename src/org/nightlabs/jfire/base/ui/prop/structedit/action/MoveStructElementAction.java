@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.structedit.action;
 
@@ -15,11 +15,12 @@ import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructureChangedListener;
 import org.nightlabs.jfire.base.ui.prop.structedit.TreeNode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 
 /**
- * 
+ *
  * @author Marius Heinzmann [marius<at>NightLabs<dot>de]
  */
 public class MoveStructElementAction
@@ -31,13 +32,13 @@ public class MoveStructElementAction
 	public MoveStructElementAction(StructEditor editor, boolean up) {
 		this(editor, up, null);
 	}
-	
+
 	public MoveStructElementAction(StructEditor editor, boolean up, StructureChangedListener listener) {
 		super(editor.getStructTree().getStructTreeComposite());
 		addStructureChangedListener(listener);
 		this.editor = editor;
 		this.up = up;
-		
+
 		setText(up ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.text_up") : Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.text_down"));  //$NON-NLS-1$ //$NON-NLS-2$
 		setImageDescriptor( up ? SharedImages.UP_16x16 : SharedImages.DOWN_16x16 );
 		setToolTipText( up ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.toolTipText_up") :  //$NON-NLS-1$
@@ -49,32 +50,32 @@ public class MoveStructElementAction
 		TreeNode selectedNode = editor.getStructTree().getSelectedNode();
 		if (selectedNode == null)
 			return;
-		
+
 		if (selectedNode instanceof StructBlockNode) {
 			final StructBlock movingBlock = ((StructBlockNode) selectedNode).getBlock();
 			final List<StructBlock> blockList = editor.getStruct().getStructBlocks();
 			final int movingBlockIndex = blockList.indexOf(movingBlock);
 			if (up ? movingBlockIndex == 0 : movingBlockIndex == blockList.size()-1)
 				return;
-			
+
 			final int exchangeBlockIndex= up ? movingBlockIndex-1 : movingBlockIndex+1;
 			final StructBlock exchangedBlock = blockList.get( exchangeBlockIndex );
 			blockList.set( exchangeBlockIndex, movingBlock );
 			blockList.set( movingBlockIndex, exchangedBlock );
-			
+
 		} else if (selectedNode instanceof StructFieldNode) {
-			final StructField movingField = ((StructFieldNode) selectedNode).getField();
+			final StructField<? extends DataField> movingField = ((StructFieldNode) selectedNode).getField();
 			final StructBlock outerBlock = ((StructFieldNode) selectedNode).getParentBlock().getBlock();
-			final List<StructField> fieldList = outerBlock.getStructFields();
+			final List<StructField<? extends DataField>> fieldList = outerBlock.getStructFields();
 			final int movingFieldIndex = fieldList.indexOf(movingField);
 			if ( up ? movingFieldIndex == 0 : movingFieldIndex == fieldList.size()-1)
 				return;
 			final int exchangeFieldIndex = up ? movingFieldIndex-1 : movingFieldIndex+1;
 
-			final StructField exchangedField = fieldList.get( exchangeFieldIndex );
+			final StructField<? extends DataField> exchangedField = fieldList.get( exchangeFieldIndex );
 			fieldList.set( exchangeFieldIndex, movingField );
 			fieldList.set( movingFieldIndex, exchangedField );
-			
+
 		} else {
 			throw new IllegalArgumentException("The returned selected TreeNode is neither a StructBlockNode " + //$NON-NLS-1$
 					"nor a StructFieldNode! Seems like the NodeTypes have changed!"); //$NON-NLS-1$
@@ -83,7 +84,7 @@ public class MoveStructElementAction
 		editor.getStructTree().refresh();
 		notifyListeners();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
 	 */
@@ -99,12 +100,12 @@ public class MoveStructElementAction
 	}
 
 	private Set<StructureChangedListener> listeners = new HashSet<StructureChangedListener>();
-	
+
 	public void addStructureChangedListener(StructureChangedListener listener) {
 		if (! listeners.contains(listener))
 			listeners.add(listener);
 	}
-	
+
 	private void notifyListeners() {
 		for (StructureChangedListener listener : listeners) {
 			listener.structureChanged();
