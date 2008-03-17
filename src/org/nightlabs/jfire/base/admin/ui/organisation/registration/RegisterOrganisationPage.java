@@ -150,9 +150,13 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 			if (orga2 == UNKNOWN_ORGANISATION)
 				return -1;
 
-			return getCollator().compare(
+			return getComparator().compare(
 					orga1.getPerson().getDisplayName(),
 					orga2.getPerson().getDisplayName());
+
+//			return getCollator().compare(
+//					orga1.getPerson().getDisplayName(),
+//					orga2.getPerson().getDisplayName());
 		}
 	}
 
@@ -168,9 +172,13 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 			if (orga2 == UNKNOWN_ORGANISATION)
 				return -1;
 
-			return getCollator().compare(
+			return getComparator().compare(
 					orga1.getOrganisationID(),
 					orga2.getOrganisationID());
+
+//			return getCollator().compare(
+//					orga1.getOrganisationID(),
+//					orga2.getOrganisationID());
 		}
 	}
 

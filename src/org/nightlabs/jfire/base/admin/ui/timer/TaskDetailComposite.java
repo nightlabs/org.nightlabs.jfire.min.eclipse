@@ -35,9 +35,11 @@ import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.timer.Task;
 import org.nightlabs.jfire.timer.TimerManager;
 import org.nightlabs.jfire.timer.TimerManagerUtil;
+import org.nightlabs.jfire.timer.dao.TaskDAO;
 import org.nightlabs.jfire.timer.id.TaskID;
 import org.nightlabs.notification.NotificationAdapterCallerThread;
 import org.nightlabs.notification.NotificationListener;
+import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
 import org.nightlabs.util.Util;
 
@@ -107,7 +109,7 @@ implements ISelectionProvider // needed for updating ViewActions
 	/**
 	 * You can override this method in order to retrieve a {@link Task} with
 	 * more fetchgroups than defined by {@link #FETCH_GROUPS_TASK}.
-	 * 
+	 *
 	 * @return Returns <code>null</code> or a String array with the desired addtional fetch groups.
 	 */
 	protected String[] getAdditionalFetchGroupsTask() { return null; }
@@ -154,8 +156,9 @@ implements ISelectionProvider // needed for updating ViewActions
 
 				Task newTask = null;
 				if (taskID != null)
-					newTask = Util.cloneSerializable(
-							TaskProvider.sharedInstance().getTask(taskID, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT));
+//					newTask = Util.cloneSerializable(
+//							TaskProvider.sharedInstance().getTask(taskID, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT));
+					newTask = Util.cloneSerializable(TaskDAO.sharedInstance().getTask(taskID, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor()));
 
 				final Task finalNewTask = newTask;
 				final Job thisJob = this;
@@ -318,7 +321,7 @@ implements ISelectionProvider // needed for updating ViewActions
 	{
 		throw new UnsupportedOperationException("NYI"); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Sets the task directly (without the fetch job that gets it)
 	 * and updates the UI. Make sure you pass an properly detached

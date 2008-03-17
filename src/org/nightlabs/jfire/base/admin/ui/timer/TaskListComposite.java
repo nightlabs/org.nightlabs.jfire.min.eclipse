@@ -32,6 +32,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.notification.NotificationListenerJob;
 import org.nightlabs.base.ui.notification.SelectionManager;
+import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.table.AbstractInvertableTableSorter;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
@@ -44,6 +45,7 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.timer.Task;
+import org.nightlabs.jfire.timer.dao.TaskDAO;
 import org.nightlabs.jfire.timer.id.TaskID;
 import org.nightlabs.l10n.DateFormatter;
 import org.nightlabs.notification.NotificationEvent;
@@ -169,8 +171,9 @@ public class TaskListComposite
 			for (Iterator<DirtyObjectID> it = notificationEvent.getSubjects().iterator(); it.hasNext();) {
 				DirtyObjectID dirtyObjectID = it.next();
 				TaskID taskID = (TaskID) dirtyObjectID.getObjectID();
-				Task task = TaskProvider.sharedInstance().getTask(taskID,
-						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+//				Task task = TaskProvider.sharedInstance().getTask(taskID,
+//						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+				Task task = TaskDAO.sharedInstance().getTask(taskID, FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitorWrapper());
 				if (taskSet.contains(task)) {
 					int idx = tasks.indexOf(task);
 					if (idx >= 0) {
@@ -199,13 +202,15 @@ public class TaskListComposite
 		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
-			int res = getCollator().compare(t1.getTaskTypeID(), t2.getTaskTypeID());
+//			int res = getCollator().compare(t1.getTaskTypeID(), t2.getTaskTypeID());
+			int res = getComparator().compare(t1.getTaskTypeID(), t2.getTaskTypeID());
 
 			if (res == 0) { // sort additionally by name - that's nicer as most tasks
 										// probably have the same type
 				String u1Name = t1.getUser().getName() != null ? t1.getUser().getName() : "";
 				String u2Name = t2.getUser().getName() != null ? t2.getUser().getName() : "";
-				return getCollator().compare(u1Name, u2Name);
+				return getComparator().compare(u1Name, u2Name);
+//				return getCollator().compare(u1Name, u2Name);
 			}
 
 			return res;
@@ -218,7 +223,9 @@ public class TaskListComposite
 		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
-			return getCollator().compare(t1.getUser().getName(),
+//			return getCollator().compare(t1.getUser().getName(),
+//					t2.getUser().getName());
+			return getComparator().compare(t1.getUser().getName(),
 					t2.getUser().getName());
 		}
 	}
@@ -229,7 +236,10 @@ public class TaskListComposite
 		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
-			return getCollator().compare(
+//			return getCollator().compare(
+//					t1.getName().getText(Locale.getDefault().getLanguage()),
+//					t2.getName().getText(Locale.getDefault().getLanguage()));
+			return getComparator().compare(
 					t1.getName().getText(Locale.getDefault().getLanguage()),
 					t2.getName().getText(Locale.getDefault().getLanguage()));
 		}
@@ -241,7 +251,10 @@ public class TaskListComposite
 		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
-			return getCollator().compare(
+//			return getCollator().compare(
+//					t1.getDescription().getText(Locale.getDefault().getLanguage()),
+//					t2.getDescription().getText(Locale.getDefault().getLanguage()));
+			return getComparator().compare(
 					t1.getDescription().getText(Locale.getDefault().getLanguage()),
 					t2.getDescription().getText(Locale.getDefault().getLanguage()));
 		}
@@ -282,7 +295,10 @@ public class TaskListComposite
 		@Override
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
-			return getCollator().compare(
+//			return getCollator().compare(
+//					t1.getLastExecMessage() == null ? "" : t1.getLastExecMessage(), //$NON-NLS-1$
+//					t2.getLastExecMessage() == null ? "" : t2.getLastExecMessage()); //$NON-NLS-1$
+			return getComparator().compare(
 					t1.getLastExecMessage() == null ? "" : t1.getLastExecMessage(), //$NON-NLS-1$
 					t2.getLastExecMessage() == null ? "" : t2.getLastExecMessage()); //$NON-NLS-1$
 		}
@@ -426,8 +442,10 @@ public class TaskListComposite
 			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
-				List<Task> _tasks = TaskProvider.sharedInstance().getTasks(
-						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+//				List<Task> _tasks = TaskProvider.sharedInstance().getTasks(
+//						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+
+				List<Task> _tasks = TaskDAO.sharedInstance().getTasks(FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new ProgressMonitorWrapper(monitor));
 
 				// TODO sort
 

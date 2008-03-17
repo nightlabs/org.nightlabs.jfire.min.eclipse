@@ -16,7 +16,7 @@
         <category id="org.nightlabs.jfire.base.admin.ui" name="%viewcategories.administration"/>
         <view category="org.nightlabs.jfire.base.admin.ui"
             class="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"
-            icon="icons/users.gif"
+            icon="icons/editor/SysAdminEntityTreeView.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView" name="%views.entityTree"/>
         <view category="org.nightlabs.jfire.base.admin.ui"
             class="org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView"
@@ -32,11 +32,9 @@
             id="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView" name="%views.timerTaskDetail"/>
         <view category="org.nightlabs.jfire.base.admin.ui"
             class="org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView"
-            icon="icons/j2ee/ListJMSQueuesView.16x16.gif"
             id="org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView" name="%org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView.name"/>
         <view category="org.nightlabs.jfire.base.admin.ui"
             class="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView"
-            icon="icons/asyncinvoke/FailedAsyncInvokeEnvelopeView.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView" name="AsyncInvokeProblemView"/>
     </extension>
     <extension point="org.eclipse.ui.actionSets">
