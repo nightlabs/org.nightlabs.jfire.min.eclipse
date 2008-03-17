@@ -68,19 +68,19 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 	 * key: String DataField.getPropRelativePK<br/>
 	 * value: DataFieldEditor fieldEditor
 	 */
-	private Map<String, DataFieldEditor<? extends DataField>> fieldEditors = new HashMap<String, DataFieldEditor<? extends DataField>>();
+	private Map<String, DataFieldEditor<DataField>> fieldEditors = new HashMap<String, DataFieldEditor<DataField>>();
 
 
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<? extends DataField> fieldEditor) {
+	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor) {
 		addFieldEditor(dataField, fieldEditor, true);
 	}
 
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<? extends DataField> fieldEditor, boolean addListener) {
-		fieldEditors.put(dataField.getPropRelativePK(),fieldEditor);
+	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor, boolean addListener) {
+		fieldEditors.put(dataField.getPropRelativePK(), fieldEditor);
 		fieldEditor.addDataFieldEditorChangedListener(this);
 	}
 
-	protected DataFieldEditor<? extends DataField> getFieldEditor(DataField dataField) {
+	protected DataFieldEditor<DataField> getFieldEditor(DataField dataField) {
 		return fieldEditors.get(dataField.getPropRelativePK());
 	}
 
