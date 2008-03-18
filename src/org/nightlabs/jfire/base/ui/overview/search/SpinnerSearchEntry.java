@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.ui.overview.search;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -63,7 +64,7 @@ extends XComposite
 		activeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SpinnerSearchEntry.activeButton.text")); //$NON-NLS-1$
 		activeButton.addSelectionListener(activeButtonListener);
 
-		spinnerComposite = new NumberSpinnerComposite(group, SWT.NONE, SWT.BORDER, 2, -Double.MAX_VALUE, Double.MAX_VALUE, 0.1, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA);
+		spinnerComposite = new NumberSpinnerComposite(group, SWT.NONE, XComposite.getBorderStyle(parent), 2, -Double.MAX_VALUE, Double.MAX_VALUE, 0.1, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA);
 //		spinner = new Spinner(group, SWT.BORDER);
 //		spinner.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 //		spinner.setDigits(2);
@@ -81,13 +82,12 @@ extends XComposite
 		});
 	}
 	
-	private SelectionListener activeButtonListener = new SelectionListener(){
-		public void widgetSelected(SelectionEvent e) {
-//			spinner.setEnabled(activeButton.getSelection());
+	private SelectionListener activeButtonListener = new SelectionAdapter()
+	{
+		@Override
+		public void widgetSelected(SelectionEvent e)
+		{
 			spinnerComposite.setEnabled(activeButton.getSelection());
-		}
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
 		}
 	};
 		
@@ -97,7 +97,15 @@ extends XComposite
 	
 	public void setActive(boolean active) {
 		activeButton.setSelection(active);
-//		spinner.setEnabled(active);
-		spinnerComposite.setEnabled(active);
+	}
+	
+	public void addActiveStateChangeListener(SelectionListener listener)
+	{
+		activeButton.addSelectionListener(listener);
+	}
+	
+	public void removeActiveStateChangeListener(SelectionListener listener)
+	{
+		activeButton.removeSelectionListener(listener);
 	}
 }

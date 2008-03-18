@@ -9,6 +9,7 @@ import org.nightlabs.jdo.query.QueryProvider;
  */
 public interface QueryFilter<R, Q extends AbstractSearchQuery<? extends R>>
 {
+	
 	void setActive(boolean active);
 
 	void setQueryProvider(QueryProvider<R, Q> queryProvider);

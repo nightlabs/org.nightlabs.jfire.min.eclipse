@@ -89,9 +89,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	public SearchEntryViewer(Entry entry) {
 		super(entry);
 		queryProvider = new DefaultQueryProvider<R, Q>();
-		
-		// WORKAROUND: see StatableSeachFilterFactory
-		queryProvider.setViewerBaseClass(getResultType());
 	}
 	
 	/**
@@ -145,7 +142,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			toolkit.adapt(resultComposite);
 		}
 		
-				
 		// Context Menu
 		menuManager = new MenuManager();
 		Menu contextMenu = menuManager.createContextMenu(parent);
@@ -179,9 +175,12 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		advancedSearchSections = new ArrayList<Section>(queryFilterFactories.size());
 		
 		Section advancedSearchSection;
+		Button advancedSectionActiveButton;
+		final int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE 
+			| ExpandableComposite.CLIENT_INDENT;
+		
 		for (QueryFilterFactory factory : queryFilterFactories)
 		{
-			final int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT;
 			if (toolkit != null)
 			{
 				advancedSearchSection = toolkit.createSection(parent, sectionStyle);
@@ -195,7 +194,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			advancedSearchSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			advancedSearchSection.addExpansionListener(expansionListener);
 			
-			Button advancedSectionActiveButton = new Button(advancedSearchSection, SWT.CHECK);
+			advancedSectionActiveButton = new Button(advancedSearchSection, SWT.CHECK);
 			advancedSectionActiveButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.AbstractQueryFilterComposite.activeButton.text")); //$NON-NLS-1$
 			advancedSectionActiveButton.setSelection(false);
 			
@@ -206,10 +205,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 					advancedSearchSection, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER,
 					LayoutDataMode.GRID_DATA_HORIZONTAL, queryProvider
 					);
+			// TODO: do this in constructor.
+			filterComposite.setSectionButtonActiveStateManager(
+				new ActiveStateButtonManager(advancedSectionActiveButton) );
 			filterComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			advancedSearchSection.setClient(filterComposite);
 			
-			advancedSectionActiveButton.addSelectionListener( new ActiveButtonSelectionListener(advancedSearchSection, filterComposite) );
+			advancedSectionActiveButton.addSelectionListener(
+				new ActiveButtonSelectionListener(advancedSearchSection, filterComposite) );
 			advancedSearchSections.add(advancedSearchSection);
 		}
 	}
@@ -271,7 +274,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.minimumWidth = 200;
 		searchText.setLayoutData(gridData);
-		searchText.addSelectionListener(searchTextListener);
+		searchText.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+				search();
+			}		
+		});
 		searchText.addModifyListener(new ModifyListener()
 		{
 			@Override
@@ -413,16 +423,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}
 	};
 	
-	private SelectionListener searchTextListener = new SelectionAdapter()
-	{
-		@Override
-		public void widgetDefaultSelected(SelectionEvent e)
-		{
-			search();
-		}		
-	};
-	
-	private IExpansionListener expansionListener = new ExpansionAdapter()
+	/**
+	 * Listener used to adapt the sash weights to the new size of the search composite and
+	 * sets the minimum size of the search composite so that the scrollbars will be shown correctly.
+	 */
+	protected IExpansionListener expansionListener = new ExpansionAdapter()
 	{
 		@Override
 		public void expansionStateChanged(ExpansionEvent e)
@@ -501,43 +506,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		for (Section section : advancedSearchSections)
 		{
 			searchHeight += section.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-//			int sectionContentHeight = section.getClient().getSize().y;
-//			if (section.isExpanded())
-//			{
-//				final int maxHeight = completeHeight - 50; // min 50 pixel for the result composite.
-//				if (searchHeight + sectionContentHeight < maxHeight)
-//				{
-//					searchHeight += section.getClient().getSize().y;					
-//				}
-//				else
-//				{
-//					searchHeight = maxHeight;
-//				}
-//			}
-//			else
-//			{
-//				final int sectionHeaderHeight = section.getTextClientHeightDifference() == 0 ?
-//					section.getDescriptionControl().getSize().y :
-//						section.getTextClient().getSize().y;
-//					
-//					final int toolBarHeight = getToolBarManager().getControl().getSize().y;
-//					
-//					int minHeight = toolBarHeight;
-//					final int multiplier = advancedSearchSectionCount > 0 ? advancedSearchSectionCount : 1;
-//					minHeight += multiplier * sectionHeaderHeight;
-//					minHeight += multiplier * verticalSpacing;
-//					minHeight += multiplier * 10; //magical spacing needed due to section spacings.
-//					
-//					// only shorten the searchComposite height if we still show at least one section with a little bit of spacing		
-//					if (searchHeight - sectionContentHeight > minHeight)
-//					{
-//						searchHeight -= section.getClient().getSize().y;
-//					}
-//					else
-//					{
-//						searchHeight = minHeight;
-//					}
-//			}
 		}
 		
 		// add the spacing inbetween the sections
@@ -677,7 +645,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		 * 	added to.
 		 * @param filterComposite 
 		 */
-		public ActiveButtonSelectionListener(Section correspondingSection, AbstractQueryFilterComposite<? extends R,? extends Q> filterComposite)
+		public ActiveButtonSelectionListener(Section correspondingSection,
+			AbstractQueryFilterComposite<? extends R,? extends Q> filterComposite)
 		{
 			assert correspondingSection != null;
 			assert filterComposite != null;
@@ -696,7 +665,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			if (active != correspondingSection.isExpanded())
 			{
 				correspondingSection.setExpanded(active);
-				sashform.setWeights(calculateSashWeights(correspondingSection));
+				
+				// This needs to be triggered manually, since the setExpanded(boolean) won't trigger the
+				// notification of its listeners.
+				final ExpansionEvent event = new ExpansionEvent(correspondingSection, active);
+				expansionListener.expansionStateChanged(event);
 			}
 		}
 	}
