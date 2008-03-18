@@ -9,6 +9,8 @@ import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -41,14 +43,22 @@ implements StructureChangedListener
 
 		structEditor.createComposite(getContainer(), SWT.NONE, false);
 		structEditor.addStructureChangedListener(this);
-		
+		structEditor.getStructTree().addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				updateActionStatus();
+			}
+		});
+
 		List<ContributionItem> actionList = new LinkedList<ContributionItem>();
 		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, true, this)) );
 		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, false, this)) );
 		actionList.add( new Separator() );
 		actionList.add( new ActionContributionItem(new AddStructBlockAction(structEditor)) );
-		actionList.add( new ActionContributionItem(new AddStructFieldAction(structEditor)) );
-		actionList.add( new ActionContributionItem(new RemoveStructElementAction(structEditor)) );
+		addStructFieldActionItem = new ActionContributionItem(new AddStructFieldAction(structEditor));
+		actionList.add( addStructFieldActionItem );
+		removeStructElementAction = new ActionContributionItem(new RemoveStructElementAction(structEditor));
+		actionList.add( removeStructElementAction );
 
 		ToolBarManager toolBarManager = getToolBarManager();
 		final MenuManager menuManager = new MenuManager("Actions"); //$NON-NLS-1$
@@ -57,10 +67,10 @@ implements StructureChangedListener
 		TreeViewer structTreeViewer = structEditor.getStructTree().getTreeViewer();
 		menuManager.createContextMenu(structTreeViewer.getControl());
 		addActionsToContributionManager(menuManager, actionList);
-		
+
 		updateToolBarManager();
 		menuManager.update(true);
-		
+
 		Menu popupMenu = menuManager.getMenu();
 		structTreeViewer.getTree().setMenu(popupMenu);
 		// TODO if this identifier for registerContextMenu is really meaningful, it should be a constant! And it should be documented! Marco.
@@ -69,12 +79,17 @@ implements StructureChangedListener
 //		page.getEditorSite().registerContextMenu("StructEditorPage.PropertyActions", menuManager, structTreeViewer); //$NON-NLS-1$
 //		((EntityEditorPageWithProgress)page).setMenu(popupMenu);
 	}
-	
+
+	private void updateActionStatus() {
+		addStructFieldActionItem.getAction().setEnabled(structEditor.canAddStructField());
+		removeStructElementAction.getAction().setEnabled(structEditor.canRemoveCurrentElement());
+	}
+
 	private void addActionsToContributionManager(IContributionManager contributionManager, List<ContributionItem> actionList)
 	{
 		if (actionList == null)
 			return;
-		
+
 		for (ContributionItem item : actionList) {
 			if (item instanceof ActionContributionItem)
 //			 add only action, so that the manager wraps it in a new ActionContributionItem.
@@ -84,15 +99,17 @@ implements StructureChangedListener
 				contributionManager.add( item );
 		}
 	}
-	
+
 	private StructEditor structEditor;
-	
+	private ActionContributionItem removeStructElementAction;
+	private ActionContributionItem addStructFieldActionItem;
+
 	public StructEditor getStructEditor() {
 		return structEditor;
 	}
-	
+
 	public void structureChanged() {
 		markDirty();
 	}
-	
+
 }
