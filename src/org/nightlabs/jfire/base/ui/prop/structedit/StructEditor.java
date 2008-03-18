@@ -50,9 +50,8 @@ import org.nightlabs.util.Util;
 import org.nightlabs.util.reflect.ReflectUtil;
 
 /**
- * Editor to change the {@link Property} structure ({@link IStruct}) linked to
- * a certain {@link Class}.
- * 
+ * Editor to change the structure ({@link IStruct}) linked to a certain {@link Class}.
+ *
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
@@ -63,13 +62,13 @@ public class StructEditor {
 	private LanguageChooser languageChooser;
 	private TreeNode lastSelection;
 	private boolean ignoreChangeEvent;
-	
+
 	private PropertyManager propertyManager;
 	private IStruct currentStruct;
 	private StructEditorComposite structEditorComposite;
 	private ListenerList changeListeners;
 	private boolean changed = false;
-	
+
 	/**
 	 * Create a new StructEditor. The constructor does not create any
 	 * GUI components. Call {@link #createComposite(Composite, int)}
@@ -80,10 +79,10 @@ public class StructEditor {
 		propertyManager = getPropertyManager();
 		this.structBlockEditor = new StructBlockEditor();
 	}
-	
+
 	/**
 	 * Create the {@link Composite} of this editor.
-	 * 
+	 *
 	 * @param parent The parent to add the {@link Composite}.
 	 * @param style The style for the outer {@link Composite} of the Editors GUI.
 	 * @param createStructIDCombo Whether to create a {@link Combo} control that allows switching of the edited {@link IStruct}.
@@ -100,13 +99,13 @@ public class StructEditor {
 					JDOLifecycleManager.sharedInstance().removeNotificationListener(StructLocal.class, changeListener);
 				}
 			});
-			
+
 			structTree.addSelectionChangedListener(new ISelectionChangedListener() {
 				@SuppressWarnings("unchecked")
 				public void selectionChanged(SelectionChangedEvent event) {
 					if (ignoreChangeEvent)
 						return;
-					
+
 					if (!validatePartEditor()) {
 						// restore last selection
 						ignoreChangeEvent = true;
@@ -114,15 +113,15 @@ public class StructEditor {
 						ignoreChangeEvent = false;
 						return;
 					}
-					
+
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					if (selection.isEmpty() && currentStructPartEditor != null) {
 						currentStructPartEditor.setEnabled(false);
 						return;
 					}
-					
+
 					lastSelection = (TreeNode) ((IStructuredSelection)event.getSelection()).getFirstElement();
-					
+
 					TreeNode selected = (TreeNode) selection.getFirstElement();
 					StructFieldFactoryRegistry structFieldFactoryRegistry = StructFieldFactoryRegistry.sharedInstance();
 
@@ -132,6 +131,11 @@ public class StructEditor {
 							StructFieldEditor editor = structFieldFactoryRegistry.getEditorSingleton(field);
 							structEditorComposite.setPartEditor(editor);
 							editor.setData(field);
+							if (field.getStructBlock().isLocal()) {
+								editor.setEnabled(true);
+							} else {
+								editor.setEnabled(false);
+							}
 							currentStructPartEditor = editor;
 							// save the data of the editor to make it able to be restored later
 							editor.saveData();
@@ -143,9 +147,14 @@ public class StructEditor {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);
 						structBlockEditor.setData(block);
+						if (block.isLocal()) {
+							structBlockEditor.setEnabled(true);
+						} else {
+							structBlockEditor.setEnabled(false);
+						}
 						currentStructPartEditor = structBlockEditor;
 					}
-					
+
 					I18nTextEditor partNameEditor = currentStructPartEditor.getPartNameEditor();
 					partNameEditor.setSelection(0, partNameEditor.getEditText().length());
 					partNameEditor.setFocus();
@@ -158,13 +167,13 @@ public class StructEditor {
 				}
 			});
 		}
-		
+
 		// TODO load person struct on start up, makes testing easier...
 		// setCurrentStructLocalID(StructEditorUtil.getAvailableStructLocalIDs().toArray(new StructLocalID[1])[0]);
-		
+
 		return structEditorComposite;
 	}
-	
+
 	public void setCurrentStructLocalID(final StructLocalID structLocalID) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -175,7 +184,7 @@ public class StructEditor {
 			@Override
 			protected IStatus run(final ProgressMonitor monitor) throws Exception {
 				final IStruct struct = fetchStructure(structLocalID, monitor);
-				
+
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						setStruct( struct );
@@ -185,7 +194,7 @@ public class StructEditor {
 			}
 		}.schedule();
 	}
-	
+
 	protected IStruct fetchStructure(final StructLocalID structLocalID, ProgressMonitor monitor) {
 		return StructLocalDAO.sharedInstance().getStructLocal(structLocalID, monitor);
 	}
@@ -203,7 +212,7 @@ public class StructEditor {
 		structEditorComposite.setStruct(currentStruct);
 //		structTree.setInput(currentStruct);
 	}
-	
+
 	/**
 	 * Sets the current Struct to be edited.
 	 * <p>
@@ -220,7 +229,7 @@ public class StructEditor {
 		structEditorComposite.setStruct(currentStruct);
 //		structTree.setInput(currentStruct);
 	}
-	
+
 	/**
 	 * Returns the currently edited {@link IStruct}.
 	 * @return The currently edited {@link IStruct}.
@@ -228,7 +237,7 @@ public class StructEditor {
 	public IStruct getStruct() {
 		return currentStruct;
 	}
-	
+
 	private boolean validatePartEditor() {
 		if (currentStructPartEditor instanceof StructBlockEditor)
 			return true;
@@ -252,12 +261,12 @@ public class StructEditor {
 			}
 			return true;
 		}
-		
+
 		return true;
 	}
 
 	private NotificationListener changeListener = new NotificationAdapterJob() {
-		
+
 		public void notify(NotificationEvent notificationEvent) {
 			for (DirtyObjectID dirtyObjectID : (Set<? extends DirtyObjectID>)notificationEvent.getSubjects()) {
 				final StructLocalID currentStructID = (StructLocalID) (currentStruct == null ? null : JDOHelper.getObjectId(currentStruct));
@@ -266,19 +275,19 @@ public class StructEditor {
 //				 TODO: Same problem as with ConfigModules: we cannot check whether the content of two IStructs are identical or not.
 //					if (currentStruct.equals(struct))
 //						return;
-						
+
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							setStruct(struct);
 						}
 					});
-			
+
 				}
 			}
 		}
-		
+
 	};
-	
+
 	private PropertyManager getPropertyManager() {
 		if (propertyManager == null) {
 			try {
@@ -301,51 +310,57 @@ public class StructEditor {
 						}
 					}
 				);
-			getPropertyManager().storeStruct(currentStruct);
+			currentStruct = getPropertyManager().storeStruct(currentStruct);
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					setStruct(currentStruct, true);
+				}
+			});
 			setChanged(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void setChanged(boolean changed) {
 		this.changed = changed;
 		if (changed)
 			notifyChangeListeners();
 	}
-	
+
 	public boolean isChanged() {
 		return changed;
 	}
-	
+
 	public boolean hasStructureLoaded() {
 		return currentStruct != null;
 	}
-	
+
 	public StructTree getStructTree() {
 		return structTree;
 	}
-	
+
 	public LanguageChooser getLanguageChooser() {
 		return languageChooser;
 	}
-	
+
 	public void addStructureChangedListener(StructureChangedListener listener) {
 		changeListeners.add(listener);
 	}
-	
+
 	public void removeStructureChangedListener(StructureChangedListener listener) {
 		changeListeners.remove(listener);
 	}
-	
+
 	private synchronized void notifyChangeListeners() {
 		Object[] listeners = changeListeners.getListeners();
 		for (Object l : listeners) {
 			((StructureChangedListener)l).structureChanged();
 		}
 	}
-	
+
 	public void addStructBlock() {
 		long newBlockID = IDGenerator.nextID(StructBlock.class);
 		StructBlock newBlock;
@@ -358,7 +373,7 @@ public class StructEditor {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		structTree.select(newBlock);
 	}
 
@@ -373,7 +388,7 @@ public class StructEditor {
 		StructFieldMetaData newFieldMetaData = wiz.getSelectedFieldMetaData();
 		addStructField(structBlock, newFieldMetaData, wiz.getDetailsWizardPage());
 	}
-	
+
 	private void addStructField(StructBlock toBlock, StructFieldMetaData newFieldMetaData, DynamicPathWizardPage detailsPage) {
 		StructFieldFactory fieldFactory = newFieldMetaData.getFieldFactory();
 		StructField newField;
@@ -387,10 +402,10 @@ public class StructEditor {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		structTree.select(newField);
 	}
-	
+
 	public void removeSelectedItem() {
 		TreeNode selected = structTree.getSelectedNode();
 		if (selected instanceof StructBlockNode) {
@@ -400,10 +415,10 @@ public class StructEditor {
 			StructFieldNode field = (StructFieldNode) selected;
 			removeStructField(field);
 		}
-		
+
 		structTree.refresh();
 	}
-	
+
 	private void removeStructBlock(StructBlockNode blockNode) {
 		MessageBox mb = new MessageBox(RCPUtil.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 		mb.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.messageBoxRemoveStructBlockConfirmation.message")); //$NON-NLS-1$
@@ -420,7 +435,7 @@ public class StructEditor {
 				mb.open();
 				return;
 			}
-			
+
 			structTree.removeStructBlock(blockNode);
 			setChanged(true);
 		}
@@ -453,7 +468,25 @@ public class StructEditor {
 				return;
 			}
 		}
-		
+
 		setChanged(true);
+	}
+
+	public boolean canAddStructField() {
+		StructBlockNode currentBlockNode = structTree.getCurrentBlockNode();
+		if (currentBlockNode == null)
+			return false;
+
+		return currentBlockNode.getBlock().isLocal();
+	}
+
+	public boolean canRemoveCurrentElement() {
+		TreeNode selectedNode = structTree.getSelectedNode();
+		if (selectedNode instanceof StructBlockNode)
+			return ((StructBlockNode) selectedNode).getBlock().isLocal();
+		else if (selectedNode instanceof StructFieldNode)
+			return ((StructFieldNode) selectedNode).getParentBlock().getBlock().isLocal();
+		else
+			return false;
 	}
 }

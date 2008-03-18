@@ -4,7 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.swt.graphics.Image;
+import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.i18n.I18nText;
+import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.util.Util;
 
@@ -15,7 +18,7 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 {
 	private StructBlock block;
 	private List<StructFieldNode> fields;
-	
+
 	public StructBlockNode(StructBlock block)
 	{
 		if (block == null)
@@ -24,23 +27,23 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 		this.block = block;
 		fields = new LinkedList<StructFieldNode>();
 	}
-	
+
 	public void addField(StructFieldNode field)
 	{
 		fields.add(field);
 	}
-	
+
 	public void removeField(StructFieldNode field)
 	{
 		fields.remove(field);
 	}
-	
+
 	@Override
 	public I18nText getI18nText()
 	{
 		return block.getName();
 	}
-	
+
 	@Override
 	public String getLabel()
 	{
@@ -58,7 +61,7 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 	{
 		return !block.getStructFields().isEmpty();
 	}
-	
+
 	public StructBlock getBlock()
 	{
 		return block;
@@ -70,7 +73,7 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 //		Login.getLogin().
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return block.toString();
@@ -86,5 +89,13 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 	@Override
 	public int hashCode() {
 		return Util.hashCode(this.block);
+	}
+
+	@Override
+	public Image getImage() {
+		if (block.isLocal())
+			return null;
+		else
+			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructBlockNode.class, "StructBlockNotLocal");
 	}
 }

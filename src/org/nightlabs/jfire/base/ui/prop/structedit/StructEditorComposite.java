@@ -26,11 +26,9 @@ import org.nightlabs.jfire.prop.id.StructID;
 import org.nightlabs.jfire.prop.id.StructLocalID;
 
 public class StructEditorComposite extends XComposite {
-
-	
 	private StructTree structTree;
 	private StructEditor structEditor;
-	
+
 	private I18nTextEditor structNameEditor;
 	private Composite partEditorComposite;
 	private LanguageChooserCombo languageChooser;
@@ -102,7 +100,7 @@ public class StructEditorComposite extends XComposite {
 		topLine.getGridLayout().numColumns = 2;
 		topLine.getGridData().horizontalSpan = 2;
 		XComposite nameWrapper = new XComposite(topLine, SWT.NONE, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
-		
+
 		gd = new GridData();
 //		gd.horizontalSpan = 2;
 		gd.horizontalAlignment = SWT.RIGHT;
@@ -116,8 +114,8 @@ public class StructEditorComposite extends XComposite {
 				structEditor.setChanged(true);
 			}
 		});
-		
-		
+
+
 		this.structTree = structTree;
 		structTree.createComposite(this, style, languageChooser);
 		gd = new GridData(GridData.FILL_VERTICAL);
@@ -134,28 +132,28 @@ public class StructEditorComposite extends XComposite {
 		}
 		partEditorComposite = new XComposite(this, SWT.NONE);
 	}
-	
+
 	public void setLoadingText() {
 		structTree.setInput(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditorComposite.structTree.input_loadingStructure")); //$NON-NLS-1$
 	}
-	
+
 	public void setStruct(IStruct struct) {
 		structTree.setInput(struct);
 		structNameEditor.setI18nText(struct.getName(), EditMode.DIRECT);
 	}
-	
-	
-	public void setPartEditor(StructPartEditor structPartEditor) {
+
+
+	public void setPartEditor(StructPartEditor<?> structPartEditor) {
 		if (partEditorComposite != null) {
 			partEditorComposite.dispose();
 		}
-		
+
 		this.partEditorComposite = structPartEditor.createComposite(this, this.getStyle(), structEditor, languageChooser);
 		((GridData)this.partEditorComposite.getLayoutData()).verticalAlignment = SWT.TOP;
 		this.partEditorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		this.layout(true, true);
 	}
-	
+
 	public LanguageChooser getLanguageChooser() {
 		return languageChooser;
 	}

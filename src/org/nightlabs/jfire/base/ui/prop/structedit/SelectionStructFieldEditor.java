@@ -69,7 +69,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 	private LanguageCf currLanguage;
 	private Button addValueButton;
 	private Button remValueButton;
-	private Button defaultButton;
+	private Button setDefaultButton;
 	private Button removeDefaultButton;
 
 	public SelectionStructFieldEditComposite(Composite parent, int style, final SelectionStructFieldEditor editor,
@@ -114,9 +114,9 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 			}
 		});
 
-		defaultButton = new Button(wrapper, SWT.NONE);
-		defaultButton.setText("Set Default");
-		defaultButton.addSelectionListener(new SelectionAdapter() {
+		setDefaultButton = new Button(wrapper, SWT.NONE);
+		setDefaultButton.setText("Set Default");
+		setDefaultButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (structFieldValueTable.getSelectionCount() != 1)
@@ -141,6 +141,21 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 				editor.getStructEditor().setChanged(true);
 			}
 		});
+
+		wrapper.layout();
+
+		// Make button widths equal
+		Button[] buttons = new Button[] { addValueButton, remValueButton, setDefaultButton, removeDefaultButton };
+		int maxWidth = 0;
+		for (Button button : buttons)
+			maxWidth = Math.max(maxWidth, button.getSize().x);
+
+		GridData gd;
+		for (Button button : buttons) {
+			gd = new GridData();
+			gd.widthHint = maxWidth;
+			button.setLayoutData(gd);
+		}
 	}
 
 	/**

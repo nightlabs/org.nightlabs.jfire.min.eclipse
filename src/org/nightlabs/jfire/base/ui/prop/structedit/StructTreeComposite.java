@@ -5,22 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.nightlabs.base.ui.language.LanguageChangeEvent;
 import org.nightlabs.base.ui.language.LanguageChangeListener;
 import org.nightlabs.base.ui.language.LanguageChooser;
-import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.base.ui.tree.TreeContentProvider;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 
-public class StructTreeComposite extends AbstractTreeComposite implements LanguageChangeListener {
+public class StructTreeComposite extends AbstractTreeComposite<TreeNode> implements LanguageChangeListener {
 	private List<StructBlockNode> blockNodes;
 	private String currLanguageId;
 
@@ -38,7 +39,7 @@ public class StructTreeComposite extends AbstractTreeComposite implements Langua
 
 	@Override
 	public void setTreeProvider(TreeViewer treeViewer) {
-		treeViewer.setLabelProvider(new LabelProvider());
+		treeViewer.setLabelProvider(new TreeLabelProvider());
 		treeViewer.setContentProvider(new ContentProvider());
 	}
 
@@ -81,7 +82,15 @@ public class StructTreeComposite extends AbstractTreeComposite implements Langua
 		refresh();
 	}
 
-	private class LabelProvider extends TableLabelProvider {
+	private class TreeLabelProvider extends LabelProvider {
+		@Override
+		public Image getImage(Object element) {
+			if (element instanceof TreeNode) {
+				return ((TreeNode) element).getImage();
+			}
+			return null;
+		}
+
 		@Override
 		public String getText(Object element) {
 			return getColumnText(element, 0);
@@ -135,7 +144,7 @@ public class StructTreeComposite extends AbstractTreeComposite implements Langua
 			else if (text != null) {
 				return new Object[] { text };
 			}
-			
+
 			return new Object[0];
 		}
 
