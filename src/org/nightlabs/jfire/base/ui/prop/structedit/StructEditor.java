@@ -131,11 +131,11 @@ public class StructEditor {
 							StructFieldEditor editor = structFieldFactoryRegistry.getEditorSingleton(field);
 							structEditorComposite.setPartEditor(editor);
 							editor.setData(field);
-							if (field.getStructBlock().isLocal()) {
-								editor.setEnabled(true);
-							} else {
-								editor.setEnabled(false);
-							}
+//							if (field.getStructBlock().isLocal()) {
+//								editor.setEnabled(true);
+//							} else {
+//								editor.setEnabled(false);
+//							}
 							currentStructPartEditor = editor;
 							// save the data of the editor to make it able to be restored later
 							editor.saveData();
@@ -147,11 +147,11 @@ public class StructEditor {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);
 						structBlockEditor.setData(block);
-						if (block.isLocal()) {
-							structBlockEditor.setEnabled(true);
-						} else {
-							structBlockEditor.setEnabled(false);
-						}
+//						if (block.isLocal()) {
+//							structBlockEditor.setEnabled(true);
+//						} else {
+//							structBlockEditor.setEnabled(false);
+//						}
 						currentStructPartEditor = structBlockEditor;
 					}
 
@@ -310,13 +310,14 @@ public class StructEditor {
 						}
 					}
 				);
-			currentStruct = getPropertyManager().storeStruct(currentStruct);
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					setStruct(currentStruct, true);
-				}
-			});
+			getPropertyManager().storeStruct(currentStruct);
+//			currentStruct = getPropertyManager().storeStruct(currentStruct);
+//			Display.getDefault().asyncExec(new Runnable() {
+//				@Override
+//				public void run() {
+//					setStruct(currentStruct, true);
+//				}
+//			});
 			setChanged(false);
 		} catch (Exception e) {
 			e.printStackTrace();
