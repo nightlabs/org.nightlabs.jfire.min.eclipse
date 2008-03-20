@@ -3,9 +3,13 @@ package org.nightlabs.jfire.base.ui.overview.search;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jdo.query.AbstractJDOQuery;
@@ -28,6 +32,14 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	 * The active state manager that will handle the presentation of my active state. 
 	 */
 	private ActiveStateManager sectionButtonActiveStateManager;
+
+	/**
+	 * Flag indicating that a <code>null</code> value is being set to the query.
+	 * This needs to be done so the {@link #updateUI(QueryEvent)} method can distinguish an 
+	 * intentionally set <code>null</code> value from deactivation (nulling the query field) of a
+	 * query aspect.
+	 */
+	protected boolean initialValue;
 
 	/**
 	 * Creates a new {@link AbstractQueryFilterComposite}.
@@ -59,7 +71,6 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	{
 
 		super(parent, style, layoutMode, layoutDataMode);
-//		createComposite(this);
 		this.queryProvider = queryProvider;
 		if (queryProvider != null)
 		{
@@ -99,16 +110,38 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	}
 
 	/**
-	 * Convenience method for {@link #getSectionButtonActiveStateManager()#setActive(boolean)}.
-	 * 
+	 * Sets the active state of the given <code>button</code> to <code>active</code> if necessary and
+	 * propagates the changes to the ActiveStateManager assigned to the active button in the section
+	 * this composite is contained in.
+	 *
+	 * @param button
+	 * 					The button whose active state might have changed, and shall be set to
+	 * 					<code>active</code>
 	 * @param active
 	 *          whether one of the filters contained in has gone <code>active</code>.
 	 */
+	protected void setSearchSectionActive(Button button, boolean active)
+	{
+		if (button.getSelection() == active)
+			return;
+		
+		button.setSelection(active);
+		getSectionButtonActiveStateManager().setActive(active);
+	}
+
 	protected void setSearchSectionActive(boolean active)
 	{
 		getSectionButtonActiveStateManager().setActive(active);
 	}
-
+	
+	protected void resetSearchSectionActiveState()
+	{
+		while (sectionButtonActiveStateManager.isActive())
+		{
+			sectionButtonActiveStateManager.setActive(false);
+		}
+	}
+	
 	/**
 	 * This is has to be called by the constructor of the subclass.
 	 * 
@@ -117,27 +150,17 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	 */
 	protected abstract void createComposite(Composite parent);
 
-//	private boolean isChangingActiveState = false;
 	@Override
 	public void setActive(boolean active)
 	{
-		if (isUpdatingUI())
-			return;
-
-//		setEnabled(active);
-		// prohibit the GUI to update itself to the changed query, else the fields containing the
-		// current state will be set to the defaults, hence will be lost.
-		// -> By setting this flag, the updateUI() will break at the beginning
-		// -> The UI will be unchanged and the internal state is maintained.
-		setUIChangedQuery(true);
 		if (active)
 		{
 			resetSearchQueryValues(getQuery());
-		} else
+		}
+		else
 		{
 			unsetSearchQueryValues(getQuery());
 		}
-		setUIChangedQuery(false);
 	}
 
 	protected abstract void unsetSearchQueryValues(Q query);
@@ -151,41 +174,17 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	 */
 	public abstract Class<Q> getQueryClass();
 
-	private boolean updatingUI = false;
-
-	protected boolean isUpdatingUI()
-	{
-		return updatingUI;
-	}
-
 	private QueryProvider<R, ? super Q> queryProvider;
 	private PropertyChangeListener queryChangeListener = new PropertyChangeListener()
 	{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			if (uIChangedQuery())
-				return;
-
-			updatingUI = true;
-			doUpdateUI((QueryEvent) evt);
-			updatingUI = false;
+			updateUI((QueryEvent) evt);
 		}
 	};
 
-	protected abstract void doUpdateUI(QueryEvent event);
-
-	private boolean uiChangedQuery = false;
-
-	protected boolean uIChangedQuery()
-	{
-		return uiChangedQuery;
-	}
-
-	protected void setUIChangedQuery(boolean uiDidIt)
-	{
-		this.uiChangedQuery = uiDidIt;
-	}
+	protected abstract void updateUI(QueryEvent event);
 
 	/**
 	 * @return the Query needed by this query filter and hence all JDOQueryComposites as well.
@@ -238,5 +237,40 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	{
 		assert sectionButtonActiveStateManager != null;
 		this.sectionButtonActiveStateManager = sectionButtonActiveStateManager;
+	}
+	
+	protected void notifyActiveStateChangeListener(Button button)
+	{
+		final Event event = new Event();
+		event.item = event.widget = button;
+		event.display = button.getDisplay();
+		event.type = SWT.Selection;
+		button.notifyListeners(SWT.Selection, event);
+	}
+	
+	/**
+	 * Helper class that tries to set the ActiveStateManager if it wasn't available at creation time.
+	 * Needed since my ActiveStateManager will be set after construction. 
+	 * 
+	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
+	 */
+	protected abstract class ButtonSelectionListener 
+		extends ButtonSelectionStateAdapter
+	{
+		public ButtonSelectionListener()
+		{
+			super(getSectionButtonActiveStateManager());
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent e)
+		{
+			if (activeStateManager == null)
+			{
+				activeStateManager = getSectionButtonActiveStateManager();				
+			}
+			
+			super.widgetSelected(e);
+		}
 	}
 }

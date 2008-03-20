@@ -163,8 +163,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 */
 	protected void createAdvancedSearchSections(Composite parent, IToolkit toolkit)
 	{
-		SortedSet<QueryFilterFactory> queryFilterFactories =
-			QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(getResultType());
+		SortedSet<QueryFilterFactory> queryFilterFactories = getQueryFilterFactories();
 		
 		if (queryFilterFactories == null || queryFilterFactories.isEmpty())
 		{
@@ -200,9 +199,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			
 			advancedSearchSection.setTextClient(advancedSectionActiveButton);
 
+			// TODO: extend the QueryFilter interface to be able to remove the dependency of this implementation.
 			AbstractQueryFilterComposite<? extends R, ? extends Q> filterComposite =
 				factory.createQueryFilter(
-					advancedSearchSection, SWT.NONE, LayoutMode.TOP_BOTTOM_WRAPPER,
+					advancedSearchSection, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER,
 					LayoutDataMode.GRID_DATA_HORIZONTAL, queryProvider
 					);
 			// TODO: do this in constructor.
@@ -217,6 +217,18 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}
 	}
 	
+	/**
+	 * Returns the SortedSet of QueryFilterFactories that will be used to create the advanced search
+	 * sections.
+	 * 
+	 * @return the SortedSet of QueryFilterFactories that will be used to create the advanced search
+	 * sections.
+	 */
+	protected SortedSet<QueryFilterFactory> getQueryFilterFactories()
+	{
+		return QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(getResultType());
+	}
+
 	/**
 	 * @return The sashform containing the search part (toolbar & advanced search sections) and the
 	 * 	result composite (displaying the found elements).

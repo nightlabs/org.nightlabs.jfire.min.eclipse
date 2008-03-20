@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -131,12 +130,12 @@ public class FieldBasedEditor implements PropertySetEditor {
 	}
 	
 	private XComposite editorWrapper;
-	private Color wrapperSelectedColor = new Color(Display.getDefault(), 155, 155, 155);
-	private Color wrapperNormalColor;
+//	private Color wrapperSelectedColor = new Color(Display.getDefault(), 155, 155, 155);
+//	private Color wrapperNormalColor;
 	
 	private XComposite editorComposite;
 	
-	private boolean selectionCallback = false;
+//	private boolean selectionCallback = false;
 	
 	
 	/**
@@ -183,8 +182,8 @@ public class FieldBasedEditor implements PropertySetEditor {
 	}
 	
 	public void disposeControl() {
-		for (Iterator iter = fieldEditors.values().iterator(); iter.hasNext();) {
-			DataFieldEditor editor = (DataFieldEditor) iter.next();
+		for (Iterator<DataFieldEditor<DataField>> iter = fieldEditors.values().iterator(); iter.hasNext();) {
+			DataFieldEditor<DataField> editor = iter.next();
 			if (editor != null) {
 				if (editor.getControl() != null && !editor.getControl().isDisposed())
 					editor.getControl().dispose();
@@ -207,7 +206,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 		if (editorWrapper == null) {
 			
 			editorWrapper = new XComposite(parent, SWT.NONE);
-			wrapperNormalColor = editorWrapper.getBackground();
+//			wrapperNormalColor = editorWrapper.getBackground();
 			
 			if (setLayoutDataForWrapper()) {
 				wrapperGridData = new GridData();

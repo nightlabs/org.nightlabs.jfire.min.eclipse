@@ -97,6 +97,7 @@ extends XComposite
 	
 	public void setActive(boolean active) {
 		activeButton.setSelection(active);
+		spinnerComposite.setEnabled(active);
 	}
 	
 	public void addActiveStateChangeListener(SelectionListener listener)
