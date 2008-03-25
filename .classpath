@@ -15,6 +15,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/NightLabsJDO"/>
 	<classpathentry kind="src" path="/NightLabsQuery"/>
-	<classpathentry kind="src" path="/NightLabsJDOQuery"/>
+	<classpathentry kind="src" path="/NightLabsQueryJDO"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
