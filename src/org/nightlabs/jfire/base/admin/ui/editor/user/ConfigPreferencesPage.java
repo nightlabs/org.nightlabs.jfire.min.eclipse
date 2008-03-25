@@ -28,13 +28,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.base.ui.form.AbstractBaseFormPage;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.config.id.ConfigID;
 
@@ -44,7 +44,7 @@ import org.nightlabs.jfire.config.id.ConfigID;
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class ConfigPreferencesPage extends FormPage
+public class ConfigPreferencesPage extends AbstractBaseFormPage
 {
 	/**
 	 * The id of this page.
@@ -85,7 +85,6 @@ public class ConfigPreferencesPage extends FormPage
 	@Override
 	protected void createFormContent(IManagedForm managedForm)
 	{
-		super.createFormContent(managedForm);
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
 		form.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesPage.formTitle"));  //$NON-NLS-1$
