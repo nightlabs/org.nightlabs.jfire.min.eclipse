@@ -24,7 +24,7 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.notification;
+package org.nightlabs.jfire.base.ui.jdo.notification;
 
 import java.util.ArrayList;
 import java.util.Collections;
