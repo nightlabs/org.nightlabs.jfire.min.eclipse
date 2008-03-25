@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JDO Plugin
-Bundle-SymbolicName: org.nightlabs.jdo.ui;singleton:=true
+Bundle-SymbolicName: org.nightlabs.jdo.query.ui;singleton:=true
 Bundle-Version: 0.9.3
 Bundle-ClassPath: org.nightlabs.jdo.ui.jar
 Bundle-Activator: org.nightlabs.jdo.ui.JdoPlugin
