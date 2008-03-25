@@ -199,16 +199,13 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			
 			advancedSearchSection.setTextClient(advancedSectionActiveButton);
 
-			// TODO: extend the QueryFilter interface to be able to remove the dependency of this implementation.
 			AbstractQueryFilterComposite<? extends R, ? extends Q> filterComposite =
 				factory.createQueryFilter(
 					advancedSearchSection, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER,
 					LayoutDataMode.GRID_DATA_HORIZONTAL, queryProvider
 					);
-			// TODO: do this in constructor.
 			filterComposite.setSectionButtonActiveStateManager(
 				new ActiveStateButtonManager(advancedSectionActiveButton) );
-			filterComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			advancedSearchSection.setClient(filterComposite);
 			
 			advancedSectionActiveButton.addSelectionListener(
@@ -386,7 +383,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 							displaySearchResult(result);
 						}
 					});
-//				}
 				return Status.OK_STATUS;
 			}
 		}.schedule();
@@ -477,10 +473,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		}
 		else
 		{
+//			scrollableSearchWrapper.layout(true, true);
 			completeHeight = sashform.getClientArea().height - sashform.SASH_WIDTH;
-			scrollableSearchWrapper.layout(true, true);
+			searchHeight = calculateSearchAreaHeight();
 //			searchHeight = scrollableSearchWrapper.getSize().y; // computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-			searchHeight = calculateSearchAreaHeight(completeHeight);
 		}
 		
 		
@@ -496,10 +492,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	}
 
 	/**
-	 * @param completeHeight 
-	 * @return
+	 * @return the complete height of the search area.
 	 */
-	private int calculateSearchAreaHeight(int completeHeight)
+	private int calculateSearchAreaHeight()
 	{
 		int searchHeight = toolBarManager.getControl().getSize().y;
 		
@@ -520,7 +515,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			searchHeight += section.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 		}
 		
-		// add the spacing inbetween the sections
+		// add the spacing in between the sections
 		searchHeight += advancedSearchSections.size() * verticalSpacing;
 		searchHeight += advancedSearchSections.size() * 5; //magical spacing needed due to section spacings.
 		return searchHeight;

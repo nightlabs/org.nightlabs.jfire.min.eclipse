@@ -27,6 +27,7 @@ import org.eclipse.ui.part.EditorActionBarContributor;
 import org.nightlabs.base.ui.action.registry.editor.XEditorActionBarContributor;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.base.ui.form.AbstractBaseFormPage;
 import org.nightlabs.base.ui.part.ControllablePart;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
@@ -241,7 +242,7 @@ public class OverviewEntryEditor
 	protected void addPages()
 	{
 		if (entryViewer != null) {
-			FormPage searchPage = new FormPage(this, "SearchPage", getSearchPageName())
+			FormPage searchPage = new AbstractBaseFormPage(this, "SearchPage", getSearchPageName())
 			{
 				@Override
 				protected void createFormContent(IManagedForm managedForm)
@@ -252,11 +253,6 @@ public class OverviewEntryEditor
 					composite = entryViewer.createComposite(form.getBody());
 					GridData resultData = new GridData(SWT.FILL, SWT.FILL, true, true);
 					composite.setLayoutData(resultData);
-					
-					// FIXME: this is a workaround for growing tables in FromPages that works, at least under GNU+Linux / GTK very well.
-					// more information about this can be found at: https://bugs.eclipse.org/bugs/show_bug.cgi?id=215997#c4
-					resultData.heightHint = 1;
-					resultData.widthHint = 1;
 					
 					if (entryViewer.getSelectionProvider() != null) {
 						getSite().setSelectionProvider(entryViewer.getSelectionProvider());
