@@ -7,7 +7,7 @@
 	<plugin/>
     <ant path="org.nightlabs.jfire.base.ui" file="build-nightlabs.xml" target="deploy"/>
     <requires/>
-	<requires path="/org.nightlabs.jfire.base.j2ee.osgi"/>
+		<requires path="/org.nightlabs.jfire.base.j2ee.osgi"/>
     <provides/>
     <publishes description="..." location="org.nightlabs.jfire.base.ui/dist/org.nightlabs.jfire.base.ui_0.9.3.jar"/>
     <javadoc path="org.nightlabs.jfire.base.ui/src"/>
