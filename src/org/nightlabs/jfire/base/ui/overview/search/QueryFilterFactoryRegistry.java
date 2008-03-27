@@ -29,7 +29,7 @@ public class QueryFilterFactoryRegistry
 	public static final String ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS = "queryFilterFactoryClass";
 	public static final String ATTRIBUTE_SECTION_TITLE = "sectionTitle";
 	
-	private static QueryFilterFactoryRegistry sharedInstance = null;
+	private static volatile QueryFilterFactoryRegistry sharedInstance = null;
 
 	/**
 	 * @return The shared Instance of this class.
