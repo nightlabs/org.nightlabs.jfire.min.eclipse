@@ -250,7 +250,7 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	
 	/**
 	 * Helper class that tries to set the ActiveStateManager if it wasn't available at creation time.
-	 * Needed since my ActiveStateManager will be set after construction. 
+	 * Needed since my ActiveStateManager will be set after the UI has been constructed. 
 	 * 
 	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
 	 */
