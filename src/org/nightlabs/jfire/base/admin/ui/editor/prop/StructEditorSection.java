@@ -25,6 +25,7 @@ import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructBlockAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructFieldAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.RemoveStructElementAction;
+import org.nightlabs.jfire.prop.StructLocal.OrderMoveDirection;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
@@ -51,8 +52,8 @@ implements StructureChangedListener
 		});
 
 		List<ContributionItem> actionList = new LinkedList<ContributionItem>();
-		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, true, this)) );
-		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, false, this)) );
+		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, OrderMoveDirection.up, this)) );
+		actionList.add( new ActionContributionItem(new MoveStructElementAction(structEditor, OrderMoveDirection.down, this)) );
 		actionList.add( new Separator() );
 		actionList.add( new ActionContributionItem(new AddStructBlockAction(structEditor)) );
 		addStructFieldActionItem = new ActionContributionItem(new AddStructFieldAction(structEditor));
