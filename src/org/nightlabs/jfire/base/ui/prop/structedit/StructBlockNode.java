@@ -1,6 +1,6 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -8,7 +8,9 @@ import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructBlock;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.util.Util;
 
 /**
@@ -25,17 +27,31 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 			throw new IllegalArgumentException("block must not be null!"); //$NON-NLS-1$
 
 		this.block = block;
-		fields = new LinkedList<StructFieldNode>();
+		fields = null; // new LinkedList<StructFieldNode>();
 	}
 
+	protected List<StructFieldNode> getFieldList() {
+		if (fields == null) {
+			List<StructField<? extends DataField>> structFields = block.getStructFields();
+			fields = new ArrayList<StructFieldNode>(structFields.size());
+			for (StructField<?> field : structFields)
+				fields.add(new StructFieldNode(field, this));
+		}
+		return fields;
+	}
+
+	public void clearFieldReferences() {
+		fields = null;
+	}
+	
 	public void addField(StructFieldNode field)
 	{
-		fields.add(field);
+		getFieldList().add(field);
 	}
 
 	public void removeField(StructFieldNode field)
 	{
-		fields.remove(field);
+		getFieldList().remove(field);
 	}
 
 	@Override
@@ -53,7 +69,7 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 	@Override
 	public TreeNode[] getChildren()
 	{
-		return fields.toArray(new TreeNode[0]);
+		return getFieldList().toArray(new TreeNode[0]);
 	}
 
 	@Override

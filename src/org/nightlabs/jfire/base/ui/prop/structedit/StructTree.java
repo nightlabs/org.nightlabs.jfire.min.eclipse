@@ -77,7 +77,7 @@ public class StructTree {
 	}
 	
 	public void select(StructField field) {
-		structTreeComposite.setSelection(fieldNodeMap.get(field));
+		structTreeComposite.setSelection(new StructFieldNode(field, null));
 	}
 	
 	public void select(TreeNode node) {
