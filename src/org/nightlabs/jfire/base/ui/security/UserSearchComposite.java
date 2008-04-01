@@ -222,7 +222,8 @@ extends XComposite
 			protected IStatus run(ProgressMonitor monitor){
 				try {
 					UserManager um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-					final QueryCollection<User, UserQuery> queries = new QueryCollection<User, UserQuery>();
+					final QueryCollection<User, UserQuery> queries =
+						new QueryCollection<User, UserQuery>(User.class);
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getUserQuery());

@@ -88,7 +88,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	
 	public SearchEntryViewer(Entry entry) {
 		super(entry);
-		queryProvider = new DefaultQueryProvider<R, Q>();
+		queryProvider = new DefaultQueryProvider<R, Q>(getResultType());
 	}
 	
 	/**
