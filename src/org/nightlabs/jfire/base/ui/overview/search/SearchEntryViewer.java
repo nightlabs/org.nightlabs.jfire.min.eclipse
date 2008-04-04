@@ -389,7 +389,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 */
 	public void search()
 	{
-		new Job(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.JDOQuerySearchEntryViewer.job.name"))	//$NON-NLS-1$
+		new Job(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchJob.name"))	//$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(final ProgressMonitor monitor)
