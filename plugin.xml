@@ -346,15 +346,4 @@
          point="org.nightlabs.jfire.base.j2ee.remoteResourceFilter">
       <exclusion pattern="org.nightlabs.jfire.base.ui.exclusion1"/>
    </extension>
-   <extension
-         point="org.nightlabs.jfire.base.ui.overview">
-      <categoryEntry
-            categoryEntryID="org.nightlabs.jfire.base.ui.categoryEntry1"
-            categoryID="org.nightlabs.jfire.base.ui.categoryEntry1"
-            entry="org.nightlabs.jfire.base.ui.EntryFactory1"
-            name="org.nightlabs.jfire.base.ui.categoryEntry1"/>
-      <category
-            categoryID="org.nightlabs.jfire.base.ui.category1"
-            name="org.nightlabs.jfire.base.ui.category1"/>
-   </extension>
 </plugin>

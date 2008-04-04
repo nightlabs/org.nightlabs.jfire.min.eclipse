@@ -8,9 +8,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JFireServerManager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JFireBaseDAO"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JFireBaseClientLib"/>
-	<classpathentry kind="var" path="JDO2" sourcepath="JDO2_SRC" />
+	<classpathentry kind="var" path="JDO2" sourcepath="JDO2_SRC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NightLabsJDO"/>
 	<classpathentry kind="src" path="/NightLabsQuery"/>
 	<classpathentry kind="src" path="/NightLabsQueryJDO"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JFireQueryStore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

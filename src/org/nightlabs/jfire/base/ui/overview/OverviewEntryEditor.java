@@ -114,7 +114,7 @@ public class OverviewEntryEditor
 					XEditorActionBarContributor xEditorActionBarContributor = (XEditorActionBarContributor) actionBarContributor;
 
 					if (xEditorActionBarContributor.getActionRegistry() == null)
-						logger.warn("updateContextMenu: xEditorActionBarContributor.getActionRegistry() returned null!"); //$NON-NLS-1$
+						logger.info("updateContextMenu: xEditorActionBarContributor.getActionRegistry() returned null!"); //$NON-NLS-1$
 					else {
 						xEditorActionBarContributor.getActionRegistry().contributeToContextMenu(menuManager);
 						if (logger.isDebugEnabled())
@@ -153,7 +153,7 @@ public class OverviewEntryEditor
 					XEditorActionBarContributor xEditorActionBarContributor = (XEditorActionBarContributor) actionBarContributor;
 
 					if (xEditorActionBarContributor.getActionRegistry() == null)
-						logger.warn("updateToolbar: xEditorActionBarContributor.getActionRegistry() returned null!"); //$NON-NLS-1$
+						logger.info("updateToolbar: xEditorActionBarContributor.getActionRegistry() returned null!"); //$NON-NLS-1$
 					else {
 						xEditorActionBarContributor.getActionRegistry().contributeToToolBar(toolbarManager);
 						if (logger.isDebugEnabled())
@@ -249,7 +249,7 @@ public class OverviewEntryEditor
 				{
 					ScrolledForm form = managedForm.getForm();
 					Composite formBody = form.getBody();
-					formBody.setLayout(XComposite.getLayout(LayoutMode.TOP_BOTTOM_WRAPPER));
+					formBody.setLayout(XComposite.getLayout(LayoutMode.ORDINARY_WRAPPER));
 					composite = entryViewer.createComposite(form.getBody());
 					GridData resultData = new GridData(SWT.FILL, SWT.FILL, true, true);
 					composite.setLayoutData(resultData);

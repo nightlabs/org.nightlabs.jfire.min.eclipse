@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -92,8 +93,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	}
 	
 	/**
-	 * A mapping from query type to all used queries.
-	 * ? extends AbstractSearchQuery<? extends R>
+	 * The element creating and providing the queries required by the UI. 
 	 */
 	protected QueryProvider<R, Q> queryProvider;
 	
@@ -111,22 +111,21 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		scrollableSearchWrapper = new ScrolledComposite(sashform, SWT.V_SCROLL);
 		scrollableSearchWrapper.setExpandHorizontal(true);
 		scrollableSearchWrapper.setExpandVertical(true);
-		GridLayout searchLayout = XComposite.getLayout(LayoutMode.TOTAL_WRAPPER);
-		searchLayout.verticalSpacing = 70;
-		scrollableSearchWrapper.setLayout(searchLayout);
 
 		toolbarAndAdvancedSearchWrapper = new XComposite(scrollableSearchWrapper, SWT.NONE,
-			LayoutMode.TOP_BOTTOM_WRAPPER);
+			LayoutMode.ORDINARY_WRAPPER);
 		
-		createToolBar(toolbarAndAdvancedSearchWrapper, toolkit);
+		Control toolbar = createToolBar(toolbarAndAdvancedSearchWrapper, toolkit);
+		toolbar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
 		createQuickSearchEntries(searchItem);
 		createAdvancedSearchSections(toolbarAndAdvancedSearchWrapper, toolkit);
 		scrollableSearchWrapper.setContent(toolbarAndAdvancedSearchWrapper);
+		// TODO: Even though the min size is set for the width and the height, the scrollableSearchWrapper only shows scrollbars when not able to show the full height... why??? (marius)
+		// When we have found a way to make the horizontal scrollbar visible, then we should add a resize listener to the scrollableSearchWrapper and set the new MinSize as long as it changes.
 		scrollableSearchWrapper.setMinHeight(toolbarAndAdvancedSearchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+		scrollableSearchWrapper.setMinWidth(500);
 		resultComposite = createResultComposite(sashform);
-		
-		if (parent.getLayout() instanceof GridLayout)
-			sashform.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		// Form Look & Feel
 		toolbarAndAdvancedSearchWrapper.setToolkit(toolkit);
@@ -136,6 +135,15 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			final XComposite resultXComposite = (XComposite) resultComposite;
 			resultXComposite.setToolkit(toolkit);
 			resultXComposite.adaptToToolkit();
+			
+			if (resultXComposite instanceof AbstractTableComposite<?>)
+			{
+				// TODO: I don't know why, but since I changed the layout to the WeightedTableLayout, no scrollbar is shown for the table as well... wtf! (marius) 
+				final AbstractTableComposite<?> tableComp = (AbstractTableComposite<?>) resultXComposite;
+				final GridData tableData = (GridData) tableComp.getTableViewer().getTable().getLayoutData();
+				tableData.minimumWidth = 500;
+				tableData.minimumHeight = 200;
+			}
 		}
 		else if (toolkit != null)
 		{
@@ -259,11 +267,13 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * 
 	 * @param searchComposite the parent Composite where the toolbar will be located in
 	 * @param toolkit the toolkit to use
+	 * @return the control representing the toolbar in the header of this viewer.
 	 */
-	protected void createToolBar(final XComposite searchComposite, IToolkit toolkit)
+	protected Control createToolBar(final XComposite searchComposite, IToolkit toolkit)
 	{
 		XComposite toolBarWrapper = new XComposite(searchComposite, SWT.NONE,
-				LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 5);
+				LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE, 5);
+			
 		int toolbarStyle = SWT.WRAP | SWT.HORIZONTAL;
 		if (toolkit != null)
 		{
@@ -312,10 +322,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		
 		XComposite rangeWrapper = new XComposite(toolBarWrapper, SWT.NONE,
 				LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.NONE, 2);
-		new Label(rangeWrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.limitLabel.text")); //$NON-NLS-1$
+		Label limitLabel = new Label(rangeWrapper, SWT.NONE);
+		limitLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.limitLabel.text")); //$NON-NLS-1$
+		limitLabel.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.limitLabel.tooltip")); //$NON-NLS-1$
+		
 		limit = new Spinner(rangeWrapper, borderStyle);
 		limit.setMinimum(0);
 		limit.setMaximum(Integer.MAX_VALUE);
+		limit.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.limitLabel.tooltip")); //$NON-NLS-1$
 		limit.addModifyListener(new ModifyListener()
 		{
 			@Override
@@ -325,12 +339,15 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			}
 		});
 		limit.setSelection(25);
-		
+		queryProvider.getManagedQueries().setToExclude(25);
+			
 		Label spacerLabel = new Label(toolBarWrapper, SWT.NONE);
 		spacerLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		ToolBar toolBar = new ToolBar(toolBarWrapper, toolbarStyle);
-		toolBar.setLayoutData(new GridData(SWT.END, SWT.FILL, false, true));
+		GridData actionToolBarData = new GridData(SWT.END, SWT.FILL, false, true);
+		actionToolBarData.minimumWidth = 200;
+		toolBar.setLayoutData(actionToolBarData);
 		toolBarManager = new ToolBarManager(toolBar);
 		if (toolkit != null)
 		{
@@ -342,6 +359,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			rangeWrapper.adaptToToolkit();
 			toolkit.adapt(toolBar);
 		}
+		
+		return toolBarWrapper;
 	}
 		
 	/**
@@ -352,7 +371,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 */
 	public abstract Composite createResultComposite(Composite parent);
 	
-	protected abstract Class<R> getResultType();
+	public abstract Class<R> getResultType();
 	
 	private Composite resultComposite;
 	protected Composite getResultComposite() {
@@ -688,6 +707,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	public QueryCollection<R, Q> getManagedQueries()
 	{
 		return queryProvider.getManagedQueries();
+	}
+
+	/**
+	 * @return the queryProvider
+	 */
+	public QueryProvider<R, Q> getQueryProvider()
+	{
+		return queryProvider;
 	}
 	
 }

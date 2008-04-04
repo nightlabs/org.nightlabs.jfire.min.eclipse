@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.config.ConfigManager;
@@ -134,5 +135,13 @@ public class JFireBasePlugin
 	public static ImageDescriptor getImageDescriptor(String path)
 	{
 		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg)
+	{
+		// TODO: When the org.nightlabs.base.ui project has been refactored into smaller projects,
+		//       change the SharedImages class to delegate to the ImageRegistries of every
+		//       AbstractUIPlugin.getImageRegistry().
 	}
 }
