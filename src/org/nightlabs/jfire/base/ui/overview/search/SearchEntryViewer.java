@@ -461,7 +461,13 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		{
 			final Section section = (Section) e.getSource();
 			sashform.setWeights(calculateSashWeights(section));
-			scrollableSearchWrapper.setMinHeight(scrollableSearchWrapper.getSize().y);
+			// This is not enough since the returned size is not the actual one if the searchWrapper is
+			// completely visible (e.g. when it grows too big for the sash itself, then the weights are
+			// not changed and the searchWrapper's returned size is only its visible part) 
+//			scrollableSearchWrapper.setMinHeight(scrollableSearchWrapper.getSize().y);
+			
+			// We need the -1 otherwise scrollbars are sometimes visible. Another magical number...
+			scrollableSearchWrapper.setMinHeight(calculateSearchAreaHeight()-1);
 		}
 	};
 		

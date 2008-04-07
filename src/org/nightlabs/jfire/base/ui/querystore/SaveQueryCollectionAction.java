@@ -9,20 +9,28 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.action.WorkbenchPartAction;
+import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.dialog.CenteredTitleDialog;
 import org.nightlabs.base.ui.job.Job;
+import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
+import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
@@ -102,7 +110,7 @@ public class SaveQueryCollectionAction
 			{
 				final Collection<BaseQueryStore<?, ?>> storedQueryCollections = 
 					QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(
-						resultType, FETCH_GROUPS_QUERYSTORES, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+						resultType, false, FETCH_GROUPS_QUERYSTORES, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 				
 				viewer.getComposite().getDisplay().asyncExec(new Runnable()
 				{
@@ -161,6 +169,12 @@ public class SaveQueryCollectionAction
 		}
 		
 		@Override
+		protected int getShellStyle()
+		{
+			return super.getShellStyle() | SWT.RESIZE;
+		}
+		
+		@Override
 		protected void configureShell(Shell newShell)
 		{
 			super.configureShell(newShell);
@@ -170,8 +184,8 @@ public class SaveQueryCollectionAction
 		@Override
 		protected Control createDialogArea(Composite parent)
 		{
-			Composite wrapper = (Composite) super.createDialogArea(parent);
-			storeTable = new BaseQueryStoreTableComposite(wrapper, AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER);
+			XComposite wrapper = new XComposite(parent, SWT.NONE);
+			storeTable = new BaseQueryStoreTableComposite(wrapper, AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 			storeTable.addDoubleClickListener(new IDoubleClickListener()
 			{
 				@Override
@@ -200,7 +214,7 @@ public class SaveQueryCollectionAction
 		@Override
 		protected void createButtonsForButtonBar(Composite parent)
 		{
-			createButton(parent, CREATE_NEW_QUERY, "Create new query name", false);
+			createButton(parent, CREATE_NEW_QUERY, "&Create new query", false);
 			createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,	false);
 			createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
 		}
@@ -216,12 +230,6 @@ public class SaveQueryCollectionAction
 					return;
 				
 				okPressed();
-//				storeTable.setSelection(new StructuredSelection(createdStore));
-				
-//				selectedQueryConfiguration = createdStore;
-				
-//				 return code is already OK
-//				close();
 			}
 		}
 		
@@ -237,10 +245,6 @@ public class SaveQueryCollectionAction
 				IDGenerator.nextID(BaseQueryStore.class), null);
 			
 			queryStore.getName().setText(Locale.getDefault().getLanguage(), "change this name");
-			
-//			// if the user changed the name -> new store is valid
-//			if (changeName(queryStore))
-//				return queryStore;
 			
 			existingQueries.add(queryStore);
 			storeTable.setInput(existingQueries);
@@ -262,26 +266,14 @@ public class SaveQueryCollectionAction
 		
 		private boolean changeName(BaseQueryStore<?, ?> selectedStore)
 		{
-			final InputDialog inputDialog = new InputDialog(getShell(), "Change query name?", 
-				"Enter new query name.", selectedStore.getName().getText(), null)
-			{
-				@Override
-				protected Control createDialogArea(Composite parent)
-				{
-					// TODO create an I18NText editor instead!
-					return super.createDialogArea(parent);
-				}
-			};
+			final QueryStoreEditDialog inputDialog = new QueryStoreEditDialog(
+				getShell(), selectedStore.getName(), selectedStore.isPubliclyAvailable());
 			
 			if (inputDialog.open() != Window.OK)
 				return false;
 			
-			if (! selectedStore.getName().getText().equals(inputDialog.getValue()))
-			{
-				selectedStore.getName().setText(Locale.getDefault().getLanguage(), inputDialog.getValue());						
-				return true; 
-			}
-			return false;
+			selectedStore.setPubliclyAvailable(inputDialog.isPubliclyAvailable());
+			return true;
 		}
 		
 		@Override
@@ -291,7 +283,9 @@ public class SaveQueryCollectionAction
 			if (! checkForRights(selectedQueryConfiguration))
 				return;
 			
-			changeName(selectedQueryConfiguration);
+			if (! changeName(selectedQueryConfiguration))
+				return;
+			
 			super.okPressed();
 		}
 		
@@ -301,4 +295,97 @@ public class SaveQueryCollectionAction
 		}
 	}
 
+	/**
+	 * Edits the given I18NText and the publilyAvailable flag of a QueryStore.
+	 * 
+	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
+	 */
+	public static class QueryStoreEditDialog extends CenteredTitleDialog
+	{
+		private I18nTextEditor textEditor;
+		private I18nText text;
+		private Button publicAvailableButton;
+		private boolean publiclyAvailable;
+		
+		private BaseQueryStore<?, ?> editedStore;
+		
+		public QueryStoreEditDialog(Shell parentShell, BaseQueryStore<?, ?> store)
+		{
+			this(parentShell, store.getName(), store.isPubliclyAvailable());
+			this.editedStore = store;
+		}
+		
+		public QueryStoreEditDialog(Shell parentShell, I18nText text, boolean publiclyAvailable)
+		{
+			super(parentShell);
+			assert text != null;
+			this.text = text;
+			this.publiclyAvailable = publiclyAvailable;
+		}
+		
+		@Override
+		protected int getShellStyle()
+		{
+			return super.getShellStyle() | SWT.RESIZE;
+		}
+		
+		@Override
+		protected void configureShell(Shell newShell)
+		{
+			super.configureShell(newShell);
+			newShell.setText("Change query name?");
+		}
+		
+		@Override
+		protected Control createDialogArea(Composite parent)
+		{
+			XComposite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER);  
+			publicAvailableButton = new Button(wrapper, SWT.CHECK);
+			publicAvailableButton.setText("Set publicly visible.");
+			GridData gd = new GridData();
+			gd.horizontalAlignment = SWT.RIGHT;
+			publicAvailableButton.setLayoutData(gd);
+			publicAvailableButton.setSelection(publiclyAvailable);
+			publicAvailableButton.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					publiclyAvailable = ((Button) e.getSource()).getSelection();
+				}
+			});
+			
+      textEditor = new I18nTextEditor(wrapper);
+      textEditor.setI18nText(text);
+      textEditor.setLayoutData(
+      	new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+
+      applyDialogFont(wrapper);
+			setMessage("Enter new query name. \n Attention: By pressing OK, you are overriding " +
+				"the given Query.");
+			setTitle("Naming the Query");
+      return wrapper;
+		}
+		
+		@Override
+		protected void okPressed()
+		{
+			textEditor.copyToOriginal();
+			if (editedStore != null)
+			{
+				editedStore.setPubliclyAvailable(publiclyAvailable);
+			}
+			super.okPressed();
+		}
+		
+		public I18nText getI18NText()
+		{
+			return textEditor.getI18nText();
+		}
+		
+		public boolean isPubliclyAvailable()
+		{
+			return publiclyAvailable;
+		}
+	}
 }

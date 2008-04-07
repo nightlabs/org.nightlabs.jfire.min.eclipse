@@ -9,10 +9,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.action.WorkbenchPartAction;
+import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.dialog.CenteredTitleDialog;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
@@ -21,6 +30,7 @@ import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -90,7 +100,7 @@ public class LoadQueryCollectionAction
 			{
 				final Collection<BaseQueryStore<?, ?>> storedQueryCollections = 
 					QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(
-						resultType, FETCH_GROUPS_QUERYSTORES, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+						resultType, true, FETCH_GROUPS_QUERYSTORES, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 				
 				viewer.getComposite().getDisplay().asyncExec(new Runnable()
 				{
@@ -104,6 +114,7 @@ public class LoadQueryCollectionAction
 			}
 		};
 		fetchStoredQueries.setUser(true);
+		fetchStoredQueries.setPriority(org.eclipse.core.runtime.jobs.Job.LONG);
 		fetchStoredQueries.schedule();
 	}
 	
@@ -118,17 +129,45 @@ public class LoadQueryCollectionAction
 		viewer.getQueryProvider().loadQueries(dialog.getSelectedQueryStore().getQueryCollection());
 	}
 	
+	/**
+	 * Simple Dialog showing all given BaseQueryStores and returns the one selected. Additionally it
+	 * can filter all QueryStores for the ones that were created by the current user.
+	 * 
+	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
+	 */
 	public static class LoadQueryStoreDialog extends CenteredTitleDialog
 	{
 		private BaseQueryStore<?, ?> selectedQueryConfiguration;
+		private Button showAdditionalPublicQueriesButton;
 		private BaseQueryStoreTableComposite resultTable; 
 		private Collection<BaseQueryStore<?, ?>> queries;
+		private ViewerFilter onlyMyQueriesFilter = new ViewerFilter()
+		{
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element)
+			{
+				if (! (element instanceof BaseQueryStore<?, ?>))
+				return false;
+				
+				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+				if (! store.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()))
+					return false;
+				
+				return true;
+			}
+		};
 		
 		public LoadQueryStoreDialog(Shell parentShell, Collection<BaseQueryStore<?, ?>> queries)
 		{
 			super(parentShell);
 			assert queries != null;
 			this.queries = queries;
+		}
+		
+		@Override
+		protected int getShellStyle()
+		{
+			return super.getShellStyle() | SWT.RESIZE;
 		}
 		
 		@Override
@@ -141,8 +180,34 @@ public class LoadQueryCollectionAction
 		@Override
 		protected Control createDialogArea(Composite parent)
 		{
-			Composite wrapper = (Composite) super.createDialogArea(parent);
-			resultTable = new BaseQueryStoreTableComposite(wrapper, AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER);
+			XComposite wrapper = new XComposite((Composite) super.createDialogArea(parent), SWT.NONE,
+				LayoutDataMode.GRID_DATA);
+			showAdditionalPublicQueriesButton = new Button(wrapper, SWT.CHECK);
+			showAdditionalPublicQueriesButton.setText("Show publicly available queries.");
+			showAdditionalPublicQueriesButton.setSelection(true);
+			showAdditionalPublicQueriesButton.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					final boolean onlyMyQueries = ! ((Button) e.getSource()).getSelection();
+					if (onlyMyQueries)
+					{
+						resultTable.getTableViewer().setFilters(new ViewerFilter[] { onlyMyQueriesFilter });						
+					}
+					else
+					{
+						resultTable.getTableViewer().setFilters(new ViewerFilter[0]);
+//						resultTable.refresh();
+					}
+				}
+			});
+			GridData buttonData = new GridData();
+			buttonData.horizontalAlignment = SWT.RIGHT;
+			showAdditionalPublicQueriesButton.setLayoutData(buttonData);
+			
+			resultTable = new BaseQueryStoreTableComposite(wrapper,
+				AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 			resultTable.addDoubleClickListener(new IDoubleClickListener()
 			{
 				@Override
