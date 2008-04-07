@@ -174,6 +174,9 @@ public class UserDataSection extends RestorableSectionPart {
 		this.user = _user;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
+				if (userIdText == null || userIdText.isDisposed())
+					return;
+				
 				refreshing = true;
 				userIdText.setText(user.getUserID());
 				if (user.getName() != null)
