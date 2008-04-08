@@ -663,8 +663,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 */
 	protected SortedSet<QuickSearchEntryFactory> getQuickSearchEntryFactories()
 	{
-		return QuickSearchEntryRegistry.sharedInstance().getFactories(this.getClass().getName());
+		return QuickSearchEntryRegistry.sharedInstance().getFactories(getViewerClass().getName());
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected abstract Class<? extends SearchEntryViewer<R, Q>> getViewerClass();
 	
 	protected class ActiveButtonSelectionListener
 		extends SelectionAdapter
