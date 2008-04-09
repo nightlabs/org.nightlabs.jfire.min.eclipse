@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.ui.overview;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Object created by {@link EntryFactory}. {@link Entry}s are hold by {@link Category}s
@@ -20,8 +21,10 @@ public interface Entry
 	/**
 	 * Performs what should be done when this {@link Entry} is activated.
 	 * This might be called when an item representing the Entry is double-clicked etc.
+	 * @return The opened or activated IWorkbenchPart or <code>null</code> if no WorkbenchPart is
+	 * 	activated.
 	 */
-	void handleActivation();
+	IWorkbenchPart handleActivation();
 	
 	/**
 	 * Creates the Composite representing this {@link Entry}.
