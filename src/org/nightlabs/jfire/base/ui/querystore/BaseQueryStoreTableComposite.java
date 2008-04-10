@@ -50,10 +50,13 @@ public class BaseQueryStoreTableComposite
 	 * @param viewerStyle
 	 */
 	public BaseQueryStoreTableComposite(Composite parent, int style, boolean initTable,
-		int viewerStyle)
+		int viewerStyle, boolean registerJDOListener)
 	{
 		super(parent, style, initTable, viewerStyle);
-		registerJDOListener();
+		if (registerJDOListener)
+		{
+			registerJDOListener();			
+		}
 	}
 
 	/**
@@ -63,7 +66,7 @@ public class BaseQueryStoreTableComposite
 	 */
 	protected BaseQueryStoreTableComposite(Composite parent, int style, boolean initTable)
 	{
-		this(parent, style, initTable, AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
+		this(parent, style, initTable, AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, true);
 	}
 
 	/**
@@ -72,7 +75,7 @@ public class BaseQueryStoreTableComposite
 	 */
 	public BaseQueryStoreTableComposite(Composite parent, int viewerStyle)
 	{
-		this(parent, SWT.NONE, true, viewerStyle);
+		this(parent, SWT.NONE, true, viewerStyle, true);
 	}
 
 	protected void registerJDOListener()

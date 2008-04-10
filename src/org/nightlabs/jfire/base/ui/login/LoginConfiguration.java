@@ -152,7 +152,7 @@ implements Serializable, Cloneable, RWLockable
 		} else if (!name.equals(other.name))
 			return false;
 
-		// both names == null
+		// both descriptions == null
 		return loginData.equals(other.loginData);
 	}
 

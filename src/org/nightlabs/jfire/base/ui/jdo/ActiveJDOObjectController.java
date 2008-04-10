@@ -136,10 +136,20 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 	private List<JDOObject> jdoObjects = null;
 	private JDOLifecycleListener lifecycleListener = new JDOLifecycleAdapterJob(Messages.getString("org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController.loadingNewObjectsJob")) //$NON-NLS-1$
 	{
-		private IJDOLifecycleListenerFilter lifecycleListenerFilter = createJDOLifecycleListenerFilter();
+		/**
+		 * The filter send to the server.
+		 * Changed the initialisation of this field to be done lazily, otherwise subclasses won't be
+		 * able to override the #createJDOLifecycleListenerFilter() properly (The constructor of the
+		 * subclass has been executed before #createJDOLifecycleListenerFilter() is called). 
+		 */
+		private IJDOLifecycleListenerFilter lifecycleListenerFilter;
 
 		public IJDOLifecycleListenerFilter getJDOLifecycleListenerFilter()
 		{
+			if (lifecycleListenerFilter == null)
+			{
+				lifecycleListenerFilter = createJDOLifecycleListenerFilter();
+			}
 			return lifecycleListenerFilter;
 		}
 
@@ -363,4 +373,23 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 		return null;
 	}
 
+	/**
+	 * This method clears the currently existing cache of JDOObjects.
+	 * This is necessary in if I am controlling a UI showing sensitive data that is not allowed to be
+	 * shown to every user. So the UI may check for User changes and clear my caches.
+	 */
+	public void clearCache()
+	{
+		assertOpen();
+		
+		synchronized (jdoObjectID2jdoObjectMutex)
+		{
+			JDOLifecycleManager.sharedInstance().removeLifecycleListener(lifecycleListener);
+			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), notificationListener);
+			listenersExist = false;
+			
+			jdoObjectID2jdoObject.clear();
+			jdoObjects = null;
+		}
+	}
 }
