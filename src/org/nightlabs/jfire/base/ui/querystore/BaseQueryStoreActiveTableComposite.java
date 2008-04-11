@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.jdo.FetchPlan;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -58,6 +59,7 @@ public class BaseQueryStoreActiveTableComposite
 	protected void initTable()
 	{
 		super.initTable();
+		ColumnViewerToolTipSupport.enableFor(getTableViewer());
 		setTableLayout(getTableViewer());		
 	}
 	
@@ -195,6 +197,12 @@ public class BaseQueryStoreActiveTableComposite
 			
 			final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
 			return store.getDescription().getText();
+		}
+		
+		@Override
+		public int getToolTipTimeDisplayed(Object object)
+		{
+			return 4000;
 		}
 	}
 	

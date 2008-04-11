@@ -44,7 +44,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
 import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite;
-import org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.QueryStoreEditDialog;
+import org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.security.SecurityReflector;
@@ -416,6 +416,7 @@ class FilteredQueryStoreComposite
 		gd.horizontalAlignment = SWT.RIGHT;
 		showPublicQueries.setLayoutData(gd);
 		
+		// modified table to only show the name and the owner + description in the tooltip.
 		table = new BaseQueryStoreActiveTableComposite(parent,
 			AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType)
 		{
