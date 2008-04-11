@@ -33,8 +33,9 @@ import org.nightlabs.progress.ProgressMonitor;
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
+@SuppressWarnings("unchecked")
 public class BaseQueryStoreTableComposite
-	extends ActiveJDOObjectTableComposite<QueryStoreID, BaseQueryStore<?, ?>>
+	extends ActiveJDOObjectTableComposite<QueryStoreID, BaseQueryStore>
 {
 	private Class<?> resultType;
 
@@ -155,7 +156,7 @@ public class BaseQueryStoreTableComposite
 	}
 
 	@Override
-	protected ActiveJDOObjectController<QueryStoreID, BaseQueryStore<?, ?>> createActiveJDOObjectController()
+	protected ActiveJDOObjectController<QueryStoreID, BaseQueryStore> createActiveJDOObjectController()
 	{
 		return new BaseQueryStoreActiveController(resultType);
 	}
@@ -174,8 +175,9 @@ public class BaseQueryStoreTableComposite
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
+@SuppressWarnings("unchecked")
 class BaseQueryStoreActiveController
-	extends ActiveJDOObjectController<QueryStoreID, BaseQueryStore<?, ?>>
+	extends ActiveJDOObjectController<QueryStoreID, BaseQueryStore>
 {
 	private Class<?> resultType;
 
@@ -187,24 +189,26 @@ class BaseQueryStoreActiveController
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Class<? extends BaseQueryStore<?, ?>> getJDOObjectClass()
+	protected Class<? extends BaseQueryStore> getJDOObjectClass()
 	{
-		return (Class<? extends BaseQueryStore<?, ?>>) BaseQueryStore.class;
+//	damn sun java compiler does not accept this cast (in version 1.6.0; since 1.6.03 this is ok)!! (marius)
+//		return (Class<? extends BaseQueryStore<?, ?>>) BaseQueryStore.class;
+		return BaseQueryStore.class;
 	}
 
 	@Override
-	protected Collection<BaseQueryStore<?, ?>> retrieveJDOObjects(Set<QueryStoreID> objectIDs,
+	protected Collection<BaseQueryStore> retrieveJDOObjects(Set<QueryStoreID> objectIDs,
 		ProgressMonitor monitor)
 	{
-		return QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
+		return (Collection<BaseQueryStore>) QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
 			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 	}
 
 	@Override
-	protected Collection<BaseQueryStore<?,?>> retrieveJDOObjects(ProgressMonitor monitor)
+	protected Collection<BaseQueryStore> retrieveJDOObjects(ProgressMonitor monitor)
 	{
-		return QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
+		return (Collection<BaseQueryStore>) QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
 			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 	}
@@ -218,13 +222,13 @@ class BaseQueryStoreActiveController
 	}
 	
 	@Override
-	protected void sortJDOObjects(List<BaseQueryStore<?, ?>> objects)
+	protected void sortJDOObjects(List<BaseQueryStore> objects)
 	{
 	}
 	
 	@Override
 	protected void onJDOObjectsChanged(
-		JDOObjectsChangedEvent<QueryStoreID, BaseQueryStore<?, ?>> event)
+		JDOObjectsChangedEvent<QueryStoreID, BaseQueryStore> event)
 	{
 	}
 }
