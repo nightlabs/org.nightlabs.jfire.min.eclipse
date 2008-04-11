@@ -51,8 +51,18 @@ import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
- * This is the composite that is embedded in an {@link QueryStoreCapableCategory}.
- * <p>For this Composite and hence the QueryStoreCapableCategory to work properly
+ * This is the composite that is embedded in an {@link QueryStoreCapableCategory} and consists of a
+ * {@link DefaultCategoryComposite} and a stack of tables (one for each entry that supports the
+ * following prerequisites) separated by a sash.
+ * 
+ * <p>For this Composite and hence the QueryStoreCapableCategory to work properly two prerequisites
+ * 		have to be met:
+ * 	<ul>
+ * 		<li>The {@link EntryViewer} created by the Entry should be a {@link SearchEntryViewer}, 
+ * 				otherwise no Table with stored QuerieStores will be created.</li>
+ * 		<li>In order for the loading of the stored QueryStores to work, the IWorkbenchPart opened by
+ * 				calling {@link Entry#handleActivation()} has to be an {@link OverviewEntryEditor}.</li>
+ * 	</ul>
  * </p>
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com

@@ -5,6 +5,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 /**
+ * This category provides the default view of the {@link DefaultCategory} and additionally
+ * a table showing all stored QueryStores related to the shown Entry.
+ * <p><b>Important:</b> In order for me to work properly the Entries have to fulfil the
+ * 			prerequisites defined in {@link QueryStoreCapableCategoryComposite}. 
+ * </p>
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
