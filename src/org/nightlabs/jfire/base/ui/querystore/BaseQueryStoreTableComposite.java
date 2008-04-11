@@ -200,17 +200,19 @@ class BaseQueryStoreActiveController
 	protected Collection<BaseQueryStore> retrieveJDOObjects(Set<QueryStoreID> objectIDs,
 		ProgressMonitor monitor)
 	{
-		return (Collection<BaseQueryStore>) QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
+		Object result = QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
 			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+		return (Collection<BaseQueryStore>) result;
 	}
 
 	@Override
 	protected Collection<BaseQueryStore> retrieveJDOObjects(ProgressMonitor monitor)
 	{
-		return (Collection<BaseQueryStore>) QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
+		Object result = QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
 			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+		return (Collection<BaseQueryStore>) result;
 	}
 
 	@Override
