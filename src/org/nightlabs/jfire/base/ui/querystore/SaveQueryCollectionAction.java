@@ -155,7 +155,7 @@ public class SaveQueryCollectionAction
 	public static class SaveQueryStoreDialog extends CenteredTitleDialog
 	{
 		private BaseQueryStore<?, ?> selectedQueryConfiguration;
-		private BaseQueryStoreTableComposite storeTable; 
+		private BaseQueryStoreActiveTableComposite storeTable; 
 		private Collection<BaseQueryStore<?, ?>> existingQueries;
 		private Class<?> resultType;
 		private boolean errorMsgSet = false;
@@ -189,7 +189,7 @@ public class SaveQueryCollectionAction
 		protected Control createDialogArea(Composite parent)
 		{
 			XComposite wrapper = new XComposite(parent, SWT.NONE);
-			storeTable = new BaseQueryStoreTableComposite(wrapper,
+			storeTable = new BaseQueryStoreActiveTableComposite(wrapper,
 				AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType);
 			storeTable.addDoubleClickListener(new IDoubleClickListener()
 			{
@@ -252,6 +252,7 @@ public class SaveQueryCollectionAction
 			queryStore.getName().setText(Locale.getDefault().getLanguage(), "change this name");
 			
 			existingQueries.add(queryStore);
+//			storeTable.
 			storeTable.setInput(existingQueries);
 			storeTable.setSelection(new StructuredSelection(queryStore));
 			return queryStore;

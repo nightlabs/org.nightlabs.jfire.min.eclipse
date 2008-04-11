@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
@@ -28,19 +29,21 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
+import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
-import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreTableComposite;
+import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite;
 import org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.QueryStoreEditDialog;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
@@ -48,6 +51,9 @@ import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
+ * This is the composite that is embedded in an {@link QueryStoreCapableCategory}.
+ * <p>For this Composite and hence the QueryStoreCapableCategory to work properly
+ * </p>
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
@@ -69,7 +75,7 @@ public class QueryStoreCapableCategoryComposite
 		new HashMap<Entry, FilteredQueryStoreComposite>();
 	
 	/**
-	 * Listener that puts the corresponding {@link BaseQueryStoreTableComposite} to the selected Entry
+	 * Listener that puts the corresponding {@link BaseQueryStoreActiveTableComposite} to the selected Entry
 	 * on top and controls the visibility state of the section containing this table.
 	 * Further it triggers the initial loading of the QueryStores for a table if it wasn't done
 	 * before.
@@ -111,7 +117,7 @@ public class QueryStoreCapableCategoryComposite
 			}
 			else
 			{
-				final BaseQueryStoreTableComposite table = filteredTableComp.getTable();
+				final BaseQueryStoreActiveTableComposite table = filteredTableComp.getTable();
 				
 				// set the corresponding table to the top
 				bringTableToTop( filteredTableComp );
@@ -314,7 +320,7 @@ public class QueryStoreCapableCategoryComposite
 
 /**
  * Small wrapper that contains a button in checkbox-style for selecting whether only the user's
- * queries shall be shown and a {@link BaseQueryStoreTableComposite}. <br />
+ * queries shall be shown and a {@link BaseQueryStoreActiveTableComposite}. <br />
  * Additionally it registers a double click listener to open the SearchEntryViewer and set the 
  * QueryCollection of the Store double-clicked on.
  * 
@@ -329,7 +335,7 @@ class FilteredQueryStoreComposite
 	private static final Logger logger = Logger.getLogger(FilteredQueryStoreComposite.class);
 	
 	private Button showPublicQueries;
-	private BaseQueryStoreTableComposite table;
+	private BaseQueryStoreActiveTableComposite table;
 	private final Entry entry;
 	
 	private boolean initialised = false;
@@ -410,8 +416,22 @@ class FilteredQueryStoreComposite
 		gd.horizontalAlignment = SWT.RIGHT;
 		showPublicQueries.setLayoutData(gd);
 		
-		table = new BaseQueryStoreTableComposite(parent,
-			AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType);
+		table = new BaseQueryStoreActiveTableComposite(parent,
+			AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType)
+		{
+			@Override
+			protected void createTableColumns(TableViewer tableViewer, Table table)
+			{
+				createNameColumn(tableViewer);
+				createOwnerColumn(tableViewer);
+			}
+			
+			@Override
+			protected void setTableLayout(TableViewer tableViewer)
+			{
+				tableViewer.getTable().setLayout( new WeightedTableLayout(new int[] { 3, 1 }) );		
+			}
+		};
 		table.getTableViewer().getTable().addSelectionListener(doubleClickListener);
 		gd = new GridData(GridData.FILL_BOTH);
 		table.setLayoutData(gd);
@@ -437,7 +457,7 @@ class FilteredQueryStoreComposite
 	/**
 	 * @return the table
 	 */
-	public BaseQueryStoreTableComposite getTable()
+	public BaseQueryStoreActiveTableComposite getTable()
 	{
 		return table;
 	}
@@ -470,7 +490,7 @@ class FilteredQueryStoreComposite
 class EditQueryStoreAction 
 	extends Action 
 {
-	private BaseQueryStoreTableComposite queryTable;
+	private BaseQueryStoreActiveTableComposite queryTable;
 	
 	public EditQueryStoreAction()
 	{
@@ -502,7 +522,7 @@ class EditQueryStoreAction
 		input.remove(store);
 		
 		store = QueryStoreDAO.sharedInstance().storeQueryStore(store, 
-			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE,
+			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE,
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, true, new NullProgressMonitor()
 		);
 		
@@ -513,7 +533,7 @@ class EditQueryStoreAction
 	/**
 	 * @param queryTable the queryTable to set
 	 */
-	public void setQueryTable(BaseQueryStoreTableComposite queryTable)
+	public void setQueryTable(BaseQueryStoreActiveTableComposite queryTable)
 	{
 		this.queryTable = queryTable;
 	}
@@ -522,7 +542,7 @@ class EditQueryStoreAction
 class DeleteQueryStoreAction 
 	extends Action 
 {
-	private BaseQueryStoreTableComposite queryTable;
+	private BaseQueryStoreActiveTableComposite queryTable;
 	
 	public DeleteQueryStoreAction()
 	{
@@ -559,7 +579,7 @@ class DeleteQueryStoreAction
 	/**
 	 * @param queryTable the queryTable to set
 	 */
-	public void setQueryTable(BaseQueryStoreTableComposite queryTable)
+	public void setQueryTable(BaseQueryStoreActiveTableComposite queryTable)
 	{
 		this.queryTable = queryTable;
 	}

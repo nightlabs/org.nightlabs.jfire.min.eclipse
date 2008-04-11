@@ -34,7 +34,7 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 @SuppressWarnings("unchecked")
-public class BaseQueryStoreTableComposite
+public class BaseQueryStoreActiveTableComposite
 	extends ActiveJDOObjectTableComposite<QueryStoreID, BaseQueryStore>
 {
 	private Class<?> resultType;
@@ -43,7 +43,7 @@ public class BaseQueryStoreTableComposite
 	 * @param parent
 	 * @param viewerStyle
 	 */
-	public BaseQueryStoreTableComposite(Composite parent, int viewerStyle, Class<?> resultType)
+	public BaseQueryStoreActiveTableComposite(Composite parent, int viewerStyle, Class<?> resultType)
 	{
 		super(parent, SWT.NONE, viewerStyle);
 		assert resultType != null;
@@ -54,6 +54,13 @@ public class BaseQueryStoreTableComposite
 		FetchPlan.DEFAULT, BaseQueryStore.FETCH_GROUP_OWNER
 	};
 	
+	@Override
+	protected void initTable()
+	{
+		super.initTable();
+		setTableLayout(getTableViewer());		
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.table.AbstractTableComposite#createTableColumns(org.eclipse.jface.viewers.TableViewer, org.eclipse.swt.widgets.Table)
 	 */
@@ -63,7 +70,6 @@ public class BaseQueryStoreTableComposite
 		createNameColumn(tableViewer);
 		createPublicAvailableColumn(tableViewer);
 		createOwnerColumn(tableViewer);
-		setTableLayout(tableViewer);		
 	}
 	
 	protected void setTableLayout(TableViewer tableViewer)
@@ -77,20 +83,16 @@ public class BaseQueryStoreTableComposite
 	/**
 	 * @param tableViewer
 	 */
-	private TableViewerColumn createOwnerColumn(final TableViewer tableViewer)
+	protected TableViewerColumn createOwnerColumn(final TableViewer tableViewer)
 	{
 		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		viewerColumn.getColumn().setText("Creator");
-		viewerColumn.setLabelProvider(new ColumnLabelProvider()
+		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String getText(Object element)
+			public String doGetText(BaseQueryStore<?, ?> store)
 			{
-				if (! (element instanceof BaseQueryStore<?, ?>))
-					return super.getText(element);
-				
-				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
 				return store.getOwner().getName();
 			}
 		});
@@ -100,20 +102,15 @@ public class BaseQueryStoreTableComposite
 
 	/**
 	 * @param tableViewer
+	 * @return
 	 */
-	private TableViewerColumn createPublicAvailableColumn(final TableViewer tableViewer)
+	protected TableViewerColumn createPublicAvailableColumn(final TableViewer tableViewer)
 	{
 		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.CENTER);
 		viewerColumn.getColumn().setText("public");
-		viewerColumn.setLabelProvider(new ColumnLabelProvider()
+		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
-			@Override
-			public String getText(Object element)
-			{
-				return "";
-			}
-			
 			@Override
 			public Image getImage(Object element)
 			{
@@ -129,6 +126,12 @@ public class BaseQueryStoreTableComposite
 			{
 				return "Whether the stored Query is publicly available for all users.";
 			}
+
+			@Override
+			public String doGetText(BaseQueryStore<?, ?> store)
+			{
+				return "";
+			}
 		});
 		return viewerColumn;
 	}
@@ -140,15 +143,11 @@ public class BaseQueryStoreTableComposite
 	{
 		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		viewerColumn.getColumn().setText("Query Name");
-		viewerColumn.setLabelProvider(new ColumnLabelProvider()
+		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String getText(Object element)
+			public String doGetText(BaseQueryStore<?, ?> store)
 			{
-				if (! (element instanceof BaseQueryStore<?, ?>))
-					return super.getText(element);
-				
-				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
 				return store.getName().getText();
 			}
 		});
@@ -167,6 +166,38 @@ public class BaseQueryStoreTableComposite
 		return null;
 	}
 
+	/**
+	 * Base class of all ColumnLabelProviders showing the description of the given BaseQueryStore
+	 * as tooltip and calling doGetText with the correctly cast BaseQueryStore.
+	 * 
+	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
+	 */
+	public abstract static class BaseQueryStoreColumnLabelProvider
+		extends ColumnLabelProvider
+	{
+		@Override
+		public String getText(Object element)
+		{
+			if (! (element instanceof BaseQueryStore<?, ?>))
+				return super.getText(element);
+			
+			final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+			return doGetText(store);
+		}
+		
+		public abstract String doGetText(BaseQueryStore<?, ?> store);
+		
+		@Override
+		public String getToolTipText(Object element)
+		{
+			if (! (element instanceof BaseQueryStore<?, ?>))
+				return super.getText(element);
+			
+			final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+			return store.getDescription().getText();
+		}
+	}
+	
 }
 
 /**
@@ -200,8 +231,10 @@ class BaseQueryStoreActiveController
 	protected Collection<BaseQueryStore> retrieveJDOObjects(Set<QueryStoreID> objectIDs,
 		ProgressMonitor monitor)
 	{
+//	damn sun java compiler in version 1.6.0 inverse problem to the one in  getJDOObjectClass()
+//		this time the compiler disallows the cast of Test<?> to Test.
 		Object result = QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
-			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
+			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 		return (Collection<BaseQueryStore>) result;
 	}
@@ -209,8 +242,10 @@ class BaseQueryStoreActiveController
 	@Override
 	protected Collection<BaseQueryStore> retrieveJDOObjects(ProgressMonitor monitor)
 	{
+//	damn sun java compiler in version 1.6.0 inverse problem to the one in  getJDOObjectClass()
+//	this time the compiler disallows the cast of Test<?> to Test.
 		Object result = QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
-			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
+			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 		return (Collection<BaseQueryStore>) result;
 	}
