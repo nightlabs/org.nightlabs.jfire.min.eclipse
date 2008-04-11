@@ -4,11 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -40,24 +38,14 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
-import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
-import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
 import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreTableComposite;
 import org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.QueryStoreEditDialog;
-import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
-import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
-import org.nightlabs.jfire.query.store.id.QueryStoreID;
-import org.nightlabs.jfire.query.store.jdo.filter.BaseQueryStoreLifecycleFilter;
 import org.nightlabs.jfire.security.SecurityReflector;
-import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.progress.NullProgressMonitor;
-import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * 
@@ -80,34 +68,6 @@ public class QueryStoreCapableCategoryComposite
 	private Map<Entry, FilteredQueryStoreComposite> entry2TableMap =
 		new HashMap<Entry, FilteredQueryStoreComposite>();
 	
-	/**
-	 * Clears the tables and the initialisation flags of all tables when the logged-in user changes.
-	 */
-	private LoginStateListener loginStateListener = new LoginStateListener()
-	{
-		private UserID oldUserID;
-		
-		@Override
-		public void loginStateChanged(int loginState, IAction action)
-		{
-			if (Login.LOGINSTATE_LOGGED_IN == loginState)
-			{
-				// if no user was ever set -> initialise it with current
-				if (oldUserID == null)
-				{
-					oldUserID = SecurityReflector.getUserDescriptor().getUserObjectID();
-					return;
-				}
-				
-				UserID newUserID = SecurityReflector.getUserDescriptor().getUserObjectID();
-				if (! newUserID.equals(oldUserID))
-				{
-					clearTables();
-				}
-			}
-		}
-	};
-
 	/**
 	 * Listener that puts the corresponding {@link BaseQueryStoreTableComposite} to the selected Entry
 	 * on top and controls the visibility state of the section containing this table.
@@ -157,7 +117,12 @@ public class QueryStoreCapableCategoryComposite
 				bringTableToTop( filteredTableComp );
 				
 				// trigger the BaseQueryStoreActiveController to fetch the input data if not already done.
-				table.setInput( filteredTableComp.getController().getJDOObjects() );
+				if (! filteredTableComp.isInitialised())
+				{ 
+					// only set input if not already initialised, afterwards the controller notifies and sets the table input itself
+					table.load();
+					filteredTableComp.setInitialised(true);
+				}
 				
 				// set new table to actions
 				if (loadQueryStoreAction != null)
@@ -211,17 +176,6 @@ public class QueryStoreCapableCategoryComposite
 		setLayout( getLayout(LayoutMode.TOTAL_WRAPPER) );
 		getToolkit(true); // ensures that an IToolkit is set and we're looking like a form.
 		createUI(this);
-		
-		// add loginStateListener to clear the tables when a new user logs in.
-		Login.sharedInstance().addLoginStateListener(loginStateListener);
-		addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(DisposeEvent e)
-			{
-				Login.sharedInstance().removeLoginStateListener(loginStateListener);
-			}
-		});
 	}
 	
 	protected void createUI(XComposite parent)
@@ -264,14 +218,11 @@ public class QueryStoreCapableCategoryComposite
 		bringTableToTop( entry2TableMap.get(getCategory().getEntries().get(0)) );
 		
 		loadQueryStoreAction = new LoadQueryStoreAction();
-		queryStoreSection.getToolBarManager().add(loadQueryStoreAction);
 		editQueryStoreAction = new EditQueryStoreAction();
+		deleteQueryStoreAction = new DeleteQueryStoreAction();
+		queryStoreSection.getToolBarManager().add(loadQueryStoreAction);
 		queryStoreSection.getToolBarManager().add(editQueryStoreAction);
-//	FIXME: If I delete something from the Database this weird foreign key exception occurs: Caused by: java.sql.BatchUpdateException: Cannot delete or update a parent row: a foreign key constraint fails (`JFire_chezfrancois_jfire_org/JFIREQUERYSTORE_BASEQUERYSTORE`, CONSTRAINT `JFIREQUERYSTORE_BASEQUERYSTORE_FK3` FOREIGN KEY (`NAME_ORGANISATION_ID_OID`, `NAME_QUERY_STORE_ID_OID`) REFERENCES `J)
-//				 When this is cleared up just uncomment the following line to enabled the deletion of QueryStores. (marius)
-//		deleteQueryStoreAction = new DeleteQueryStoreAction(queryStoreTables);
-//		queryStoreSection.getToolBarManager().add(deleteQueryStoreAction);
-		
+		queryStoreSection.getToolBarManager().add(deleteQueryStoreAction);
 		queryStoreSection.updateToolBarManager();
 		
 		if (toolkit != null)
@@ -343,21 +294,6 @@ public class QueryStoreCapableCategoryComposite
 		createTableStack(tableStack, entries);
 	}
 	
-	/**
-	 * Clears all created BaseQueryStoreTableComposites and resets the initialised value, so that
-	 * if the user clicks again on an Entry, a new {@link FetchQueriesJob} is scheduled.
-	 */
-	protected void clearTables()
-	{
-		if (entry2TableMap == null)
-			return;
-		
-		for (FilteredQueryStoreComposite tableComp : entry2TableMap.values())
-		{
-			tableComp.clearAndResetTable();
-		}
-	}
-	
 	protected void bringTableToTop(FilteredQueryStoreComposite table)
 	{
 		if (table == null)
@@ -373,74 +309,6 @@ public class QueryStoreCapableCategoryComposite
 	public Category getCategory()
 	{
 		return category;
-	}
-}
-
-/**
- * Migrated to use ActiveJDOObjectController that are used for each table and filter only for
- * QueryStores with the correct result type. 
- * 
- * @author Marius Heinzmann - marius[at]nightlabs[dot]com
- */
-class BaseQueryStoreActiveController
-	extends ActiveJDOObjectController<QueryStoreID, BaseQueryStore<?, ?>>
-{
-	private Class<?> resultType;
-	private BaseQueryStoreTableComposite table;
-
-	public BaseQueryStoreActiveController(BaseQueryStoreTableComposite table, Class<?> resultType)
-	{
-		assert resultType != null;
-		assert table != null;
-		this.resultType = resultType;
-		this.table = table;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Class<? extends BaseQueryStore<?, ?>> getJDOObjectClass()
-	{
-		return (Class<? extends BaseQueryStore<?, ?>>) BaseQueryStore.class;
-	}
-
-	@Override
-	protected Collection<BaseQueryStore<?, ?>> retrieveJDOObjects(Set<QueryStoreID> objectIDs,
-		ProgressMonitor monitor)
-	{
-		return QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
-			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
-			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
-	}
-
-	@Override
-	protected Collection<BaseQueryStore<?,?>> retrieveJDOObjects(ProgressMonitor monitor)
-	{
-		return QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
-			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
-			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
-	}
-
-	@Override
-	protected void sortJDOObjects(List<BaseQueryStore<?, ?>> objects)
-	{
-	}
-	
-	@Override
-	protected void onJDOObjectsChanged(
-		JDOObjectsChangedEvent<QueryStoreID, BaseQueryStore<?, ?>> event)
-	{
-		if (table.isDisposed())
-			return;
-		
-		table.setInput(getJDOObjects());
-	}
-	
-	@Override
-	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
-	{
-		return new BaseQueryStoreLifecycleFilter(
-			SecurityReflector.getUserDescriptor().getUserObjectID(), resultType, true,
-			new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
 }
 
@@ -463,9 +331,13 @@ class FilteredQueryStoreComposite
 	private Button showPublicQueries;
 	private BaseQueryStoreTableComposite table;
 	private final Entry entry;
-	private BaseQueryStoreActiveController activeController;
+	
+	private boolean initialised = false;
 	private Class<?> resultType;
 	
+	/**
+	 * Simple Filter filters out all QueryStores not owned by the current user.
+	 */
 	private static ViewerFilter onlyMyQueriesFilter = new ViewerFilter() 
 	{
 		@Override
@@ -538,8 +410,8 @@ class FilteredQueryStoreComposite
 		gd.horizontalAlignment = SWT.RIGHT;
 		showPublicQueries.setLayoutData(gd);
 		
-		table = new BaseQueryStoreTableComposite(parent, SWT.NONE, true,
-			AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, false);
+		table = new BaseQueryStoreTableComposite(parent,
+			AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType);
 		table.getTableViewer().getTable().addSelectionListener(doubleClickListener);
 		gd = new GridData(GridData.FILL_BOTH);
 		table.setLayoutData(gd);
@@ -559,17 +431,7 @@ class FilteredQueryStoreComposite
 					table.getTableViewer().setFilters( new ViewerFilter[] { onlyMyQueriesFilter } );
 				}
 			}
-		});
-		
-		this.activeController = new BaseQueryStoreActiveController(table, resultType);
-		addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(DisposeEvent e)
-			{
-				activeController.close();
-			}
-		});
+		});		
 	}
 
 	/**
@@ -581,25 +443,27 @@ class FilteredQueryStoreComposite
 	}
 	
 	/**
-	 * @return the ActiveJDOObjectController for BaseQueryStores.
-	 */
-	public BaseQueryStoreActiveController getController()
-	{
-		return activeController;
-	}
-	
-	public void clearAndResetTable()
-	{
-		table.getTableViewer().setInput(null);
-		activeController.clearCache();
-	}
-
-	/**
 	 * @return the entry
 	 */
 	public Entry getEntry()
 	{
 		return entry;
+	}
+
+	/**
+	 * @return the initialised
+	 */
+	public boolean isInitialised()
+	{
+		return initialised;
+	}
+
+	/**
+	 * @param initialised the initialised to set
+	 */
+	public void setInitialised(boolean initialised)
+	{
+		this.initialised = initialised;
 	}
 }
 

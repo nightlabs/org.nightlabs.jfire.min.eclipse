@@ -1,186 +1,57 @@
 package org.nightlabs.jfire.base.ui.querystore;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.jdo.FetchPlan;
-import javax.jdo.JDOHelper;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
-import org.nightlabs.base.ui.notification.NotificationAdapterJob;
-import org.nightlabs.base.ui.table.AbstractTableComposite;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.util.JFaceUtil;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
+import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
+import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
+import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectTableComposite;
+import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
+import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.query.store.id.QueryStoreID;
-import org.nightlabs.notification.NotificationListener;
-import org.nightlabs.progress.NullProgressMonitor;
+import org.nightlabs.jfire.query.store.jdo.filter.BaseQueryStoreLifecycleFilter;
+import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 public class BaseQueryStoreTableComposite
-	extends AbstractTableComposite<BaseQueryStore<?, ?>>
+	extends ActiveJDOObjectTableComposite<QueryStoreID, BaseQueryStore<?, ?>>
 {
-
-	/**
-	 * @param parent
-	 * @param style
-	 * @param initTable
-	 * @param viewerStyle
-	 */
-	public BaseQueryStoreTableComposite(Composite parent, int style, boolean initTable,
-		int viewerStyle, boolean registerJDOListener)
-	{
-		super(parent, style, initTable, viewerStyle);
-		if (registerJDOListener)
-		{
-			registerJDOListener();			
-		}
-	}
-
-	/**
-	 * @param parent
-	 * @param style
-	 * @param initTable
-	 */
-	protected BaseQueryStoreTableComposite(Composite parent, int style, boolean initTable)
-	{
-		this(parent, style, initTable, AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, true);
-	}
+	private Class<?> resultType;
 
 	/**
 	 * @param parent
 	 * @param viewerStyle
 	 */
-	public BaseQueryStoreTableComposite(Composite parent, int viewerStyle)
+	public BaseQueryStoreTableComposite(Composite parent, int viewerStyle, Class<?> resultType)
 	{
-		this(parent, SWT.NONE, true, viewerStyle, true);
+		super(parent, SWT.NONE, viewerStyle);
+		assert resultType != null;
+		this.resultType = resultType;
 	}
 
-	protected void registerJDOListener()
-	{
-		JDOLifecycleManager.sharedInstance().addNotificationListener(BaseQueryStore.class, implicitUpdateListener);
-		
-		addDisposeListener(new DisposeListener()
-		{
-			public void widgetDisposed(DisposeEvent event)
-			{
-				JDOLifecycleManager.sharedInstance().removeNotificationListener(
-					BaseQueryStore.class, implicitUpdateListener);
-			}
-		});		
-	}
-	
 	public static final String[] FETCH_GROUP_BASE_QUERY_STORE = new String[] {
 		FetchPlan.DEFAULT, BaseQueryStore.FETCH_GROUP_OWNER
 	};
-	
-	private NotificationListener implicitUpdateListener = new NotificationAdapterJob()
-	{
-		public void notify(org.nightlabs.notification.NotificationEvent notificationEvent)
-		{
-			Map<QueryStoreID, BaseQueryStore<?, ?>> shownElements = getIdsOfPresentedElements();
-			Set<QueryStoreID> keySet = shownElements.keySet();
-			Collection<BaseQueryStore<?, ?>> oldInput =
-				(Collection<BaseQueryStore<?, ?>>) getTableViewer().getInput();
-			
-			final List<BaseQueryStore<?, ?>> newInput;
-			if (oldInput == null)
-			{
-				newInput = Collections.emptyList();
-			}
-			else
-			{
-				newInput =	new ArrayList<BaseQueryStore<?,?>>(	oldInput );				
-			}
-			
-			for (Iterator<DirtyObjectID> it = notificationEvent.getSubjects().iterator(); it.hasNext();)
-			{
-				DirtyObjectID dirtyObjectID = it.next();
-				final QueryStoreID storeID = (QueryStoreID) dirtyObjectID.getObjectID();
-				
-				if (! keySet.contains(storeID))
-					continue;
-
-				switch (dirtyObjectID.getLifecycleState())
-				{
-					case DIRTY: // get changed object and replace old one with it.
-						BaseQueryStore<?, ?> newStore =	QueryStoreDAO.sharedInstance().getQueryStore(
-								storeID, FETCH_GROUP_BASE_QUERY_STORE,
-								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor());
-						
-						// remove old element from input set and set new one to the previous position
-						int index = newInput.indexOf(shownElements.get(storeID));
-						newInput.remove(shownElements.get(storeID));
-						newInput.add(index, newStore);
-						break;
-						
-					case DELETED:	// - remove the object from the new input
-						BaseQueryStore<?, ?> deletedStore = shownElements.get(storeID);
-						newInput.remove(deletedStore);
-						break;
-						
-					default:
-						break;
-				}
-			}
-			
-			// only update UI if the old and new input differ
-//			if (! getTableViewer().getInput().equals(newInput))
-			getTable().getDisplay().asyncExec(new Runnable() 
-			{
-				@Override
-				public void run()
-				{
-					getTableViewer().setInput(newInput);
-				}
-			});
-		}
-	};
-
-	/**
-	 * Helper method that returns a set of all QueryStoreIDs of all the elements last set as input.
-	 * @return a set of all QueryStoreIDs of all the elements last set as input.
-	 */
-	protected Map<QueryStoreID, BaseQueryStore<?, ?>> getIdsOfPresentedElements()
-	{
-		Map<QueryStoreID, BaseQueryStore<?, ?>> idsOfInput =
-			new HashMap<QueryStoreID, BaseQueryStore<?,?>>();
-		
-		Collection<BaseQueryStore<?, ?>> oldInput =
-			(Collection<BaseQueryStore<?, ?>>) getTableViewer().getInput();
-		
-		if (oldInput != null)
-		{
-			for (BaseQueryStore<?, ?> store : oldInput)
-			{
-				idsOfInput.put((QueryStoreID) JDOHelper.getObjectId(store), store);
-			}
-		}
-		
-		return idsOfInput;
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.table.AbstractTableComposite#createTableColumns(org.eclipse.jface.viewers.TableViewer, org.eclipse.swt.widgets.Table)
@@ -188,8 +59,28 @@ public class BaseQueryStoreTableComposite
 	@Override
 	protected void createTableColumns(final TableViewer tableViewer, Table table)
 	{
-		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText("Query Name");
+		createNameColumn(tableViewer);
+		createPublicAvailableColumn(tableViewer);
+		createOwnerColumn(tableViewer);
+		setTableLayout(tableViewer);		
+	}
+	
+	protected void setTableLayout(TableViewer tableViewer)
+	{
+		final int checkImageWidth = JFaceUtil.getCheckBoxImage(tableViewer, true).getBounds().width;
+		tableViewer.getTable().setLayout(new WeightedTableLayout(
+			new int[] { 4, -1, 3 }, new int[] {-1, checkImageWidth, -1})
+		);		
+	}
+
+	/**
+	 * @param tableViewer
+	 */
+	private TableViewerColumn createOwnerColumn(final TableViewer tableViewer)
+	{
+		TableViewerColumn viewerColumn;
+		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		viewerColumn.getColumn().setText("Creator");
 		viewerColumn.setLabelProvider(new ColumnLabelProvider()
 		{
 			@Override
@@ -199,10 +90,19 @@ public class BaseQueryStoreTableComposite
 					return super.getText(element);
 				
 				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
-				return store.getName().getText();
+				return store.getOwner().getName();
 			}
 		});
 		
+		return viewerColumn;
+	}
+
+	/**
+	 * @param tableViewer
+	 */
+	private TableViewerColumn createPublicAvailableColumn(final TableViewer tableViewer)
+	{
+		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.CENTER);
 		viewerColumn.getColumn().setText("public");
 		viewerColumn.setLabelProvider(new ColumnLabelProvider()
@@ -229,8 +129,16 @@ public class BaseQueryStoreTableComposite
 				return "Whether the stored Query is publicly available for all users.";
 			}
 		});
-		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText("Creator");
+		return viewerColumn;
+	}
+
+	/**
+	 * @param tableViewer
+	 */
+	protected TableViewerColumn createNameColumn(final TableViewer tableViewer)
+	{
+		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		viewerColumn.getColumn().setText("Query Name");
 		viewerColumn.setLabelProvider(new ColumnLabelProvider()
 		{
 			@Override
@@ -240,21 +148,83 @@ public class BaseQueryStoreTableComposite
 					return super.getText(element);
 				
 				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
-				return store.getOwner().getName();
+				return store.getName().getText();
 			}
 		});
-		
-		final int checkImageWidth = JFaceUtil.getCheckBoxImage(tableViewer, true).getBounds().width;
-		table.setLayout(new WeightedTableLayout(new int[] { 4, -1, 3 }, new int[] {-1, checkImageWidth, -1}));
+		return viewerColumn;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.base.ui.table.AbstractTableComposite#setTableProvider(org.eclipse.jface.viewers.TableViewer)
-	 */
 	@Override
-	protected void setTableProvider(TableViewer tableViewer)
+	protected ActiveJDOObjectController<QueryStoreID, BaseQueryStore<?, ?>> createActiveJDOObjectController()
 	{
-		tableViewer.setContentProvider(new TableContentProvider());
+		return new BaseQueryStoreActiveController(resultType);
 	}
 
+	@Override
+	protected ITableLabelProvider createLabelProvider()
+	{
+		return null;
+	}
+
+}
+
+/**
+ * Migrated to use ActiveJDOObjectController that are used for each table and filter only for
+ * QueryStores with the correct result type. 
+ * 
+ * @author Marius Heinzmann - marius[at]nightlabs[dot]com
+ */
+class BaseQueryStoreActiveController
+	extends ActiveJDOObjectController<QueryStoreID, BaseQueryStore<?, ?>>
+{
+	private Class<?> resultType;
+
+	public BaseQueryStoreActiveController(Class<?> resultType)
+	{
+		assert resultType != null;
+		this.resultType = resultType;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Class<? extends BaseQueryStore<?, ?>> getJDOObjectClass()
+	{
+		return (Class<? extends BaseQueryStore<?, ?>>) BaseQueryStore.class;
+	}
+
+	@Override
+	protected Collection<BaseQueryStore<?, ?>> retrieveJDOObjects(Set<QueryStoreID> objectIDs,
+		ProgressMonitor monitor)
+	{
+		return QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
+			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
+			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+	}
+
+	@Override
+	protected Collection<BaseQueryStore<?,?>> retrieveJDOObjects(ProgressMonitor monitor)
+	{
+		return QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
+			BaseQueryStoreTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
+			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+	}
+
+	@Override
+	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
+	{
+		return new BaseQueryStoreLifecycleFilter(
+			SecurityReflector.getUserDescriptor().getUserObjectID(), resultType, true,
+			new JDOLifecycleState[] { JDOLifecycleState.NEW });
+	}
+	
+	@Override
+	protected void sortJDOObjects(List<BaseQueryStore<?, ?>> objects)
+	{
+	}
+	
+	@Override
+	protected void onJDOObjectsChanged(
+		JDOObjectsChangedEvent<QueryStoreID, BaseQueryStore<?, ?>> event)
+	{
+	}
 }

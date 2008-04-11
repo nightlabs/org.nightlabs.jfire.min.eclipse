@@ -117,7 +117,7 @@ public class SaveQueryCollectionAction
 					@Override
 					public void run()
 					{
-						chooseQueryCollection(storedQueryCollections, viewer);
+						chooseQueryCollection(storedQueryCollections, viewer, resultType);
 					}
 				});
 				return Status.OK_STATUS;
@@ -128,9 +128,9 @@ public class SaveQueryCollectionAction
 	}
 	
 	protected void chooseQueryCollection(Collection<BaseQueryStore<?, ?>> storedQueries,
-		SearchEntryViewer<?, ?> viewer)
+		SearchEntryViewer<?, ?> viewer, Class<?> resultType)
 	{
-		SaveQueryStoreDialog dialog = new SaveQueryStoreDialog(viewer.getComposite().getShell(), storedQueries);
+		SaveQueryStoreDialog dialog = new SaveQueryStoreDialog(viewer.getComposite().getShell(), storedQueries, resultType);
 		
 		if (dialog.open() != Window.OK)
 			return;
@@ -157,15 +157,19 @@ public class SaveQueryCollectionAction
 		private BaseQueryStore<?, ?> selectedQueryConfiguration;
 		private BaseQueryStoreTableComposite storeTable; 
 		private Collection<BaseQueryStore<?, ?>> existingQueries;
+		private Class<?> resultType;
 		private boolean errorMsgSet = false;
 		
 		private static final int CREATE_NEW_QUERY = IDialogConstants.CLIENT_ID + 1;
 		
-		public SaveQueryStoreDialog(Shell parentShell, Collection<BaseQueryStore<?, ?>> existingQueries)
+		public SaveQueryStoreDialog(Shell parentShell, Collection<BaseQueryStore<?, ?>> existingQueries,
+			Class<?> resultType)
 		{
 			super(parentShell);
 			assert existingQueries != null;
 			this.existingQueries = existingQueries;
+			assert resultType != null;
+			this.resultType = resultType;
 		}
 		
 		@Override
@@ -185,7 +189,8 @@ public class SaveQueryCollectionAction
 		protected Control createDialogArea(Composite parent)
 		{
 			XComposite wrapper = new XComposite(parent, SWT.NONE);
-			storeTable = new BaseQueryStoreTableComposite(wrapper, AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
+			storeTable = new BaseQueryStoreTableComposite(wrapper,
+				AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType);
 			storeTable.addDoubleClickListener(new IDoubleClickListener()
 			{
 				@Override

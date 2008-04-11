@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.jdo;
 
 import java.util.ArrayList;
@@ -65,12 +62,10 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	
 	public ActiveJDOObjectTableComposite(Composite parent, int style) {
 		super(parent, style);
-		initController();
 	}
 
 	public ActiveJDOObjectTableComposite(Composite parent, int style, int viewerStyle) {
 		super(parent, style, true, viewerStyle);
-		initController();
 	}
 
 	protected abstract ActiveJDOObjectController<JDOObjectID, JDOObject> createActiveJDOObjectController();
@@ -78,6 +73,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	protected ActiveJDOObjectController<JDOObjectID, JDOObject> getActiveJDOObjectController() {
 		if (controller == null) {
 			controller = createActiveJDOObjectController();
+			initController(controller);
 		}
 		return controller;
 	}
@@ -100,11 +96,12 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	}
 
 	/**
-	 * Initializes the controller for this table and adds a listener to react to
+	 * Initialises the controller for this table and adds a listener to react to
 	 * changed and deleted objects.
 	 */
-	private void initController() {
-		final ActiveJDOObjectController<JDOObjectID, JDOObject> controller = getActiveJDOObjectController();
+	private void initController(final ActiveJDOObjectController<JDOObjectID, JDOObject> controller)
+	{
+		assert controller != null;
 		// add the listener.
 		final JDOObjectsChangedListener<JDOObjectID, JDOObject> jdoObjectsChangedListener = new JDOObjectsChangedListener<JDOObjectID, JDOObject>() {
 			public void onJDOObjectsChanged(JDOObjectsChangedEvent<JDOObjectID, JDOObject> event) {
