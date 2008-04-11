@@ -70,7 +70,8 @@ extends XComposite
 		shelf.setRenderer(new RedmondShelfRenderer());
 		shelf.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		for (Category category: getOverviewRegistry().createCategories()) {
+		for (Category category: getOverviewRegistry().createCategories(getScope()))
+		{
 			PShelfItem categoryItem = new PShelfItem(shelf,SWT.NONE);
 			categoryItem.setData(category);
 			categoryItem.setText(category.getCategoryFactory().getName());
@@ -84,5 +85,13 @@ extends XComposite
 	 * Callback method to define the {@link OverviewRegistry} that should be used
 	 * by this shelf.
 	 */
-	protected abstract OverviewRegistry getOverviewRegistry();
+	protected OverviewRegistry getOverviewRegistry()
+	{
+		return OverviewRegistry.sharedInstance();
+	}
+	
+	/**
+	 * @return The scope, for which 
+	 */
+	protected abstract String getScope();
 }

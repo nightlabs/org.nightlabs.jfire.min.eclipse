@@ -24,10 +24,12 @@ extends LSDViewPart
 	@Override
 	public void createPartContents(Composite parent)
 	{
-		overviewShelf = new OverviewShelf(parent, SWT.NONE) {
+		overviewShelf = new OverviewShelf(parent, SWT.NONE)
+		{
 			@Override
-			protected OverviewRegistry getOverviewRegistry() {
-				return OverviewView.this.getOverviewRegistry();
+			protected String getScope()
+			{
+				return OverviewView.this.getScope();
 			}
 		};
 	}
@@ -41,11 +43,7 @@ extends LSDViewPart
 	}
 
 	/**
-	 * Returns the {@link OverviewRegistry} this Views {@link OverviewShelf}
-	 * should be created with.
-	 * 
-	 * @return The {@link OverviewRegistry} this Views {@link OverviewShelf}
-	 * 		should be created with.
+	 * @return The scope of the categories the shelf of this view shall contain.
 	 */
-	protected abstract OverviewRegistry getOverviewRegistry();
+	protected abstract String getScope();
 }

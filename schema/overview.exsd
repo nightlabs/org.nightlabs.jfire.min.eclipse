@@ -84,6 +84,13 @@
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="scope" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Each scope corresponds to one shelf. This extension point can handle any number of shelfs via this field.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

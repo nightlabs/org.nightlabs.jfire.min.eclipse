@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +26,10 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
-public abstract class OverviewRegistry
-extends AbstractEPProcessor
+public class OverviewRegistry
+	extends AbstractEPProcessor
 {
-//	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.overview"; //$NON-NLS-1$
+	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.overview"; //$NON-NLS-1$
 	public static final String ELEMENT_CATEGORY = "categoryFactory"; //$NON-NLS-1$
 	public static final String ELEMENT_CATEGORY_ENTRY = "entryFactory"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
@@ -38,11 +39,29 @@ extends AbstractEPProcessor
 	public static final String ATTRIBUTE_ICON = "icon"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_INDEX = "index"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_CATEGORY_FACTORY_CLASS = "class"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_SCOPE = "scope"; //$NON-NLS-1$
 	
 	protected OverviewRegistry() {
 		super();
 	}
 
+	private static volatile OverviewRegistry sharedInstance = null;
+
+	/**
+	 * @return The shared Instance of this class.
+	 */
+	public static OverviewRegistry sharedInstance()
+	{
+		if (sharedInstance == null)
+		{
+			synchronized (OverviewRegistry.class)
+			{
+				if (sharedInstance == null) sharedInstance = new OverviewRegistry();
+			}
+		}
+		return sharedInstance;
+	}
+	
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element)
 	throws Exception
@@ -52,6 +71,7 @@ extends AbstractEPProcessor
 			String name = element.getAttribute(ATTRIBUTE_NAME);
 			String iconString = element.getAttribute(ATTRIBUTE_ICON);
 			String indexString = element.getAttribute(ATTRIBUTE_INDEX);
+			String scope = element.getAttribute(ATTRIBUTE_SCOPE);
 			CategoryFactory categoryFactory = null;
 			String className = element.getAttribute(ATTRIBUTE_CATEGORY_FACTORY_CLASS);
 			if (className == null || "".equals(className)) { //$NON-NLS-1$
@@ -79,6 +99,14 @@ extends AbstractEPProcessor
 			}
 			
 			categoryID2CategoryFactory.put(categoryID, categoryFactory);
+			
+			List<String> scopeCategoryIDs = scope2CategoryIDs.get(scope);
+			if (scopeCategoryIDs == null)
+			{
+				scopeCategoryIDs = new LinkedList<String>();
+				scope2CategoryIDs.put(scope, scopeCategoryIDs);
+			}
+			scopeCategoryIDs.add(categoryID);
 		}
 		if (element.getName().equals(ELEMENT_CATEGORY_ENTRY)) {
 			String categoryID = element.getAttribute(ATTRIBUTE_CATEGORY_ID);
@@ -122,6 +150,7 @@ extends AbstractEPProcessor
 		}
 	}
 
+	private Map<String, List<String>> scope2CategoryIDs = new HashMap<String, List<String>>();
 	private Map<String, CategoryFactory> categoryID2CategoryFactory = new HashMap<String, CategoryFactory>();
 
 	private Map<String, List<EntryFactory>> tmpCategoryID2EntryFatories = new HashMap<String, List<EntryFactory>>();
@@ -154,9 +183,19 @@ extends AbstractEPProcessor
 		}
 	}
 
-	public List<CategoryFactory> getCategoryFacories() {
+	public List<CategoryFactory> getCategoryFacories(String scope)
+	{
 		checkProcessing();
-		List<CategoryFactory> factories = new ArrayList<CategoryFactory>(categoryID2CategoryFactory.values());
+		final List<String> categoryIDs = scope2CategoryIDs.get(scope);
+		if (categoryIDs == null)
+			return Collections.emptyList();
+		
+		List<CategoryFactory> factories = new ArrayList<CategoryFactory>(categoryIDs.size());
+		for (String categoryID : scope2CategoryIDs.get(scope))
+		{
+			factories.add(categoryID2CategoryFactory.get(categoryID));
+		}
+		
 		Collections.sort(factories, categoryComparator);
 		if (fallBackCategory != null)
 			factories.add(fallBackCategory);
@@ -167,8 +206,10 @@ extends AbstractEPProcessor
 		return new ArrayList<EntryFactory>(categoryID2CategoryFactory.get(categoryID).getEntryFactories());
 	}
 	
-	public List<Category> createCategories() {
-		List<CategoryFactory> factories = getCategoryFacories();
+	public List<Category> createCategories(String scope)
+	{
+		assert scope != null && scope.length() != 0;
+		List<CategoryFactory> factories = getCategoryFacories(scope);
 		List<Category> categories = new ArrayList<Category>(factories.size());
 		for (CategoryFactory factory : factories) {
 			categories.add(factory.createCategory());
@@ -192,5 +233,11 @@ extends AbstractEPProcessor
 		}
 		
 		return null;
+	}
+
+	@Override
+	public String getExtensionPointID()
+	{
+		return EXTENSION_POINT_ID;
 	}
 }
