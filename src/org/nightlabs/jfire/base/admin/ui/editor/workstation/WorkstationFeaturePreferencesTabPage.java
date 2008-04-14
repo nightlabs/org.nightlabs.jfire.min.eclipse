@@ -5,13 +5,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
-import org.nightlabs.base.ui.form.AbstractBaseFormPage;
 import org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesController;
 import org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesPage;
 import org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesSection;
@@ -20,7 +20,7 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.config.id.ConfigID;
 
 public class WorkstationFeaturePreferencesTabPage
-	extends AbstractBaseFormPage
+	extends FormPage
 {
 	public static final String ID_PAGE = WorkstationFeaturePreferencesTabPage.class.getName();
 	
