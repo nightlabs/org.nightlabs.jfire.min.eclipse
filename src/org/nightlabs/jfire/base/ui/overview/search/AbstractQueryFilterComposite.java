@@ -39,7 +39,7 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 	 * intentionally set <code>null</code> value from deactivation (nulling the query field) of a
 	 * query aspect.
 	 */
-	protected boolean initialValue;
+	private boolean initialValue;
 
 	/**
 	 * Creates a new {@link AbstractQueryFilterComposite}.
@@ -161,6 +161,22 @@ public abstract class AbstractQueryFilterComposite<R, Q extends AbstractSearchQu
 		{
 			unsetSearchQueryValues(getQuery());
 		}
+	}
+
+	/**
+	 * @param initialValue the initialValue to set
+	 */
+	protected void setInitialValue(boolean initialValue)
+	{
+		this.initialValue = initialValue;
+	}
+
+	/**
+	 * @return the initialValue
+	 */
+	protected boolean isInitialValue()
+	{
+		return initialValue;
 	}
 
 	protected abstract void unsetSearchQueryValues(Q query);
