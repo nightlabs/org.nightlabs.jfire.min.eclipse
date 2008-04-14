@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -53,7 +55,10 @@ import org.nightlabs.progress.NullProgressMonitor;
 /**
  * This is the composite that is embedded in an {@link QueryStoreCapableCategory} and consists of a
  * {@link DefaultCategoryComposite} and a stack of tables (one for each entry that supports the
- * following prerequisites) separated by a sash.
+ * following prerequisites) separated by a sash. The tables are active ones so every change to 
+ * a listed QueryStores or newly persisted ones automatically show up in the tables. Additionally
+ * the sash weights are stored per workspace so the user only needs to put the sash in place for one
+ * time.
  * 
  * <p>For this Composite and hence the QueryStoreCapableCategory to work properly two prerequisites
  * 		have to be met:
@@ -75,7 +80,7 @@ public class QueryStoreCapableCategoryComposite
 	protected ToolBarSectionPart queryStoreSection;
 	private Composite tableStack;
 	private StackLayout tableStackLayout;
-	private Category category;
+	protected Category category;
 	
 	protected LoadQueryStoreAction loadQueryStoreAction;
 	protected EditQueryStoreAction editQueryStoreAction;
@@ -169,6 +174,9 @@ public class QueryStoreCapableCategoryComposite
 	 */
 	private static final Logger logger = Logger.getLogger(QueryStoreCapableCategoryComposite.class);
 	
+	private static final String SASH_QUERYSTORE_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.queryStoreTable.weight";
+	private static final String SASH_ENTRIES_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.entries.weight";
+	
 	/**
 	 * @param parent
 	 * @param style
@@ -192,6 +200,21 @@ public class QueryStoreCapableCategoryComposite
 		setLayout( getLayout(LayoutMode.TOTAL_WRAPPER) );
 		getToolkit(true); // ensures that an IToolkit is set and we're looking like a form.
 		createUI(this);
+		
+		// add Listener that stores the weights of the sash on disposal. 
+		addDisposeListener(new DisposeListener()
+		{
+			@Override
+			public void widgetDisposed(DisposeEvent e)
+			{
+				final IEclipsePreferences sashPrefs =
+					new InstanceScope().getNode(getCategory().getCategoryFactory().getCategoryID());
+
+				final int[] weights = sashForm.getWeights();
+				sashPrefs.putInt(SASH_ENTRIES_WEIGHT_KEY, weights[0]);
+				sashPrefs.putInt(SASH_QUERYSTORE_WEIGHT_KEY, weights[1]);
+			}
+		});
 	}
 	
 	protected void createUI(XComposite parent)
@@ -244,6 +267,17 @@ public class QueryStoreCapableCategoryComposite
 		if (toolkit != null)
 		{
 			adaptToToolkit();
+		}
+		
+		// set weights from PreferenceStore if available.
+		final IEclipsePreferences sashPrefs =
+			new InstanceScope().getNode(getCategory().getCategoryFactory().getCategoryID());
+
+		int entriesWeight = sashPrefs.getInt(SASH_ENTRIES_WEIGHT_KEY, -1);
+		int queryStoreTableWeight = sashPrefs.getInt(SASH_QUERYSTORE_WEIGHT_KEY, -1);
+		if (queryStoreTableWeight != -1 && entriesWeight != -1)
+		{
+			sashForm.setWeights(new int[] { entriesWeight, queryStoreTableWeight });
 		}
 	}
 	
