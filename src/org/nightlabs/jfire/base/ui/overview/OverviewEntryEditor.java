@@ -270,6 +270,12 @@ public class OverviewEntryEditor
 					updateContextMenu();
 					updateToolbar();
 				}
+				
+				@Override
+				protected boolean includeFixForVerticalScrolling()
+				{
+					return true;
+				}
 			};
 			
 			try
