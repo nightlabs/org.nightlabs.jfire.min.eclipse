@@ -32,5 +32,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.editors,
  org.eclipse.ui.forms,
- org.nightlabs.jfire.base.ui;visibility:=reexport
+ org.nightlabs.jfire.base.ui;visibility:=reexport,
+ org.nightlabs.eclipse.ui.dialog
 Eclipse-LazyStart: true
