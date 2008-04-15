@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.widgets.pshelf;visibility:=reexport,
  org.eclipse.swt,
  org.eclipse.jface,
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ org.nightlabs.eclipse.ui.dialog
 Eclipse-RegisterBuddy: org.nightlabs.base.ui, org.nightlabs.jfire.base.j2ee
 Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.base.login,

@@ -6,6 +6,7 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -57,12 +58,10 @@ extends CenteredDialog
 	}
 
 	@Override
-	protected void configureShell(Shell newShell)
-	{
-		super.configureShell(newShell);
-		setToCenteredLocationPreferredSize(newShell, 500, 300);
+	protected Point getInitialSize() {
+		return new Point(500, 300);
 	}
-
+	
 	@Override
 	public boolean close()
 	{

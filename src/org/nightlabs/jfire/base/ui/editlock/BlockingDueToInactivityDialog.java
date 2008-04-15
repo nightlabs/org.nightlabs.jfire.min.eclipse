@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -23,6 +25,7 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 	
 	public BlockingDueToInactivityDialog(EditLockMan editLockMan, Shell parentShell) {
 		super(parentShell);
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.editLockMan = editLockMan;
 	}
 	
@@ -50,12 +53,8 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 	}
 	
 	@Override
-	protected void configureShell(Shell newShell) {
-		setShellStyle(SWT.RESIZE);
-		super.configureShell(newShell);
-		setShellStyle(SWT.RESIZE);
-		setToCenteredLocationPreferredSize(newShell, 600, 400);
-		setShellStyle(SWT.RESIZE);
+	protected Point getInitialSize() {
+		return new Point(600, 400);
 	}
 	
 	@Override
@@ -88,6 +87,4 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 			editLockMan.processEditLockAction(carrier, ProcessLockAction.REFRESH_AND_CONTINUE);
 		}
 	}
-	
-	
 }

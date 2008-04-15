@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -126,8 +127,12 @@ extends CenteredDialog // IconAndMessageDialog
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		setToCenteredLocationPreferredSize(newShell, 400, 300);
 		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.title")); //$NON-NLS-1$
+	}
+	
+	@Override
+	protected Point getInitialSize() {
+		return new Point(400, 300);
 	}
 	
 	/**
