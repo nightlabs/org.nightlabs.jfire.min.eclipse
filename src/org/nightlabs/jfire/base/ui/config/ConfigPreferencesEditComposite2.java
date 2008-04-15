@@ -209,7 +209,11 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 				);
 
 				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
+					public void run()
+					{
+						if (isDisposed())
+							return;
+						
 						setFaded(false);
 					}
 				});
