@@ -80,7 +80,7 @@ public class SaveQueryCollectionAction
 		
 		final SearchEntryViewer<?, ?> viewer = (SearchEntryViewer<?, ?>) editor.getEntryViewer();
 		
-		final Class<?> resultType = viewer.getResultType();
+		final Class<?> resultType = viewer.getTargetType();
 		
 		Job fetchStoredQueries = new Job(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.jobTitleFetchingQueryStores")) //$NON-NLS-1$
 		{

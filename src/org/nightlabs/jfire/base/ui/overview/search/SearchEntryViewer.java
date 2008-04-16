@@ -89,7 +89,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	
 	public SearchEntryViewer(Entry entry) {
 		super(entry);
-		queryProvider = new DefaultQueryProvider<Q>(getResultType());
+		queryProvider = new DefaultQueryProvider<Q>(getTargetType());
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 				advancedSearchSection = new Section(parent, sectionStyle);
 			}
 			advancedSearchSection.setLayout(new GridLayout());
-			advancedSearchSection.setText(factory.getSectionTitle());
+			advancedSearchSection.setText(factory.getTitle());
 			advancedSearchSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			advancedSearchSection.addExpansionListener(expansionListener);
 			
@@ -231,7 +231,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	 */
 	protected SortedSet<QueryFilterFactory> getQueryFilterFactories()
 	{
-		return QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(getResultType());
+		return QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(
+			getScope(), getTargetType()
+			);
 	}
 
 	/**
@@ -371,7 +373,16 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	 */
 	public abstract Composite createResultComposite(Composite parent);
 	
-	public abstract Class<R> getResultType();
+	/**
+	 * @return the global scope, i.e. the scope where a GUI reflecting all fields of the Query is
+	 * registered for every Query.
+	 */
+	protected String getScope()
+	{
+		return QueryFilterFactory.GLOBAL_SCOPE;
+	}
+	
+	public abstract Class<R> getTargetType();
 	
 	private Composite resultComposite;
 	protected Composite getResultComposite() {

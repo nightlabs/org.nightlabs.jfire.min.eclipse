@@ -18,16 +18,13 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 public class QueryFilterFactoryRegistry
 	extends AbstractEPProcessor
 {
-	/**
-	 * The logger used in this class.
-	 */
-//	private static final Logger logger = Logger.getLogger(QueryFilterFactoryRegistry.class);
-	
 	private static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.queryFilterComposite";
 	private static final String ELEMENT_NAME = "QueryFilter";
-	public static final String ATTRIBUTE_ELEMENT_CLASS = "baseElementClass"; 
+	public static final String ATTRIBUTE_TARGET_CLASS = "targetClass"; 
 	public static final String ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS = "queryFilterFactoryClass";
-	public static final String ATTRIBUTE_SECTION_TITLE = "sectionTitle";
+	public static final String ATTRIBUTE_TITLE = "title";
+	public static final String ATTRIBUTE_SCOPE = "scope";
+	public static final String ATTRIBUTE_ORDERHINT = "orderHint";
 	
 	private static volatile QueryFilterFactoryRegistry sharedInstance = null;
 
@@ -49,7 +46,7 @@ public class QueryFilterFactoryRegistry
 	
 	protected QueryFilterFactoryRegistry()
 	{
-		queryFilters = new HashMap<Class, SortedSet<QueryFilterFactory>>();
+		queryFilters = new HashMap<ScopeTargetKey, SortedSet<QueryFilterFactory>>();
 	}
 
 	@Override
@@ -58,10 +55,8 @@ public class QueryFilterFactoryRegistry
 		return EXTENSION_POINT_ID;
 	}
 	
-	private Map<Class, SortedSet<QueryFilterFactory>> queryFilters;
-//	private Map<Class, List<QueryFilterFactory>> cachedQueryFiltersSortedByInheritance;
-	
-//	private Map<Class, List<AbstractQueryFilterComposite>> queryFilters;
+	private Map<ScopeTargetKey, SortedSet<QueryFilterFactory>> queryFilters;
+//	private Map<String, Map<Class<?>, List<QueryFilterFactory>>> scope2TargetUIMapping;
 	
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception
@@ -71,7 +66,7 @@ public class QueryFilterFactoryRegistry
 			throw new EPProcessorException("While Processing an element, the element name didn't match! given name=" 
 				+ element.getName());
 		}
-		QueryFilterFactory factory;
+		final QueryFilterFactory factory;
 		if (checkString(element.getAttribute(ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS)))
 		{
 			try
@@ -87,40 +82,113 @@ public class QueryFilterFactoryRegistry
 			throw new EPProcessorException("the given factory class string is null or empty!");
 		}
 		
-		// clear cache if some extension point is parsed lazily
-//		if (cachedQueryFiltersSortedByInheritance != null)
-//		{
-//			cachedQueryFiltersSortedByInheritance = null;
-//		}
-		
-		SortedSet<QueryFilterFactory> registeredComposites = queryFilters.get(factory.getViewerBaseClass());
+		ScopeTargetKey key = new ScopeTargetKey(factory);
+		SortedSet<QueryFilterFactory> registeredComposites = queryFilters.get(key);
 		if (registeredComposites == null)
 		{
 			registeredComposites = new TreeSet<QueryFilterFactory>();
 		}
 		
 		registeredComposites.add(factory);
-		queryFilters.put(factory.getViewerBaseClass(), registeredComposites);
+		queryFilters.put(key, registeredComposites);
 	}
 	
 	/**
-	 * Returns the list of registered 
+	 * 
+	 * @param scope TODO
+	 * @param baseElementType
 	 * @return
 	 */
-	public Map<Class, SortedSet<QueryFilterFactory>> getQueryFilterComposites()
+	public SortedSet<QueryFilterFactory> getQueryFilterCompositesFor(String scope, Class baseElementType)
 	{
 		checkProcessing();
+		ScopeTargetKey key = new ScopeTargetKey(scope, baseElementType);
+		return getQueryFilterComposites().get(key);
+	}
+	
+	protected Map<ScopeTargetKey, SortedSet<QueryFilterFactory>> getQueryFilterComposites()
+	{
 		return queryFilters;
 	}
 
 	/**
+	 * Helper class acting as key for all registered QueryFilters.
 	 * 
-	 * @param baseElementType
-	 * @return
+	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
 	 */
-	public SortedSet<QueryFilterFactory> getQueryFilterCompositesFor(Class baseElementType)
+	protected class ScopeTargetKey
 	{
-		checkProcessing();
-		return getQueryFilterComposites().get(baseElementType);
+		private String scope;
+		private Class<?> targetClass;
+		
+		/**
+		 * @param scope
+		 * @param targetClass
+		 */
+		public ScopeTargetKey(String scope, Class<?> targetClass)
+		{
+			this.scope = scope;
+			this.targetClass = targetClass;
+		}
+
+		public ScopeTargetKey(QueryFilterFactory factory)
+		{
+			this(factory.getScope(), factory.getTargetClass());
+		}
+
+		/**
+		 * @return the scope
+		 */
+		public String getScope()
+		{
+			return scope;
+		}
+
+		/**
+		 * @return the targetClass
+		 */
+		public Class<?> getTargetClass()
+		{
+			return targetClass;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((scope == null) ? 0 : scope.hashCode());
+			result = prime * result + ((targetClass == null) ? 0 : targetClass.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final ScopeTargetKey other = (ScopeTargetKey) obj;
+			if (scope == null)
+			{
+				if (other.scope != null) return false;
+			}
+			else
+				if (!scope.equals(other.scope)) return false;
+			if (targetClass == null)
+			{
+				if (other.targetClass != null) return false;
+			}
+			else
+				if (!targetClass.equals(other.targetClass)) return false;
+			return true;
+		}
+		
 	}
 }

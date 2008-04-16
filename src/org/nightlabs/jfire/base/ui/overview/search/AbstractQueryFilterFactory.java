@@ -18,6 +18,8 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 {
 	private Class<?> viewerBaseClass;
 	private String sectionTitle;
+	private String scope;
+	private Integer orderHint;
 	
 	/**
 	 * Default implementation compares factories according to their section titles.
@@ -25,7 +27,7 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 	@Override
 	public int compareTo(QueryFilterFactory<Q> other)
 	{
-		return getSectionTitle().compareTo(other.getSectionTitle());
+		return getOrderHint().compareTo(other.getOrderHint());
 	}
 
 	/* (non-Javadoc)
@@ -36,13 +38,12 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 		throws CoreException
 	{
 		if (AbstractEPProcessor.checkString(
-			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_ELEMENT_CLASS))
-			)
+			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_TARGET_CLASS)) )
 		{
 			try
 			{
 				final String viewerBaseClassName = 
-					config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_ELEMENT_CLASS);
+					config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_TARGET_CLASS);
 				
 				viewerBaseClass = JFireBasePlugin.getDefault().getBundle().loadClass(viewerBaseClassName);
 			}
@@ -65,28 +66,72 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 		}
 		
 		if (AbstractEPProcessor.checkString(
-			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_SECTION_TITLE))
-			)
+			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_TITLE)) )
 		{
-			sectionTitle = config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_SECTION_TITLE);
+			sectionTitle = config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_TITLE);
 		}
 		else
 		{
 			// TODO: how to get to the plugin that defined this invalid extension??
 			throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-				"No section title set! config:"+config.getName()));			
+				"No section title set! config:"+config.getName()));
 		}
+		
+		if (AbstractEPProcessor.checkString(
+			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_SCOPE)) )
+		{
+			scope = config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_SCOPE);
+		}
+		else
+		{
+			throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
+				"No scope set! config:"+config.getName()));			
+		}
+		
+		if (AbstractEPProcessor.checkString(
+			config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_ORDERHINT)) )
+		{
+			orderHint = Integer.parseInt(
+				config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_ORDERHINT));
+		}
+				
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory#getSectionTitle()
+	 */
 	@Override
-	public String getSectionTitle()
+	public String getTitle()
 	{
 		return sectionTitle;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory#getTargetClass()
+	 */
 	@Override
-	public Class<?> getViewerBaseClass()
+	public Class<?> getTargetClass()
 	{
 		return viewerBaseClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory#getScope()
+	 */
+	public String getScope()
+	{
+		return scope;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory#getOrderHint()
+	 */
+	public Integer getOrderHint()
+	{
+		return orderHint;
 	}
 }

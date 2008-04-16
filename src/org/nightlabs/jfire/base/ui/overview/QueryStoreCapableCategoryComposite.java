@@ -317,7 +317,7 @@ public class QueryStoreCapableCategoryComposite
 			
 			// create the table
 			FilteredQueryStoreComposite table =	new FilteredQueryStoreComposite(tableStackWrapper, entry,
-				searchEntryViewer.getResultType());
+				searchEntryViewer.getTargetType());
 			
 			// update mapping
 			entry2TableMap.put(entry, table);

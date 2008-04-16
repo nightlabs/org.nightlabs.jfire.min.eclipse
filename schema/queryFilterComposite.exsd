@@ -12,7 +12,7 @@
 
    <element name="extension">
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="QueryFilter" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -45,11 +45,11 @@
    <element name="QueryFilter">
       <annotation>
          <appInfo>
-            <meta.element labelAttribute="sectionTitle"/>
+            <meta.element labelAttribute="title"/>
          </appInfo>
       </annotation>
       <complexType>
-         <attribute name="baseElementClass" type="string" use="required">
+         <attribute name="targetClass" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -69,7 +69,7 @@
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="sectionTitle" type="string" use="required">
+         <attribute name="title" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -77,6 +77,20 @@
                <appInfo>
                   <meta.attribute translatable="true"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="scope" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="orderHint" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

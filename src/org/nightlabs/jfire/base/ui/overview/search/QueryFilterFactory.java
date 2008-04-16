@@ -15,6 +15,8 @@ import org.nightlabs.jdo.query.QueryProvider;
 public interface QueryFilterFactory<Q extends AbstractSearchQuery>
 	extends IExecutableExtension, Comparable<QueryFilterFactory<Q>>
 {
+	public static final String GLOBAL_SCOPE = "global";
+	
 	/**
 	 * Creates the filter composite with all the given parameters.
 	 *  
@@ -25,7 +27,7 @@ public interface QueryFilterFactory<Q extends AbstractSearchQuery>
 	 * @param queryProvider the QueryProvider from which the filter shall retrieve the query and set/get
 	 * 	its filter properties to/from.
 	 * @return the filter composite that shall be displayed in the viewer for the registered
-	 * 	{@link #getViewerBaseClass()}.
+	 * 	{@link #getTargetClass()}.
 	 */
 	AbstractQueryFilterComposite<Q> createQueryFilter(
 		Composite parent, int style,
@@ -36,12 +38,27 @@ public interface QueryFilterFactory<Q extends AbstractSearchQuery>
 	 * Returns the title of the section the filter will be instantiated into.
 	 * @return the title of the section the filter will be instantiated into.
 	 */
-	String getSectionTitle();
+	String getTitle();
 	
 	/**
-	 * Returns the base class of the viewer, e.g. for the DeliveryNoteEntryViewer it is DeliveryNote.class.
+	 * Returns the target class of the viewer, e.g. for the DeliveryNoteEntryViewer it is DeliveryNote.class.
 	 * The viewer will ask the registry to return all factories that are registered for his base class.
 	 * @return the base class of the viewer.
 	 */
-	Class<?> getViewerBaseClass();
+	Class<?> getTargetClass();
+	
+	/**
+	 * The scope of the created UI element. This scope is used to be able to register several GUI 
+	 * elements for the same result type, which is then used in different contexts. 
+	 * 
+	 * @return the scope in which the UI element created via {@link #createQueryFilter(Composite, int, LayoutMode, LayoutDataMode, QueryProvider)}
+	 *	is used.  
+	 */
+	String getScope();
+	
+	/**
+	 * @return the order hint of this factory. In other words: The wanted position of the UI that will
+	 * 	be created in the list of all UI elements in the same scope with the same targetClass.
+	 */
+	Integer getOrderHint();
 }
