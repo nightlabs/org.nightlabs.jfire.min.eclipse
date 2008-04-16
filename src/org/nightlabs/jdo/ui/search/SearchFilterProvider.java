@@ -57,5 +57,5 @@ public interface SearchFilterProvider {
 	 * 
 	 * @return
 	 */
-	public SearchFilter<?> getSearchFilter();
+	public SearchFilter getSearchFilter();
 }

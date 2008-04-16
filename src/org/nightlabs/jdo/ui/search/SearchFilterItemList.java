@@ -205,7 +205,7 @@ public class SearchFilterItemList
 	 * 
 	 * @param filter
 	 */
-	public void addItemsToFilter(SearchFilter<?> filter) {
+	public void addItemsToFilter(SearchFilter filter) {
 		for (Iterator<SearchFilterItemEditor> iter = searchFilterItemEditors.iterator(); iter.hasNext();) {
 			SearchFilterItemEditor itemEditor = iter.next();
 			filter.addSearchFilterItem(itemEditor.getSearchFilterItem());

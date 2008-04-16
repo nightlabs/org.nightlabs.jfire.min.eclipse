@@ -65,7 +65,7 @@ public abstract class AbstractItemBasedSearchFilterProvider implements SearchFil
 	 * 
 	 * @return
 	 */
-	protected abstract SearchFilter<?> createSearchFilter();
+	protected abstract SearchFilter createSearchFilter();
 
 	/**
 	 * Creates new FilterProvider with listMutator used as callback
@@ -120,8 +120,8 @@ public abstract class AbstractItemBasedSearchFilterProvider implements SearchFil
 	 * 
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getSearchFilter()
 	 */
-	public SearchFilter<?> getSearchFilter() {
-		SearchFilter<?> filter = createSearchFilter();
+	public SearchFilter getSearchFilter() {
+		SearchFilter filter = createSearchFilter();
 		filter.clear();
 		filter.setConjunction(providerComposite.getConjuction());
 		providerComposite.getItemList().addItemsToFilter(filter);
