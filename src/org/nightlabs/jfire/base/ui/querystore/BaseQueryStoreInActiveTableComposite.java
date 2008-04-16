@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.util.JFaceUtil;
 import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite.BaseQueryStoreColumnLabelProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 
 /**
@@ -61,49 +62,49 @@ public class BaseQueryStoreInActiveTableComposite
 	protected void createTableColumns(final TableViewer tableViewer, Table table)
 	{
 		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		viewerColumn.getColumn().setText("Query Name");
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnQueryName")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreActiveTableComposite.BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore<?, ?> store)
+			public String doGetText(BaseQueryStore store)
 			{
 				return store.getName().getText();
 			}
 		});
 		
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		viewerColumn.getColumn().setText("public");
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnIsPublic")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
 			public Image getImage(Object element)
 			{
-				if (! (element instanceof BaseQueryStore<?, ?>))	
+				if (! (element instanceof BaseQueryStore))	
 					return super.getImage(element);
 
-				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+				final BaseQueryStore store = (BaseQueryStore) element;
 				return JFaceUtil.getCheckBoxImage(tableViewer, store.isPubliclyAvailable()); 
 			}
 			
 			@Override
 			public String getToolTipText(Object element)
 			{
-				return "Whether the stored Query is publicly available for all users.";
+				return Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnToolTipIsPublic"); //$NON-NLS-1$
 			}
 
 			@Override
-			public String doGetText(BaseQueryStore<?, ?> store)
+			public String doGetText(BaseQueryStore store)
 			{
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		});
 		
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText("Creator");
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnCreator")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore<?, ?> store)
+			public String doGetText(BaseQueryStore store)
 			{
 				return store.getOwner().getName();
 			}

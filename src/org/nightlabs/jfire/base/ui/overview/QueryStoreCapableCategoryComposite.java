@@ -47,6 +47,7 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
 import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite;
 import org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.security.SecurityReflector;
@@ -106,7 +107,7 @@ public class QueryStoreCapableCategoryComposite
 			
 			if (! (selection instanceof IStructuredSelection))
 			{
-				logger.warn("The entry changed listener expects IStructuredSelections not: " +
+				logger.warn("The entry changed listener expects IStructuredSelections not: " + //$NON-NLS-1$
 					selection.getClass().getName());
 				return;
 			}
@@ -114,7 +115,7 @@ public class QueryStoreCapableCategoryComposite
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			if (! (structuredSelection.getFirstElement() instanceof Entry))
 			{
-				logger.error("The entry changed listener expects an Entry as selection element not: " +
+				logger.error("The entry changed listener expects an Entry as selection element not: " + //$NON-NLS-1$
 					structuredSelection.getFirstElement().getClass().getName());
 				return;
 			}
@@ -174,8 +175,8 @@ public class QueryStoreCapableCategoryComposite
 	 */
 	private static final Logger logger = Logger.getLogger(QueryStoreCapableCategoryComposite.class);
 	
-	private static final String SASH_QUERYSTORE_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.queryStoreTable.weight";
-	private static final String SASH_ENTRIES_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.entries.weight";
+	private static final String SASH_QUERYSTORE_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.queryStoreTable.weight"; //$NON-NLS-1$
+	private static final String SASH_ENTRIES_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.entries.weight"; //$NON-NLS-1$
 	
 	/**
 	 * @param parent
@@ -227,7 +228,7 @@ public class QueryStoreCapableCategoryComposite
 		
 		IToolkit toolkit = getToolkit();
 		final int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED;
-		final String sectionTitle = "Stored Queries";
+		final String sectionTitle = Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.sectionTitle"); //$NON-NLS-1$
 		if (toolkit != null && toolkit instanceof FormToolkit)
 		{
 			queryStoreSection = new ToolBarSectionPart((FormToolkit) toolkit, sashForm, sectionStyle,
@@ -293,7 +294,7 @@ public class QueryStoreCapableCategoryComposite
 		
 		if (entries == null)
 		{
-			logger.warn("No registered Entries found for this category! Category: " +
+			logger.warn("No registered Entries found for this category! Category: " + //$NON-NLS-1$
 				getCategory().getCategoryFactory().getName());
 			
 			return;
@@ -306,8 +307,8 @@ public class QueryStoreCapableCategoryComposite
 			EntryViewer viewer = entry.createEntryViewer();
 			if (! (viewer instanceof SearchEntryViewer<?, ?>))
 			{
-				logger.warn("Cannot create the QueryStoreTable for the entry:" +
-					entry.getClass().getName()+" !");
+				logger.warn("Cannot create the QueryStoreTable for the entry:" + //$NON-NLS-1$
+					entry.getClass().getName()+" !"); //$NON-NLS-1$
 				entry2TableMap.put(entry, null);
 				continue;
 			}
@@ -393,10 +394,10 @@ class FilteredQueryStoreComposite
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element)
 		{
-			if (! (element instanceof BaseQueryStore<?, ?>))
+			if (! (element instanceof BaseQueryStore))
 				return false;
 
-			final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+			final BaseQueryStore store = (BaseQueryStore) element;
 			if (! store.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()))
 				return false;
 
@@ -423,8 +424,8 @@ class FilteredQueryStoreComposite
 			
 			if (! (part instanceof OverviewEntryEditor))
 			{
-				logger.warn("The activated part of the Entry being clicked on is not an " +
-						"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !");
+				logger.warn("The activated part of the Entry being clicked on is not an " + //$NON-NLS-1$
+						"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !"); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
 			
@@ -434,7 +435,7 @@ class FilteredQueryStoreComposite
 			final SearchEntryViewer<?, ?> searchEntryViewer =
 				(SearchEntryViewer<?, ?>) editor.getEntryViewer();
 			
-			final BaseQueryStore<?, ?> store = table.getFirstSelectedElement();
+			final BaseQueryStore store = table.getFirstSelectedElement();
 			searchEntryViewer.getQueryProvider().loadQueries(store.getQueryCollection());
 		}
 	};
@@ -455,7 +456,7 @@ class FilteredQueryStoreComposite
 	private void createUI(Composite parent)
 	{
 		showPublicQueries = new Button(parent, SWT.CHECK);
-		showPublicQueries.setText("Show public queries");
+		showPublicQueries.setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.showPublicQueriesLabel")); //$NON-NLS-1$
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.RIGHT;
 		showPublicQueries.setLayoutData(gd);
@@ -541,18 +542,18 @@ class EditQueryStoreAction
 	{
 		setId(EditQueryStoreAction.class.getName());
 		setImageDescriptor(SharedImages.EDIT_16x16);
-		setToolTipText("Edit Stored Query");
-		setText("Edit");
+		setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.editQueryStoreActionToolTip")); //$NON-NLS-1$
+		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.editQueryStoreActionText")); //$NON-NLS-1$
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void run() 
 	{
 		if (queryTable == null || queryTable.isDisposed())
 			return;
 		
-		BaseQueryStore<?, ?> store = queryTable.getFirstSelectedElement();
+		BaseQueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
 		
@@ -561,8 +562,8 @@ class EditQueryStoreAction
 		if (dialog.open() != Window.OK)
 			return;
 		
-		Collection<BaseQueryStore<?, ?>> input = 
-			(Collection<BaseQueryStore<?, ?>>) queryTable.getTableViewer().getInput();
+		Collection<BaseQueryStore> input = 
+			(Collection<BaseQueryStore>) queryTable.getTableViewer().getInput();
 		
 		input.remove(store);
 		
@@ -593,18 +594,18 @@ class DeleteQueryStoreAction
 	{
 		setId(EditQueryStoreAction.class.getName());
 		setImageDescriptor(SharedImages.DELETE_16x16);
-		setToolTipText("Delete Stored Query");
-		setText("Delete");
+		setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.deleteQueryStoreActionToolTip")); //$NON-NLS-1$
+		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.deleteQueryStoreActionText")); //$NON-NLS-1$
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void run()
 	{
 		if (queryTable == null || queryTable.isDisposed())
 			return;
 		
-		BaseQueryStore<?, ?> store = queryTable.getFirstSelectedElement();
+		BaseQueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
 		
@@ -613,8 +614,8 @@ class DeleteQueryStoreAction
 		
 		if (removed)
 		{
-			Collection<BaseQueryStore<?, ?>> input = 
-				(Collection<BaseQueryStore<?, ?>>) queryTable.getTableViewer().getInput();
+			Collection<BaseQueryStore> input = 
+				(Collection<BaseQueryStore>) queryTable.getTableViewer().getInput();
 			
 			input.remove(store);
 			queryTable.setInput(input);
@@ -639,25 +640,25 @@ class LoadQueryStoreAction
 	 */
 	private static final Logger logger = Logger.getLogger(LoadQueryStoreAction.class);
 
-	private static final String imagePath = "icons/overview/Overview-Load.16x16.png";
+	private static final String imagePath = "icons/overview/Overview-Load.16x16.png"; //$NON-NLS-1$
 	
 	public LoadQueryStoreAction()
 	{
 		setId(EditQueryStoreAction.class.getName());
 		ImageDescriptor imageDesc = JFireBasePlugin.getImageDescriptor(imagePath);
 		setImageDescriptor(imageDesc);
-		setToolTipText("Load Stored Query");
-		setText("Load");
+		setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.loadQueryStoreActionToolTip")); //$NON-NLS-1$
+		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.loadQueryStoreActionText")); //$NON-NLS-1$
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void run()
 	{
 		if (filteredQueryComp == null || filteredQueryComp.isDisposed())
 			return;
 
-		BaseQueryStore<?, ?> store = filteredQueryComp.getTable().getFirstSelectedElement();
+		BaseQueryStore store = filteredQueryComp.getTable().getFirstSelectedElement();
 		if (store == null)
 			return;
 
@@ -667,8 +668,8 @@ class LoadQueryStoreAction
 		
 		if (! (part instanceof OverviewEntryEditor))
 		{
-			logger.warn("The activated part of the Entry being clicked on is not an " +
-					"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !");
+			logger.warn("The activated part of the Entry being clicked on is not an " + //$NON-NLS-1$
+					"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !"); //$NON-NLS-1$ //$NON-NLS-2$
 			return;
 		}
 		

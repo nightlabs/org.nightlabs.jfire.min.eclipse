@@ -16,7 +16,7 @@ import org.nightlabs.jfire.base.ui.overview.Entry;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public abstract class JDOQuerySearchEntryViewer<R, Q extends AbstractSearchQuery<R>>
+public abstract class JDOQuerySearchEntryViewer<R, Q extends AbstractSearchQuery>
 	extends SearchEntryViewer<R, Q>
 {
 	public JDOQuerySearchEntryViewer(Entry entry) {

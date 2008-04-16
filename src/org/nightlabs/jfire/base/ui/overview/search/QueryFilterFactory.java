@@ -12,8 +12,8 @@ import org.nightlabs.jdo.query.QueryProvider;
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public interface QueryFilterFactory<R, Q extends AbstractSearchQuery<R>>
-	extends IExecutableExtension, Comparable<QueryFilterFactory<R, Q>>
+public interface QueryFilterFactory<Q extends AbstractSearchQuery>
+	extends IExecutableExtension, Comparable<QueryFilterFactory<Q>>
 {
 	/**
 	 * Creates the filter composite with all the given parameters.
@@ -27,10 +27,10 @@ public interface QueryFilterFactory<R, Q extends AbstractSearchQuery<R>>
 	 * @return the filter composite that shall be displayed in the viewer for the registered
 	 * 	{@link #getViewerBaseClass()}.
 	 */
-	AbstractQueryFilterComposite<R, Q> createQueryFilter(
+	AbstractQueryFilterComposite<Q> createQueryFilter(
 		Composite parent, int style,
 		LayoutMode layoutMode, LayoutDataMode layoutDataMode,
-		QueryProvider<R, ? super Q> queryProvider);
+		QueryProvider<? super Q> queryProvider);
 	
 	/**
 	 * Returns the title of the section the filter will be instantiated into.
@@ -43,5 +43,5 @@ public interface QueryFilterFactory<R, Q extends AbstractSearchQuery<R>>
 	 * The viewer will ask the registry to return all factories that are registered for his base class.
 	 * @return the base class of the viewer.
 	 */
-	Class<R> getViewerBaseClass();
+	Class<?> getViewerBaseClass();
 }

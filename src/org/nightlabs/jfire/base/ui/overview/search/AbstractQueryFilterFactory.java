@@ -13,17 +13,17 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public abstract class AbstractQueryFilterFactory<R, Q extends AbstractSearchQuery<R>>
-	implements QueryFilterFactory<R, Q>
+public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
+	implements QueryFilterFactory<Q>
 {
-	private Class<R> viewerBaseClass;
+	private Class<?> viewerBaseClass;
 	private String sectionTitle;
 	
 	/**
 	 * Default implementation compares factories according to their section titles.
 	 */
 	@Override
-	public int compareTo(QueryFilterFactory<R, Q> other)
+	public int compareTo(QueryFilterFactory<Q> other)
 	{
 		return getSectionTitle().compareTo(other.getSectionTitle());
 	}
@@ -85,7 +85,7 @@ public abstract class AbstractQueryFilterFactory<R, Q extends AbstractSearchQuer
 	}
 
 	@Override
-	public Class<R> getViewerBaseClass()
+	public Class<?> getViewerBaseClass()
 	{
 		return viewerBaseClass;
 	}

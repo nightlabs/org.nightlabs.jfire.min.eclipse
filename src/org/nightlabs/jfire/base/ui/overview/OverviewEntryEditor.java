@@ -31,6 +31,7 @@ import org.nightlabs.base.ui.form.AbstractBaseFormPage;
 import org.nightlabs.base.ui.part.ControllablePart;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * Editor displaying the {@link EntryViewer} of an {@link Entry}.
@@ -233,7 +234,7 @@ public class OverviewEntryEditor
 	protected String getSearchPageName()
 	{
 		if (entryViewer == null)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		return entryViewer.getEntry().getEntryFactory().getName();
 	}
@@ -242,7 +243,7 @@ public class OverviewEntryEditor
 	protected void addPages()
 	{
 		if (entryViewer != null) {
-			FormPage searchPage = new AbstractBaseFormPage(this, "SearchPage", getSearchPageName())
+			FormPage searchPage = new AbstractBaseFormPage(this, Messages.getString("org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor.searchPageTitle"), getSearchPageName()) //$NON-NLS-1$
 			{
 				@Override
 				protected void createFormContent(IManagedForm managedForm)
@@ -284,7 +285,7 @@ public class OverviewEntryEditor
 			}
 			catch (PartInitException e)
 			{
-				throw new RuntimeException("Couldn't initialise searchFormPage!", e);
+				throw new RuntimeException("Couldn't initialise searchFormPage!", e); //$NON-NLS-1$
 			}
 		}
 		
@@ -322,7 +323,7 @@ public class OverviewEntryEditor
   {
     if (getPageCount() <= 1)
     {
-      setPageText(0, "");
+      setPageText(0, ""); //$NON-NLS-1$
       if (getContainer() instanceof CTabFolder)
       {
         ((CTabFolder)getContainer()).setTabHeight(1);

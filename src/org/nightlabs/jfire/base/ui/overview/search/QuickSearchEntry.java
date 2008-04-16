@@ -11,57 +11,33 @@ import org.nightlabs.jdo.query.QueryProvider;
  * @author Daniel Mazurek - daniel <at> nightlabs <dot> de
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public interface QuickSearchEntry<R, Q extends AbstractSearchQuery<? extends R>>
+public interface QuickSearchEntry<Q extends AbstractSearchQuery>
 {
-//	/**
-//	 * returns the text to search for
-//	 * @return the text to search for
-//	 */
-//	String getSearchText();
-	
 	/**
-	 * sets the search text
+	 * Sets the search text
 	 * @param searchText the search text to set
 	 */
 	void setSearchConditionValue(String searchText);
 	
+	/**
+	 * Implementors have to unset the Query value that was set by this entry.
+	 * 
+	 * @param query the query on which the represented query aspect has to be unset.
+	 */ 
 	void unsetSearchCondition();
 	
-//	void resetSearchCondition();
-	
-	void setQueryProvider(QueryProvider<R, ? super Q> queryProvider);
-		
-//	/**
-//	 * performs the search with the given search text returned
-//	 * by {@link #getSearchText()}
-//	 * 
-//	 * @return the result of the search
-//	 */
-//	Object search(ProgressMonitor monitor);
-	
-//	/**
-//	 * sets the range for the result
-//	 * 
-//	 * @param minInclude the minimum range which is included
-//	 * @param maxExclude the maximum range which is excluded
-//	 */
-//	void setResultRange(long minInclude, long maxExclude);
-//	
-//	/**
-//	 * returns the minimum range which is included
-//	 * @return the minimum range which is included
-//	 */
-//	long getMinIncludeRange();
-//	
-//	/**
-//	 * returns the maximum range which is excluded
-//	 * @return the maximum range which is excluded
-//	 */
-//	long getMaxExcludeRange();
+	/**
+	 * Sets the QueryProvider for the implementing Entry.
+	 * 
+	 * @param queryProvider
+	 * 					The QueryProvider from which the Query to set the search condition will be fetched.
+	 */
+	void setQueryProvider(QueryProvider<? super Q> queryProvider);
 	
 	/**
-	 * return the factory which created this instance
+	 * Return the factory which created this instance
+	 * 
 	 * @return the factory which created this instance
 	 */
-	QuickSearchEntryFactory<R, Q> getFactory();
+	QuickSearchEntryFactory<Q> getFactory();
 }

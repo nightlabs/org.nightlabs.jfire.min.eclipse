@@ -14,6 +14,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.overview.EntryViewer;
 import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.progress.ProgressMonitor;
@@ -63,8 +64,7 @@ public class SaveQueryCollectionAction
 	{
 		if (! (getActivePart() instanceof OverviewEntryEditor))
 		{
-			logger.warn("The load QueryCollection action is called from outside an OverviewEntryEditor." +
-					"This is not intended! ActivePart=" + getActivePart().getClass().getName(),
+			logger.warn("The load QueryCollection action is called from outside an OverviewEntryEditor. This is not intended! ActivePart=" + getActivePart().getClass().getName(), //$NON-NLS-1$
 					new Exception()
 					);
 			return;
@@ -74,9 +74,7 @@ public class SaveQueryCollectionAction
 		
 		if (! (editor.getEntryViewer() instanceof SearchEntryViewer))
 		{
-			logger.error("This Action will only work with subclasses of SearchEntryViewer, since they" +
-					"know what kind of objects their existingQueries will return!", new Exception());
-			
+			logger.error("This Action will only work with subclasses of SearchEntryViewer, since they know what kind of objects their existingQueries will return!", new Exception()); //$NON-NLS-1$
 			return;
 		}
 		
@@ -84,12 +82,12 @@ public class SaveQueryCollectionAction
 		
 		final Class<?> resultType = viewer.getResultType();
 		
-		Job fetchStoredQueries = new Job("Fetching stored Query configurations...")
+		Job fetchStoredQueries = new Job(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.jobTitleFetchingQueryStores")) //$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception
 			{
-				final Collection<BaseQueryStore<?, ?>> storedQueryCollections = 
+				final Collection<BaseQueryStore> storedQueryCollections = 
 					QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(
 						resultType, false, FETCH_GROUPS_QUERYSTORES, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 				
@@ -108,8 +106,8 @@ public class SaveQueryCollectionAction
 		fetchStoredQueries.schedule();
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected void chooseQueryCollection(Collection<BaseQueryStore<?, ?>> storedQueries,
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	protected void chooseQueryCollection(Collection<BaseQueryStore> storedQueries,
 		SearchEntryViewer<?, ?> viewer)
 	{
 		SaveQueryStoreDialog dialog = new SaveQueryStoreDialog(viewer.getComposite().getShell(), storedQueries);
@@ -120,7 +118,7 @@ public class SaveQueryCollectionAction
 		final BaseQueryStore queryToSave = dialog.getSelectedQueryStore();
 		queryToSave.setQueryCollection(viewer.getManagedQueries());
 		
-		Job saveQueryJob = new Job("Saving Query:" + queryToSave.getName().getText())
+		Job saveQueryJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.jobTitleSavingQueryStore") + queryToSave.getName().getText()) //$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception

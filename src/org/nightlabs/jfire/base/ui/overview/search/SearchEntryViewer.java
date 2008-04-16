@@ -82,20 +82,20 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? extends R>>
+public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	extends AbstractEntryViewer
 {
 	public static final Logger logger = Logger.getLogger(SearchEntryViewer.class);
 	
 	public SearchEntryViewer(Entry entry) {
 		super(entry);
-		queryProvider = new DefaultQueryProvider<R, Q>(getResultType());
+		queryProvider = new DefaultQueryProvider<Q>(getResultType());
 	}
 	
 	/**
 	 * The element creating and providing the queries required by the UI. 
 	 */
-	protected QueryProvider<R, Q> queryProvider;
+	protected QueryProvider<Q> queryProvider;
 	
 	private ScrolledComposite scrollableSearchWrapper;
 	private XComposite toolbarAndAdvancedSearchWrapper = null;
@@ -207,7 +207,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			
 			advancedSearchSection.setTextClient(advancedSectionActiveButton);
 
-			AbstractQueryFilterComposite<? extends R, ? extends Q> filterComposite =
+			AbstractQueryFilterComposite<? extends Q> filterComposite =
 				factory.createQueryFilter(
 					advancedSearchSection, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER,
 					LayoutDataMode.GRID_DATA_HORIZONTAL, queryProvider
@@ -309,7 +309,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 				if (activeMenuItem == null)
 					return;
 				
-				QuickSearchEntry<?, ?> activeQuickSearchEntry = (QuickSearchEntry<?, ?>) activeMenuItem.getData();
+				QuickSearchEntry<?> activeQuickSearchEntry = (QuickSearchEntry<?>) activeMenuItem.getData();
 				activeQuickSearchEntry.setSearchConditionValue(searchText.getText());
 			}
 		});
@@ -414,7 +414,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * @param monitor the monitor to show the progress.
 	 * @return a collection of all elements matching the cascaded queries of the <code>queryMap</code>.
 	 */
-	protected abstract Collection<R> doSearch(QueryCollection<R, ? extends Q> queryMap, ProgressMonitor monitor);
+	protected abstract Collection<R> doSearch(QueryCollection<? extends Q> queryMap, ProgressMonitor monitor);
 
 	/**
 	 * will be called after the search of the current {@link QuickSearchEntry}
@@ -576,7 +576,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			menuItem.setText(quickSearchEntryFactory.getName());
 			menuItem.setImage(quickSearchEntryFactory.getImage());
 			// FIXME: Wie kann man denn Factories aus einem ExtensionPoint erzeugen, die typisierte elemente liefern??? (marius)
-			final QuickSearchEntry<R, ? extends Q> quickSearchEntry = quickSearchEntryFactory.createQuickSearchEntry();
+			final QuickSearchEntry<? extends Q> quickSearchEntry = quickSearchEntryFactory.createQuickSearchEntry();
 			quickSearchEntry.setQueryProvider(queryProvider);
 			menuItem.setData(quickSearchEntry);
 
@@ -632,7 +632,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 			// unset search condition of old selected element
 			if (activeMenuItem != null)
 			{
-				QuickSearchEntry<?, ?> entry = (QuickSearchEntry<?, ?>) activeMenuItem.getData();
+				QuickSearchEntry<?> entry = (QuickSearchEntry<?>) activeMenuItem.getData();
 				entry.unsetSearchCondition();
 			}
 			
@@ -644,7 +644,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 
 			// update selected search entry with possibly changed search text
 			newSelectedItem.setSelection(true);
-			QuickSearchEntry<?, ?> entry = (QuickSearchEntry<?, ?>) newSelectedItem.getData();
+			QuickSearchEntry<?> entry = (QuickSearchEntry<?>) newSelectedItem.getData();
 			entry.setSearchConditionValue(searchText.getText());
 			
 			// update last element pointer
@@ -676,7 +676,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		extends SelectionAdapter
 	{
 		private Section correspondingSection;
-		private AbstractQueryFilterComposite<? extends R,? extends Q> filterComposite;
+		private AbstractQueryFilterComposite<? extends Q> filterComposite;
 		
 		/**
 		 * @param correspondingSection The section that corresponds to the button this listener is
@@ -684,7 +684,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 		 * @param filterComposite 
 		 */
 		public ActiveButtonSelectionListener(Section correspondingSection,
-			AbstractQueryFilterComposite<? extends R,? extends Q> filterComposite)
+			AbstractQueryFilterComposite<? extends Q> filterComposite)
 		{
 			assert correspondingSection != null;
 			assert filterComposite != null;
@@ -716,7 +716,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	 * Returns the collection of queries managed by this viewer.  
 	 * @return the collection of queries managed by this viewer.
 	 */
-	public QueryCollection<R, Q> getManagedQueries()
+	public QueryCollection<Q> getManagedQueries()
 	{
 		return queryProvider.getManagedQueries();
 	}
@@ -724,7 +724,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery<? exten
 	/**
 	 * @return the queryProvider
 	 */
-	public QueryProvider<R, Q> getQueryProvider()
+	public QueryProvider<Q> getQueryProvider()
 	{
 		return queryProvider;
 	}

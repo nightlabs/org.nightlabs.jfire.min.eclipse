@@ -21,6 +21,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectTableComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
@@ -34,7 +35,7 @@ import org.nightlabs.progress.ProgressMonitor;
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 public class BaseQueryStoreActiveTableComposite
 	extends ActiveJDOObjectTableComposite<QueryStoreID, BaseQueryStore>
 {
@@ -89,11 +90,11 @@ public class BaseQueryStoreActiveTableComposite
 	{
 		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText("Creator");
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnCreator")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore<?, ?> store)
+			public String doGetText(BaseQueryStore store)
 			{
 				return store.getOwner().getName();
 			}
@@ -110,29 +111,29 @@ public class BaseQueryStoreActiveTableComposite
 	{
 		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.CENTER);
-		viewerColumn.getColumn().setText("public");
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnIsPublic")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
 			public Image getImage(Object element)
 			{
-				if (! (element instanceof BaseQueryStore<?, ?>))	
+				if (! (element instanceof BaseQueryStore))	
 					return super.getImage(element);
 
-				final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+				final BaseQueryStore store = (BaseQueryStore) element;
 				return JFaceUtil.getCheckBoxImage(tableViewer, store.isPubliclyAvailable()); 
 			}
 			
 			@Override
 			public String getToolTipText(Object element)
 			{
-				return "Whether the stored Query is publicly available for all users.";
+				return Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnToolTipIsPublic"); //$NON-NLS-1$
 			}
 
 			@Override
-			public String doGetText(BaseQueryStore<?, ?> store)
+			public String doGetText(BaseQueryStore store)
 			{
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		});
 		return viewerColumn;
@@ -144,11 +145,11 @@ public class BaseQueryStoreActiveTableComposite
 	protected TableViewerColumn createNameColumn(final TableViewer tableViewer)
 	{
 		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText("Query Name");
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreInActiveTableComposite.columnQueryName")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore<?, ?> store)
+			public String doGetText(BaseQueryStore store)
 			{
 				return store.getName().getText();
 			}
@@ -180,22 +181,22 @@ public class BaseQueryStoreActiveTableComposite
 		@Override
 		public String getText(Object element)
 		{
-			if (! (element instanceof BaseQueryStore<?, ?>))
+			if (! (element instanceof BaseQueryStore))
 				return super.getText(element);
 			
-			final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+			final BaseQueryStore store = (BaseQueryStore) element;
 			return doGetText(store);
 		}
 		
-		public abstract String doGetText(BaseQueryStore<?, ?> store);
+		public abstract String doGetText(BaseQueryStore store);
 		
 		@Override
 		public String getToolTipText(Object element)
 		{
-			if (! (element instanceof BaseQueryStore<?, ?>))
+			if (! (element instanceof BaseQueryStore))
 				return super.getText(element);
 			
-			final BaseQueryStore<?, ?> store = (BaseQueryStore<?, ?>) element;
+			final BaseQueryStore store = (BaseQueryStore) element;
 			return store.getDescription().getText();
 		}
 		
@@ -214,7 +215,7 @@ public class BaseQueryStoreActiveTableComposite
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 class BaseQueryStoreActiveController
 	extends ActiveJDOObjectController<QueryStoreID, BaseQueryStore>
 {
@@ -226,7 +227,7 @@ class BaseQueryStoreActiveController
 		this.resultType = resultType;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	protected Class<? extends BaseQueryStore> getJDOObjectClass()
 	{

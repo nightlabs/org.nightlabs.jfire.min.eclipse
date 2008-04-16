@@ -13,8 +13,8 @@ import org.nightlabs.jdo.query.AbstractSearchQuery;
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  *
  */
-public interface QuickSearchEntryFactory<R, Q extends AbstractSearchQuery<? extends R>>
-	extends IExecutableExtension, Comparable<QuickSearchEntryFactory<R, Q>>
+public interface QuickSearchEntryFactory<Q extends AbstractSearchQuery>
+	extends IExecutableExtension, Comparable<QuickSearchEntryFactory<Q>>
 {
 	/**
 	 * returns the optional image, may be null
@@ -54,7 +54,7 @@ public interface QuickSearchEntryFactory<R, Q extends AbstractSearchQuery<? exte
 	 * returns an instance of {@link QuickSearchEntry}
 	 * @return an instance of {@link QuickSearchEntry}
 	 */
-	QuickSearchEntry<R, Q> createQuickSearchEntry();
+	QuickSearchEntry<Q> createQuickSearchEntry();
 	
 	/**
 	 * Returns whether the quick search entries created by this factory are considered the default of

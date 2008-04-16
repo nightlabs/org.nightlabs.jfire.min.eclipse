@@ -6,7 +6,7 @@ import org.nightlabs.jdo.query.QueryProvider;
 /**
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public interface QueryFilter<R, Q extends AbstractSearchQuery<? extends R>>
+public interface QueryFilter<Q extends AbstractSearchQuery>
 {
 	/**
 	 * Sets the implementing filter <code>active</code>.
@@ -19,7 +19,7 @@ public interface QueryFilter<R, Q extends AbstractSearchQuery<? extends R>>
 	 * The QueryProvider from which the query needed by this filter can be retrieved.
 	 * @param queryProvider from which the query needed by this filter can be retrieved.
 	 */
-	void setQueryProvider(QueryProvider<R, Q> queryProvider);
+	void setQueryProvider(QueryProvider<? super Q> queryProvider);
 	
 	/**
 	 * The ActiveStateManager that controls the checked state of the button located in the section

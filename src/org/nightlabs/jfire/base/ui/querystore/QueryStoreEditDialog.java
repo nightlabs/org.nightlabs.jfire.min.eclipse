@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.base.ui.querystore;
 
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,12 +12,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
-import org.nightlabs.base.ui.dialog.CenteredTitleDialog;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditorMultiLine;
 import org.nightlabs.base.ui.language.LanguageChooserCombo;
 import org.nightlabs.base.ui.language.LanguageChooserCombo.Mode;
 import org.nightlabs.i18n.I18nText;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 
 /**
@@ -24,7 +25,7 @@ import org.nightlabs.jfire.query.store.BaseQueryStore;
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public class QueryStoreEditDialog extends CenteredTitleDialog
+public class QueryStoreEditDialog extends TitleAreaDialog
 {
 	private Button publicAvailableButton;
 	private boolean publiclyAvailable;
@@ -32,9 +33,9 @@ public class QueryStoreEditDialog extends CenteredTitleDialog
 	private I18nTextEditor nameEditor;
 	private I18nTextEditorMultiLine descriptionEditor;
 	
-	private BaseQueryStore<?, ?> editedStore;
+	private BaseQueryStore editedStore;
 	
-	public QueryStoreEditDialog(Shell parentShell, BaseQueryStore<?, ?> store)
+	public QueryStoreEditDialog(Shell parentShell, BaseQueryStore store)
 	{
 		super(parentShell);
 		assert store != null;
@@ -52,7 +53,7 @@ public class QueryStoreEditDialog extends CenteredTitleDialog
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		newShell.setText("Change Query Properties?");
+		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.shellTitle")); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -64,7 +65,7 @@ public class QueryStoreEditDialog extends CenteredTitleDialog
 		gd.horizontalSpan = 2;
 		languageChooser.setLayoutData(gd);
 		publicAvailableButton = new Button(wrapper, SWT.CHECK);
-		publicAvailableButton.setText("Set publicly visible.");
+		publicAvailableButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.queryPubliclyAvailableButton")); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.RIGHT;
 		publicAvailableButton.setLayoutData(gd);
@@ -79,7 +80,7 @@ public class QueryStoreEditDialog extends CenteredTitleDialog
 		});
 		
 		Label nameLabel = new Label(wrapper, SWT.NONE);
-		nameLabel.setText("Name:");
+		nameLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.queryNameLabel")); //$NON-NLS-1$
     nameEditor = new I18nTextEditor(wrapper, languageChooser);
     nameEditor.setI18nText(editedStore.getName());
     gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -87,7 +88,7 @@ public class QueryStoreEditDialog extends CenteredTitleDialog
     nameEditor.setLayoutData(gd);
     
 		Label descriptionLabel = new Label(wrapper, SWT.NONE);
-		descriptionLabel.setText("Description:");
+		descriptionLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.queryDescriptionLabel")); //$NON-NLS-1$
 		gd = new GridData();
 		gd.verticalAlignment = SWT.TOP;
 		descriptionLabel.setLayoutData(gd);
@@ -99,9 +100,10 @@ public class QueryStoreEditDialog extends CenteredTitleDialog
 		descriptionEditor.setLayoutData(gd);
 
     applyDialogFont(wrapper);
-		setMessage("Enter new query name and description. \n " +
-				"Attention: By pressing OK, you are overriding the given Query.");
-		setTitle("Editing Query properties");
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.dialogDescription")); //$NON-NLS-1$
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.dialogTitle")); //$NON-NLS-1$
+		
+		nameEditor.setFocus();
     return wrapper;
 	}
 	

@@ -13,8 +13,8 @@ import org.nightlabs.jdo.query.AbstractSearchQuery;
  * 
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  */
-public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearchQuery<R>>
-	implements QuickSearchEntryFactory<R, Q>
+public abstract class AbstractQuickSearchEntryFactory<Q extends AbstractSearchQuery>
+	implements QuickSearchEntryFactory<Q>
 {
 //	private Image composedDecoratorImage = null;
 	private Image image = null;
@@ -99,7 +99,7 @@ public abstract class AbstractQuickSearchEntryFactory<R, Q extends AbstractSearc
 	}
 	
 	@Override
-	public int compareTo(QuickSearchEntryFactory<R, Q> o)
+	public int compareTo(QuickSearchEntryFactory<Q> o)
 	{
 		return getName().compareTo(o.getName());
 	}

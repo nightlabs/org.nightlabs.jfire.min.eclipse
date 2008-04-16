@@ -11,17 +11,17 @@ import org.nightlabs.jdo.query.QueryProvider;
  * @author Daniel Mazurek - daniel <at> nightlabs <dot> de
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public abstract class AbstractQuickSearchEntry<R, Q extends AbstractSearchQuery<R>>
-	implements QuickSearchEntry<R, Q>
+public abstract class AbstractQuickSearchEntry<Q extends AbstractSearchQuery>
+	implements QuickSearchEntry<Q>
 {
-	private QuickSearchEntryFactory<R, Q> factory = null;
-	private QueryProvider<R, ? super Q> queryProvider = null;
+	private QuickSearchEntryFactory<Q> factory = null;
+	private QueryProvider<? super Q> queryProvider = null;
 	protected Class<Q> queryType; 
 //	private String lastSearchConditionText = null;
 	private long minInclude = 0;
 	private long maxExclude = Long.MAX_VALUE;
 	
-	public AbstractQuickSearchEntry(QuickSearchEntryFactory<R, Q> factory, Class<Q> queryType) {
+	public AbstractQuickSearchEntry(QuickSearchEntryFactory<Q> factory, Class<Q> queryType) {
 		super();
 		this.factory = factory;
 		
@@ -49,17 +49,17 @@ public abstract class AbstractQuickSearchEntry<R, Q extends AbstractSearchQuery<
 		return maxExclude;
 	}
 	
-	public QuickSearchEntryFactory<R, Q> getFactory() {
+	public QuickSearchEntryFactory<Q> getFactory() {
 		return factory;
 	}
 
 	@Override
-	public void setQueryProvider(QueryProvider<R,? super Q> queryProvider)
+	public void setQueryProvider(QueryProvider<? super Q> queryProvider)
 	{
 		this.queryProvider = queryProvider;
 	}
 	
-	protected QueryProvider<R, ? super Q> getQueryProvider()
+	protected QueryProvider<? super Q> getQueryProvider()
 	{
 		return queryProvider;
 	}

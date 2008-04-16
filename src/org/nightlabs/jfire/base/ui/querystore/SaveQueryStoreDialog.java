@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.jdo.FetchPlan;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -13,13 +14,14 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.base.ui.dialog.CenteredTitleDialog;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.security.SecurityReflector;
@@ -28,20 +30,20 @@ import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
- * 
+ * FIXME: It should not be possible to press OK after this dialog is created!
  * 
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-public class SaveQueryStoreDialog extends CenteredTitleDialog
+public class SaveQueryStoreDialog extends TitleAreaDialog
 {
-	private BaseQueryStore<?, ?> selectedQueryConfiguration;
+	private BaseQueryStore selectedQueryConfiguration;
 	private BaseQueryStoreInActiveTableComposite storeTable; 
-	private Collection<BaseQueryStore<?, ?>> existingQueries;
+	private Collection<BaseQueryStore> existingQueries;
 	private boolean errorMsgSet = false;
 	
 	private static final int CREATE_NEW_QUERY = IDialogConstants.CLIENT_ID + 1;
 	
-	public SaveQueryStoreDialog(Shell parentShell, Collection<BaseQueryStore<?, ?>> existingQueries)
+	public SaveQueryStoreDialog(Shell parentShell, Collection<BaseQueryStore> existingQueries)
 	{
 		super(parentShell);
 		assert existingQueries != null;
@@ -58,7 +60,7 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		newShell.setText("Query Saving");
+		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.ShellTitle")); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -78,25 +80,45 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 		});
 		storeTable.addSelectionChangedListener(new ISelectionChangedListener()
 		{
+			private BaseQueryStore currentlySelectedElement;
+			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
+				final BaseQueryStore newSelection = storeTable.getFirstSelectedElement();
+				
+				// set okButton status
+				okButton.setEnabled(newSelection != null);
+				
+				// if we clicked on the already selected element
+				if (currentlySelectedElement != null && currentlySelectedElement == newSelection)
+				{
+					return;
+				}
+				
+				currentlySelectedElement = storeTable.getFirstSelectedElement();
+				
 				if (errorMsgSet)
-					setErrorMessage(null);
+				{
+					setErrorMessage(null);					
+				}
 			}
 		});
 		storeTable.setInput(existingQueries);
 		
-		setTitle("Save Query");
-		setMessage("Create a new Query name to store the current query with or select an existing one.");
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.description")); //$NON-NLS-1$
 		return wrapper;
 	}
+	
+	private Button okButton;
 	
 	@Override
 	protected void createButtonsForButtonBar(Composite parent)
 	{
-		createButton(parent, CREATE_NEW_QUERY, "&Create new query", false);
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,	false);
+		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
+		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,	false);
+		okButton.setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
 	}
 	
@@ -106,7 +128,7 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 		super.buttonPressed(buttonId);
 		if (CREATE_NEW_QUERY == buttonId)
 		{
-			BaseQueryStore<?, ?> createdStore = createNewQueryStore();
+			BaseQueryStore createdStore = createNewQueryStore();
 			if (createdStore == null)
 				return;
 			
@@ -114,7 +136,7 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 		}
 	}
 	
-	private BaseQueryStore<?, ?> createNewQueryStore()
+	private BaseQueryStore createNewQueryStore()
 	{
 		final User owner = UserDAO.sharedInstance().getUser(
 			SecurityReflector.getUserDescriptor().getUserObjectID(),
@@ -122,10 +144,10 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor()
 			);
 		
-		final BaseQueryStore<?, ?> queryStore = new BaseQueryStore(owner, 
+		final BaseQueryStore queryStore = new BaseQueryStore(owner, 
 			IDGenerator.nextID(BaseQueryStore.class), null);
 		
-		queryStore.getName().setText(Locale.getDefault().getLanguage(), "change this name");
+		queryStore.getName().setText(Locale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
 		
 		existingQueries.add(queryStore);
 		storeTable.setInput(existingQueries);
@@ -133,19 +155,18 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 		return queryStore;
 	}
 
-	private boolean checkForRights(BaseQueryStore<?, ?> selectedStore)
+	private boolean checkForRights(BaseQueryStore selectedStore)
 	{
 		if (! selectedStore.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()) )
 		{
 			errorMsgSet = true;
-			setErrorMessage("You cannot change or override the selected query since you are " +
-			"not the owner!");
+			setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.cannotChangeNotOwnerError")); //$NON-NLS-1$
 			return false;
 		}
 		return true;
 	}
 	
-	private boolean changeName(BaseQueryStore<?, ?> selectedStore)
+	private boolean changeName(BaseQueryStore selectedStore)
 	{
 		final QueryStoreEditDialog inputDialog = new QueryStoreEditDialog(
 			getShell(), selectedStore);
@@ -170,7 +191,7 @@ public class SaveQueryStoreDialog extends CenteredTitleDialog
 		super.okPressed();
 	}
 	
-	public BaseQueryStore<?, ?> getSelectedQueryStore()
+	public BaseQueryStore getSelectedQueryStore()
 	{
 		return selectedQueryConfiguration;
 	}

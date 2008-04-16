@@ -128,8 +128,8 @@ public class WorkstationSearchComposite extends XComposite {
 			protected IStatus run(ProgressMonitor monitor){
 				try {
 					WorkstationManager um = WorkstationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-					final QueryCollection<Workstation, WorkstationQuery> queries =
-						new QueryCollection<Workstation, WorkstationQuery>(Workstation.class);
+					final QueryCollection<WorkstationQuery> queries =
+						new QueryCollection<WorkstationQuery>(Workstation.class);
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getWorkstationQuery());
