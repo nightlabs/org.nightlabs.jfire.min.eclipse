@@ -25,7 +25,7 @@ import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructBlockAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructFieldAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.RemoveStructElementAction;
-import org.nightlabs.jfire.prop.StructLocal.OrderMoveDirection;
+import org.nightlabs.jfire.prop.IStruct.OrderMoveDirection;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
