@@ -18,7 +18,7 @@ import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.StructLocal.OrderMoveDirection;
+import org.nightlabs.jfire.prop.IStruct.OrderMoveDirection;
 
 /**
  *

@@ -27,6 +27,7 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.ModifyListener;
+import org.nightlabs.jfire.prop.IStruct.OrderMoveDirection;
 import org.nightlabs.jfire.prop.i18n.StructFieldValueName;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
 import org.nightlabs.jfire.prop.structfield.StructFieldValue;
@@ -69,6 +70,8 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 	private LanguageCf currLanguage;
 	private Button addValueButton;
 	private Button remValueButton;
+	private Button moveUpButton;
+	private Button moveDownButton;
 	private Button setDefaultButton;
 	private Button removeDefaultButton;
 
@@ -114,6 +117,24 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 			}
 		});
 
+		moveUpButton = new Button(wrapper, SWT.NONE);
+		moveUpButton.setText("Move up"); 
+		moveUpButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				moveValue(OrderMoveDirection.up);
+			}
+		});
+		
+		moveDownButton = new Button(wrapper, SWT.NONE);
+		moveDownButton.setText("Move down"); 
+		moveDownButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				moveValue(OrderMoveDirection.down);
+			}
+		});
+		
 		setDefaultButton = new Button(wrapper, SWT.NONE);
 		setDefaultButton.setText("Set Default");
 		setDefaultButton.addSelectionListener(new SelectionAdapter() {
@@ -145,7 +166,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		wrapper.layout();
 
 		// Make button widths equal
-		Button[] buttons = new Button[] { addValueButton, remValueButton, setDefaultButton, removeDefaultButton };
+		Button[] buttons = new Button[] { addValueButton, remValueButton, moveUpButton, moveDownButton, setDefaultButton, removeDefaultButton };
 		int maxWidth = 0;
 		for (Button button : buttons)
 			maxWidth = Math.max(maxWidth, button.getSize().x);
@@ -190,6 +211,20 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		editor.getStructEditor().setChanged(true);
 	}
 
+	/**
+	 * Removes the currently selected value from the list and also from the
+	 * structure.
+	 */
+	private void moveValue(OrderMoveDirection moveDirection) {
+		if (structFieldValueTable.getSelectionCount() != 1)
+			return;
+
+		StructFieldValue toMove = structFieldValueTable.getFirstSelectedElement();
+		selectionField.moveStructFieldValue(toMove, moveDirection);
+		structFieldValueTable.refresh();
+		editor.getStructEditor().setChanged(true);
+	}
+	
 	/**
 	 * Sets the currently display field.
 	 *
@@ -254,12 +289,20 @@ class StructFieldValueTable extends AbstractTableComposite<StructFieldValue>
 		viewerColumn.setEditingSupport(editingSupport);
 
 		table.setLayout(new WeightedTableLayout(new int[] { 1 }));
-		tableViewer.setComparator(new ViewerComparator());
+//		tableViewer.setComparator(new ViewerComparator());
 	}
 
 	public void setSelectionField(SelectionStructField structField) {
 		this.structField = structField;
 		setInput(structField.getStructFieldValues());
+	}
+	
+	@Override
+	public void refresh() {
+		if (structField != null)
+			setInput(structField.getStructFieldValues());
+		else
+			super.refresh();
 	}
 
 	@Override
