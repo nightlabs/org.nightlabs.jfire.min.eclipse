@@ -39,6 +39,7 @@ import org.nightlabs.base.ui.editor.Editor2PerspectiveRegistry;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.base.ui.part.PartVisibilityTracker;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.jfire.base.ui.language.LocaleStatusLineContribution;
 import org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 

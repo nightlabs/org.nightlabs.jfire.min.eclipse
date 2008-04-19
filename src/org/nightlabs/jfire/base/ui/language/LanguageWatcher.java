@@ -41,6 +41,7 @@ import org.nightlabs.config.ConfigException;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 import org.nightlabs.jfire.language.Language;
+import org.nightlabs.jfire.language.LanguageException;
 import org.nightlabs.jfire.language.LanguageManagerUtil;
 import org.nightlabs.l10n.GlobalL10nSettings;
 import org.nightlabs.language.LanguageCf;
@@ -156,11 +157,17 @@ public class LanguageWatcher implements LoginStateListener {
 						if (namesCount != langCf.getName().getTexts().size())
 							localLanguageManager.makeDirty(langCf);
 					}
-
+					
+					boolean addedLanguage = false;
 					String languageID = langCf.getLanguageID();
 					if (!remoteLanguageIDSet.contains(languageID)) {
 						// language does not exist in the organisation on the server => create it
-						remoteLanguageManager.createLanguage(langCf); // TODO we should add additional translations of the language name to the server
+						try {
+							remoteLanguageManager.createLanguage(langCf); // TODO we should add additional translations of the language name to the server
+						} catch (LanguageException ex) {
+							logger.error("Failed creating language: " + langCf.getLanguageID(), ex);
+							localLanguageManager.removeLanguage(langCf.getLanguageID());
+						}
 					}
 				}
 			} catch (Exception e) {

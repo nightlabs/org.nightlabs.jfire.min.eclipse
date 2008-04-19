@@ -39,9 +39,11 @@ import javax.security.auth.login.LoginException;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.app.AbstractApplication;
 import org.nightlabs.base.ui.app.AbstractWorkbenchAdvisor;
+import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.j2ee.InitialContextProvider;
 import org.nightlabs.jfire.base.j2ee.RemoteResourceFilterRegistry;
 import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
+import org.nightlabs.jfire.base.ui.language.LanguageWatcher;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.WorkOfflineException;
@@ -109,6 +111,7 @@ extends AbstractApplication
 		} catch(Exception e) {
 			e.printStackTrace(); // TODO what should be here? There was nothing in this catch block! because there is no logger, I dump at least to std-out. Marco. ;-)
 		}
+		LanguageManager.sharedInstance().setLanguage();
 	}
 	
 	@Override

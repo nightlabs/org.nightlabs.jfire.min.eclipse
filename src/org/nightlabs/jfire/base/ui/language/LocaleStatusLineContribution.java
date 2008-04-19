@@ -1,13 +1,16 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.app;
+package org.nightlabs.jfire.base.ui.language;
 
 import java.util.Locale;
 
 import org.eclipse.jface.action.StatusLineLayoutData;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -24,7 +27,7 @@ public class LocaleStatusLineContribution
 extends AbstractContributionItem
 {
 	private XComposite wrapper;
-	private Label image;
+	private Button flagButton;
 	private Label text;
 	
 	public LocaleStatusLineContribution(String name, boolean fillToolBar, boolean fillCoolBar, boolean fillMenuBar, boolean fillComposite) {
@@ -51,9 +54,15 @@ extends AbstractContributionItem
 		wrapper.setLayoutData(layoutData);
 		wrapper.getGridLayout().numColumns = 2;
 		wrapper.getGridLayout().makeColumnsEqualWidth = false;
-		image = new Label(wrapper, SWT.ICON);
-		image.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage()));
-		image.setLayoutData(new GridData());
+		flagButton = new Button(wrapper, SWT.FLAT);
+		flagButton.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage()));
+		flagButton.setLayoutData(new GridData());
+		flagButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				new SwitchLanguageDialog(wrapper.getShell()).open();
+			}
+		});
 		text = new Label(wrapper, SWT.NONE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		text.setText(Locale.getDefault().getDisplayLanguage());
