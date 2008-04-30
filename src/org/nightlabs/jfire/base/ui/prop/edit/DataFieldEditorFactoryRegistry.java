@@ -29,7 +29,6 @@ package org.nightlabs.jfire.base.ui.prop.edit;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
@@ -47,8 +46,6 @@ import org.nightlabs.jfire.prop.IStruct;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
-	private Logger LOGGER = Logger.getLogger(DataFieldEditorFactoryRegistry.class);
-	
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.propDataFieldEditorFactory"; //$NON-NLS-1$
 	public static final String EXTENSION_POINT_ELEMENT_NAME = "propdatafieldeditorfactory"; // lower case for error tolerance //$NON-NLS-1$
 	

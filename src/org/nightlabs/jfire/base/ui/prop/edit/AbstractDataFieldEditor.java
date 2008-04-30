@@ -40,7 +40,8 @@ import org.nightlabs.jfire.prop.StructField;
 /**
  * Abstract base class for all  {@link DataFieldEditor} s with implementations for the listener stuff and other
  * common things for all field editors.<br/>
- * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public abstract class AbstractDataFieldEditor<F extends DataField> implements DataFieldEditor<F>, ModifyListener
 {
@@ -115,19 +116,21 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	}
 
 	private Collection<DataFieldEditorChangeListener> changeListener = new LinkedList<DataFieldEditorChangeListener>();
-	/**
-	 *
+
+	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
 	 */
+	@Override
 	public synchronized void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
 		changeListener.add(listener);
 	}
-	/**
-	 *
+
+	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
 	 */
+	@Override
 	public synchronized void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
-		changeListener.add(listener);
+		changeListener.remove(listener);
 	}
 
 	protected synchronized void notifyChangeListeners() {

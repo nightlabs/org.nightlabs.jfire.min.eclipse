@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.layout.GridData;
@@ -23,8 +20,8 @@ import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
+ * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- *
  */
 public class BlockBasedEditorSection extends RestorableSectionPart
 {
@@ -86,8 +83,26 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 
 		blockBasedPersonEditor = new BlockBasedEditor(true);
 		blockBasedPersonEditor.setValidationResultManager(new ValidationResultManager() {
+			/**
+			 * Used to cache the validation result because MessageManager
+			 * updates UI every time which is quite expensive. Marc
+			 */
+			private ValidationResult lastValidationResult = null;
+			
+			private boolean needUpdate(ValidationResult validationResult)
+			{
+				if((lastValidationResult == null && validationResult != null) || 
+						(lastValidationResult != null && !lastValidationResult.equals(validationResult))) {
+					lastValidationResult = validationResult;
+					return true;
+				}
+				return false;
+			}
+			
 			@Override
 			public void setValidationResult(ValidationResult validationResult) {
+				if(!needUpdate(validationResult))
+					return;
 				IMessageManager messageManager = getManagedForm().getMessageManager();
 				if (validationResult == null) {
 					messageManager.removeMessage(VALIDATION_RESULT_MESSAGE_KEY);
