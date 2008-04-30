@@ -49,7 +49,9 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
+ * @deprecated As far as I can see, this is not in use anymore. BlockBasedEditorSection is used instead
  */
+@Deprecated
 public class UserPropertiesSection extends RestorableSectionPart
 {
 	/**
