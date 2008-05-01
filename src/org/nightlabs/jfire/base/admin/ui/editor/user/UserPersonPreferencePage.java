@@ -6,6 +6,7 @@ import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.User;
 
 public class UserPersonPreferencePage extends PersonPreferencesPage {
@@ -31,7 +32,7 @@ public class UserPersonPreferencePage extends PersonPreferencesPage {
 	
 	@Override
 	protected void addSections(Composite parent) {
-		userDataSection = new UserDataSection(this, parent, "User data");
+		userDataSection = new UserDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserPersonPreferencePage.userDataSectionTitle")); //$NON-NLS-1$
 		getManagedForm().addPart(userDataSection);
 		super.addSections(parent);
 	}
