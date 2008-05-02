@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.prop.structfield.DateStructField;
 import org.nightlabs.jfire.prop.structfield.NumberStructField;
 
 class NumberStructFieldEditComposite extends XComposite {

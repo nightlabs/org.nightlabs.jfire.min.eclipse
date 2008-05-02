@@ -3,8 +3,6 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Locale;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -12,7 +10,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
@@ -28,6 +25,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.datafield.RegexDataField;
 import org.nightlabs.jfire.prop.structfield.RegexStructField;
 import org.nightlabs.language.LanguageCf;
+import org.nightlabs.util.NLLocale;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -67,7 +65,7 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 	
 	public RegexDataFieldEditor() {
 		super();
-		language = new LanguageCf(Locale.getDefault().getLanguage());
+		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
 	
 	@Override

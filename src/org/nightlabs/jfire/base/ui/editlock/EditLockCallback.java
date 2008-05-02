@@ -1,5 +1,7 @@
 package org.nightlabs.jfire.base.ui.editlock;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 public abstract class EditLockCallback
 {
 	/**

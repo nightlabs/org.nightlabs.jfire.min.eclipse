@@ -3,8 +3,6 @@
  */
 package org.nightlabs.jfire.base.ui.language;
 
-import java.util.Locale;
-
 import org.eclipse.jface.action.StatusLineLayoutData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -17,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.action.AbstractContributionItem;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.language.LanguageManager;
+import org.nightlabs.util.NLLocale;
 
 /**
  * StatusLine Contribution that displays the current Locale to the user.
@@ -55,7 +54,7 @@ extends AbstractContributionItem
 		wrapper.getGridLayout().numColumns = 2;
 		wrapper.getGridLayout().makeColumnsEqualWidth = false;
 		flagButton = new Button(wrapper, SWT.FLAT);
-		flagButton.setImage(LanguageManager.sharedInstance().getFlag16x16Image(Locale.getDefault().getLanguage()));
+		flagButton.setImage(LanguageManager.sharedInstance().getFlag16x16Image(NLLocale.getDefault().getLanguage()));
 		flagButton.setLayoutData(new GridData());
 		flagButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -65,7 +64,7 @@ extends AbstractContributionItem
 		});
 		text = new Label(wrapper, SWT.NONE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		text.setText(Locale.getDefault().getDisplayLanguage());
+		text.setText(NLLocale.getDefault().getDisplayLanguage());
 		return wrapper;
 	}
 

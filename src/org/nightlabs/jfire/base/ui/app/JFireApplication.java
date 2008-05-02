@@ -43,7 +43,6 @@ import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.j2ee.InitialContextProvider;
 import org.nightlabs.jfire.base.j2ee.RemoteResourceFilterRegistry;
 import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
-import org.nightlabs.jfire.base.ui.language.LanguageWatcher;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.WorkOfflineException;

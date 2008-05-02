@@ -1,7 +1,5 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Locale;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -18,6 +16,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.prop.datafield.PhoneNumberDataField;
+import org.nightlabs.util.NLLocale;
 
 public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNumberDataField> {
 	
@@ -56,7 +55,7 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 		comp.countryCodeTextBox.setText(dataField.getCountryCode());
 		comp.areaCodeTextBox.setText(dataField.getAreaCode());
 		comp.localNumberTextBox.setText(dataField.getLocalNumber());
-		comp.compGroup.setText(getStructField().getName().getText(Locale.getDefault().getLanguage()));
+		comp.compGroup.setText(getStructField().getName().getText(NLLocale.getDefault().getLanguage()));
 	}
 
 	public Control getControl() {

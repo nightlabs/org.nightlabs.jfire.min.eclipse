@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
+import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 import org.nightlabs.progress.NullProgressMonitor;

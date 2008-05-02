@@ -8,6 +8,7 @@ import org.nightlabs.base.ui.wizard.IWizardHopPage;
 import org.nightlabs.base.ui.wizard.WizardHop;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**

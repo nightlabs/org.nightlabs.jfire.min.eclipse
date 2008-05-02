@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.base.ui.overview;
 
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.internal.part.NullEditorInput;
 
 /**

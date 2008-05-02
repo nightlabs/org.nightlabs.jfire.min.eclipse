@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.zip.InflaterInputStream;
 
 import org.apache.log4j.Logger;
@@ -38,6 +37,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.datafield.ImageDataField;
 import org.nightlabs.jfire.prop.structfield.ImageStructField;
 import org.nightlabs.language.LanguageCf;
+import org.nightlabs.util.NLLocale;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -91,7 +91,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 	
 	public ImageDataFieldEditor() {
 		super();
-		language = new LanguageCf(Locale.getDefault().getLanguage());
+		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
 	
 	/* (non-Javadoc)

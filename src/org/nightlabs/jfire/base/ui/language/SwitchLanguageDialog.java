@@ -3,8 +3,6 @@
  */
 package org.nightlabs.jfire.base.ui.language;
 
-import java.util.Locale;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -20,6 +18,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.LanguageChooserList;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.language.LanguageCf;
+import org.nightlabs.util.NLLocale;
 
 /**
  * @author Alexander Bieber <!-- alex [at] nightlabs [dot] de -->
@@ -58,7 +57,7 @@ public class SwitchLanguageDialog extends Dialog {
 	protected void okPressed() {
 		LanguageCf langCf = languageChooser.getLanguage();
 		super.okPressed();
-		if (Locale.getDefault().getLanguage().equals(langCf.getLanguageID()))
+		if (NLLocale.getDefault().getLanguage().equals(langCf.getLanguageID()))
 			return; // nothing to do, same language
 		LanguageManager.sharedInstance().setLanguageID(langCf.getLanguageID());
 		PlatformUI.getWorkbench().restart();

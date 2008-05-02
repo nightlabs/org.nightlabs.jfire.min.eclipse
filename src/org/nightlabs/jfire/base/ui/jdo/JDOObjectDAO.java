@@ -38,6 +38,8 @@ import java.util.Set;
 import javax.jdo.JDOHelper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.jdo.BaseJDOObjectDAO;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.CollectionUtil;

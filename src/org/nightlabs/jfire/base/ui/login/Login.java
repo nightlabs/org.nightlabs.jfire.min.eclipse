@@ -63,6 +63,7 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.classloader.osgi.DelegatingClassLoaderOSGI;
 import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
+import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.jdo.cache.Cache;

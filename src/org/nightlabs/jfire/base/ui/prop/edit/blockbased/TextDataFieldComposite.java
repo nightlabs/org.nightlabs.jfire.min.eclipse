@@ -26,8 +26,6 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Locale;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -38,6 +36,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
+import org.nightlabs.util.NLLocale;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -110,10 +109,10 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 //			fieldText.setText(editor.getDataField().getText());
 		
 //		fieldName.setText(field.getName().getText());
-		if (getEditor().getDataField().getText(Locale.getDefault()) == null)
+		if (getEditor().getDataField().getText(NLLocale.getDefault()) == null)
 			fieldText.setText(""); //$NON-NLS-1$
 		else
-			fieldText.setText(getEditor().getDataField().getText(Locale.getDefault()));
+			fieldText.setText(getEditor().getDataField().getText(NLLocale.getDefault()));
 		
 		// TODO set the text fields maximum line count to the one given by the struct field
 		// ((TextStructField)editor.getDataField().getStructField()).getLineCount();

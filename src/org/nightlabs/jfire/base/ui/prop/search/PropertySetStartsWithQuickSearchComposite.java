@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.person.search.PersonStartsWithQuickSearch;
+import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.util.IOUtil;
 
 /**

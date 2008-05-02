@@ -26,8 +26,6 @@
 
 package org.nightlabs.jfire.base.ui.prop;
 
-import java.util.Locale;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -44,6 +42,7 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
 import org.nightlabs.jfire.prop.exception.PropertyException;
 import org.nightlabs.jfire.prop.id.StructFieldID;
+import org.nightlabs.util.NLLocale;
 
 /**
  * Table Composite that displays a configurable set of {@link StructField}s
@@ -195,7 +194,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 		if (structFieldIdx >= 0 && structFieldIdx < structFieldIDs.length) {
 			DataField dataField = propertySet.getPersistentDataFieldByIndex(structFieldIDs[structFieldIdx], 0);
 			if (dataField != null && dataField instanceof II18nTextDataField) {
-				return ((II18nTextDataField) dataField).getText(Locale.getDefault());
+				return ((II18nTextDataField) dataField).getText(NLLocale.getDefault());
 			} else
 				return ""; //$NON-NLS-1$
 		} else

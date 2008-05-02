@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.querystore;
 
 import java.util.Collection;
-import java.util.Locale;
 
 import javax.jdo.FetchPlan;
 
@@ -28,6 +27,7 @@ import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.progress.NullProgressMonitor;
+import org.nightlabs.util.NLLocale;
 
 /**
  * FIXME: It should not be possible to press OK after this dialog is created!
@@ -147,7 +147,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		final BaseQueryStore queryStore = new BaseQueryStore(owner, 
 			IDGenerator.nextID(BaseQueryStore.class), null);
 		
-		queryStore.getName().setText(Locale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
+		queryStore.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
 		
 		existingQueries.add(queryStore);
 		storeTable.setInput(existingQueries);

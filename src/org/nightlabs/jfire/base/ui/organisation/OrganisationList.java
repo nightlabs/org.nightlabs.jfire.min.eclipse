@@ -18,6 +18,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.organisation.dao.OrganisationDAO;
+import org.nightlabs.jfire.organisation.id.OrganisationID;
 import org.nightlabs.progress.ProgressMonitor;
 
 public class OrganisationList

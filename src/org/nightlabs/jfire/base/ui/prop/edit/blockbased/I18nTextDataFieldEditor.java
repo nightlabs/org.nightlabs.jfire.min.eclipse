@@ -33,6 +33,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.prop.datafield.I18nTextDataField;
+import org.nightlabs.jfire.prop.datafield.TextDataField;
 
 /**
  * Represents an editor for {@link TextDataField} within a

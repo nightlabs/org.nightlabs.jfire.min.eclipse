@@ -1,12 +1,11 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import java.util.Locale;
-
 import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.util.NLLocale;
 import org.nightlabs.util.Util;
 
 public class StructFieldNode extends TreeNode //implements Comparable<StructFieldNode>
@@ -40,7 +39,7 @@ public class StructFieldNode extends TreeNode //implements Comparable<StructFiel
 	public String getLabel()
 	{
 		//return field.getStructFieldKey();
-		return field.getName().getText(Locale.getDefault().getLanguage());
+		return field.getName().getText(NLLocale.getDefault().getLanguage());
 	}
 
 	@Override

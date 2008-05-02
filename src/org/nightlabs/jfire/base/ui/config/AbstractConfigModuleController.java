@@ -11,6 +11,7 @@ import javax.jdo.JDOHelper;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ListenerList;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
 import org.nightlabs.jfire.config.id.ConfigID;

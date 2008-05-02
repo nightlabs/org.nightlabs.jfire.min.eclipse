@@ -3,8 +3,6 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Locale;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -22,6 +20,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.prop.datafield.NumberDataField;
 import org.nightlabs.jfire.prop.structfield.NumberStructField;
 import org.nightlabs.language.LanguageCf;
+import org.nightlabs.util.NLLocale;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -54,7 +53,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 	
 	public NumberDataFieldEditor() {
 		super();
-		language = new LanguageCf(Locale.getDefault().getLanguage());
+		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
 	
 	@Override

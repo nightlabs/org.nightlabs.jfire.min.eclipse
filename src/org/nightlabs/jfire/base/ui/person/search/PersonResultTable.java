@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.PropertySetTable;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructFieldID;

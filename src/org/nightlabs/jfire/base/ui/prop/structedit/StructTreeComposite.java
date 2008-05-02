@@ -17,11 +17,9 @@ import org.nightlabs.base.ui.language.LanguageChangeListener;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.base.ui.tree.TreeContentProvider;
-import org.nightlabs.jfire.base.DuplicateKeyException;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
-import org.nightlabs.jfire.prop.exception.IllegalStructureModificationException;
 
 public class StructTreeComposite extends AbstractTreeComposite<TreeNode> implements LanguageChangeListener {
 	private List<StructBlockNode> blockNodes;

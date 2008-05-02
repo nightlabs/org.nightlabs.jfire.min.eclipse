@@ -2,7 +2,6 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.resource.SharedImages;
@@ -11,6 +10,7 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.util.NLLocale;
 import org.nightlabs.util.Util;
 
 /**
@@ -63,7 +63,7 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 	@Override
 	public String getLabel()
 	{
-		return block.getName().getText(Locale.getDefault().getLanguage());
+		return block.getName().getText(NLLocale.getDefault().getLanguage());
 	}
 
 	@Override
