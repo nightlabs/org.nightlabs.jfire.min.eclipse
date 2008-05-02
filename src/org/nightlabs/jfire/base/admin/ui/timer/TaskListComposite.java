@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.jdo.FetchPlan;
@@ -49,6 +48,7 @@ import org.nightlabs.jfire.timer.dao.TaskDAO;
 import org.nightlabs.jfire.timer.id.TaskID;
 import org.nightlabs.l10n.DateFormatter;
 import org.nightlabs.notification.NotificationEvent;
+import org.nightlabs.util.NLLocale;
 
 public class TaskListComposite
 		extends AbstractTableComposite<Task>
@@ -82,9 +82,9 @@ public class TaskListComposite
 			case 1:
 				return task.getUser().getName() != null ? task.getUser().getName() : task.getUser().getUserID();
 			case 2:
-				return task.getName().getText(Locale.getDefault().getLanguage());
+				return task.getName().getText(NLLocale.getDefault().getLanguage());
 			case 3:
-				return task.getDescription().getText(Locale.getDefault().getLanguage());
+				return task.getDescription().getText(NLLocale.getDefault().getLanguage());
 			case 4:
 				return task.getLastExecDT() == null ? "" : DateFormatter //$NON-NLS-1$
 						.formatDateShortTimeHMS(task.getLastExecDT(), true);
@@ -237,11 +237,11 @@ public class TaskListComposite
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 //			return getCollator().compare(
-//					t1.getName().getText(Locale.getDefault().getLanguage()),
-//					t2.getName().getText(Locale.getDefault().getLanguage()));
+//					t1.getName().getText(NLLocale.getDefault().getLanguage()),
+//					t2.getName().getText(NLLocale.getDefault().getLanguage()));
 			return getComparator().compare(
-					t1.getName().getText(Locale.getDefault().getLanguage()),
-					t2.getName().getText(Locale.getDefault().getLanguage()));
+					t1.getName().getText(NLLocale.getDefault().getLanguage()),
+					t2.getName().getText(NLLocale.getDefault().getLanguage()));
 		}
 	}
 
@@ -252,11 +252,11 @@ public class TaskListComposite
 		protected int _compare(Viewer viewer, Task t1, Task t2)
 		{
 //			return getCollator().compare(
-//					t1.getDescription().getText(Locale.getDefault().getLanguage()),
-//					t2.getDescription().getText(Locale.getDefault().getLanguage()));
+//					t1.getDescription().getText(NLLocale.getDefault().getLanguage()),
+//					t2.getDescription().getText(NLLocale.getDefault().getLanguage()));
 			return getComparator().compare(
-					t1.getDescription().getText(Locale.getDefault().getLanguage()),
-					t2.getDescription().getText(Locale.getDefault().getLanguage()));
+					t1.getDescription().getText(NLLocale.getDefault().getLanguage()),
+					t2.getDescription().getText(NLLocale.getDefault().getLanguage()));
 		}
 	}
 

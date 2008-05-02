@@ -8,6 +8,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberPage;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**

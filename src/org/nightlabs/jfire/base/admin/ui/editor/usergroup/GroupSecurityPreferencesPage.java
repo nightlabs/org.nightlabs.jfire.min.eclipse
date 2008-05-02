@@ -33,6 +33,7 @@ import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesPage;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**

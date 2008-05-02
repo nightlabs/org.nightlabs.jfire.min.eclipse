@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
-import java.util.Locale;
 
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
@@ -21,6 +20,7 @@ import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
+import org.nightlabs.util.NLLocale;
 
 public class RoleGroupTableViewer extends TableViewer
 {
@@ -77,9 +77,9 @@ public class RoleGroupTableViewer extends TableViewer
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirect"); //$NON-NLS-1$
 				else if (model.getRoleGroupsFromUserGroups().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceGroup"); //$NON-NLS-1$
-				return ""; //$NON-NLS-1$
-			case 2:	return g.getName().getText(Locale.getDefault().getLanguage());
-			case 3:	return g.getDescription().getText(Locale.getDefault().getLanguage());
+				return "";
+			case 2:	return g.getName().getText(NLLocale.getDefault().getLanguage());
+			case 3:	return g.getDescription().getText(NLLocale.getDefault().getLanguage());
 			}
 			return null;
 		}
