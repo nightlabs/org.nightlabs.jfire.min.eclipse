@@ -38,7 +38,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
@@ -46,7 +45,6 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorFactory;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
@@ -58,7 +56,7 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
+ * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	implements
@@ -72,26 +70,23 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	private static final Logger logger = Logger.getLogger(CommentDataBlockEditor.class);
 
 	private Text textComment;
-	private Label labelTitle;
-	private Composite wrapper;
+//	private Label labelTitle;
+//	private Composite wrapper;
 	
-	/**
-	 * @param dataBlock
-	 * @param parent
-	 * @param style
-	 */
 	public CommentDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
 		super(struct, dataBlock, parent, style);
 		setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.horizontalSpacing = 2;
 		thisLayout.verticalSpacing = 2;
+		thisLayout.marginWidth = 0;
+		thisLayout.marginHeight = 0;
 		this.setLayout(thisLayout);
 		refresh(struct, dataBlock);
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.AbstractDataBlockEditor#refresh(org.nightlabs.jfire.base.ui.person.DataBlock)
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor#refresh(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlock)
 	 */
 	@Override
 	public void refresh(IStruct struct, DataBlock block) {
@@ -105,36 +100,39 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 		}
 	}
 
-	
 	private boolean refreshing = false;
-	/**
+
+	/* (non-Javadoc)
 	 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
 	 */
+	@Override
 	public void modifyText(ModifyEvent evt) {
 		setChanged(true);
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#getTargetDataType()
-	 */
-	public Class getTargetDataType() {
-		return TextDataField.class;
-	}
+// Commented - seems not to be needed anymore. Marc
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#getTargetDataType()
+//	 */
+//	public Class getTargetDataType() {
+//		return TextDataField.class;
+//	}
+//
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#getEditorType()
+//	 */
+//	public String getEditorType() {
+//		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
+//	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#getEditorType()
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
-	public String getEditorType() {
-		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
-	}
-
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	public Control createControl(Composite parent) {
 		if (textComment == null) {
-			labelTitle = new Label(parent,SWT.NONE);
-			labelTitle.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//			labelTitle = new Label(parent,SWT.NONE);
+//			labelTitle.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			
 			textComment = new Text(parent, SWT.MULTI | XComposite.getBorderStyle(parent) | SWT.V_SCROLL | SWT.H_SCROLL);
 			GridData commentLData = new GridData();
@@ -154,9 +152,10 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 
 	private TextDataField commentData;
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#refresh()
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#refresh()
 	 */
+	@Override
 	public void refresh() {
 		refreshing = true;
 		try {
@@ -174,31 +173,38 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 
 	private List fieldEditorChangeListener = new LinkedList();
 	
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.person.edit.DataFieldEditorChangeListener)
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
 	 */
+	@Override
 	public void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
 		fieldEditorChangeListener.add(listener);
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.person.edit.DataFieldEditorChangeListener)
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
 	 */
+	@Override
 	public void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
 		fieldEditorChangeListener.remove(listener);
 	}
 
 	
 	private boolean changed = false;
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#setChanged(boolean)
+	
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setChanged(boolean)
 	 */
+	@Override
 	public void setChanged(boolean changed) {
 		this.changed = changed;
 		if (!refreshing)
 			notifyChangeListeners(this);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor#notifyChangeListeners(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor)
+	 */
 	@Override
 	protected synchronized void notifyChangeListeners(DataFieldEditor dataFieldEditor) {
 		if (refreshing)
@@ -212,58 +218,86 @@ public class CommentDataBlockEditor extends AbstractDataBlockEditor
 		super.notifyChangeListeners(dataFieldEditor);
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.person.edit.DataFieldEditor#isChanged()
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#isChanged()
 	 */
+	@Override
 	public boolean isChanged() {
 		return changed;
 	}
 
-	
 	public static class Factory implements DataBlockEditorFactory {
-		/**
-		 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.DataBlockEditorFactory#getProviderStructBlockID()
+		/* (non-Javadoc)
+		 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorFactory#getProviderStructBlockID()
 		 */
+		@Override
 		public StructBlockID getProviderStructBlockID() {
 			return PersonStruct.COMMENT;
 		}
 		
-		/**
-		 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.DataBlockEditorFactory#createDataBlockEditor(org.nightlabs.jfire.base.ui.person.DataBlock, org.eclipse.swt.widgets.Composite, int)
+		/* (non-Javadoc)
+		 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorFactory#createPropDataBlockEditor(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlock, org.eclipse.swt.widgets.Composite, int)
 		 */
+		@Override
 		public AbstractDataBlockEditor createPropDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
 			return new CommentDataBlockEditor(struct, dataBlock,parent,style);
 		}
 	}
 
-
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
+	 */
+	@Override
 	public Control getControl() {
 		return this;
 	}
 
 	protected DataFieldEditorFactory factory;
 	
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setPropDataFieldEditorFactory(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory)
+	 */
+	@Override
 	public void setPropDataFieldEditorFactory(DataFieldEditorFactory factory) {
 		this.factory = factory;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getPropDataFieldEditorFactory()
+	 */
+	@Override
 	public DataFieldEditorFactory getPropDataFieldEditorFactory() {
 		return factory;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setData(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataField)
+	 */
+	@Override
 	public void setData(IStruct struct, DataField data) {
 		commentData = (TextDataField)data;
 		refresh();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getDataField()
+	 */
+	@Override
 	public DataField getDataField() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getStructField()
+	 */
+	@Override
 	public StructField getStructField() {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor#updatePropertySet()
+	 */
 	@Override
 	public void updatePropertySet() {
 		commentData.setText(textComment.getText());

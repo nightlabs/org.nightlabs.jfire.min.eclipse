@@ -77,6 +77,8 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.numColumns = columnHint;
 		thisLayout.makeColumnsEqualWidth = true;
+		thisLayout.marginWidth = 0;
+		thisLayout.marginHeight = 0;
 		setLayout(thisLayout);
 		createFieldEditors();
 	}

@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui.person.edit.blockbased.special;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -66,6 +67,8 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 			thisLayout.numColumns = 3;
 			thisLayout.verticalSpacing = 2;
 			thisLayout.makeColumnsEqualWidth = true;
+			thisLayout.marginWidth = 0;
+			thisLayout.marginHeight = 0;
 			this.setLayout(thisLayout);
 
 			createFieldEditors();

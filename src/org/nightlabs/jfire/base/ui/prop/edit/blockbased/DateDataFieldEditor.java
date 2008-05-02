@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.Date;
@@ -11,8 +8,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.base.ui.composite.DateTimeEdit;
-import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.DateTimeControl;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
@@ -22,28 +18,38 @@ import org.nightlabs.jfire.prop.datafield.DateDataField;
 import org.nightlabs.jfire.prop.structfield.DateStructField;
 
 /**
+ * A data field editor for dates.
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
+ * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> {
 	
 	public static class Factory extends AbstractDataFieldEditorFactory<DateDataField> {
 
+		/* (non-Javadoc)
+		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getEditorTypes()
+		 */
 		@Override
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
+		/* (non-Javadoc)
+		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
+		 */
 		@Override
 		public Class<? extends DataFieldEditor<DateDataField>> getDataFieldEditorClass() {
 			return DateDataFieldEditor.class;
 		}
 
+		/* (non-Javadoc)
+		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getPropDataFieldType()
+		 */
 		@Override
 		public Class<DateDataField> getPropDataFieldType() {
 			return DateDataField.class;
 		}
 	}
-	
 	
 	private DateDataFieldComposite comp;
 	
@@ -100,7 +106,7 @@ public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> 
 
 class DateDataFieldComposite extends AbstractInlineDataFieldComposite<DateDataFieldEditor> {
 
-	private DateTimeEdit dateTimeEdit;
+	private DateTimeControl dateTimeControl;
 	
 	public DateDataFieldComposite(Composite parent, DateDataFieldEditor editor) {
 		super(parent, SWT.NONE, editor);
@@ -109,24 +115,23 @@ class DateDataFieldComposite extends AbstractInlineDataFieldComposite<DateDataFi
 	@Override
 	public void _refresh() {
 		DateStructField dateStructField = (DateStructField) getEditor().getStructField();
-		if (dateTimeEdit != null)
-			dateTimeEdit.dispose();
+		if (dateTimeControl != null)
+			dateTimeControl.dispose();
 		
-		dateTimeEdit = new DateTimeEdit(this, dateStructField.getDateTimeEditFlags(), (Date) null);
-		XComposite.configureLayout(LayoutMode.TIGHT_WRAPPER, dateTimeEdit.getGridLayout());
-		dateTimeEdit.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		dateTimeEdit.addModifyListener(new ModifyListener() {
+		dateTimeControl = new DateTimeControl(this, SWT.NONE, dateStructField.getDateTimeEditFlags(), (Date) null);
+		//XComposite.configureLayout(LayoutMode.TIGHT_WRAPPER, dateTimeControl.getGridLayout());
+		dateTimeControl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		dateTimeControl.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				getEditor().setChanged(true);
 			}
 		});
-		dateTimeEdit.getParent().layout();
-		dateTimeEdit.setDate(getEditor().getDataField().getDate());
+//		dateTimeControl.getParent().layout();
+		dateTimeControl.setDate(getEditor().getDataField().getDate());
 	}
 	
 	public Date getDate() {
-		return dateTimeEdit.getDate();
+		return dateTimeControl.getDate();
 	}
 }
-
 

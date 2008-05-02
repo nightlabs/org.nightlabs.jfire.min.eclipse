@@ -52,7 +52,6 @@ public class DataBlockGroupEditor
 extends XComposite
 implements DataBlockEditorChangedListener
 {
-
 	private DataBlockGroup blockGroup;
 
 	private IStruct struct;
@@ -61,18 +60,13 @@ implements DataBlockEditorChangedListener
 
 	private IValidationResultManager validationResultManager;
 
-
-	/**
-	 * @param parent
-	 * @param style
-	 */
 	public DataBlockGroupEditor(
 			IStruct struct,
 			DataBlockGroup blockGroup,
 			Composite parent,
 			IValidationResultManager validationResultManager
 	) {
-		super(parent, SWT.NONE);
+		super(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		this.blockGroup = blockGroup;
 
 		scrolledComposite = new ScrolledComposite(this, SWT.V_SCROLL);
@@ -187,7 +181,7 @@ implements DataBlockEditorChangedListener
 
 			if (! _struct.getStructBlock(blockGroup).isUnique()) {
 				AddOrRemoveDataBlockGroupComposite manager = new AddOrRemoveDataBlockGroupComposite(wrapper, dataBlock, i);
-				manager.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER));
+				manager.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 				manager.setListener(new AddOrRemoveDataBlockGroupComposite.Listener() {
 					public void addDataBlock(int index) {
 						try {

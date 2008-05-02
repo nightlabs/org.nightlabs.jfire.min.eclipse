@@ -49,14 +49,13 @@ extends XComposite
 	private Label title;
 
 	/**
-	 * @param parent
-	 * @param style
 	 * @see Composite#Composite(org.eclipse.swt.widgets.Composite, int)
 	 */
 	public AbstractInlineDataFieldComposite(Composite parent, int style, Editor editor) {
 		super(parent, style);
 		this.editor = editor;
 		setLayout(getDefaultLayout());
+		// FIXME: titles used within TextDataFieldComposite always indent some pixels. Why? Marc
 		title = new Label(this, SWT.NONE);
 		title.setLayoutData(createTitleLayoutData());
 	}
@@ -79,8 +78,8 @@ extends XComposite
 
 
 	protected Object createTitleLayoutData() {
-		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
-		nameData.grabExcessHorizontalSpace = true;
+		GridData nameData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+//		nameData.grabExcessHorizontalSpace = true;
 		return nameData;
 	}
 
@@ -88,13 +87,15 @@ extends XComposite
 	 * Creates a standard {@link GridLayout} for DataFieldEditComposites.
 	 * @return a standard {@link GridLayout} to be used in DataFieldEditors
 	 */
-	public static GridLayout getDefaultLayout() {
+	protected GridLayout getDefaultLayout() {
 		GridLayout layout = new GridLayout();
 		layout.horizontalSpacing = 0;
 // TODO: this is a quickfix for the Formtoolkit Boarderpainter, which paints to the outside of the elements -> there needs to be space in the enclosing composite for the borders
 		layout.verticalSpacing = 4;
 		layout.marginHeight = 0;
-		layout.marginWidth = 2;
+		// removed the marginWidth... be tight! Marc
+		//layout.marginWidth = 2;
+		layout.marginWidth = 0;
 		return layout;
 	}
 

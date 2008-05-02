@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.Locale;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -81,17 +82,14 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	/**
 	 * Assumes to have a parent composite with GridLaout and
 	 * adds it own GridData.
-	 * @param editor
-	 * @param parent
-	 * @param style
 	 */
 	public TextDataFieldComposite(AbstractDataFieldEditor<DataFieldType> editor, Composite parent, int style, ModifyListener modListener) {
 		this(editor, parent, style, modListener, null);
 	}
 	
 	protected Object createTextLayoutData() {
-		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
-		textData.grabExcessHorizontalSpace = true;
+		GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+//		textData.grabExcessHorizontalSpace = true;
 		return textData;
 	}
 	
@@ -99,8 +97,8 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		return getBorderStyle();
 	}
 	
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#_refresh()
 	 */
 	@Override
 	public void _refresh() {

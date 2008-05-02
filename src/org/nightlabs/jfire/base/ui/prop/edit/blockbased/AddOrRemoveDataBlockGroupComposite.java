@@ -7,6 +7,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 
 public class AddOrRemoveDataBlockGroupComposite extends XComposite {
@@ -21,19 +22,21 @@ public class AddOrRemoveDataBlockGroupComposite extends XComposite {
 	private Listener listener;
 
 	protected AddOrRemoveDataBlockGroupComposite(Composite parent, final DataBlock block, final int index) {
-		super(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, 2);
+		super(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA, 2);
+		
+		getGridLayout().marginLeft = 10;
 		
 		GridData gd = new GridData();
 		gd.widthHint = 20;
 		
 		addButton = new Button(this, SWT.PUSH);
-		addButton.setText("+");
+		addButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.AddOrRemoveDataBlockGroupComposite.addDataBlockButtonText")); //$NON-NLS-1$
 		addButton.setLayoutData(gd);
 		
 		gd = new GridData();
 		gd.widthHint = 20;
 		removeButton = new Button(this, SWT.PUSH);
-		removeButton.setText("-");
+		removeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.AddOrRemoveDataBlockGroupComposite.removeDataBlockButtonText")); //$NON-NLS-1$
 		removeButton.setLayoutData(gd);
 		
 		SelectionListener selectionListener = new SelectionListener() {

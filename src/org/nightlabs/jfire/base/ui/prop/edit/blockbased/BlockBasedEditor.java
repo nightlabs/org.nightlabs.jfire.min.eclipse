@@ -49,6 +49,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentComposite;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentProvider;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -109,7 +110,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	}
 
 	/**
-	 * Creates a new {@link BlockBasedEditor}.
+	 * Creates a new BlockBasedEditor.
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
 	 */
 	public BlockBasedEditor(boolean showDisplayNameComp) {
@@ -117,7 +118,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	}
 
 	/**
-	 * Creates a new {@link BlockBasedEditor}.
+	 * Creates a new BlockBasedEditor.
 	 * @param propSet The {@link PropertySet} to be managed.
 	 * @param propStruct The {@link IStruct} of the {@link PropertySet} to be managed.
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
@@ -131,10 +132,9 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 
 	private boolean refreshing = false;
+	
 	/**
-	 * Refreshes the UI-Representation of the given Property.
-	 *
-	 * @param changeListener
+	 * Refreshes the UI-Representation.
 	 */
 	@Override
 	public void refreshControl() {
@@ -228,7 +228,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				displayNameComp.getGridLayout().numColumns = 2;
 
 				Label label = new Label(displayNameComp, SWT.NONE);
-				label.setText("Name");
+				label.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor.nameLabel")); //$NON-NLS-1$
 				GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 				gd.horizontalSpan = 2;
 				label.setLayoutData(gd);
@@ -245,7 +245,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				});
 				displayNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				autogenerateNameCheckbox = new Button(displayNameComp, SWT.CHECK);
-				autogenerateNameCheckbox.setText("Autogenerate");
+				autogenerateNameCheckbox.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor.autogenerateCheckboxText")); //$NON-NLS-1$
 
 				autogenerateNameCheckbox.addSelectionListener(new SelectionListener() {
 					public void widgetSelected(SelectionEvent e) {
