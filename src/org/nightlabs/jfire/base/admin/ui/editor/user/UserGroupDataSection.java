@@ -16,6 +16,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.UserGroup;
 
 public class UserGroupDataSection extends RestorableSectionPart {
@@ -51,16 +52,16 @@ public class UserGroupDataSection extends RestorableSectionPart {
 		layout.horizontalSpacing = 10;
 		layout.numColumns = 3;
 		
-		createLabel(container, "User group ID", 3);
+		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupDataSection.userGroupID"), 3); //$NON-NLS-1$
 		userGroupIdText = new Text(container, XComposite.getBorderStyle(container));
 		userGroupIdText.setEditable(false);
 		userGroupIdText.setLayoutData(getGridData(3));
 		
-		createLabel(container,	"User group name", 3);
+		createLabel(container,	Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupDataSection.userGroupName"), 3); //$NON-NLS-1$
 		userGroupNameText = new Text(container, XComposite.getBorderStyle(container));
 		userGroupNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		createLabel(container, "User group description", 3);
+		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupDataSection.userGroupDescription"), 3); //$NON-NLS-1$
 		userGroupDescriptionText = new Text(container, XComposite.getBorderStyle(container));
 		userGroupDescriptionText.setLayoutData(getGridData(3));
 	}

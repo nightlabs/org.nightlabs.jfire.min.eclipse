@@ -51,7 +51,7 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 
 	@Override
 	protected void addSections(Composite parent) {
-		userGroupDataSection = new UserGroupDataSection(this, parent, "User group data");
+		userGroupDataSection = new UserGroupDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupPreferencePage.userGroupDataSectionTitle")); //$NON-NLS-1$
 		getManagedForm().addPart(userGroupDataSection);
 	}
 

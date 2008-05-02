@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -94,16 +92,16 @@ public class UsersSection extends RestorableSectionPart
 	{
 		FormText text = toolkit.createFormText(section, true);
 		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.description"), false, false); //$NON-NLS-1$
-		text.addHyperlinkListener(new HyperlinkAdapter() {
-			/* (non-Javadoc)
-			 * @see org.eclipse.ui.forms.events.HyperlinkAdapter#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
-			 */
-			@Override
-			public void linkActivated(HyperlinkEvent e)
-			{
-				System.err.println("HYPERLINK EVENT! "+e); //$NON-NLS-1$
-			}
-		});
+//		text.addHyperlinkListener(new HyperlinkAdapter() {
+//			/* (non-Javadoc)
+//			 * @see org.eclipse.ui.forms.events.HyperlinkAdapter#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
+//			 */
+//			@Override
+//			public void linkActivated(HyperlinkEvent e)
+//			{
+//				System.err.println("HYPERLINK EVENT! "+e); //$NON-NLS-1$
+//			}
+//		});
 		section.setDescriptionControl(text);
 	}
 

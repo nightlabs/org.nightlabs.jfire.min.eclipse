@@ -29,6 +29,10 @@ public class RoleGroupTableViewer extends TableViewer
 	 */
 	private final class RoleGroupsContentProvider extends TableContentProvider
 	{
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.table.TableContentProvider#getElements(java.lang.Object)
+		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		public Object[] getElements(Object inputElement) {
 			Collection<RoleGroup> roleGroups = (Collection<RoleGroup>) inputElement;
@@ -45,6 +49,9 @@ public class RoleGroupTableViewer extends TableViewer
 			super(viewer);
 		}
 
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.table.TableLabelProvider#getColumnImage(java.lang.Object, int)
+		 */
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			switch (columnIndex) {
@@ -54,6 +61,10 @@ public class RoleGroupTableViewer extends TableViewer
 			}
 		}
 
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+		 */
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			if (!(element instanceof RoleGroup))
 				throw new RuntimeException("Invalid object type, expected RoleGroup"); //$NON-NLS-1$
@@ -61,12 +72,12 @@ public class RoleGroupTableViewer extends TableViewer
 			switch (columnIndex) {
 			case 0:
 				if (model.getRoleGroups().contains(element) && model.getRoleGroupsFromUserGroups().contains(element))
-					return "DG";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirectAndGroup"); //$NON-NLS-1$
 				else if (model.getRoleGroups().contains(element))
-					return "D";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirect"); //$NON-NLS-1$
 				else if (model.getRoleGroupsFromUserGroups().contains(element))
-					return "G";
-				return "";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceGroup"); //$NON-NLS-1$
+				return ""; //$NON-NLS-1$
 			case 2:	return g.getName().getText(Locale.getDefault().getLanguage());
 			case 3:	return g.getDescription().getText(Locale.getDefault().getLanguage());
 			}
@@ -77,12 +88,15 @@ public class RoleGroupTableViewer extends TableViewer
 	private RoleGroupSecurityPreferencesModel model;
 	private IDirtyStateManager dirtyStateManager;
 
-	public RoleGroupTableViewer(Table table, IDirtyStateManager dirtyStateManager, boolean showTotalColum) {
+	public RoleGroupTableViewer(Table table, IDirtyStateManager dirtyStateManager, boolean showAssignmentSourceColum) {
 		super(table);
 
 		this.dirtyStateManager = dirtyStateManager;
 
 		ViewerComparator roleGroupComparator = new ViewerComparator() {
+			/* (non-Javadoc)
+			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+			 */
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				RoleGroup r1 = (RoleGroup) e1;
@@ -103,13 +117,19 @@ public class RoleGroupTableViewer extends TableViewer
 
 		TableViewerColumn col2 = new TableViewerColumn(this, SWT.CENTER);
 		col2.getColumn().setResizable(false);
-		col2.getColumn().setText("");
+		col2.getColumn().setText(""); //$NON-NLS-1$
 		col2.setEditingSupport(new CheckboxEditingSupport<RoleGroup>(this) {
+			/* (non-Javadoc)
+			 * @see org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport#doGetValue(java.lang.Object)
+			 */
 			@Override
 			protected boolean doGetValue(RoleGroup element) {
 				return model.getRoleGroups().contains(element);
 			}
 
+			/* (non-Javadoc)
+			 * @see org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport#doSetValue(java.lang.Object, boolean)
+			 */
 			@Override
 			protected void doSetValue(RoleGroup element, boolean value) {
 				if (value)
@@ -122,19 +142,19 @@ public class RoleGroupTableViewer extends TableViewer
 		});
 
 		TableColumn col3 = new TableColumn(getTable(), SWT.NULL);
-		col3.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.roleGroup")); //$NON-NLS-1$
+		col3.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroup")); //$NON-NLS-1$
 
 		TableColumn col4 = new TableColumn(getTable(), SWT.NULL);
-		col4.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.description")); //$NON-NLS-1$
+		col4.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.description")); //$NON-NLS-1$
 
-		int column1Width = showTotalColum ? 30 : 0;
+		int column1Width = showAssignmentSourceColum ? 30 : 0;
 
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, 22, -1, -1 });
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
-		new TableColumn(table, SWT.LEFT).setText("Name");
-		new TableColumn(table, SWT.LEFT).setText("Description");
+//		new TableColumn(table, SWT.LEFT).setText("Name");
+//		new TableColumn(table, SWT.LEFT).setText("Description");
 
 		setContentProvider(new RoleGroupsContentProvider());
 		setLabelProvider(new RoleGroupsLabelProvider(this));

@@ -16,6 +16,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.UserGroup;
 
 public class UserGroupTableViewer extends TableViewer {
@@ -25,6 +26,10 @@ public class UserGroupTableViewer extends TableViewer {
 	 */
 	private final class UserGroupsContentProvider extends TableContentProvider
 	{
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.table.TableContentProvider#getElements(java.lang.Object)
+		 */
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		@Override
 		public Object[] getElements(Object inputElement)
 		{
@@ -42,6 +47,9 @@ public class UserGroupTableViewer extends TableViewer {
 			super(viewer);
 		}
 
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.table.TableLabelProvider#getColumnImage(java.lang.Object, int)
+		 */
 		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
@@ -54,6 +62,10 @@ public class UserGroupTableViewer extends TableViewer {
 			return null;
 		}
 
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+		 */
+		@Override
 		public String getColumnText(Object element, int columnIndex)
 		{
 			UserGroup g = (UserGroup)element;
@@ -74,6 +86,9 @@ public class UserGroupTableViewer extends TableViewer {
 		this.dirtyStateManager = dirtyStateManager;
 
 		ViewerComparator userGroupComparator = new ViewerComparator() {
+			/* (non-Javadoc)
+			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+			 */
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				UserGroup u1 = (UserGroup) e1;
@@ -85,13 +100,19 @@ public class UserGroupTableViewer extends TableViewer {
 		setComparator(userGroupComparator);
 
 		TableViewerColumn col1 = new TableViewerColumn(this, SWT.CENTER);
-		col1.getColumn().setText("");
+		col1.getColumn().setText(""); //$NON-NLS-1$
 		col1.setEditingSupport(new CheckboxEditingSupport<UserGroup>(this) {
+			/* (non-Javadoc)
+			 * @see org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport#doGetValue(java.lang.Object)
+			 */
 			@Override
 			protected boolean doGetValue(UserGroup element) {
 				return model.getUserGroups().contains(element);
 			}
 
+			/* (non-Javadoc)
+			 * @see org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport#doSetValue(java.lang.Object, boolean)
+			 */
 			@Override
 			protected void doSetValue(UserGroup element, boolean value) {
 				if (value)
@@ -103,8 +124,8 @@ public class UserGroupTableViewer extends TableViewer {
 			}
 		});
 
-		new TableColumn(table, SWT.LEFT).setText("Name");
-		new TableColumn(table, SWT.LEFT).setText("Description");
+		new TableColumn(table, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupTableViewer.userGroup")); //$NON-NLS-1$
+		new TableColumn(table, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupTableViewer.description")); //$NON-NLS-1$
 
 		table.setLayout(new WeightedTableLayout(new int[] {-1, 30, 70}, new int[] {22, -1, -1}));
 
