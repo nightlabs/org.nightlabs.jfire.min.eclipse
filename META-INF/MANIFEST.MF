@@ -8,6 +8,7 @@ Bundle-Activator: org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin
 Bundle-Vendor: NightLabs.com
 Bundle-Localization: plugin
 Export-Package: org.nightlabs.jfire.base.admin.ui,
+ org.nightlabs.jfire.base.admin.ui.asyncinvoke,
  org.nightlabs.jfire.base.admin.ui.configgroup,
  org.nightlabs.jfire.base.admin.ui.editor,
  org.nightlabs.jfire.base.admin.ui.editor.configgroup,

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import javax.jdo.JDOHelper;
+import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -48,7 +49,7 @@ import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.RoleGroup;
-import org.nightlabs.jfire.security.RoleGroupListCarrier;
+import org.nightlabs.jfire.security.RoleGroupSetCarrier;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.jfire.security.dao.RoleGroupDAO;
@@ -179,9 +180,9 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 				userModel.setAvailableUserGroups(availableUserGroups);
 
 				// load role groups
-				RoleGroupListCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroups(
+				RoleGroupSetCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroupSetCarrier(
 						userID,
-						Authority.AUTHORITY_ID_ORGANISATION,
+						getAuthorityID(),
 						new String[] {RoleGroup.FETCH_GROUP_THIS},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						pMonitor);
@@ -212,7 +213,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				Collection<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserGroups(
 						JDOHelper.getObjectIds(userModel.getUserGroups()),
-						Authority.AUTHORITY_ID_ORGANISATION,
+						getAuthorityID(),
 						new String[] {RoleGroup.FETCH_GROUP_THIS},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
 
@@ -227,6 +228,15 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 
 		reloadRoleGroupsFromUserGroupsJob = loadJob;
 		loadJob.schedule();
+	}
+
+	protected AuthorityID getAuthorityID()
+	{
+		try {
+			return AuthorityID.create(Login.getLogin().getOrganisationID(), Authority.AUTHORITY_ID_ORGANISATION);
+		} catch (LoginException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -277,18 +287,18 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 
 			if (includedRoleGroups != null) {
 				for (RoleGroup roleGroup : includedRoleGroups) {
-					UserDAO.sharedInstance().addUserToRoleGroup(
+					UserDAO.sharedInstance().addRoleGroupToUser(
 							(UserID)JDOHelper.getObjectId(user),
-							AuthorityID.create(Login.getLogin().getOrganisationID(), Authority.AUTHORITY_ID_ORGANISATION),
+							getAuthorityID(),
 							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(pMonitor, 1));
 				}
 			}
 
 			if (excludedRoleGroups != null) {
 				for (RoleGroup roleGroup : excludedRoleGroups) {
-					UserDAO.sharedInstance().removeUserFromRoleGroup(
+					UserDAO.sharedInstance().removeRoleGroupFromUser(
 							(UserID)JDOHelper.getObjectId(user),
-							AuthorityID.create(Login.getLogin().getOrganisationID(), Authority.AUTHORITY_ID_ORGANISATION),
+							getAuthorityID(),
 							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(pMonitor, 1));
 				}
 			}

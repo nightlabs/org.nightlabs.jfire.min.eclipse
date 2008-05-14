@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.jdo.JDOHelper;
+import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,7 +45,7 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.RoleGroup;
-import org.nightlabs.jfire.security.RoleGroupListCarrier;
+import org.nightlabs.jfire.security.RoleGroupSetCarrier;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.jfire.security.dao.RoleGroupDAO;
@@ -165,9 +166,9 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 //				userGroupModel.setIncludedUsersUnchanged(new ArrayList<User>(includedUsers));
 
 				// load role groups
-				RoleGroupListCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroups(
+				RoleGroupSetCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroupSetCarrier(
 						userGroupID,
-						Authority.AUTHORITY_ID_ORGANISATION,
+						getAuthorityID(),
 						new String[] {RoleGroup.FETCH_GROUP_THIS},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						pMonitor);
@@ -189,6 +190,15 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 			throw new RuntimeException(e);
 		} finally {
 			monitor.done();
+		}
+	}
+
+	protected AuthorityID getAuthorityID()
+	{
+		try {
+			return AuthorityID.create(Login.getLogin().getOrganisationID(), Authority.AUTHORITY_ID_ORGANISATION);
+		} catch (LoginException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -240,18 +250,18 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 
 			if (includedRoleGroups != null) {
 				for (RoleGroup roleGroup : includedRoleGroups) {
-					UserDAO.sharedInstance().addUserToRoleGroup(
+					UserDAO.sharedInstance().addRoleGroupToUser(
 							(UserID)JDOHelper.getObjectId(userGroup),
-							AuthorityID.create(Login.getLogin().getOrganisationID(), Authority.AUTHORITY_ID_ORGANISATION),
+							getAuthorityID(),
 							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(pMonitor, 1));
 				}
 			}
 
 			if (excludedRoleGroups != null) {
 				for (RoleGroup roleGroup : excludedRoleGroups) {
-					UserDAO.sharedInstance().removeUserFromRoleGroup(
+					UserDAO.sharedInstance().removeRoleGroupFromUser(
 							(UserID)JDOHelper.getObjectId(userGroup),
-							AuthorityID.create(Login.getLogin().getOrganisationID(), Authority.AUTHORITY_ID_ORGANISATION),
+							getAuthorityID(),
 							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(pMonitor, 1));
 				}
 			}
