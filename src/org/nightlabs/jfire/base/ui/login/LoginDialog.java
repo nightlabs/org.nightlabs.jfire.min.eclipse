@@ -512,8 +512,8 @@ public class LoginDialog extends TitleAreaDialog
 		// in a dead-lock. There is no API to find out, whether the workbench is really up-and-running, hence we try it out and set the flag 'workbenchIsCompletelyUp'.
 		boolean async = workbenchIsCompletelyUp;
 		checkLogin(async, new org.eclipse.core.runtime.NullProgressMonitor(), new LoginStateListener() {
-			public void loginStateChanged(int loginState, IAction action) {
-				if (loginState == Login.LOGINSTATE_LOGGED_IN) {
+			public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+				if (newLoginState == Login.LOGINSTATE_LOGGED_IN) {
 					Runnable runnable = new Runnable() {
 						public void run() {
 							cancelled = false;
@@ -528,7 +528,7 @@ public class LoginDialog extends TitleAreaDialog
 			}
 
 			@Override
-			public void loginStateBeforeChange(int loginState, IAction action) {
+			public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
 				// TODO Auto-generated method stub
 				
 			}
@@ -817,9 +817,11 @@ public class LoginDialog extends TitleAreaDialog
 
 		if (loginStateListener != null) {
 			if (testResult.isSuccess())
-				loginStateListener.loginStateChanged(Login.LOGINSTATE_LOGGED_IN, null);
+				loginStateListener.afterLoginStateChange(
+						Login.LOGINSTATE_LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */, Login.LOGINSTATE_LOGGED_IN, null);
 			else
-				loginStateListener.loginStateChanged(Login.LOGINSTATE_LOGGED_OUT, null);
+				loginStateListener.afterLoginStateChange(
+						Login.LOGINSTATE_LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */, Login.LOGINSTATE_LOGGED_OUT, null);
 		}
 
 	}

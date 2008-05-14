@@ -36,7 +36,7 @@ import org.eclipse.jface.action.IAction;
 public interface LoginStateListener {
 	
 	/**
-	 * Called whenever the login state changes to one of the following:
+	 * Called whenever the login state changed to one of the following:
 	 * <ul>
 	 * 	<li>{@link Login#LOGINSTATE_LOGGED_IN} user has logged in.</li>
 	 * 	<li>{@link Login#LOGINSTATE_LOGGED_OUT} user has logged out.</li>
@@ -45,15 +45,21 @@ public interface LoginStateListener {
 	 * Note that the param action is likely to be null, depending on what was
 	 * passed to {@link Login#addLoginStateListener(LoginStateListener)}
 	 * or {@link Login#addLoginStateListener(LoginStateListener, IAction)}
-	 * 
-	 * @param loginState The login state the user switched to
+	 * @param oldLoginState the login state before the change.
+	 * @param newLoginState the new login state, the user switched to, which is now the current state already.
 	 * @param action A action associated to this listener
-	 * 
+	 *
 	 * @see Login#addLoginStateListener(LoginStateListener)
 	 * @see Login#addLoginStateListener(LoginStateListener, IAction)
 	 */
-	public void loginStateChanged(int loginState, IAction action);
-	
-	public void loginStateBeforeChange(int loginState, IAction action);
-	
+	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action);
+
+	/**
+	 * Called before the login state changes. Especially in case of logout, this
+	 * might be useful since the user is still logged in when this method is called.
+	 * @param oldLoginState the login state before the change, which is still the current state.
+	 * @param newLoginState the new login state, the system is about to switch to.
+	 * @param action
+	 */
+	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action);
 }

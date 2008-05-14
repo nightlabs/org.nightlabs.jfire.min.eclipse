@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.login;
 
 import java.net.SocketTimeoutException;
 import java.rmi.RemoteException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -138,7 +137,7 @@ extends AbstractEPProcessor
 
 	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
-	private int currLoginState = LOGINSTATE_LOGGED_OUT;
+	private volatile int currLoginState = LOGINSTATE_LOGGED_OUT;
 
 
 	/**
@@ -286,8 +285,6 @@ extends AbstractEPProcessor
 	}
 
 	public void logout() {
-
-
 		logout(true);
 	}
 
@@ -299,11 +296,7 @@ extends AbstractEPProcessor
 	private void logout(boolean doNotify) {
 		Exception ex = null;
 
-		try {
-			notifyLoginStateBeforeChangeListeners(LOGINSTATE_LOGGED_OUT);
-		} catch (Exception e) {
-		}
-
+		notifyLoginStateListeners_beforeChange(LOGINSTATE_LOGGED_OUT);
 
 		try {
 			Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
@@ -316,11 +309,7 @@ extends AbstractEPProcessor
 			ex = e;
 		}
 		if (doNotify) {
-			try {
-				notifyLoginStateListeners(LOGINSTATE_LOGGED_OUT);
-			} catch (Exception e) {
-				ex = e;
-			}
+			notifyLoginStateListeners_afterChange(LOGINSTATE_LOGGED_OUT);
 		}
 		if (ex != null)
 			throw new RuntimeException(ex);
@@ -330,7 +319,7 @@ extends AbstractEPProcessor
 		if (currLoginState != LOGINSTATE_OFFLINE) {
 			logout(false);
 			currLoginState = LOGINSTATE_OFFLINE;
-			notifyLoginStateListeners(LOGINSTATE_OFFLINE);
+			notifyLoginStateListeners_afterChange(LOGINSTATE_OFFLINE);
 		}
 
 	}
@@ -591,7 +580,7 @@ extends AbstractEPProcessor
 			if (loginResult.isWorkOffline()) {
 				// if user decided to work OFFLINE first notify loginstate listeners
 				currLoginState = LOGINSTATE_OFFLINE;
-				notifyLoginStateListeners(currLoginState);
+				notifyLoginStateListeners_afterChange(currLoginState);
 				// but then still throw Exception with WorkOffline as cause
 				LoginException lEx = new LoginException(loginResult.getMessage());
 				lEx.initCause(new WorkOfflineException(loginResult.getMessage()));
@@ -613,7 +602,7 @@ extends AbstractEPProcessor
 		if (currLoginState != oldLoginstate) {
 			try {
 				// notify loginstate listeners
-				notifyLoginStateListeners(currLoginState);
+				notifyLoginStateListeners_afterChange(currLoginState);
 			} catch (Throwable t) {
 				// TODO: ignore ??
 				logger.error(t);
@@ -909,7 +898,7 @@ extends AbstractEPProcessor
 	/**
 	 * Holds instances of {@link Login.LoginStateListenerRegistryItem}.
 	 */
-	private List loginStateListenerRegistry = new LinkedList();
+	private List<LoginStateListenerRegistryItem> loginStateListenerRegistry = new LinkedList<LoginStateListenerRegistryItem>();
 
 	public void addLoginStateListener(LoginStateListener loginStateListener) {
 		addLoginStateListener(loginStateListener,null);
@@ -919,7 +908,9 @@ extends AbstractEPProcessor
 		synchronized (loginStateListenerRegistry) {
 			LoginStateListenerRegistryItem regItem = new LoginStateListenerRegistryItem(loginStateListener,action);
 			loginStateListenerRegistry.add(regItem);
-			loginStateListener.loginStateChanged(getLoginState(), action);
+			// we cannot trigger the beforeLoginStateChange here - that doesn't make much sense... or should we? marco.
+			// and we pass the same value as old and new value since don't really know the old value. does this make sense? marco.
+			loginStateListener.afterLoginStateChange(getLoginState(), getLoginState(), action);
 		}
 	}
 
@@ -973,94 +964,69 @@ extends AbstractEPProcessor
 		}
 	}
 
-
-
-
-	protected void notifyLoginStateBeforeChangeListeners(int loginState){
-
+	protected void notifyLoginStateListeners_beforeChange(int newLoginState) {
 		synchronized (loginStateListenerRegistry) {
 			try {
-				currLoginState = loginState;
-				if (currLoginState == LOGINSTATE_OFFLINE)
-					lastWorkOfflineDecisionTime = System.currentTimeMillis();
-
 				checkProcessing();
 
-				for (Iterator it = new LinkedList(loginStateListenerRegistry).iterator(); it.hasNext();) {
+				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
 					try {
-						LoginStateListenerRegistryItem item = (LoginStateListenerRegistryItem)it.next();
-						item.getLoginStateListener().loginStateBeforeChange(loginState,item.getAction());
+						item.getLoginStateListener().beforeLoginStateChange(currLoginState, newLoginState, item.getAction());
 					} catch (Throwable t) {
 						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
 					}
 				}
 			} catch (Throwable t) {
-				logger.warn("Cought exception while notifying LoginStateListener. Abort.", t); //$NON-NLS-1$
+				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
 			}
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	protected void notifyLoginStateListeners(int loginState){
-
+	protected void notifyLoginStateListeners_afterChange(int newLoginState) {
 		synchronized (loginStateListenerRegistry) {
 			try {
-				currLoginState = loginState;
+				int oldLoginState = currLoginState;
+				currLoginState = newLoginState;
 				if (currLoginState == LOGINSTATE_OFFLINE)
 					lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
 				checkProcessing();
 
-				if (LOGINSTATE_LOGGED_IN == loginState && objectID2PCClassNotificationInterceptor == null) {
+				if (LOGINSTATE_LOGGED_IN == newLoginState && objectID2PCClassNotificationInterceptor == null) {
 					objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor();
 					SelectionManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 					JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 				}
 
-				if (LOGINSTATE_LOGGED_IN != loginState && objectID2PCClassNotificationInterceptor != null) {
+				if (LOGINSTATE_LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
 					SelectionManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					JDOLifecycleManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					objectID2PCClassNotificationInterceptor = null;
 				}
 
-				for (Iterator it = new LinkedList(loginStateListenerRegistry).iterator(); it.hasNext();) {
+				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
 					try {
-						LoginStateListenerRegistryItem item = (LoginStateListenerRegistryItem)it.next();
-						item.getLoginStateListener().loginStateChanged(loginState,item.getAction());
+						item.getLoginStateListener().afterLoginStateChange(oldLoginState, newLoginState, item.getAction());
 					} catch (Throwable t) {
 						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
 					}
 				}
 			} catch (Throwable t) {
-				logger.warn("Cought exception while notifying LoginStateListener. Abort.", t); //$NON-NLS-1$
+				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
 			}
 		}
 	}
 
-	/**
-	 * Do not call this method yourself.<br/>
-	 * It is used to trigger the notification right after the
-	 * WorkbenchWindow is shown, as Login can be requested
-	 * at a point in startup when actions and other
-	 * LoginStateListeners are not build yet.<br/>
-	 */
-	protected void triggerLoginStateNotification() {
-		notifyLoginStateListeners(getLoginState());
-	}
+//	/** // I think this method is not called anymore. Marco :-)
+//	 * Do not call this method yourself.<br/>
+//	 * It is used to trigger the notification right after the
+//	 * WorkbenchWindow is shown, as Login can be requested
+//	 * at a point in startup when actions and other
+//	 * LoginStateListeners are not build yet.<br/>
+//	 */
+//	protected void triggerLoginStateNotification() {
+//		notifyLoginStateListeners_afterChange(getLoginState());
+//	}
 
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()

@@ -92,14 +92,14 @@ implements LoginStateListener
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void loginStateChanged(final int loginState, final IAction action)
+	public void afterLoginStateChange(int oldLoginState, final int newLoginState, final IAction action)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				Login login = Login.sharedInstance();
 
 				String txt = null;
-				switch (loginState) {
+				switch (newLoginState) {
 					case Login.LOGINSTATE_LOGGED_IN:
 						txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
 						break;
@@ -125,7 +125,7 @@ implements LoginStateListener
 	}
 
 	@Override
-	public void loginStateBeforeChange(int loginState, IAction action) {
+	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
 		// TODO Auto-generated method stub
 		
 	}

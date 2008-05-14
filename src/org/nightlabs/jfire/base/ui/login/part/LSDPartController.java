@@ -81,8 +81,8 @@ public class LSDPartController extends PartController implements LoginStateListe
 		Login.loginAsynchronously();
 	}
 
-	public void loginStateChanged(int loginState, IAction action) {
-		if (loginState != Login.LOGINSTATE_LOGGED_IN)
+	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+		if (newLoginState != Login.LOGINSTATE_LOGGED_IN)
 			disposePartContents();
 		updateParts();
 	}
@@ -112,7 +112,7 @@ public class LSDPartController extends PartController implements LoginStateListe
 	}
 
 	@Override
-	public void loginStateBeforeChange(int loginState, IAction action) {
+	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -78,8 +78,8 @@ public class LanguageWatcher implements LoginStateListener {
 	/* non javadoc
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void loginStateChanged(int loginState, IAction action) {
-		switch (loginState) {
+	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+		switch (newLoginState) {
 			case Login.LOGINSTATE_LOGGED_IN:
 				logger.debug("loginStateChanged(..): syncing languages"); //$NON-NLS-1$
 				String userName = Login.sharedInstance().getPrincipalName();
@@ -213,7 +213,7 @@ public class LanguageWatcher implements LoginStateListener {
 	}
 
 @Override
-public void loginStateBeforeChange(int loginState, IAction action) {
+public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
 	// TODO Auto-generated method stub
 	
 }

@@ -84,9 +84,9 @@ public abstract class LSDEditorActionDelegate implements IEditorActionDelegate, 
 	
 	/**
 	 * Default implementation of loginStateChanged does nothing.
-	 * @see LoginStateListener#loginStateChanged(int, IAction)
+	 * @see LoginStateListener#afterLoginStateChange(int, int, IAction)
 	 */
-	public void loginStateChanged(int loginState, IAction action) {
+	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
 	}
 
 }

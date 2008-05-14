@@ -81,7 +81,7 @@ extends LSDWorkbenchWindowActionDelegate
 			logoutIcon_toolbar = SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginAction.class, "Logout", ImageDimension._24x24, ImageFormat.png); //$NON-NLS-1$
 		
 		if (Login.isLoggedIn() && action != null) {
-			loginStateChanged(Login.sharedInstance().getLoginState(), action);
+			afterLoginStateChange(Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action);
 		}
 	}
 	
@@ -112,9 +112,14 @@ extends LSDWorkbenchWindowActionDelegate
 	}
 
 	@Override
-	public void loginStateChanged(int loginState, IAction action)
+	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+		// nothing to do here.
+	}
+
+	@Override
+	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action)
 	{
-		super.loginStateChanged(loginState, action);
+		super.afterLoginStateChange(oldLoginState, newLoginState, action);
 		
 		ImageDescriptor loginIcon = null;
 		ImageDescriptor logoutIcon = null;
@@ -130,7 +135,7 @@ extends LSDWorkbenchWindowActionDelegate
 		else
 			throw new IllegalStateException("This action.id does not end on #menu or #toolbar!"); //$NON-NLS-1$
 
-		switch (loginState) {
+		switch (newLoginState) {
 			case Login.LOGINSTATE_LOGGED_IN:
 				action.setImageDescriptor(logoutIcon);
 				action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_loggedIn")); //$NON-NLS-1$
@@ -154,12 +159,5 @@ extends LSDWorkbenchWindowActionDelegate
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.action = action;
 		super.selectionChanged(action, selection);
-	}
-
-
-	@Override
-	public void loginStateBeforeChange(int loginState, IAction action) {
-		// TODO Auto-generated method stub
-		
 	}
 }
