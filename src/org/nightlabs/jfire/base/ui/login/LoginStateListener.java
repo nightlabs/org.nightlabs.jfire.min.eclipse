@@ -53,4 +53,7 @@ public interface LoginStateListener {
 	 * @see Login#addLoginStateListener(LoginStateListener, IAction)
 	 */
 	public void loginStateChanged(int loginState, IAction action);
+	
+	public void loginStateBeforeChange(int loginState, IAction action);
+	
 }

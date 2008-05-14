@@ -110,7 +110,7 @@ extends AbstractEPProcessor
 	 * LOG4J logger used by this class
 	 */
 	private static final Logger logger = Logger.getLogger(Login.class);
-	
+
 	public static final long WORK_OFFLINE_TIMEOUT = 60000; // One minute
 
 	/**
@@ -286,9 +286,11 @@ extends AbstractEPProcessor
 	}
 
 	public void logout() {
+
+
 		logout(true);
 	}
-	
+
 	/**
 	 * First removes the JFireRCDLDelegate from
 	 * the parent classloader and then flushes
@@ -296,6 +298,13 @@ extends AbstractEPProcessor
 	 */
 	private void logout(boolean doNotify) {
 		Exception ex = null;
+
+		try {
+			notifyLoginStateBeforeChangeListeners(LOGINSTATE_LOGGED_OUT);
+		} catch (Exception e) {
+		}
+
+
 		try {
 			Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
 			// remove class loader delegate
@@ -316,14 +325,14 @@ extends AbstractEPProcessor
 		if (ex != null)
 			throw new RuntimeException(ex);
 	}
-	
+
 	public void workOffline() {
 		if (currLoginState != LOGINSTATE_OFFLINE) {
 			logout(false);
 			currLoginState = LOGINSTATE_OFFLINE;
 			notifyLoginStateListeners(LOGINSTATE_OFFLINE);
 		}
-		
+
 	}
 
 	private volatile boolean handlingLogin = false;
@@ -468,6 +477,7 @@ extends AbstractEPProcessor
 	 * @see #doLogin(boolean)
 	 */
 	public void doLogin() throws LoginException {
+
 		doLogin(false);
 	}
 
@@ -703,15 +713,15 @@ extends AbstractEPProcessor
 	}
 
 	private volatile LoginData loginData;
-	
+
 //	public LoginData getLoginDataCopy() {
-//		return new LoginData(loginData);
+//	return new LoginData(loginData);
 //	}
-	
+
 	protected LoginData getLoginData() {
 		return loginData;
 	}
-	
+
 	private LoginConfigModule _runtimeConfigModule = null; // new LoginConfigModule();
 
 	// ILoginHandler to handle the user interaction
@@ -752,14 +762,14 @@ extends AbstractEPProcessor
 
 		return loginData.getUserID();
 	}
-	
+
 	public String getPrincipalName() {
 		if (loginData == null)
 			return null;
 
 		return loginData.getPrincipalName();
 	}
-	
+
 	/**
 	 * @return Returns the password.
 	 */
@@ -769,7 +779,7 @@ extends AbstractEPProcessor
 
 		return loginData.getPassword();
 	}
-	
+
 	/**
 	 * Set the new password. This method should normally not be called! It's only purpose is to switch to a new password
 	 * after the user changed his password (see {@link ChangePasswordDialog})
@@ -779,7 +789,7 @@ extends AbstractEPProcessor
 	public void setPassword(String password) {
 		this.loginData.setPassword(password);
 	}
-	
+
 	/**
 	 * @return Returns the workstationID.
 	 */
@@ -794,9 +804,9 @@ extends AbstractEPProcessor
 		return UserDAO.sharedInstance().getUser(
 				UserID.create(loginData.getOrganisationID(), loginData.getUserID()),
 				fetchGroups, maxFetchDepth, new ProgressMonitorWrapper(monitor)
-			);
+		);
 	}
-	
+
 	protected transient Properties initialContextProperties = null;
 	protected transient InitialContext initialContext = null;
 
@@ -825,20 +835,20 @@ extends AbstractEPProcessor
 	}
 
 //	/**
-//	 * @deprecated Do not use anymore! Use
-//	 */
+//	* @deprecated Do not use anymore! Use
+//	*/
 //	@Deprecated
 //	public InitialContext getInitialContext() throws NamingException, LoginException
 //	{
-////		logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
-////		doLogin();
-////		logger.debug("getInitialContext(): logged in"); //$NON-NLS-1$
-////		if (initialContext != null)
-////			return initialContext;
-////
-////		logger.debug("getInitialContext(): creating new initctx."); //$NON-NLS-1$
-////		initialContext = new InitialContext(getInitialContextProperties());
-////		return initialContext;
+////	logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
+////	doLogin();
+////	logger.debug("getInitialContext(): logged in"); //$NON-NLS-1$
+////	if (initialContext != null)
+////	return initialContext;
+
+////	logger.debug("getInitialContext(): creating new initctx."); //$NON-NLS-1$
+////	initialContext = new InitialContext(getInitialContextProperties());
+////	return initialContext;
 //	}
 
 	/**
@@ -964,6 +974,47 @@ extends AbstractEPProcessor
 	}
 
 
+
+
+	protected void notifyLoginStateBeforeChangeListeners(int loginState){
+
+		synchronized (loginStateListenerRegistry) {
+			try {
+				currLoginState = loginState;
+				if (currLoginState == LOGINSTATE_OFFLINE)
+					lastWorkOfflineDecisionTime = System.currentTimeMillis();
+
+				checkProcessing();
+
+				for (Iterator it = new LinkedList(loginStateListenerRegistry).iterator(); it.hasNext();) {
+					try {
+						LoginStateListenerRegistryItem item = (LoginStateListenerRegistryItem)it.next();
+						item.getLoginStateListener().loginStateBeforeChange(loginState,item.getAction());
+					} catch (Throwable t) {
+						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
+					}
+				}
+			} catch (Throwable t) {
+				logger.warn("Cought exception while notifying LoginStateListener. Abort.", t); //$NON-NLS-1$
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	protected void notifyLoginStateListeners(int loginState){
 
 		synchronized (loginStateListenerRegistry) {
@@ -975,9 +1026,9 @@ extends AbstractEPProcessor
 				checkProcessing();
 
 				if (LOGINSTATE_LOGGED_IN == loginState && objectID2PCClassNotificationInterceptor == null) {
-						objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor();
-						SelectionManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
-						JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
+					objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor();
+					SelectionManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
+					JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 				}
 
 				if (LOGINSTATE_LOGGED_IN != loginState && objectID2PCClassNotificationInterceptor != null) {
@@ -1095,5 +1146,5 @@ extends AbstractEPProcessor
 
 		return loginResult;
 	}
-	
+
 }

@@ -526,6 +526,12 @@ public class LoginDialog extends TitleAreaDialog
 						Display.getDefault().asyncExec(runnable);
 				}
 			}
+
+			@Override
+			public void loginStateBeforeChange(int loginState, IAction action) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 	}
 

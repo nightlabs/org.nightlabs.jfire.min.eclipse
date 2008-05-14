@@ -155,4 +155,11 @@ extends LSDWorkbenchWindowActionDelegate
 		this.action = action;
 		super.selectionChanged(action, selection);
 	}
+
+
+	@Override
+	public void loginStateBeforeChange(int loginState, IAction action) {
+		// TODO Auto-generated method stub
+		
+	}
 }

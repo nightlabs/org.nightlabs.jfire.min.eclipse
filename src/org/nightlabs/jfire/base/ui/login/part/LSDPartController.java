@@ -110,4 +110,10 @@ public class LSDPartController extends PartController implements LoginStateListe
 		super.registerPart(part, layout);
 		Login.loginAsynchronously();
 	}
+
+	@Override
+	public void loginStateBeforeChange(int loginState, IAction action) {
+		// TODO Auto-generated method stub
+		
+	}
 }
