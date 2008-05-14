@@ -55,7 +55,7 @@ extends EventObject
 
 
 	/**
-	 * @return Returns the new Log State.
+	 * @return the new login state.
 	 */
 	public LoginState getNewLoginState()
 	{
@@ -63,9 +63,9 @@ extends EventObject
 	}
 
 	/**
-	 * @return Returns the Old log State.
+	 * @return the old login state.
 	 */
-	public LoginState getOldLogState()
+	public LoginState getOldLoginState()
 	{
 		return this.oldLoginState;
 	}
