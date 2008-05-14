@@ -34,11 +34,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.resource.SharedImages.ImageDimension;
 import org.nightlabs.base.ui.resource.SharedImages.ImageFormat;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
@@ -67,7 +69,7 @@ extends LSDWorkbenchWindowActionDelegate
 	@Override
 	public void init(IWorkbenchWindow window) {
 		super.init(window);
-		
+
 		if (loginIcon_menu == null)
 			loginIcon_menu = SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginAction.class, "Login", ImageDimension._16x16, ImageFormat.png); //$NON-NLS-1$
 
@@ -79,13 +81,13 @@ extends LSDWorkbenchWindowActionDelegate
 
 		if (logoutIcon_toolbar == null)
 			logoutIcon_toolbar = SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginAction.class, "Logout", ImageDimension._24x24, ImageFormat.png); //$NON-NLS-1$
-		
+
 		if (Login.isLoggedIn() && action != null) {
-			afterLoginStateChange(Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action);
+			afterLoginStateChange(new LoginStateChangeEvent(this,Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action));
 		}
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
@@ -100,7 +102,7 @@ extends LSDWorkbenchWindowActionDelegate
 					Login.getLogin(false).setForceLogin(true);
 					Login.getLogin();
 				} catch (LoginException e) {
-					if (Login.sharedInstance().getLoginState() != Login.LOGINSTATE_OFFLINE)
+					if (Login.sharedInstance().getLoginState() != LoginState.OFFLINE)
 						ExceptionHandlerRegistry.asyncHandleException(e);
 					logger.error("Login failed",e); //$NON-NLS-1$
 				}
@@ -112,15 +114,16 @@ extends LSDWorkbenchWindowActionDelegate
 	}
 
 	@Override
-	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+	public void beforeLoginStateChange(LoginStateChangeEvent event) {
 		// nothing to do here.
 	}
 
 	@Override
-	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action)
+	public void afterLoginStateChange(LoginStateChangeEvent event)
+
 	{
-		super.afterLoginStateChange(oldLoginState, newLoginState, action);
-		
+		super.afterLoginStateChange(event);
+
 		ImageDescriptor loginIcon = null;
 		ImageDescriptor logoutIcon = null;
 
@@ -135,29 +138,33 @@ extends LSDWorkbenchWindowActionDelegate
 		else
 			throw new IllegalStateException("This action.id does not end on #menu or #toolbar!"); //$NON-NLS-1$
 
-		switch (newLoginState) {
-			case Login.LOGINSTATE_LOGGED_IN:
-				action.setImageDescriptor(logoutIcon);
-				action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_loggedIn")); //$NON-NLS-1$
-				action.setHoverImageDescriptor(logoutIcon);
-			break;
-			case Login.LOGINSTATE_LOGGED_OUT:
-				action.setImageDescriptor(loginIcon);
-				action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_loggedOut")); //$NON-NLS-1$
-				action.setHoverImageDescriptor(loginIcon);
-			break;
-			case Login.LOGINSTATE_OFFLINE:
-				action.setImageDescriptor(loginIcon);
-				action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_offline")); //$NON-NLS-1$
-				action.setHoverImageDescriptor(loginIcon);
-			break;
+		if(event.getNewLoginState()== LoginState.LOGGED_IN)
+		{
+			action.setImageDescriptor(logoutIcon);
+			action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_loggedIn")); //$NON-NLS-1$
+			action.setHoverImageDescriptor(logoutIcon);
 		}
-	}
+
+		if(event.getNewLoginState() == LoginState.LOGGED_OUT)
+		{
+			action.setImageDescriptor(loginIcon);
+			action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_loggedOut")); //$NON-NLS-1$
+			action.setHoverImageDescriptor(loginIcon);
+		}
+
+		if(event.getNewLoginState() ==LoginState.OFFLINE)
+		{
+			action.setImageDescriptor(loginIcon);
+			action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_offline")); //$NON-NLS-1$
+			action.setHoverImageDescriptor(loginIcon);
+		}
 	
-	private IAction action = null;
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.action = action;
-		super.selectionChanged(action, selection);
-	}
+}
+
+private IAction action = null;
+@Override
+public void selectionChanged(IAction action, ISelection selection) {
+	this.action = action;
+	super.selectionChanged(action, selection);
+}
 }

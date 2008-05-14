@@ -37,7 +37,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 
 /**
@@ -143,8 +145,11 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	 * Default implementation of loginStateChanged does nothing.
 	 * @see LoginStateListener#afterLoginStateChange(int, int, IAction)
 	 */
-	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+	public void afterLoginStateChange(LoginStateChangeEvent event) {
 //		logger.info("loginStateChanged to "+loginState+" for action "+action.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
+
+
+
 
 }

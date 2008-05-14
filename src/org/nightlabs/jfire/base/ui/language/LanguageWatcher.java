@@ -36,9 +36,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IAction;
 import org.nightlabs.base.ui.language.LanguageManager;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 import org.nightlabs.jfire.language.Language;
 import org.nightlabs.jfire.language.LanguageException;
@@ -55,22 +57,22 @@ import org.nightlabs.language.LanguageCf;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class LanguageWatcher implements LoginStateListener {
-	
+
 	/**
 	 * LOG4J logger used by this class
 	 */
 	private static final Logger logger = Logger.getLogger(LanguageWatcher.class);
-	
+
 	private Map<String, Boolean> languageChecks = new HashMap<String, Boolean>();
 	private static LanguageWatcher sharedInstance;
-	
+
 	private boolean isLanguageChecked(String userName) {
 		if (!languageChecks.containsKey(userName))
 			return false;
 		Boolean checked = languageChecks.get(userName);
 		return checked.booleanValue();
 	}
-	
+
 	private void setLanguageChecked(String userName, boolean checked) {
 		languageChecks.put(userName,new Boolean(checked));
 	}
@@ -78,20 +80,19 @@ public class LanguageWatcher implements LoginStateListener {
 	/* non javadoc
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
-		switch (newLoginState) {
-			case Login.LOGINSTATE_LOGGED_IN:
-				logger.debug("loginStateChanged(..): syncing languages"); //$NON-NLS-1$
-				String userName = Login.sharedInstance().getPrincipalName();
-				if (!isLanguageChecked(userName)) {
-					Delegate delegate = new Delegate();
-					delegate.syncLanguages();
-					delegate.checkUserLanguage();
-					setLanguageChecked(userName,true);
-				}
-				break;
-			default:
-				break;
+	public void afterLoginStateChange(LoginStateChangeEvent event)
+	{
+		if( event.getNewLoginState() == LoginState.LOGGED_IN)
+		{
+			logger.debug("loginStateChanged(..): syncing languages"); //$NON-NLS-1$
+			String userName = Login.sharedInstance().getPrincipalName();
+			if (!isLanguageChecked(userName)) {
+				Delegate delegate = new Delegate();
+				delegate.syncLanguages();
+				delegate.checkUserLanguage();
+				setLanguageChecked(userName,true);
+			}
+
 		}
 	}
 
@@ -157,7 +158,7 @@ public class LanguageWatcher implements LoginStateListener {
 						if (namesCount != langCf.getName().getTexts().size())
 							localLanguageManager.makeDirty(langCf);
 					}
-					
+
 					boolean addedLanguage = false;
 					String languageID = langCf.getLanguageID();
 					if (!remoteLanguageIDSet.contains(languageID)) {
@@ -185,25 +186,25 @@ public class LanguageWatcher implements LoginStateListener {
 
 	}
 
-	
+
 	public static LanguageWatcher sharedInstance() {
 		if (sharedInstance == null) {
 			sharedInstance = new LanguageWatcher();
 		}
 		return sharedInstance;
 	}
-	
+
 //	/**
-//	 * Registeres the shared intance as LoginStateListener
-//	 */
+//	* Registeres the shared intance as LoginStateListener
+//	*/
 //	public static void registerAsLoginStateListener() {
-//		try {
-//			Login.getLogin(false).addLoginStateListener(getSharedInstance());
-//		} catch (LoginException e) {
-//			throw
-//		}
+//	try {
+//	Login.getLogin(false).addLoginStateListener(getSharedInstance());
+//	} catch (LoginException e) {
+//	throw
 //	}
-	
+//	}
+
 	static {
 		try {
 			Config.sharedInstance().createConfigModule(GlobalL10nSettings.class);
@@ -212,10 +213,10 @@ public class LanguageWatcher implements LoginStateListener {
 		}
 	}
 
-@Override
-public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
-	// TODO Auto-generated method stub
-	
-}
+	@Override
+	public void beforeLoginStateChange(LoginStateChangeEvent event) {
+		// TODO Auto-generated method stub
+
+	}
 
 }

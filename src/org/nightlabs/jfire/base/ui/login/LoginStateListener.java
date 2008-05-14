@@ -52,7 +52,7 @@ public interface LoginStateListener {
 	 * @see Login#addLoginStateListener(LoginStateListener)
 	 * @see Login#addLoginStateListener(LoginStateListener, IAction)
 	 */
-	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action);
+	public void afterLoginStateChange(LoginStateChangeEvent event);
 
 	/**
 	 * Called before the login state changes. Especially in case of logout, this
@@ -61,5 +61,5 @@ public interface LoginStateListener {
 	 * @param newLoginState the new login state, the system is about to switch to.
 	 * @param action
 	 */
-	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action);
+	public void beforeLoginStateChange(LoginStateChangeEvent event);
 }

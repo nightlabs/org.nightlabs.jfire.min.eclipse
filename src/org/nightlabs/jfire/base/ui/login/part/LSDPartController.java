@@ -32,9 +32,11 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.part.ControllablePart;
 import org.nightlabs.base.ui.part.PartController;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 
 /**
@@ -81,11 +83,19 @@ public class LSDPartController extends PartController implements LoginStateListe
 		Login.loginAsynchronously();
 	}
 
-	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
-		if (newLoginState != Login.LOGINSTATE_LOGGED_IN)
+	public void afterLoginStateChange(LoginStateChangeEvent event) {
+		if (event.getNewLoginState() != LoginState.LOGGED_IN)
 			disposePartContents();
 		updateParts();
 	}
+	
+	
+	@Override
+	public void beforeLoginStateChange(LoginStateChangeEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 	private static LSDPartController sharedInstance;
 	
@@ -111,9 +121,5 @@ public class LSDPartController extends PartController implements LoginStateListe
 		Login.loginAsynchronously();
 	}
 
-	@Override
-	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

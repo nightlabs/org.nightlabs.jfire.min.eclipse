@@ -56,6 +56,7 @@ import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry.Mode;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.base.ui.job.Job;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.notification.SelectionManager;
 import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.util.RCPUtil;
@@ -76,6 +77,7 @@ import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.math.Base62Coder;
+import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -114,22 +116,17 @@ extends AbstractEPProcessor
 
 	/**
 	 * Loginstate: Logged in
-	 * @see LoginStateListener
-	 */
-	public static final int LOGINSTATE_LOGGED_IN = 0;
-	/**
+	 * 
 	 * Loginstate: Logged out
-	 * @see LoginStateListener
-	 */
-	public static final int LOGINSTATE_LOGGED_OUT = 1;
-	/**
+
 	 * Loginstate: Working OFFLINE indicating also that the user wants
 	 * to stay OFFLINE and causing the Login to fail for a certain time
 	 * when not forced.
 	 * @see LoginStateListener
-	 */
-	public static final int LOGINSTATE_OFFLINE = 2;
-
+	 */	
+	
+	//public enum LoginState { LOGINSTATE_LOGGED_IN, LOGINSTATE_LOGGED_OUT, LOGINSTATE_OFFLINE }
+	
 
 	private static Login sharedInstanceLogin = null;
 
@@ -137,7 +134,7 @@ extends AbstractEPProcessor
 
 	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
-	private volatile int currLoginState = LOGINSTATE_LOGGED_OUT;
+	private volatile LoginState  currLoginState = LoginState.LOGGED_OUT;
 
 
 	/**
@@ -272,7 +269,7 @@ extends AbstractEPProcessor
 	public static boolean isLoggedIn() {
 		if (sharedInstanceLogin == null)
 			return false;
-		return sharedInstanceLogin.currLoginState == LOGINSTATE_LOGGED_IN;
+		return sharedInstanceLogin.currLoginState == LoginState.LOGGED_IN;
 	}
 
 	/**
@@ -280,7 +277,7 @@ extends AbstractEPProcessor
 	 * or {@link Login#LOGINSTATE_OFFLINE}
 	 * @return
 	 */
-	public int getLoginState() {
+	public LoginState getLoginState() {
 		return currLoginState;
 	}
 
@@ -296,7 +293,7 @@ extends AbstractEPProcessor
 	private void logout(boolean doNotify) {
 		Exception ex = null;
 
-		notifyLoginStateListeners_beforeChange(LOGINSTATE_LOGGED_OUT);
+		notifyLoginStateListeners_beforeChange(LoginState.LOGGED_OUT);
 
 		try {
 			Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
@@ -309,17 +306,17 @@ extends AbstractEPProcessor
 			ex = e;
 		}
 		if (doNotify) {
-			notifyLoginStateListeners_afterChange(LOGINSTATE_LOGGED_OUT);
+			notifyLoginStateListeners_afterChange(LoginState.LOGGED_OUT);
 		}
 		if (ex != null)
 			throw new RuntimeException(ex);
 	}
 
 	public void workOffline() {
-		if (currLoginState != LOGINSTATE_OFFLINE) {
+		if (currLoginState != LoginState.OFFLINE) {
 			logout(false);
-			currLoginState = LOGINSTATE_OFFLINE;
-			notifyLoginStateListeners_afterChange(LOGINSTATE_OFFLINE);
+			currLoginState = LoginState.OFFLINE;
+			notifyLoginStateListeners_afterChange(LoginState.OFFLINE);
 		}
 
 	}
@@ -405,7 +402,7 @@ extends AbstractEPProcessor
 						});
 					}
 					forceLogin = false;
-					currLoginState = LOGINSTATE_LOGGED_IN;
+					currLoginState = LoginState.LOGGED_IN;
 				} catch(Throwable t){
 					logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
 					loginResult.setException(t);
@@ -497,9 +494,9 @@ extends AbstractEPProcessor
 	 */
 	private void doLogin(final boolean forceLogoutFirst) throws LoginException
 	{
-		int oldLoginstate = currLoginState;
+		LoginState oldLoginstate = currLoginState;
 		logger.debug("Login requested by thread "+Thread.currentThread());		 //$NON-NLS-1$
-		if ((currLoginState == LOGINSTATE_OFFLINE)){
+		if ((currLoginState == LoginState.OFFLINE)){
 			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
 			if (!forceLogin && elapsedTime < WORK_OFFLINE_TIMEOUT) {
 				LoginException lEx = new LoginException();
@@ -508,7 +505,7 @@ extends AbstractEPProcessor
 			}
 		}
 
-		if (getLoginState() == LOGINSTATE_LOGGED_IN) {
+		if (getLoginState() == LoginState.LOGGED_IN) {
 			logger.debug("Already logged in, returning. Thread "+Thread.currentThread()); //$NON-NLS-1$
 			if (forceLogin) forceLogin = false;
 			return;
@@ -579,7 +576,7 @@ extends AbstractEPProcessor
 		if (!loginResult.isSuccess()) {
 			if (loginResult.isWorkOffline()) {
 				// if user decided to work OFFLINE first notify loginstate listeners
-				currLoginState = LOGINSTATE_OFFLINE;
+				currLoginState = LoginState.OFFLINE;
 				notifyLoginStateListeners_afterChange(currLoginState);
 				// but then still throw Exception with WorkOffline as cause
 				LoginException lEx = new LoginException(loginResult.getMessage());
@@ -591,7 +588,7 @@ extends AbstractEPProcessor
 		}
 
 		// We should be logged in now, open the cache if not already open
-		if (currLoginState == LOGINSTATE_LOGGED_IN) {
+		if (currLoginState == LoginState.LOGGED_IN) {
 			try {
 				Cache.sharedInstance().open(getSessionID()); // the cache is opened implicitely now by default, but it is closed *after* a logout.
 			} catch (Throwable t) {
@@ -910,7 +907,12 @@ extends AbstractEPProcessor
 			loginStateListenerRegistry.add(regItem);
 			// we cannot trigger the beforeLoginStateChange here - that doesn't make much sense... or should we? marco.
 			// and we pass the same value as old and new value since don't really know the old value. does this make sense? marco.
-			loginStateListener.afterLoginStateChange(getLoginState(), getLoginState(), action);
+		
+			LoginStateChangeEvent event = new LoginStateChangeEvent(this,
+					getLoginState(), getLoginState(), 
+					action);
+			
+			loginStateListener.afterLoginStateChange(event);
 		}
 	}
 
@@ -964,14 +966,21 @@ extends AbstractEPProcessor
 		}
 	}
 
-	protected void notifyLoginStateListeners_beforeChange(int newLoginState) {
+	protected void notifyLoginStateListeners_beforeChange(LoginState newLoginState) {
 		synchronized (loginStateListenerRegistry) {
 			try {
 				checkProcessing();
 
 				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
 					try {
-						item.getLoginStateListener().beforeLoginStateChange(currLoginState, newLoginState, item.getAction());
+						
+						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
+								getLoginState(), newLoginState, 
+								item.getAction());
+						
+						item.getLoginStateListener().beforeLoginStateChange(event);
+						
+						
 					} catch (Throwable t) {
 						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
 					}
@@ -982,23 +991,23 @@ extends AbstractEPProcessor
 		}
 	}
 
-	protected void notifyLoginStateListeners_afterChange(int newLoginState) {
+	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
 		synchronized (loginStateListenerRegistry) {
 			try {
-				int oldLoginState = currLoginState;
+				LoginState oldLoginState = currLoginState;
 				currLoginState = newLoginState;
-				if (currLoginState == LOGINSTATE_OFFLINE)
+				if (currLoginState == LoginState.OFFLINE)
 					lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
 				checkProcessing();
 
-				if (LOGINSTATE_LOGGED_IN == newLoginState && objectID2PCClassNotificationInterceptor == null) {
+				if (LoginState.LOGGED_IN == newLoginState && objectID2PCClassNotificationInterceptor == null) {
 					objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor();
 					SelectionManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 					JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 				}
 
-				if (LOGINSTATE_LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
+				if (LoginState.LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
 					SelectionManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					JDOLifecycleManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					objectID2PCClassNotificationInterceptor = null;
@@ -1006,7 +1015,12 @@ extends AbstractEPProcessor
 
 				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
 					try {
-						item.getLoginStateListener().afterLoginStateChange(oldLoginState, newLoginState, item.getAction());
+						
+						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
+								oldLoginState, newLoginState, 
+								item.getAction());
+						
+						item.getLoginStateListener().afterLoginStateChange(event);
 					} catch (Throwable t) {
 						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
 					}

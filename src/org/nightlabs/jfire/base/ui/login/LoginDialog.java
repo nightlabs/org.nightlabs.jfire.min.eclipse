@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComboComposite;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.resource.SharedImages.ImageDimension;
 import org.nightlabs.config.Config;
@@ -512,8 +513,8 @@ public class LoginDialog extends TitleAreaDialog
 		// in a dead-lock. There is no API to find out, whether the workbench is really up-and-running, hence we try it out and set the flag 'workbenchIsCompletelyUp'.
 		boolean async = workbenchIsCompletelyUp;
 		checkLogin(async, new org.eclipse.core.runtime.NullProgressMonitor(), new LoginStateListener() {
-			public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
-				if (newLoginState == Login.LOGINSTATE_LOGGED_IN) {
+			public void afterLoginStateChange(LoginStateChangeEvent event) {
+				if (event.getNewLoginState() == LoginState.LOGGED_IN) {
 					Runnable runnable = new Runnable() {
 						public void run() {
 							cancelled = false;
@@ -528,7 +529,7 @@ public class LoginDialog extends TitleAreaDialog
 			}
 
 			@Override
-			public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+			public void beforeLoginStateChange(LoginStateChangeEvent event) {
 				// TODO Auto-generated method stub
 				
 			}
@@ -815,13 +816,24 @@ public class LoginDialog extends TitleAreaDialog
 		monitor.worked(1);
 //		return testResult.isSuccess();
 
+		
+		LoginStateChangeEvent event;
+		
+		
 		if (loginStateListener != null) {
 			if (testResult.isSuccess())
-				loginStateListener.afterLoginStateChange(
-						Login.LOGINSTATE_LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */, Login.LOGINSTATE_LOGGED_IN, null);
+
+			 event = new LoginStateChangeEvent(this,
+						LoginState.LOGGED_OUT
+						/* I think this is not used, but we still pass a meaningful value. */, 
+						LoginState.LOGGED_IN, null);				
 			else
-				loginStateListener.afterLoginStateChange(
-						Login.LOGINSTATE_LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */, Login.LOGINSTATE_LOGGED_OUT, null);
+				 event = new LoginStateChangeEvent(this,
+							LoginState.LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */, 
+							LoginState.LOGGED_OUT, null);
+	
+			loginStateListener.afterLoginStateChange(event);
+			
 		}
 
 	}

@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.action.AbstractContributionItem;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.login.action.LoginAction;
@@ -33,7 +34,7 @@ implements LoginStateListener
 	private XComposite wrapper;
 	private Label image;
 	private Label text;
-	
+
 	public LoginStateStatusLineContribution(String name, boolean fillToolBar, boolean fillCoolBar, boolean fillMenuBar, boolean fillComposite) {
 		super(LoginStateStatusLineContribution.class.getName(), name, fillToolBar, fillCoolBar, fillMenuBar, fillComposite);
 		init();
@@ -43,7 +44,7 @@ implements LoginStateListener
 		super(LoginStateStatusLineContribution.class.getName(), name);
 		init();
 	}
-	
+
 	private void init() {
 		try {
 			Login.getLogin(false).addLoginStateListener(this);
@@ -53,7 +54,7 @@ implements LoginStateListener
 	}
 
 	private String earlyLoginText;
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.action.AbstractContributionItem#createControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -92,24 +93,22 @@ implements LoginStateListener
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void afterLoginStateChange(int oldLoginState, final int newLoginState, final IAction action)
+	public void afterLoginStateChange(final LoginStateChangeEvent event)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				Login login = Login.sharedInstance();
 
 				String txt = null;
-				switch (newLoginState) {
-					case Login.LOGINSTATE_LOGGED_IN:
-						txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
-						break;
-					case Login.LOGINSTATE_LOGGED_OUT:
-						txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedOutStatus"); //$NON-NLS-1$
-						break;
-					case Login.LOGINSTATE_OFFLINE:
-						txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.offlineStatus"); //$NON-NLS-1$
-						break;
-				}
+
+				if(event.getNewLoginState() == LoginState.LOGGED_IN)
+					txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
+
+				if(event.getNewLoginState() == LoginState.LOGGED_OUT)
+					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedOutStatus"); //$NON-NLS-1$
+
+				if(event.getNewLoginState() == LoginState.OFFLINE)
+					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.offlineStatus"); //$NON-NLS-1$
 
 				if (text == null || text.isDisposed()) {
 					earlyLoginText = txt;
@@ -125,8 +124,8 @@ implements LoginStateListener
 	}
 
 	@Override
-	public void beforeLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+	public void beforeLoginStateChange(LoginStateChangeEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
