@@ -1,0 +1,74 @@
+package org.nightlabs.jfire.base.ui.login;
+
+import java.util.EventObject;
+
+import org.eclipse.jface.action.IAction;
+import org.nightlabs.base.ui.login.LoginState;
+
+
+/**
+ * @author Fitas Amine - fitas at nightlabs dot de
+ */
+
+
+
+public class LoginStateChangeEvent
+extends EventObject
+{
+
+	/**
+	 * The serial version of this class.
+	 * */
+	private static final long serialVersionUID = 1L;
+
+	private LoginState oldLoginState  = null;
+
+	private LoginState newLoginState  = null;
+
+	private IAction action;
+
+
+
+
+	public LoginStateChangeEvent(Object source, LoginState oldlogstate ,LoginState newlogstate , IAction action )
+	{
+		super(source);
+
+		if (oldlogstate == null && newlogstate == null)
+			throw new NullPointerException("the loginState are null!!");
+
+		this.oldLoginState = oldlogstate;
+		this.newLoginState = newlogstate;
+		this.action = action;
+
+	}
+
+
+
+	/**
+	 * @return Returns the Action
+	 */
+	public IAction getAction()
+	{
+		return this.action;
+	}
+
+
+	/**
+	 * @return Returns the new Log State.
+	 */
+	public LoginState getNewLoginState()
+	{
+		return this.newLoginState;
+	}
+
+	/**
+	 * @return Returns the Old log State.
+	 */
+	public LoginState getOldLogState()
+	{
+		return this.oldLoginState;
+	}
+
+
+}
