@@ -18,7 +18,7 @@ public class RoleGroupSecurityPreferencesModel extends BaseModel
 	/**
 	 * The included role groups.
 	 */
-	private Collection<RoleGroup> roleGroups = Collections.emptySet();
+	private Collection<RoleGroup> roleGroups = new HashSet<RoleGroup>();
 
 	/**
 	 * The included role groups inherited from UserGroups.

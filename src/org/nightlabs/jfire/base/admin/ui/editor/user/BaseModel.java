@@ -18,6 +18,6 @@ public class BaseModel
 	
 	protected void modelChanged() {
 		for (Object listener : changeListeners.getListeners())
-			((ModelChangeListener)listener).modelChanged(new ModelChangeEvent());
+			((ModelChangeListener)listener).modelChanged(new ModelChangeEvent(this));
 	}
 }

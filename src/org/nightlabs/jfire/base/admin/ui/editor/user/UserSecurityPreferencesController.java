@@ -215,7 +215,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 						JDOHelper.getObjectIds(userModel.getUserGroups()),
 						getAuthorityID(),
 						new String[] {RoleGroup.FETCH_GROUP_THIS},
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 
 				if (reloadRoleGroupsFromUserGroupsJob == this) {
 					roleGroupModel.setRoleGroupsFromUserGroups(roleGroups);
