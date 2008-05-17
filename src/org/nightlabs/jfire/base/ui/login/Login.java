@@ -40,7 +40,6 @@ import javax.security.auth.login.LoginException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -54,7 +53,6 @@ import org.eclipse.ui.PlatformUI;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry.Mode;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
-import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.notification.SelectionManager;
@@ -77,7 +75,6 @@ import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.math.Base62Coder;
-import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -1058,12 +1055,8 @@ extends AbstractEPProcessor
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception
 	{
 		if (LOGIN_STATE_LISTENER_ELEMENT.equals(element.getName())) {
-			try {
 				LoginStateListener listener = (LoginStateListener) element.createExecutableExtension(CLASS_ELEMENT);
 				addLoginStateListener(listener);
-			} catch (CoreException e) {
-				throw new EPProcessorException(e);
-			}
 		}
 	}
 
