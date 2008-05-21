@@ -24,6 +24,7 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -61,6 +62,7 @@ import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
+import org.nightlabs.util.CollectionUtil;
 
 /**
  * Controller class for the security preferences of a user.
@@ -162,12 +164,16 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 				userModel.setUser(user);
 
 				// load user groups
-				Collection<UserGroup> availableUserGroups = UserDAO.sharedInstance().getUserGroups(
+				Collection<UserGroup> availableUserGroups = CollectionUtil.castCollection( 
+					UserDAO.sharedInstance().getUsers(
+						Login.getLogin().getOrganisationID(),
+						Collections.singleton(User.USERTYPE_USERGROUP),
 						new String[] {
 								User.FETCH_GROUP_THIS_USER },
 //								FetchGroupsPerson.FETCH_GROUP_PERSON_FULL_DATA },
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-								pMonitor);
+								pMonitor)
+				);
 				//model.setUserGroups(availableUserGroups);
 
 //				Collection<UserGroup> excludedUserGroups = new HashSet<UserGroup>(availableUserGroups);

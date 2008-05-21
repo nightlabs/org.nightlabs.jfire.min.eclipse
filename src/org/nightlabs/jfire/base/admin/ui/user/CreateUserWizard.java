@@ -36,8 +36,8 @@ import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserManager;
-import org.nightlabs.jfire.security.UserManagerUtil;
+import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -89,7 +89,7 @@ public class CreateUserWizard extends DynamicPathWizard
 			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
 			newUser.getPerson().deflate();
 
-			UserManager userManager = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			userManager.saveUser(newUser, cuPage.getPassword1());
 			return true;
 		}

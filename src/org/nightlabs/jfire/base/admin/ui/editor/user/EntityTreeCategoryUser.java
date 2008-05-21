@@ -34,8 +34,10 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
+import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserLifecycleListenerFilter;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -119,6 +121,8 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	protected Collection<User> retrieveJDOObjects(ProgressMonitor monitor)
 	{
 		return UserDAO.sharedInstance().getUsers(
+				IDGenerator.getOrganisationID(),
+				Collections.singleton(User.USERTYPE_USER),
 				FETCH_GROUPS_USER,
 				1,
 				monitor);

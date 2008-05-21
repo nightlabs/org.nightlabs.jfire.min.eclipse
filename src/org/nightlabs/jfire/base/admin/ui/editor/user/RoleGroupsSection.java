@@ -73,7 +73,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 */
 	public RoleGroupsSection(FormPage page, Composite parent, boolean showTotalAvailColumn)
 	{
-		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
 		createClient(getSection(), page.getEditor().getToolkit(), showTotalAvailColumn);
 	}
 

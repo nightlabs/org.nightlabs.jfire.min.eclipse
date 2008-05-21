@@ -4,14 +4,18 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.jdo.FetchPlan;
+import javax.jdo.JDOHelper;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
@@ -19,6 +23,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
+import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.RoleGroup;
@@ -32,9 +37,9 @@ import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
 import org.nightlabs.jfire.security.id.RoleGroupID;
-import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
+import org.nightlabs.util.Util;
 
 /**
  * An instance of this class should be used by all <code>AuthorityPageController</code>s, i.e. whenever the <code>Authority</code>
@@ -74,30 +79,52 @@ public class AuthorityPageControllerHelper
 		Authority.FETCH_GROUP_NAME
 	};
 
+	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, ProgressMonitor monitor)
+	{
+		load(authorityTypeID, authorityID, null, monitor);
+	}
+
+	public void load(AuthorityTypeID authorityTypeID, Authority newAuthority, ProgressMonitor monitor)
+	{
+		load(authorityTypeID, null, newAuthority, monitor);
+	}
+
 	/**
 	 * Load the data.
 	 *
 	 * @param authorityTypeID the id of the {@link AuthorityType} or <code>null</code> to clear all data. 
-	 * @param authorityID the id of the {@link Authority}. Can be <code>null</code> to indicate that there
+	 * @param authorityID the id of the {@link Authority}. Can be <code>null</code> if <code>newAuthority</code>
+	 *		is passed instead or to indicate that there
 	 *		is no authority assigned to the object which is currently edited.
+	 * @param newAuthority If a new <code>Authority</code> has been created (and not yet persisted), it has no object-id
+	 *		assigned. Hence, instead of passing the <code>authorityID</code>, you can pass the new authority.
 	 * @throws NamingException if a problem with JNDI arises.
 	 * @throws CreateException if an EJB cannot be created.
 	 * @throws LoginException if login fails.
 	 * @throws RemoteException if communication via RMI fails.
 	 */
-	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, ProgressMonitor monitor)
-	throws RemoteException, LoginException, CreateException, NamingException
+	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
 	{
 		monitor.beginTask("Loading authority data", 100);
 
-		if (authorityTypeID == null)
+		if (authorityTypeID == null) {
 			authorityID = null;
+			newAuthority = null;
+		}
+
+		if (JDOHelper.getObjectId(newAuthority) != null) {
+			authorityID = (AuthorityID) JDOHelper.getObjectId(newAuthority);
+			newAuthority = null;
+		}
+
+		if (authorityID != null)
+			newAuthority = null;
 
 		this.authorityTypeID = authorityTypeID;
 		this.authorityID = authorityID;
 
 		this.authorityType = null;
-		this.authority = null;
+		this.authority = newAuthority;
 
 		if (authorityTypeID == null) {
 			roleGroupsInAuthorityType = new HashSet<RoleGroup>();
@@ -124,22 +151,46 @@ public class AuthorityPageControllerHelper
 		roleGroupSecurityPreferencesModel2User = new HashMap<RoleGroupSecurityPreferencesModel, User>();
 		user2RoleGroupSecurityPreferencesModel = new HashMap<User, RoleGroupSecurityPreferencesModel>();
 		if (authorityID == null) {
-			monitor.worked(60);
+			if (this.authority == null) {
+				users = new HashMap<User, Boolean>();
+				monitor.worked(60);
+			}
+			else {
+				Collection<User> c = UserDAO.sharedInstance().getUsers(
+						IDGenerator.getOrganisationID(),
+						(String[])null,
+						FETCH_GROUPS_USER,
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+						new SubProgressMonitor(monitor, 60));
+
+				users = new HashMap<User, Boolean>(c.size());
+				for (User u : c)
+					users.put(u, Boolean.FALSE);
+			}
 		}
 		else {
-			authority = AuthorityDAO.sharedInstance().getAuthority(
+			authority = Util.cloneSerializable(AuthorityDAO.sharedInstance().getAuthority(
 					authorityID,
 					FETCH_GROUPS_AUTHORITY,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-					new SubProgressMonitor(monitor, 20));
+					new SubProgressMonitor(monitor, 20)));
 
 			Map<User, RoleGroupSetCarrier> user2RoleGroupSetCarrier = RoleGroupDAO.sharedInstance().getRoleGroupSetCarriers(
 					authorityID,
 					FETCH_GROUPS_USER, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 					FETCH_GROUPS_ROLE_GROUP, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+					true,
 					new SubProgressMonitor(monitor, 35));
 
+			users = new HashMap<User, Boolean>(user2RoleGroupSetCarrier.size());
+
 			for (Map.Entry<User, RoleGroupSetCarrier> me : user2RoleGroupSetCarrier.entrySet()) {
+				if (me.getValue() == null) {
+					users.put(me.getKey(), Boolean.FALSE);
+					continue;
+				}
+				users.put(me.getKey(), Boolean.TRUE);
+
 				RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = new RoleGroupSecurityPreferencesModel();
 				roleGroupSecurityPreferencesModel.setAvailableRoleGroups(roleGroupsInAuthorityType);
 				roleGroupSecurityPreferencesModel.setRoleGroups(me.getValue().assigned);
@@ -156,6 +207,8 @@ public class AuthorityPageControllerHelper
 		usersToRemove = new HashSet<User>();
 
 		monitor.done();
+
+		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_AUTHORITY_LOADED, null, authority);
 	}
 
 	private ModelChangeListener roleGroupSecurityPreferencesModelChangeListener = new ModelChangeListener() {
@@ -174,7 +227,7 @@ public class AuthorityPageControllerHelper
 				// TODO do this!
 			}
 
-			propertyChangeSupport.firePropertyChange(PROPERTY_NAME_ROLE_GROUP_SECURITY_PREFERENCES_MODEL_CHANGED, roleGroupSecurityPreferencesModel, roleGroupSecurityPreferencesModel);
+			propertyChangeSupport.firePropertyChange(PROPERTY_NAME_ROLE_GROUP_SECURITY_PREFERENCES_MODEL_CHANGED, null, roleGroupSecurityPreferencesModel);
 		}
 	};
 
@@ -196,6 +249,7 @@ public class AuthorityPageControllerHelper
 	private Map<User, RoleGroupSecurityPreferencesModel> user2RoleGroupSecurityPreferencesModel = new HashMap<User, RoleGroupSecurityPreferencesModel>();
 	private Map<RoleGroupSecurityPreferencesModel, User> roleGroupSecurityPreferencesModel2User = new HashMap<RoleGroupSecurityPreferencesModel, User>();
 
+	private Map<User, Boolean> users = new HashMap<User, Boolean>();
 	private Set<User> usersToAdd = new HashSet<User>();
 	private Set<User> usersToRemove = new HashSet<User>();
 	private Set<RoleGroupSecurityPreferencesModel> changedModels = new HashSet<RoleGroupSecurityPreferencesModel>();
@@ -232,34 +286,113 @@ public class AuthorityPageControllerHelper
 		return Collections.unmodifiableMap(roleGroupSecurityPreferencesModel2User);
 	}
 
-	public void addUserToAuthority(UserID userID, ProgressMonitor monitor)
+	/**
+	 * Get all users with a flag indicating whether they are in the authority at the moment the data is loaded.
+	 * This flag does not change, when
+	 * {@link #addUserToAuthority(User)} or {@link #removeUserFromAuthority(User)} is called. It only changes,
+	 * when data was stored to the server and {@link #load(AuthorityTypeID, AuthorityID, Authority, ProgressMonitor)} has
+	 * been called again.
+	 *
+	 * @return all users of the local organisation with a flag indicating whether they are in the current authority or not.
+	 */
+	public Map<User, Boolean> getUsers() {
+		return Collections.unmodifiableMap(users);
+	}
+
+	public List<Map.Entry<User, Boolean>> createModifiableUserList()
+	{
+		List<Map.Entry<User, Boolean>> result = new ArrayList<Map.Entry<User,Boolean>>(users.size());
+
+		for (Map.Entry<User, Boolean> me : users.entrySet())
+			result.add(new UserBooleanMapEntry(me.getKey(), me.getValue()));
+
+		return result;
+	}
+
+	private class UserBooleanMapEntry implements Map.Entry<User, Boolean>
+	{
+		private User key;
+		private Boolean value;
+
+		public UserBooleanMapEntry(User key, Boolean value) {
+			if (key == null)
+				throw new IllegalArgumentException("key must not be null!");
+			if (value == null)
+				throw new IllegalArgumentException("value must not be null!");
+
+			this.key = key;
+			this.value = value;
+		}
+
+		@Override
+		public User getKey() {
+			return key;
+		}
+
+		@Override
+		public Boolean getValue() {
+			return value;
+		}
+
+		@Override
+		public Boolean setValue(Boolean value) {
+			if (value == null)
+				throw new IllegalArgumentException("value must not be null!");
+
+			Boolean oldValue = this.value;
+
+			if (!value.equals(oldValue)) {
+				if (value.booleanValue())
+					addUserToAuthority(key);
+				else
+					removeUserFromAuthority(key);
+
+				this.value = value;
+			}
+
+			return oldValue;
+		}
+	}
+
+	/**
+	 * Get the users that will be added to the authority when the data is stored to the server.
+	 *
+	 * @return the set of users to be added to the current authority.
+	 */
+	public Set<User> getUsersToAdd() {
+		return Collections.unmodifiableSet(usersToAdd);
+	}
+
+	/**
+	 * Get the users that will be removed from the authority when the data is stored to the server.
+	 *
+	 * @return the set of users to be removed from the current authority.
+	 */
+	public Set<User> getUsersToRemove() {
+		return Collections.unmodifiableSet(usersToRemove);
+	}
+
+	public void addUserToAuthority(User user)
 	{
 		if (authority == null)
 			throw new IllegalStateException("authority == null");
-		if (userID == null)
-			throw new IllegalArgumentException("userID == null");
+		if (user == null)
+			throw new IllegalArgumentException("user == null");
 
-		monitor.beginTask("Loading user", 100);
-		try {
-			User user = UserDAO.sharedInstance().getUser(userID, FETCH_GROUPS_USER, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 100));
+		if (user2RoleGroupSecurityPreferencesModel.containsKey(user))
+			return; // nothing to do - it's already there
 
-			if (user2RoleGroupSecurityPreferencesModel.containsKey(user))
-				return; // nothing to do - it's already there
+		usersToAdd.add(user);
+		usersToRemove.remove(user);
 
-			usersToAdd.add(user);
-			usersToRemove.remove(user);
+		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = new RoleGroupSecurityPreferencesModel();
+		roleGroupSecurityPreferencesModel.setAvailableRoleGroups(roleGroupsInAuthorityType);
+		roleGroupSecurityPreferencesModel.addModelChangeListener(roleGroupSecurityPreferencesModelChangeListener);
 
-			RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = new RoleGroupSecurityPreferencesModel();
-			roleGroupSecurityPreferencesModel.setAvailableRoleGroups(roleGroupsInAuthorityType);
-			roleGroupSecurityPreferencesModel.addModelChangeListener(roleGroupSecurityPreferencesModelChangeListener);
+		user2RoleGroupSecurityPreferencesModel.put(user, roleGroupSecurityPreferencesModel);
+		roleGroupSecurityPreferencesModel2User.put(roleGroupSecurityPreferencesModel, user);
 
-			user2RoleGroupSecurityPreferencesModel.put(user, roleGroupSecurityPreferencesModel);
-			roleGroupSecurityPreferencesModel2User.put(roleGroupSecurityPreferencesModel, user);
-
-			propertyChangeSupport.firePropertyChange(PROPERTY_NAME_USER_ADDED, user, user);
-		} finally {
-			monitor.done();
-		}
+		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_USER_ADDED, null, user);
 	}
 
 	public void removeUserFromAuthority(User user)
@@ -267,22 +400,29 @@ public class AuthorityPageControllerHelper
 		if (authority == null)
 			throw new IllegalStateException("authority == null");
 		if (user == null)
-			throw new IllegalArgumentException("userID == null");
+			throw new IllegalArgumentException("user == null");
 
 		if (!user2RoleGroupSecurityPreferencesModel.containsKey(user))
 			return; // nothing to do - it's not there
 
 		usersToAdd.remove(user);
 		usersToRemove.add(user);
+
 		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = user2RoleGroupSecurityPreferencesModel.remove(user);
 		roleGroupSecurityPreferencesModel2User.remove(roleGroupSecurityPreferencesModel);
 
-		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_USER_REMOVED, user, user);
+		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_USER_REMOVED, null, user);
 	}
 
 	//////////////////
 	// BEGIN PropertyChangeSupport
 	//////////////////
+	/**
+	 * The {@link #load(AuthorityTypeID, AuthorityID, Authority, ProgressMonitor)} method has been called (and is finished).
+	 * The loaded authority can be accessed by {@link PropertyChangeEvent#getNewValue()}.
+	 */
+	public static final String PROPERTY_NAME_AUTHORITY_LOADED = "authorityLoaded";
+
 	/**
 	 * A {@link PropertyChangeEvent} with this property name is fired, when a user has been removed from the
 	 * currently managed {@link Authority}. The affected user object can be accessed by

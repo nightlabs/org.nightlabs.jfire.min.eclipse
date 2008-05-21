@@ -38,8 +38,8 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.security.UserManager;
-import org.nightlabs.jfire.security.UserManagerUtil;
+import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 import org.nightlabs.jfire.security.id.UserID;
 
 /**
@@ -83,7 +83,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 			if("".equals(getUserGroupID()))  //$NON-NLS-1$
 				updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.errorUserGroupIDMissing")); //$NON-NLS-1$
 			else {
-				UserManager userManager = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+				JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 				if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserGroupID())))
 					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.errorUserGroupIDConflict")); //$NON-NLS-1$
 				else

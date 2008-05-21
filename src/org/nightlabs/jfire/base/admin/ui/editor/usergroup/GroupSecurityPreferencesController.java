@@ -43,6 +43,7 @@ import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.RoleGroupSetCarrier;
@@ -148,6 +149,8 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 
 				// load users
 				Collection<User> users = UserDAO.sharedInstance().getUsers(
+						IDGenerator.getOrganisationID(),
+						new String[] { User.USERTYPE_ORGANISATION, User.USERTYPE_USER },
 						new String[] {
 								User.FETCH_GROUP_THIS_USER},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,

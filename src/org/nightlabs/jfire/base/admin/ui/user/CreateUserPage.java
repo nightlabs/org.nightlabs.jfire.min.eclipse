@@ -42,8 +42,8 @@ import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserManager;
-import org.nightlabs.jfire.security.UserManagerUtil;
+import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 import org.nightlabs.jfire.security.id.UserID;
 
 /**
@@ -110,7 +110,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
       else {
       	// TODO we should ask for a list of all userIDs and cache it here - so we don't need to ask the server again and again
       	// especially, all expensive work should be done asynchronously - not on the UI thread!
-      	UserManager userManager = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+      	JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
       	if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserID())) == true)
       		updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDCollision")); //$NON-NLS-1$
       	else if("".equals(getPassword0()) || "".equals(getPassword1())) //$NON-NLS-1$ //$NON-NLS-2$
