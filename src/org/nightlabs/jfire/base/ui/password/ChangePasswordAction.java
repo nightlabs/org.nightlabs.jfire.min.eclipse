@@ -15,8 +15,8 @@ import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.UserLocal;
-import org.nightlabs.jfire.security.UserManager;
-import org.nightlabs.jfire.security.UserManagerUtil;
+import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 
 public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 
@@ -70,7 +70,7 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 		};
 		String newPassword = ChangePasswordDialog.openDialog(RCPUtil.getActiveShell(), newPasswordValidator, null);
 		try {
-			UserManager um = UserManagerUtil.getHome(SecurityReflector.getInitialContextProperties()).create();
+			JFireSecurityManager um = JFireSecurityManagerUtil.getHome(SecurityReflector.getInitialContextProperties()).create();
 			um.setUserPassword(newPassword);
 			Login.sharedInstance().setPassword(newPassword);
 			MessageDialog.openInformation(RCPUtil.getActiveShell(), "Password changed", "Your password has been changed successfully.");

@@ -32,8 +32,8 @@ import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserManager;
-import org.nightlabs.jfire.security.UserManagerUtil;
+import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.jfire.security.search.UserQuery;
@@ -221,7 +221,7 @@ extends XComposite
 			@Override
 			protected IStatus run(ProgressMonitor monitor){
 				try {
-					UserManager um = UserManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+					JFireSecurityManager um = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 					final QueryCollection<UserQuery> queries =
 						new QueryCollection<UserQuery>(User.class);
 					Display.getDefault().syncExec(new Runnable(){
