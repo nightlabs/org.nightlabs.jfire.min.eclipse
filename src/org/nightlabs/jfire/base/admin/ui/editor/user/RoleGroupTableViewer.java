@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
@@ -162,6 +163,9 @@ public class RoleGroupTableViewer extends TableViewer
 
 	public void setModel(RoleGroupSecurityPreferencesModel model) {
 		this.model = model;
-		setInput(model.getAvailableRoleGroups());
+		if (model == null)
+			setInput(Collections.emptySet());
+		else
+			setInput(model.getAvailableRoleGroups());
 	}
 }
