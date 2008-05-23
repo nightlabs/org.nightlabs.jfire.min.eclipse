@@ -57,6 +57,8 @@ extends ToolBarSectionPart
 				setAuthorityPageControllerHelper(null);
 			}
 		});
+
+		setEnabled(false);
 	}
 
 	private ModifyListener markDirtyModifyListener = new ModifyListener() {

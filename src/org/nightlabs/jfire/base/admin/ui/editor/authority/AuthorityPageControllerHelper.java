@@ -37,6 +37,7 @@ import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
 import org.nightlabs.jfire.security.id.RoleGroupID;
+import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
 import org.nightlabs.util.Util;
@@ -78,7 +79,8 @@ public class AuthorityPageControllerHelper
 
 	private static final String[] FETCH_GROUPS_AUTHORITY = {
 		FetchPlan.DEFAULT,
-		Authority.FETCH_GROUP_NAME
+		Authority.FETCH_GROUP_NAME,
+		Authority.FETCH_GROUP_DESCRIPTION
 	};
 
 	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, ProgressMonitor monitor)
@@ -105,7 +107,7 @@ public class AuthorityPageControllerHelper
 	 * @throws LoginException if login fails.
 	 * @throws RemoteException if communication via RMI fails.
 	 */
-	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
+	public synchronized void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
 	{
 		monitor.beginTask("Loading authority data", 100);
 
@@ -537,6 +539,87 @@ public class AuthorityPageControllerHelper
 				return true;
 		}
 		return false;
+	}
+
+	public synchronized void save(ProgressMonitor monitor)
+	{
+		monitor.beginTask("Saving authority", 200);
+		try {
+			if (this.authorityType == null)
+				throw new IllegalStateException("this.authorityType == null");
+			if (this.authority == null)
+				throw new IllegalStateException("this.authority == null");
+
+			if (authorityID == null || JDOHelper.isDirty(authority)) {
+				Authority a = AuthorityDAO.sharedInstance().storeAuthority(
+						authority,
+						true,
+						FETCH_GROUPS_AUTHORITY,
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+						new SubProgressMonitor(monitor, 10)
+				);
+				AuthorityID aid = (AuthorityID) JDOHelper.getObjectId(a);
+				if (aid == null)
+					throw new IllegalStateException("Authority returned by server does not have an object-id assigned!");
+
+				authorityID = aid;
+				authority = a;
+			}
+			else
+				monitor.worked(10);
+
+			Set<UserID> userIDsToRemove = NLJDOHelper.getObjectIDSet(usersToRemove);
+			UserDAO.sharedInstance().removeUsersFromAuthority(
+					userIDsToRemove,
+					authorityID,
+					new SubProgressMonitor(monitor, 10)
+			);
+			usersToRemove.clear();
+
+			Set<UserID> userIDsToAdd = NLJDOHelper.getObjectIDSet(usersToAdd);
+			UserDAO.sharedInstance().removeUsersFromAuthority(
+					userIDsToAdd,
+					authorityID,
+					new SubProgressMonitor(monitor, 10)
+			);
+			usersToAdd.clear();
+
+			{
+				int ticksForThisWorkPart = 70;
+
+				if (changedModels.isEmpty())
+					monitor.worked(ticksForThisWorkPart);
+				else {
+					int ticksPerModel = ticksForThisWorkPart / changedModels.size();
+					int ticksDone = 0;
+					for (RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel : changedModels) {
+						User user = roleGroupSecurityPreferencesModel2User.get(roleGroupSecurityPreferencesModel);
+						UserID userID = (UserID) JDOHelper.getObjectId(user);
+						if (userID == null)
+							throw new IllegalStateException("JDOHelper.getObjectId(user) returned null for user: " + user);
+
+						Set<RoleGroupID> roleGroupIDs = NLJDOHelper.getObjectIDSet(
+								roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly()
+						);
+
+						UserDAO.sharedInstance().setRoleGroupsOfUser(userID, authorityID, roleGroupIDs,
+								new SubProgressMonitor(monitor, ticksPerModel));
+
+						ticksDone += ticksPerModel;
+					}
+					changedModels.clear();
+
+					int ticksLeft = ticksForThisWorkPart - ticksDone; // maybe there is some left
+					if (ticksLeft > 0)
+						monitor.worked(ticksLeft);
+				}
+			}
+
+			// reload everything
+			load(authorityTypeID, authorityID, new SubProgressMonitor(monitor, 100));
+		} finally {
+			monitor.done();
+		}
 	}
 
 	//////////////////

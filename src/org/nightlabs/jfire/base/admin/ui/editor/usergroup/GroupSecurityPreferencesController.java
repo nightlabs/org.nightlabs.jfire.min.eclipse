@@ -25,6 +25,7 @@ package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
@@ -155,7 +156,14 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 								User.FETCH_GROUP_THIS_USER},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								new SubProgressMonitor(monitor, 33));
-				
+
+				// filter out all internal users (concrete _System_ and _Other_), since they should not end up in a user-group
+				for (Iterator<User> it = users.iterator(); it.hasNext(); ) {
+					User user = it.next();
+					if (user.getName().startsWith("_") && user.getName().endsWith("_"))
+						it.remove();
+				}
+
 				userGroupModel.setAvailableUsers(users);
 				userGroupModel.setUsers(userGroup.getUsers());
 

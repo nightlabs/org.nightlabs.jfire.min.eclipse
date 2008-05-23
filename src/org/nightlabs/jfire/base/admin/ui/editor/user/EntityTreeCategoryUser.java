@@ -23,6 +23,7 @@
  ******************************************************************************/
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,6 @@ import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
-import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserLifecycleListenerFilter;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -104,7 +104,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	}
 
 	public static final String[] FETCH_GROUPS_USER = {
-		User.FETCH_GROUP_THIS_USER,
+		User.FETCH_GROUP_NAME,
 		FetchPlan.DEFAULT
 		};
 
@@ -120,12 +120,26 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	@Override
 	protected Collection<User> retrieveJDOObjects(ProgressMonitor monitor)
 	{
-		return UserDAO.sharedInstance().getUsers(
+		Collection<User> users = UserDAO.sharedInstance().getUsers(
 				IDGenerator.getOrganisationID(),
 				Collections.singleton(User.USERTYPE_USER),
 				FETCH_GROUPS_USER,
 				1,
-				monitor);
+				monitor
+		);
+
+		List<User> res = new ArrayList<User>(users.size());
+
+		for (User user : users) {
+
+			// We filter out all internal users (should be System and Other), because they should not be editable anyway.
+			if (user.getUserID().startsWith("_") && user.getUserID().endsWith("_"))
+				continue;
+
+			res.add(user);
+		}
+
+		return res;
 	}
 
 	@Override
