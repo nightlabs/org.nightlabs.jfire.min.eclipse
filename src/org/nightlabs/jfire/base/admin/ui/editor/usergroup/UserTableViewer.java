@@ -1,11 +1,8 @@
 package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
-import java.util.Collection;
-
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -25,24 +22,11 @@ import org.nightlabs.jfire.security.User;
 public class UserTableViewer extends TableViewer
 {
 	/**
-	 * Content provider for users.
-	 */
-	private final class UsersContentProvider extends TableContentProvider
-	{
-		@Override
-		public Object[] getElements(Object inputElement)
-		{
-			Collection<User> users = (Collection<User>)inputElement;
-			return users.toArray();
-		}
-	}
-
-	/**
 	 * Label provider for users.
 	 */
-	private class UsersLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
+	private class UserLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
 	{
-		public UsersLabelProvider(TableViewer viewer) {
+		public UserLabelProvider(TableViewer viewer) {
 			super(viewer);
 		}
 
@@ -52,7 +36,7 @@ public class UserTableViewer extends TableViewer
 			switch(columnIndex) {
 //			case 0: return CheckboxCellEditorHelper.getCellEditorImage(model.getIncludedUsers().contains(element), false);
 			case 0: return getCheckBoxImage(model.getIncludedUsers().contains(element));
-			case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UsersLabelProvider.class);
+			case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UserLabelProvider.class);
 			default: return null;
 			}
 		}
@@ -63,10 +47,16 @@ public class UserTableViewer extends TableViewer
 				throw new RuntimeException("Invalid object type, expected User"); //$NON-NLS-1$
 			User u = (User)element;
 			switch(columnIndex) {
-			case 1: return u.getName();
-			case 2: return u.getDescription();
+				case 1: return u.getName();
+				case 2: return u.getDescription();
 			}
-			return null;
+			return ""; // must never return null - otherwise it causes an error
+		}
+
+		// this method is used by the ViewerComparator (see below).
+		@Override
+		public String getText(Object element) {
+			return ((User)element).getName();
 		}
 	}
 
@@ -78,16 +68,8 @@ public class UserTableViewer extends TableViewer
 
 		this.dirtyStateManager = dirtyStateManager;
 
-		ViewerComparator userComparator = new ViewerComparator() {
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				User u1 = (User) e1;
-				User u2 = (User) e2;
-				return u1.getName().compareTo((u2.getName()));
-			}
-		};
-
-		setComparator(userComparator);
+		// no need for a special implementation - the default implementation works fine with ILabelProvider.getText(...) - see above.
+		setComparator(new ViewerComparator());
 
 		// Layout stuff
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -121,8 +103,8 @@ public class UserTableViewer extends TableViewer
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
-		setContentProvider(new UsersContentProvider());
-		setLabelProvider(new UsersLabelProvider(this));
+		setContentProvider(new TableContentProvider());
+		setLabelProvider(new UserLabelProvider(this));
 	}
 
 	public void setModel(GroupSecurityPreferencesModel model) {

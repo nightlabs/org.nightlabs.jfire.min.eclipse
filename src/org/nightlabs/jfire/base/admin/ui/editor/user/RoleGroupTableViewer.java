@@ -56,7 +56,7 @@ public class RoleGroupTableViewer extends TableViewer
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			switch (columnIndex) {
-			case 1: return getCheckBoxImage(model.getRoleGroups().contains(element));
+			case 1: return getCheckBoxImage(model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element));
 			case 2:	return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), RoleGroupsLabelProvider.class);
 			default: return null;
 			}
@@ -72,11 +72,13 @@ public class RoleGroupTableViewer extends TableViewer
 			RoleGroup g = (RoleGroup) element;
 			switch (columnIndex) {
 			case 0:
-				if (model.getRoleGroups().contains(element) && model.getRoleGroupsFromUserGroups().contains(element))
+				if (model.isControlledByOtherUser() && model.getRoleGroupsAssignedToOtherUser().contains(element))
+					return "O";
+				if (model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element) && model.getRoleGroupsAssignedToUserGroups().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirectAndGroup"); //$NON-NLS-1$
-				else if (model.getRoleGroups().contains(element))
+				else if (model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirect"); //$NON-NLS-1$
-				else if (model.getRoleGroupsFromUserGroups().contains(element))
+				else if (model.getRoleGroupsAssignedToUserGroups().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceGroup"); //$NON-NLS-1$
 				return "";
 			case 2:	return g.getName().getText(NLLocale.getDefault().getLanguage());
@@ -119,28 +121,7 @@ public class RoleGroupTableViewer extends TableViewer
 		TableViewerColumn col2 = new TableViewerColumn(this, SWT.CENTER);
 		col2.getColumn().setResizable(false);
 		col2.getColumn().setText(""); //$NON-NLS-1$
-		col2.setEditingSupport(new CheckboxEditingSupport<RoleGroup>(this) {
-			/* (non-Javadoc)
-			 * @see org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport#doGetValue(java.lang.Object)
-			 */
-			@Override
-			protected boolean doGetValue(RoleGroup element) {
-				return model.getRoleGroups().contains(element);
-			}
-
-			/* (non-Javadoc)
-			 * @see org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport#doSetValue(java.lang.Object, boolean)
-			 */
-			@Override
-			protected void doSetValue(RoleGroup element, boolean value) {
-				if (value)
-					model.addRoleGroup(element);
-				else
-					model.removeRoleGroup(element);
-
-				RoleGroupTableViewer.this.dirtyStateManager.markDirty();
-			}
-		});
+		col2.setEditingSupport(checkboxEditingSupport);
 
 		TableColumn col3 = new TableColumn(getTable(), SWT.NULL);
 		col3.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroup")); //$NON-NLS-1$
@@ -161,11 +142,36 @@ public class RoleGroupTableViewer extends TableViewer
 		setLabelProvider(new RoleGroupsLabelProvider(this));
 	}
 
+	private CheckboxEditingSupport<RoleGroup> checkboxEditingSupport = new CheckboxEditingSupport<RoleGroup>(this) {
+		@Override
+		protected boolean canEdit(Object element) {
+			boolean result = model != null && model.isInAuthority();
+			return result;
+		}
+
+		@Override
+		protected boolean doGetValue(RoleGroup element) {
+			boolean result = model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element);
+			return result;
+		}
+
+		@Override
+		protected void doSetValue(RoleGroup element, boolean value) {
+			if (value)
+				model.addRoleGroup(element);
+			else
+				model.removeRoleGroup(element);
+
+			RoleGroupTableViewer.this.dirtyStateManager.markDirty();
+		}
+	};
+
 	public void setModel(RoleGroupSecurityPreferencesModel model) {
 		this.model = model;
+
 		if (model == null)
 			setInput(Collections.emptySet());
 		else
-			setInput(model.getAvailableRoleGroups());
+			setInput(model.getAllRoleGroupsInAuthority());
 	}
 }

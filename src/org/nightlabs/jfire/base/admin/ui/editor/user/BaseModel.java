@@ -15,9 +15,34 @@ public class BaseModel
 	public void removeModelChangeListener(ModelChangeListener listener) {
 		changeListeners.remove(listener);
 	}
+
+	private boolean hasDeferredModelChangeEvents = false;
 	
 	protected void modelChanged() {
+		if (deferModelChangedEvents > 0) {
+			hasDeferredModelChangeEvents = true;
+			return;
+		}
+
 		for (Object listener : changeListeners.getListeners())
 			((ModelChangeListener)listener).modelChanged(new ModelChangeEvent(this));
+	}
+
+	private int deferModelChangedEvents = 0;
+
+	public void beginDeferModelChangedEvents() {
+		++this.deferModelChangedEvents;
+	}
+
+	public void endDeferModelChangedEvents() {
+		if (deferModelChangedEvents == 0)
+			throw new IllegalStateException("endDeferModelChangedEvents called without begin!");
+
+		if (--this.deferModelChangedEvents == 0) {
+			if (hasDeferredModelChangeEvents)
+				modelChanged();
+
+			hasDeferredModelChangeEvents = false;
+		}
 	}
 }

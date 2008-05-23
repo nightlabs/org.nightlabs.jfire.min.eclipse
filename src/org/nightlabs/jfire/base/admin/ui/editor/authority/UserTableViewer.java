@@ -1,12 +1,10 @@
 package org.nightlabs.jfire.base.admin.ui.editor.authority;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -26,38 +24,27 @@ import org.nightlabs.jfire.security.User;
 public class UserTableViewer extends TableViewer
 {
 	/**
-	 * Content provider for users.
-	 */
-	private final class UsersContentProvider extends TableContentProvider
-	{
-		@Override
-		public Object[] getElements(Object inputElement)
-		{
-			Collection<Map.Entry<User, Boolean>> elements = (Collection<Map.Entry<User, Boolean>>)inputElement;
-			return elements.toArray();
-		}
-	}
-
-	/**
 	 * Label provider for users.
 	 */
-	private class UsersLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
+	private class UserLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
 	{
-		public UsersLabelProvider(TableViewer viewer) {
+		public UserLabelProvider(TableViewer viewer) {
 			super(viewer);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
 			Map.Entry<User, Boolean> me = (Map.Entry<User, Boolean>)element;
 			switch(columnIndex) {
 				case 0: return getCheckBoxImage(me.getValue());
-				case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UsersLabelProvider.class);
+				case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UserLabelProvider.class);
 				default: return null;
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		public String getColumnText(Object element, int columnIndex)
 		{
 			Map.Entry<User, Boolean> me = (Map.Entry<User, Boolean>)element;
@@ -66,6 +53,13 @@ public class UserTableViewer extends TableViewer
 				case 2: return me.getKey().getDescription();
 			}
 			return "";
+		}
+
+		// This method is used by the ViewerComparator (see below).
+		@SuppressWarnings("unchecked")
+		@Override
+		public String getText(Object element) {
+			return ((Map.Entry<User, Boolean>)element).getKey().getName();
 		}
 	}
 
@@ -76,16 +70,9 @@ public class UserTableViewer extends TableViewer
 
 		this.dirtyStateManager = dirtyStateManager;
 
-		ViewerComparator userComparator = new ViewerComparator() {
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				Map.Entry<User, Boolean> u1 = (Map.Entry<User, Boolean>) e1;
-				Map.Entry<User, Boolean> u2 = (Map.Entry<User, Boolean>) e2;
-				return u1.getKey().getName().compareTo((u2.getKey().getName()));
-			}
-		};
-
-		setComparator(userComparator);
+		// There is no need for a specific implementation of ViewerComparator, because the default implementation
+		// uses the ILabelProvider.getText() method (see above in our LabelProvider).
+		setComparator(new ViewerComparator());
 
 		// Layout stuff
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -115,7 +102,7 @@ public class UserTableViewer extends TableViewer
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
-		setContentProvider(new UsersContentProvider());
-		setLabelProvider(new UsersLabelProvider(this));
+		setContentProvider(new TableContentProvider());
+		setLabelProvider(new UserLabelProvider(this));
 	}
 }

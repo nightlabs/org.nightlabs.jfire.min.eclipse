@@ -91,7 +91,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 
 		createDescriptionControl(section, toolkit, showAssignmentSourceColum);
 		
-		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
+		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1); // Why was that "3" instead of "1"? We only need one column! I changed it and hope it has no special reason. If so, please COMMENT IT!!!! Marco.
 
 		ViewerComparator roleGroupComparator = new ViewerComparator() {
 			@Override
@@ -102,7 +102,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 		
 		section.setExpanded(true);
 		
-		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);
+		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION);
 		toolkit.paintBordersFor(fTable);
 		roleGroupTableViewer = new RoleGroupTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this), showAssignmentSourceColum);
 		roleGroupTableViewer.setComparator(roleGroupComparator);

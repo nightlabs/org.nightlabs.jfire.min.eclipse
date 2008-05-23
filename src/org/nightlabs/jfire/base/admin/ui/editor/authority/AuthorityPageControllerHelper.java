@@ -45,7 +45,7 @@ import org.nightlabs.util.Util;
  * An instance of this class should be used by all <code>AuthorityPageController</code>s, i.e. whenever the <code>Authority</code>
  * attached to a certain object is edited.
  *
- * @author marco
+ * @author marco schulze - marco at nightlabs dot de
  */
 public class AuthorityPageControllerHelper
 {
@@ -71,7 +71,9 @@ public class AuthorityPageControllerHelper
 
 	private static final String[] FETCH_GROUPS_USER = {
 		FetchPlan.DEFAULT,
-		User.FETCH_GROUP_NAME
+		User.FETCH_GROUP_NAME,
+		User.FETCH_GROUP_USERGROUPS,
+		UserGroup.FETCH_GROUP_USERS
 	};
 
 	private static final String[] FETCH_GROUPS_AUTHORITY = {
@@ -127,7 +129,6 @@ public class AuthorityPageControllerHelper
 		this.authority = newAuthority;
 
 		if (authorityTypeID == null) {
-			roleGroupsInAuthorityType = new HashSet<RoleGroup>();
 			monitor.worked(40);
 		}
 		else {
@@ -135,16 +136,7 @@ public class AuthorityPageControllerHelper
 					authorityTypeID,
 					FETCH_GROUPS_AUTHORITY_TYPE,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-					new SubProgressMonitor(monitor, 15));
-
-			Set<RoleGroupID> roleGroupIDs = NLJDOHelper.getObjectIDSet(authorityType.getRoleGroups());
-			roleGroupsInAuthorityType = new HashSet<RoleGroup>(
-					RoleGroupDAO.sharedInstance().getRoleGroups(
-							roleGroupIDs,
-							FETCH_GROUPS_ROLE_GROUP,
-							NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-							new SubProgressMonitor(monitor, 25))
-			);
+					new SubProgressMonitor(monitor, 30));
 		}
 
 		changedModels.clear();
@@ -153,7 +145,7 @@ public class AuthorityPageControllerHelper
 		if (authorityID == null) {
 			if (this.authority == null) {
 				users = new HashMap<User, Boolean>();
-				monitor.worked(60);
+				monitor.worked(70);
 			}
 			else {
 				Collection<User> c = UserDAO.sharedInstance().getUsers(
@@ -161,11 +153,37 @@ public class AuthorityPageControllerHelper
 						(String[])null,
 						FETCH_GROUPS_USER,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						new SubProgressMonitor(monitor, 60));
+						new SubProgressMonitor(monitor, 35));
+
+				Set<RoleGroupID> roleGroupIDs = NLJDOHelper.getObjectIDSet(authorityType.getRoleGroups());
+				Set<RoleGroup> roleGroupsInAuthorityType = new HashSet<RoleGroup>(
+						RoleGroupDAO.sharedInstance().getRoleGroups(
+								roleGroupIDs,
+								FETCH_GROUPS_ROLE_GROUP,
+								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+								new SubProgressMonitor(monitor, 35))
+				);
 
 				users = new HashMap<User, Boolean>(c.size());
-				for (User u : c)
+				for (User u : c) {
+					// ignore the system user - it always has all access rights anyway and cannot be configured
+					if (User.USERID_SYSTEM.equals(u.getUserID()))
+						continue;
+
 					users.put(u, Boolean.FALSE);
+
+					RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = new RoleGroupSecurityPreferencesModel();
+					roleGroupSecurityPreferencesModel.setAllRoleGroupsInAuthority(roleGroupsInAuthorityType);
+					roleGroupSecurityPreferencesModel.setRoleGroupsAssignedDirectly(new HashSet<RoleGroup>());
+					roleGroupSecurityPreferencesModel.setRoleGroupsAssignedToUserGroups(new HashSet<RoleGroup>());
+					roleGroupSecurityPreferencesModel.setRoleGroupsAssignedToOtherUser(new HashSet<RoleGroup>());
+					roleGroupSecurityPreferencesModel.setControlledByOtherUser(true);
+					roleGroupSecurityPreferencesModel.setInAuthority(false);
+
+					roleGroupSecurityPreferencesModel.addModelChangeListener(roleGroupSecurityPreferencesModelChangeListener);
+					user2RoleGroupSecurityPreferencesModel.put(u, roleGroupSecurityPreferencesModel);
+					roleGroupSecurityPreferencesModel2User.put(roleGroupSecurityPreferencesModel, u);
+				}
 			}
 		}
 		else {
@@ -175,32 +193,43 @@ public class AuthorityPageControllerHelper
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 					new SubProgressMonitor(monitor, 20)));
 
-			Map<User, RoleGroupSetCarrier> user2RoleGroupSetCarrier = RoleGroupDAO.sharedInstance().getRoleGroupSetCarriers(
+			Collection<RoleGroupSetCarrier> roleGroupSetCarriers = RoleGroupDAO.sharedInstance().getRoleGroupSetCarriers(
 					authorityID,
 					FETCH_GROUPS_USER, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+					FETCH_GROUPS_AUTHORITY, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, // was just fetched with exactly this and should be in the cache
 					FETCH_GROUPS_ROLE_GROUP, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-					true,
 					new SubProgressMonitor(monitor, 35));
 
-			users = new HashMap<User, Boolean>(user2RoleGroupSetCarrier.size());
+			users = new HashMap<User, Boolean>(roleGroupSetCarriers.size());
 
-			for (Map.Entry<User, RoleGroupSetCarrier> me : user2RoleGroupSetCarrier.entrySet()) {
-				if (me.getValue() == null) {
-					users.put(me.getKey(), Boolean.FALSE);
+			for (RoleGroupSetCarrier roleGroupSetCarrier : roleGroupSetCarriers) {
+				// ignore the system user - it always has all access rights anyway and cannot be configured
+				if (User.USERID_SYSTEM.equals(roleGroupSetCarrier.getUser().getUserID()))
 					continue;
-				}
-				users.put(me.getKey(), Boolean.TRUE);
+
+				users.put(roleGroupSetCarrier.getUser(), roleGroupSetCarrier.isInAuthority() ? Boolean.TRUE : Boolean.FALSE);
 
 				RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = new RoleGroupSecurityPreferencesModel();
-				roleGroupSecurityPreferencesModel.setAvailableRoleGroups(roleGroupsInAuthorityType);
-				roleGroupSecurityPreferencesModel.setRoleGroups(me.getValue().assigned);
-				roleGroupSecurityPreferencesModel.setRoleGroupsFromUserGroups(me.getValue().assignedByUserGroup);
+				roleGroupSecurityPreferencesModel.setAllRoleGroupsInAuthority(roleGroupSetCarrier.getAllInAuthority());
+				roleGroupSecurityPreferencesModel.setRoleGroupsAssignedDirectly(roleGroupSetCarrier.getAssignedToUser());
+				roleGroupSecurityPreferencesModel.setRoleGroupsAssignedToUserGroups(roleGroupSetCarrier.getAssignedToUserGroups());
+				roleGroupSecurityPreferencesModel.setRoleGroupsAssignedToOtherUser(roleGroupSetCarrier.getAssignedToOtherUser());
+				roleGroupSecurityPreferencesModel.setInAuthority(roleGroupSetCarrier.isInAuthority());
+				roleGroupSecurityPreferencesModel.setControlledByOtherUser(roleGroupSetCarrier.isControlledByOtherUser());
+
 				roleGroupSecurityPreferencesModel.addModelChangeListener(roleGroupSecurityPreferencesModelChangeListener);
-				user2RoleGroupSecurityPreferencesModel.put(me.getKey(), roleGroupSecurityPreferencesModel);
-				roleGroupSecurityPreferencesModel2User.put(roleGroupSecurityPreferencesModel, me.getKey());
+				user2RoleGroupSecurityPreferencesModel.put(roleGroupSetCarrier.getUser(), roleGroupSecurityPreferencesModel);
+				roleGroupSecurityPreferencesModel2User.put(roleGroupSecurityPreferencesModel, roleGroupSetCarrier.getUser());
 			}
 
 			monitor.worked(5);
+		}
+
+		// check if our users have all fetch-groups we need by accessing some fields
+		for (User u : users.keySet()) {
+			u.getUserGroups();
+			if (u instanceof UserGroup)
+				((UserGroup)u).getUsers();
 		}
 
 		usersToAdd = new HashSet<User>();
@@ -223,8 +252,23 @@ public class AuthorityPageControllerHelper
 			if (user instanceof UserGroup) {
 				// A user-group has been modified - that affects all users that are members of this user-group!
 				// Therefore, we need to recalculate their group-added role-groups.
+				UserGroup userGroup = (UserGroup) user;
+				for (User u : userGroup.getUsers())
+					recalculateUser_RoleGroupsAssignedToUserGroups(u);
+			}
+			else if (User.USERID_OTHER.equals(user.getUserID())) {
+				Set<RoleGroup> rightsOfOtherUser = new HashSet<RoleGroup>();
+				rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly());
+				rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedToUserGroups()); // not sure if it can be in groups, but better assume that yes
 
-				// TODO do this!
+				// recalculate rights for all users that are neither directly nor via a user-group in this authority
+				for (User u : users.keySet()) {
+					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+					if (!m.isControlledByOtherUser())
+						continue;
+
+					m.setRoleGroupsAssignedToOtherUser(rightsOfOtherUser);
+				}
 			}
 
 			propertyChangeSupport.firePropertyChange(PROPERTY_NAME_ROLE_GROUP_SECURITY_PREFERENCES_MODEL_CHANGED, null, roleGroupSecurityPreferencesModel);
@@ -244,7 +288,7 @@ public class AuthorityPageControllerHelper
 		return authority;
 	}
 
-	private Set<RoleGroup> roleGroupsInAuthorityType = new HashSet<RoleGroup>();
+//	private Set<RoleGroup> roleGroupsInAuthorityType = new HashSet<RoleGroup>();
 
 	private Map<User, RoleGroupSecurityPreferencesModel> user2RoleGroupSecurityPreferencesModel = new HashMap<User, RoleGroupSecurityPreferencesModel>();
 	private Map<RoleGroupSecurityPreferencesModel, User> roleGroupSecurityPreferencesModel2User = new HashMap<RoleGroupSecurityPreferencesModel, User>();
@@ -254,14 +298,14 @@ public class AuthorityPageControllerHelper
 	private Set<User> usersToRemove = new HashSet<User>();
 	private Set<RoleGroupSecurityPreferencesModel> changedModels = new HashSet<RoleGroupSecurityPreferencesModel>();
 
-	/**
-	 * Get a read-only view of the {@link RoleGroup}s within the currently managed {@link AuthorityType}.
-	 *
-	 * @return a read-only <code>Set</code> of {@link RoleGroup}s.
-	 */
-	public Set<RoleGroup> getRoleGroupsInAuthorityType() {
-		return Collections.unmodifiableSet(roleGroupsInAuthorityType);
-	}
+//	/**
+//	 * Get a read-only view of the {@link RoleGroup}s within the currently managed {@link AuthorityType}.
+//	 *
+//	 * @return a read-only <code>Set</code> of {@link RoleGroup}s.
+//	 */
+//	public Set<RoleGroup> getRoleGroupsInAuthorityType() {
+//		return Collections.unmodifiableSet(roleGroupsInAuthorityType);
+//	}
 
 	/**
 	 * Get a read-only mapping from {@link User} to {@link RoleGroupSecurityPreferencesModel}.
@@ -379,20 +423,59 @@ public class AuthorityPageControllerHelper
 		if (user == null)
 			throw new IllegalArgumentException("user == null");
 
-		if (user2RoleGroupSecurityPreferencesModel.containsKey(user))
-			return; // nothing to do - it's already there
+		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = user2RoleGroupSecurityPreferencesModel.get(user);
+		// replace the user by our internal one (where we are sure about fetch-groups
+		user = roleGroupSecurityPreferencesModel2User.get(roleGroupSecurityPreferencesModel);
 
 		usersToAdd.add(user);
 		usersToRemove.remove(user);
 
-		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = new RoleGroupSecurityPreferencesModel();
-		roleGroupSecurityPreferencesModel.setAvailableRoleGroups(roleGroupsInAuthorityType);
-		roleGroupSecurityPreferencesModel.addModelChangeListener(roleGroupSecurityPreferencesModelChangeListener);
+		roleGroupSecurityPreferencesModel.beginDeferModelChangedEvents();
+		try {
+			roleGroupSecurityPreferencesModel.setInAuthority(true);
+			roleGroupSecurityPreferencesModel.setControlledByOtherUser(false);
 
-		user2RoleGroupSecurityPreferencesModel.put(user, roleGroupSecurityPreferencesModel);
-		roleGroupSecurityPreferencesModel2User.put(roleGroupSecurityPreferencesModel, user);
+			if (user instanceof UserGroup) {
+				UserGroup userGroup = (UserGroup) user;
+				for (User u : userGroup.getUsers()) {
+					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+					m.setControlledByOtherUser(false);
+
+					recalculateUser_RoleGroupsAssignedToUserGroups(u);
+				}
+			}
+			else if (User.USERID_OTHER.equals(user.getUserID())) {
+				Set<RoleGroup> rightsOfOtherUser = new HashSet<RoleGroup>();
+				rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly());
+				rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedToUserGroups()); // not sure if it can be in groups, but better assume that yes
+				Set<RoleGroup> emptySet = Collections.emptySet();
+				for (User u : users.keySet()) {
+					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+
+					if (m.isControlledByOtherUser())
+						m.setRoleGroupsAssignedToOtherUser(rightsOfOtherUser);
+					else
+						m.setRoleGroupsAssignedToOtherUser(emptySet);
+				}
+			}
+		} finally {
+			roleGroupSecurityPreferencesModel.endDeferModelChangedEvents();
+		}
 
 		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_USER_ADDED, null, user);
+	}
+
+	private void recalculateUser_RoleGroupsAssignedToUserGroups(User user)
+	{
+		Set<RoleGroup> roleGroupsAssignedToUserGroups = new HashSet<RoleGroup>();
+		for (UserGroup userGroup : user.getUserGroups()) {
+			RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(userGroup);
+			if (m.isInAuthority()) {
+				roleGroupsAssignedToUserGroups.addAll(m.getRoleGroupsAssignedDirectly());
+				roleGroupsAssignedToUserGroups.addAll(m.getRoleGroupsAssignedToUserGroups()); // I don't think we should support nested groups, but if we do one day, this line is important
+			}
+		}
+		user2RoleGroupSecurityPreferencesModel.get(user).setRoleGroupsAssignedToUserGroups(roleGroupsAssignedToUserGroups);
 	}
 
 	public void removeUserFromAuthority(User user)
@@ -402,16 +485,58 @@ public class AuthorityPageControllerHelper
 		if (user == null)
 			throw new IllegalArgumentException("user == null");
 
-		if (!user2RoleGroupSecurityPreferencesModel.containsKey(user))
-			return; // nothing to do - it's not there
+		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = user2RoleGroupSecurityPreferencesModel.get(user);
+		// replace the user by our internal one (where we are sure about fetch-groups
+		user = roleGroupSecurityPreferencesModel2User.get(roleGroupSecurityPreferencesModel);
 
 		usersToAdd.remove(user);
 		usersToRemove.add(user);
+		
+		roleGroupSecurityPreferencesModel.beginDeferModelChangedEvents();
+		try {
+			roleGroupSecurityPreferencesModel.setInAuthority(false);
 
-		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = user2RoleGroupSecurityPreferencesModel.remove(user);
-		roleGroupSecurityPreferencesModel2User.remove(roleGroupSecurityPreferencesModel);
+			if (!resolveUserHasUserGroupInAuthority(user))
+				roleGroupSecurityPreferencesModel.setControlledByOtherUser(true);
+
+			if (user instanceof UserGroup) {
+				UserGroup userGroup = (UserGroup) user;
+				for (User u : userGroup.getUsers()) {
+					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+					if (!m.isInAuthority()) {
+						// the user u is not directly in this authority - is one of its groups in the authority?
+						if (!resolveUserHasUserGroupInAuthority(u))
+							m.setControlledByOtherUser(true);
+					}
+
+					recalculateUser_RoleGroupsAssignedToUserGroups(u);
+				}
+			}
+			else if (User.USERID_OTHER.equals(user.getUserID())) {
+				Set<RoleGroup> emptySet = Collections.emptySet();
+				for (User u : users.keySet()) {
+					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+					m.setRoleGroupsAssignedToOtherUser(emptySet);
+				}
+			}
+		} finally {
+			roleGroupSecurityPreferencesModel.endDeferModelChangedEvents();
+		}
 
 		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_USER_REMOVED, null, user);
+	}
+
+	/**
+	 * @param user the user
+	 * @return <code>true</code>, if the user has at least one user-group in the current authority. <code>false</code>, if none of the user's user-groups is in this authority.
+	 */
+	private boolean resolveUserHasUserGroupInAuthority(User user)
+	{
+		for (UserGroup userGroup : user.getUserGroups()) {
+			if (user2RoleGroupSecurityPreferencesModel.get(userGroup).isInAuthority())
+				return true;
+		}
+		return false;
 	}
 
 	//////////////////

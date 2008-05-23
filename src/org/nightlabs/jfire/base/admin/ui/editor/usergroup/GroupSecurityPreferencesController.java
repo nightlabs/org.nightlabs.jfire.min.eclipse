@@ -25,8 +25,8 @@ package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
+import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
 import javax.security.auth.login.LoginException;
 
@@ -125,13 +125,13 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 
 	/**
 	 * Load the usergroup data and users.
-	 * @param monitor The progress monitor to use.
+	 * @param _monitor The progress monitor to use.
 	 */
-	public void doLoad(IProgressMonitor monitor)
+	public void doLoad(IProgressMonitor _monitor)
 	{
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.loadingUsers"), 4); //$NON-NLS-1$
+		_monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.loadingUsers"), 100); //$NON-NLS-1$
 		try {
-			ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
+			ProgressMonitor monitor = new ProgressMonitorWrapper(_monitor);
 			if(userGroupID != null) {
 				logger.info("Loading usergroup "+userGroupID.userID); //$NON-NLS-1$
 				// load user with person data
@@ -143,8 +143,8 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 //								PropertySet.FETCH_GROUP_FULL_DATA
 								},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-								pMonitor);
-				monitor.worked(1);
+								new SubProgressMonitor(monitor, 33));
+
 				userGroupModel.setUserGroup(userGroup);
 
 				// load users
@@ -154,7 +154,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 						new String[] {
 								User.FETCH_GROUP_THIS_USER},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-								pMonitor);
+								new SubProgressMonitor(monitor, 33));
 				
 				userGroupModel.setAvailableUsers(users);
 				userGroupModel.setUsers(userGroup.getUsers());
@@ -169,30 +169,29 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 //				userGroupModel.setIncludedUsersUnchanged(new ArrayList<User>(includedUsers));
 
 				// load role groups
-				RoleGroupSetCarrier roleGroups = RoleGroupDAO.sharedInstance().getUserRoleGroupSetCarrier(
+				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getUserRoleGroupSetCarrier(
 						userGroupID,
 						getAuthorityID(),
-						new String[] {RoleGroup.FETCH_GROUP_THIS},
+						(String[])null, 1, // not interested in User
+						(String[])null, 1, // not interested in Authority
+						new String[] { FetchPlan.DEFAULT, RoleGroup.FETCH_GROUP_NAME, RoleGroup.FETCH_GROUP_DESCRIPTION},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						pMonitor);
+						new SubProgressMonitor(monitor, 34));
 				
-				roleGroupModel.setRoleGroups(roleGroups.assigned);
-				roleGroupModel.setRoleGroupsFromUserGroups(roleGroups.assignedByUserGroup);
-				
-				Set<RoleGroup> availableGroups = new HashSet<RoleGroup>(roleGroups.assigned.size() + roleGroups.assignedByUserGroup.size() + roleGroups.excluded.size());
-				availableGroups.addAll(roleGroups.assigned);
-				availableGroups.addAll(roleGroups.assignedByUserGroup);
-				availableGroups.addAll(roleGroups.excluded);
-				
-				roleGroupModel.setAvailableRoleGroups(availableGroups);
-				
+				roleGroupModel.setRoleGroupsAssignedDirectly(roleGroupSetCarrier.getAssignedToUser());
+				roleGroupModel.setRoleGroupsAssignedToUserGroups(roleGroupSetCarrier.getAssignedToUserGroups());
+				roleGroupModel.setRoleGroupsAssignedToOtherUser(roleGroupSetCarrier.getAssignedToOtherUser());
+				roleGroupModel.setAllRoleGroupsInAuthority(roleGroupSetCarrier.getAllInAuthority());
+				roleGroupModel.setInAuthority(roleGroupSetCarrier.isInAuthority());
+				roleGroupModel.setControlledByOtherUser(roleGroupSetCarrier.isControlledByOtherUser());
+
 				logger.info("Loading usergroup "+userGroupID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				fireModifyEvent(null, userGroup);
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
 		} finally {
-			monitor.done();
+			_monitor.done();
 		}
 	}
 
@@ -224,15 +223,15 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 		logger.info("Saving usergroup "+userGroupID.userID); //$NON-NLS-1$
 		ProgressMonitor pMonitor = new ProgressMonitorWrapper(monitor);
 		
-		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroups();
-		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAvailableRoleGroups());
+		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroupsAssignedDirectly();
+		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAllRoleGroupsInAuthority());
 		excludedRoleGroups.removeAll(includedRoleGroups);
 		
 		Collection<User> includedUsers = userGroupModel.getIncludedUsers();
 		Collection<User> excludedUsers = new HashSet<User>(userGroupModel.getAvailableUsers());
 		excludedUsers.removeAll(includedUsers);
 		
-		int taskTicks = roleGroupModel.getAvailableRoleGroups().size() + userGroupModel.getAvailableUsers().size();
+		int taskTicks = roleGroupModel.getAllRoleGroupsInAuthority().size() + userGroupModel.getAvailableUsers().size();
 		
 		pMonitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.doSave.monitor.taskName"), taskTicks); //$NON-NLS-1$
 		try	{
