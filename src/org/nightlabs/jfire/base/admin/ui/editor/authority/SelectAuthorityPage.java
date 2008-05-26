@@ -167,6 +167,7 @@ public class SelectAuthorityPage extends WizardHopPage
 		authorityList.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
+				selectedAuthorityID = (AuthorityID) JDOHelper.getObjectId(authorityList.getSelectedElement());
 				setAction(Action.select);
 			}
 		});
