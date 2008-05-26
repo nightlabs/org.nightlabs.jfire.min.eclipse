@@ -80,7 +80,7 @@ public class LanguageWatcher implements LoginStateListener {
 	/* non javadoc
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void afterLoginStateChange(LoginStateChangeEvent event)
+	public void loginStateChanged(LoginStateChangeEvent event)
 	{
 		if( event.getNewLoginState() == LoginState.LOGGED_IN)
 		{
@@ -211,12 +211,6 @@ public class LanguageWatcher implements LoginStateListener {
 		} catch (ConfigException e) {
 			logger.error("Error creating GlobalL10nSettings Cf-Mod.",e); //$NON-NLS-1$
 		}
-	}
-
-	@Override
-	public void beforeLoginStateChange(LoginStateChangeEvent event) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

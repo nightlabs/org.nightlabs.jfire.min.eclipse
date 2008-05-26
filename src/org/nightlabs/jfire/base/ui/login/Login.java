@@ -87,7 +87,7 @@ import org.nightlabs.progress.ProgressMonitor;
  * <code>Login.getLogin();</code>
  * somewhere before. If the user is already logged in this method immediately exits and returns
  * the static Login member. If the user some time before decided to work OFFLINE this method
- * will throw an {@link WorkOfflineException} to indicate this and not make any attempts to
+ * will throw an {@link LoginAbortedException} to indicate this and not make any attempts to
  * login unless {@link #setForceLogin(boolean)} was not set to true. This means that user interface
  * actions have to do something like the following to login:
  * <pre>
@@ -131,7 +131,7 @@ extends AbstractEPProcessor
 
 	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
-	private volatile LoginState  currLoginState = LoginState.LOGGED_OUT;
+	private volatile LoginState  currentLoginState = LoginState.LOGGED_OUT;
 
 
 	/**
@@ -143,7 +143,7 @@ extends AbstractEPProcessor
 		private Throwable exception = null;
 		private boolean success = false;
 		private String message = ""; //$NON-NLS-1$
-		private boolean workOffline = false;
+		private boolean loginAborted = false;
 
 		private boolean wasAuthenticationErr = false;
 		private boolean wasCommunicationErr = false;
@@ -153,7 +153,7 @@ extends AbstractEPProcessor
 			exception = null;
 			success = false;
 			message = ""; //$NON-NLS-1$
-			workOffline = false;
+			loginAborted = false;
 
 			wasAuthenticationErr = false;
 			wasCommunicationErr = false;
@@ -178,11 +178,11 @@ extends AbstractEPProcessor
 		public void setMessage(String message) {
 			this.message = message;
 		}
-		public boolean isWorkOffline() {
-			return workOffline;
+		public boolean isLoginAborted() {
+			return loginAborted;
 		}
-		public void setWorkOffline(boolean workOffline) {
-			this.workOffline = workOffline;
+		public void setLoginAborted(boolean workOffline) {
+			this.loginAborted = workOffline;
 		}
 		/**
 		 * @return Returns the wasAuthenticationErr.
@@ -225,7 +225,7 @@ extends AbstractEPProcessor
 			loginResult.exception = this.exception;
 			loginResult.success = this.success;
 			loginResult.message = this.message;
-			loginResult.workOffline = this.workOffline;
+			loginResult.loginAborted = this.loginAborted;
 
 			loginResult.wasAuthenticationErr = this.wasAuthenticationErr;
 			loginResult.wasCommunicationErr = this.wasCommunicationErr;
@@ -266,56 +266,55 @@ extends AbstractEPProcessor
 	public static boolean isLoggedIn() {
 		if (sharedInstanceLogin == null)
 			return false;
-		return sharedInstanceLogin.currLoginState == LoginState.LOGGED_IN;
+
+		LoginState ls = sharedInstanceLogin.currentLoginState;
+		return ls == LoginState.LOGGED_IN || ls == LoginState.ABOUT_TO_LOG_OUT;
 	}
 
 	/**
-	 * Returns one of {@link Login#LOGINSTATE_LOGGED_IN}, {@link Login#LOGINSTATE_LOGGED_OUT}
-	 * or {@link Login#LOGINSTATE_OFFLINE}
-	 * @return
+	 * Get the current {@link LoginState}.
+	 *
+	 * @return the <code>LoginState</code>.
 	 */
 	public LoginState getLoginState() {
-		return currLoginState;
+		return currentLoginState;
 	}
+
+	private volatile boolean logoutInProcess = false;
+	private Object logoutInProcessMutex = new Object();
 
 	public void logout() {
-		logout(true);
-	}
+		if (currentLoginState == LoginState.LOGGED_OUT || currentLoginState == LoginState.ABOUT_TO_LOG_IN)
+			return; // we are logged out or performing a login right now => return silently
 
-	/**
-	 * First removes the JFireRCDLDelegate from
-	 * the parent classloader and then flushes
-	 * user information (logs out).
-	 */
-	private void logout(boolean doNotify) {
-		Exception ex = null;
+		synchronized (logoutInProcessMutex) {
+			if (logoutInProcess)
+				return; // Should not be a problem to return before the logout really finished. it's probably a very rare situation anyway.
 
-		notifyLoginStateListeners_beforeChange(LoginState.LOGGED_OUT);
-
+			logoutInProcess = true;
+		}
 		try {
-			Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
-			// remove class loader delegate
-			JFireRCDLDelegate.sharedInstance().unregister(DelegatingClassLoaderOSGI.getSharedInstance());
-			// logout
-			loginData = null;
-			flushInitialContextProperties();
-		} catch (Exception e) {
-			ex = e;
-		}
-		if (doNotify) {
-			notifyLoginStateListeners_afterChange(LoginState.LOGGED_OUT);
-		}
-		if (ex != null)
-			throw new RuntimeException(ex);
-	}
+			Exception ex = null;
 
-	public void workOffline() {
-		if (currLoginState != LoginState.OFFLINE) {
-			logout(false);
-			currLoginState = LoginState.OFFLINE;
-			notifyLoginStateListeners_afterChange(LoginState.OFFLINE);
-		}
+			changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_OUT);
 
+			try {
+				Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
+				// remove class loader delegate
+				JFireRCDLDelegate.sharedInstance().unregister(DelegatingClassLoaderOSGI.getSharedInstance());
+				// logout
+				loginData = null;
+				flushInitialContextProperties();
+			} catch (Exception e) {
+				ex = e;
+			}
+			changeLoginStateAndNotifyListeners(LoginState.LOGGED_OUT);
+			if (ex != null)
+				throw new RuntimeException(ex);
+
+		} finally {
+			logoutInProcess = false;
+		}
 	}
 
 	private volatile boolean handlingLogin = false;
@@ -399,7 +398,9 @@ extends AbstractEPProcessor
 						});
 					}
 					forceLogin = false;
-					currLoginState = LoginState.LOGGED_IN;
+
+					// notify loginstate listeners
+					changeLoginStateAndNotifyListeners(LoginState.LOGGED_IN);
 				} catch(Throwable t){
 					logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
 					loginResult.setException(t);
@@ -453,7 +454,7 @@ extends AbstractEPProcessor
 	 * 
 	 * @throws LoginException Exception is thrown whenever some error occurs during login.
 	 * But not that the user might be presented the possibility to work OFFLINE.
-	 * In this case a LoginException is thrown as well with a {@link WorkOfflineException} as cause.
+	 * In this case a LoginException is thrown as well with a {@link LoginAbortedException} as cause.
 	 * 
 	 * @see ILoginHandler
 	 * @see Login#setLoginHandler(ILoginHandler)
@@ -484,25 +485,25 @@ extends AbstractEPProcessor
 	 * 
 	 * @throws LoginException Exception is thrown whenever some error occurs during login.
 	 * But not that the user might be presented the possibility to work OFFLINE.
-	 * In this case a LoginException is thrown as well with a {@link WorkOfflineException} as cause.
+	 * In this case a LoginException is thrown as well with a {@link LoginAbortedException} as cause.
 	 * 
 	 * @see ILoginHandler
 	 * @see Login#setLoginHandler(ILoginHandler)
 	 */
 	private void doLogin(final boolean forceLogoutFirst) throws LoginException
 	{
-		LoginState oldLoginstate = currLoginState;
+		LoginState newLoginState = LoginState.ABOUT_TO_LOG_IN;
 		logger.debug("Login requested by thread "+Thread.currentThread());		 //$NON-NLS-1$
-		if ((currLoginState == LoginState.OFFLINE)){
-			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
-			if (!forceLogin && elapsedTime < WORK_OFFLINE_TIMEOUT) {
-				LoginException lEx = new LoginException();
-				lEx.initCause(new WorkOfflineException());
-				throw lEx;
-			}
-		}
+//		if ((currLoginState == LoginState.OFFLINE)){
+//			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
+//			if (!forceLogin && elapsedTime < WORK_OFFLINE_TIMEOUT) {
+//				LoginException lEx = new LoginException();
+//				lEx.initCause(new LoginAbortedException());
+//				throw lEx;
+//			}
+//		}
 
-		if (getLoginState() == LoginState.LOGGED_IN) {
+		if (currentLoginState == LoginState.LOGGED_IN || currentLoginState == LoginState.ABOUT_TO_LOG_OUT) {
 			logger.debug("Already logged in, returning. Thread "+Thread.currentThread()); //$NON-NLS-1$
 			if (forceLogin) forceLogin = false;
 			return;
@@ -511,6 +512,9 @@ extends AbstractEPProcessor
 		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
 			if (iAmHandlingLogin) {
 				logger.info("Non-UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Delegating loginHandlerRunnable to UI thread.");
+
+				changeLoginStateAndNotifyListeners(newLoginState);
+				newLoginState = LoginState.LOGGED_IN;
 
 //				Display.getDefault().asyncExec(loginHandlerRunnable);
 //				UISynchronizer.startupThread.set(Boolean.TRUE); // without this, the following syncExec will not be executed before the workbench-startup finished => causing it to hang forever!
@@ -545,6 +549,10 @@ extends AbstractEPProcessor
 		else {
 			if (iAmHandlingLogin) {
 				logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()...");
+
+				changeLoginStateAndNotifyListeners(newLoginState);
+				newLoginState = LoginState.LOGGED_IN;
+
 				loginHandlerRunnable.run();
 				logger.info("...loginHandlerRunnable.run() returned.");
 			}
@@ -571,36 +579,19 @@ extends AbstractEPProcessor
 			throw new LoginException(loginResult.getException().getMessage());
 		}
 		if (!loginResult.isSuccess()) {
-			if (loginResult.isWorkOffline()) {
+			if (loginResult.isLoginAborted()) {
 				// if user decided to work OFFLINE first notify loginstate listeners
-				currLoginState = LoginState.OFFLINE;
-				notifyLoginStateListeners_afterChange(currLoginState);
+//				currLoginState = LoginState.LOGGED_OUT;
+//				notifyLoginStateListeners_afterChange(currLoginState);
+				newLoginState = LoginState.LOGGED_OUT;
+				changeLoginStateAndNotifyListeners(LoginState.LOGGED_OUT);
 				// but then still throw Exception with WorkOffline as cause
 				LoginException lEx = new LoginException(loginResult.getMessage());
-				lEx.initCause(new WorkOfflineException(loginResult.getMessage()));
+				lEx.initCause(new LoginAbortedException(loginResult.getMessage()));
 				throw lEx;
 			}
 			else
 				throw new LoginException(loginResult.getMessage());
-		}
-
-		// We should be logged in now, open the cache if not already open
-		if (currLoginState == LoginState.LOGGED_IN) {
-			try {
-				Cache.sharedInstance().open(getSessionID()); // the cache is opened implicitely now by default, but it is closed *after* a logout.
-			} catch (Throwable t) {
-				logger.debug("Cache could not be opened!", t); //$NON-NLS-1$
-			}
-		}
-
-		if (currLoginState != oldLoginstate) {
-			try {
-				// notify loginstate listeners
-				notifyLoginStateListeners_afterChange(currLoginState);
-			} catch (Throwable t) {
-				// TODO: ignore ??
-				logger.error(t);
-			}
 		}
 
 		logger.debug("Login OK. Thread "+Thread.currentThread()); //$NON-NLS-1$
@@ -909,7 +900,7 @@ extends AbstractEPProcessor
 					getLoginState(), getLoginState(), 
 					action);
 			
-			loginStateListener.afterLoginStateChange(event);
+			loginStateListener.loginStateChanged(event);
 		}
 	}
 
@@ -963,40 +954,59 @@ extends AbstractEPProcessor
 		}
 	}
 
-	protected void notifyLoginStateListeners_beforeChange(LoginState newLoginState) {
+//	protected void notifyLoginStateListeners_beforeChange(LoginState newLoginState) {
+//		synchronized (loginStateListenerRegistry) {
+//			try {
+//				checkProcessing();
+//
+//				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
+//					try {
+//						
+//						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
+//								getLoginState(), newLoginState, 
+//								item.getAction());
+//						
+//						item.getLoginStateListener().beforeLoginStateChange(event);
+//						
+//						
+//					} catch (Throwable t) {
+//						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
+//					}
+//				}
+//			} catch (Throwable t) {
+//				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
+//			}
+//		}
+//	}
+
+//	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
+	protected void changeLoginStateAndNotifyListeners(final LoginState newLoginState) {
+		final LoginState oldLoginState;
+		final LinkedList<LoginStateListenerRegistryItem> loginStateListenerRegistryItems;
+
 		synchronized (loginStateListenerRegistry) {
 			try {
 				checkProcessing();
 
-				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
+				oldLoginState = currentLoginState;
+				if (oldLoginState == newLoginState)
+					return;
+
+				currentLoginState = newLoginState;
+
+				logger.info("changeLoginStateAndNotifyListeners: changing from " + oldLoginState + " to " + newLoginState);
+
+//				if (currLoginState == LoginState.OFFLINE)
+//					lastWorkOfflineDecisionTime = System.currentTimeMillis();
+
+				// We should be logged in now, open the cache if not already open
+				if (newLoginState == LoginState.LOGGED_IN) {
 					try {
-						
-						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
-								getLoginState(), newLoginState, 
-								item.getAction());
-						
-						item.getLoginStateListener().beforeLoginStateChange(event);
-						
-						
+						Cache.sharedInstance().open(getSessionID()); // the cache is opened implicitely now by default, but it is closed *after* a logout.
 					} catch (Throwable t) {
-						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
+						logger.debug("Cache could not be opened!", t); //$NON-NLS-1$
 					}
 				}
-			} catch (Throwable t) {
-				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
-			}
-		}
-	}
-
-	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
-		synchronized (loginStateListenerRegistry) {
-			try {
-				LoginState oldLoginState = currLoginState;
-				currLoginState = newLoginState;
-				if (currLoginState == LoginState.OFFLINE)
-					lastWorkOfflineDecisionTime = System.currentTimeMillis();
-
-				checkProcessing();
 
 				if (LoginState.LOGGED_IN == newLoginState && objectID2PCClassNotificationInterceptor == null) {
 					objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor();
@@ -1004,28 +1014,37 @@ extends AbstractEPProcessor
 					JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 				}
 
-				if (LoginState.LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
+//				if (LoginState.LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
+				if (LoginState.LOGGED_OUT == newLoginState && objectID2PCClassNotificationInterceptor != null) {
 					SelectionManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					JDOLifecycleManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					objectID2PCClassNotificationInterceptor = null;
 				}
 
-				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
+				loginStateListenerRegistryItems = new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry);
+			} catch (Throwable t) {
+				logger.warn("Caught exception while changing LoginState and obtaining LoginStateListeners.", t); //$NON-NLS-1$
+				return;
+			}
+		} // synchronized (loginStateListenerRegistry) {
+
+		// We trigger the LoginStateListeners on the UI thread and outside of the synchronized block.
+		// It is important to trigger them outside of this block, because this prevents dead-locks.
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				for (LoginStateListenerRegistryItem item : loginStateListenerRegistryItems) {
 					try {
-						
 						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
 								oldLoginState, newLoginState, 
 								item.getAction());
-						
-						item.getLoginStateListener().afterLoginStateChange(event);
+
+						item.getLoginStateListener().loginStateChanged(event);
 					} catch (Throwable t) {
-						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
+						logger.warn("Caught exception while notifying LoginStateListener.", t); //$NON-NLS-1$
 					}
 				}
-			} catch (Throwable t) {
-				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
 			}
-		}
+		});
 	}
 
 //	/** // I think this method is not called anymore. Marco :-)

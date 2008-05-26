@@ -5,7 +5,6 @@ package org.nightlabs.jfire.base.ui.login;
 
 import javax.security.auth.login.LoginException;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.StatusLineLayoutData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -13,7 +12,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.action.AbstractContributionItem;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -93,22 +91,23 @@ implements LoginStateListener
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
-	public void afterLoginStateChange(final LoginStateChangeEvent event)
+	public void loginStateChanged(final LoginStateChangeEvent event)
 	{
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+//		Display.getDefault().asyncExec(new Runnable() {
+//			public void run() {
 				Login login = Login.sharedInstance();
 
 				String txt = null;
 
 				if(event.getNewLoginState() == LoginState.LOGGED_IN)
 					txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
-
-				if(event.getNewLoginState() == LoginState.LOGGED_OUT)
+				else if(event.getNewLoginState() == LoginState.LOGGED_OUT)
 					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedOutStatus"); //$NON-NLS-1$
+				else
+					return;
 
-				if(event.getNewLoginState() == LoginState.OFFLINE)
-					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.offlineStatus"); //$NON-NLS-1$
+//				if(event.getNewLoginState() == LoginState.OFFLINE)
+//					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.offlineStatus"); //$NON-NLS-1$
 
 				if (text == null || text.isDisposed()) {
 					earlyLoginText = txt;
@@ -119,13 +118,8 @@ implements LoginStateListener
 					text.setText(txt);
 					text.setToolTipText(txt);
 				}
-			}
-		});
+//			}
+//		});
 	}
 
-	@Override
-	public void beforeLoginStateChange(LoginStateChangeEvent event) {
-		// TODO Auto-generated method stub
-
-	}
 }

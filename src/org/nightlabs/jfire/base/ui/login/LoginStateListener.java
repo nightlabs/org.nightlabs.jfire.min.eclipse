@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui.login;
 
 import org.eclipse.jface.action.IAction;
+import org.nightlabs.base.ui.login.LoginState;
 
 /**
  * LoginStateListeners are notified whenever the login state
@@ -36,12 +37,7 @@ import org.eclipse.jface.action.IAction;
 public interface LoginStateListener {
 	
 	/**
-	 * Called whenever the login state changed to one of the following:
-	 * <ul>
-	 * 	<li>{@link Login#LOGINSTATE_LOGGED_IN} user has logged in.</li>
-	 * 	<li>{@link Login#LOGINSTATE_LOGGED_OUT} user has logged out.</li>
-	 * 	<li>{@link Login#LOGINSTATE_OFFLINE} user decided to work OFFLINE.</li>
-	 * <ul>
+	 * Called whenever the login state changed to one of the {@link LoginState} values.
 	 * Note that the param action is likely to be null, depending on what was
 	 * passed to {@link Login#addLoginStateListener(LoginStateListener)}
 	 * or {@link Login#addLoginStateListener(LoginStateListener, IAction)}
@@ -52,14 +48,14 @@ public interface LoginStateListener {
 	 * @see Login#addLoginStateListener(LoginStateListener)
 	 * @see Login#addLoginStateListener(LoginStateListener, IAction)
 	 */
-	public void afterLoginStateChange(LoginStateChangeEvent event);
+	public void loginStateChanged(LoginStateChangeEvent event);
 
-	/**
-	 * Called before the login state changes. Especially in case of logout, this
-	 * might be useful since the user is still logged in when this method is called.
-	 * @param oldLoginState the login state before the change, which is still the current state.
-	 * @param newLoginState the new login state, the system is about to switch to.
-	 * @param action
-	 */
-	public void beforeLoginStateChange(LoginStateChangeEvent event);
+//	/**
+//	 * Called before the login state changes. Especially in case of logout, this
+//	 * might be useful since the user is still logged in when this method is called.
+//	 * @param oldLoginState the login state before the change, which is still the current state.
+//	 * @param newLoginState the new login state, the system is about to switch to.
+//	 * @param action
+//	 */
+//	public void beforeLoginStateChange(LoginStateChangeEvent event);
 }

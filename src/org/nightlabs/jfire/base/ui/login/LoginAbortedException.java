@@ -29,27 +29,27 @@ package org.nightlabs.jfire.base.ui.login;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class WorkOfflineException extends Exception {
+public class LoginAbortedException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 
 	 */
-	public WorkOfflineException() {
+	public LoginAbortedException() {
 		super();
 	}
 
 	/**
 	 * @param message
 	 */
-	public WorkOfflineException(String message) {
+	public LoginAbortedException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @param cause
 	 */
-	public WorkOfflineException(Throwable cause) {
+	public LoginAbortedException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
@@ -58,7 +58,7 @@ public class WorkOfflineException extends Exception {
 	 * @param message
 	 * @param cause
 	 */
-	public WorkOfflineException(String message, Throwable cause) {
+	public LoginAbortedException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.login.action;
 
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -40,6 +41,7 @@ import org.nightlabs.base.ui.resource.SharedImages.ImageDimension;
 import org.nightlabs.base.ui.resource.SharedImages.ImageFormat;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.LoginAbortedException;
 import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
@@ -83,7 +85,7 @@ extends LSDWorkbenchWindowActionDelegate
 			logoutIcon_toolbar = SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginAction.class, "Logout", ImageDimension._24x24, ImageFormat.png); //$NON-NLS-1$
 
 		if (Login.isLoggedIn() && action != null) {
-			afterLoginStateChange(new LoginStateChangeEvent(this,Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action));
+			loginStateChanged(new LoginStateChangeEvent(this,Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action));
 		}
 	}
 
@@ -95,16 +97,22 @@ extends LSDWorkbenchWindowActionDelegate
 	public void run(IAction action) {
 		try {
 			Login login = Login.getLogin(false);
-			if (Login.isLoggedIn())
-				login.workOffline();
+			if (Login.isLoggedIn()) {
+				login.logout();
+//				login.workOffline();
+			}
 			else {
 				try {
 					Login.getLogin(false).setForceLogin(true);
 					Login.getLogin();
-				} catch (LoginException e) {
-					if (Login.sharedInstance().getLoginState() != LoginState.OFFLINE)
+				} catch (Exception e) {
+					if (e instanceof LoginAbortedException || ExceptionUtils.indexOfThrowable(e, LoginException.class) >= 0)
+						logger.info("User aborted login.");
+					else {
+//					if (Login.sharedInstance().getLoginState() != LoginState.OFFLINE)
 						ExceptionHandlerRegistry.asyncHandleException(e);
-					logger.error("Login failed",e); //$NON-NLS-1$
+					}
+//					logger.error("Login failed",e); //$NON-NLS-1$
 				}
 			}
 		} catch (LoginException e) {
@@ -114,15 +122,10 @@ extends LSDWorkbenchWindowActionDelegate
 	}
 
 	@Override
-	public void beforeLoginStateChange(LoginStateChangeEvent event) {
-		// nothing to do here.
-	}
-
-	@Override
-	public void afterLoginStateChange(LoginStateChangeEvent event)
+	public void loginStateChanged(LoginStateChangeEvent event)
 
 	{
-		super.afterLoginStateChange(event);
+		super.loginStateChanged(event);
 
 		ImageDescriptor loginIcon = null;
 		ImageDescriptor logoutIcon = null;
@@ -152,12 +155,12 @@ extends LSDWorkbenchWindowActionDelegate
 			action.setHoverImageDescriptor(loginIcon);
 		}
 
-		if(event.getNewLoginState() ==LoginState.OFFLINE)
-		{
-			action.setImageDescriptor(loginIcon);
-			action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_offline")); //$NON-NLS-1$
-			action.setHoverImageDescriptor(loginIcon);
-		}
+//		if(event.getNewLoginState() ==LoginState.OFFLINE)
+//		{
+//			action.setImageDescriptor(loginIcon);
+//			action.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.login.action.LoginAction.action.toolTipText_offline")); //$NON-NLS-1$
+//			action.setHoverImageDescriptor(loginIcon);
+//		}
 	
 }
 

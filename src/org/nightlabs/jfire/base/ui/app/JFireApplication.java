@@ -45,7 +45,7 @@ import org.nightlabs.jfire.base.j2ee.RemoteResourceFilterRegistry;
 import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.login.WorkOfflineException;
+import org.nightlabs.jfire.base.ui.login.LoginAbortedException;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -118,7 +118,7 @@ extends AbstractApplication
 		return new JFireWorkbenchAdvisor();
 	}
 	
-	protected void initLogin() throws LoginException, WorkOfflineException
+	protected void initLogin() throws LoginException, LoginAbortedException
 	{
 		// create log directory if not existent
 		AbstractApplication.getLogDir();

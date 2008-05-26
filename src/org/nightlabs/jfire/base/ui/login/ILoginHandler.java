@@ -48,7 +48,7 @@ public interface ILoginHandler {
 	 * @param loginContext
 	 * @param loginConfigModule
 	 * @param loginResult
-	 * @throws WorkOfflineException
+	 * @throws LoginAbortedException
 	 * @see JFireLoginContext
 	 * @see LoginConfigModule
 	 * @see Login.AsyncLoginResult

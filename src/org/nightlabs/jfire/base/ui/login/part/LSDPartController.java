@@ -83,19 +83,12 @@ public class LSDPartController extends PartController implements LoginStateListe
 		Login.loginAsynchronously();
 	}
 
-	public void afterLoginStateChange(LoginStateChangeEvent event) {
+	public void loginStateChanged(LoginStateChangeEvent event) {
 		if (event.getNewLoginState() != LoginState.LOGGED_IN)
 			disposePartContents();
 		updateParts();
 	}
-	
-	
-	@Override
-	public void beforeLoginStateChange(LoginStateChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+
 
 	private static LSDPartController sharedInstance;
 	
