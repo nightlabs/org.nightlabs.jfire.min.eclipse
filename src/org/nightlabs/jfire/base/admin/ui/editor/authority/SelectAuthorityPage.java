@@ -188,7 +188,17 @@ public class SelectAuthorityPage extends WizardHopPage
 					monitor.worked(20);
 				}
 				else {
-					inheritedAuthority = inheritedAuthorityResolver.getInheritedAuthority(new SubProgressMonitor(monitor, 20));
+					AuthorityID inheritedAuthorityID = inheritedAuthorityResolver.getInheritedAuthorityID(new SubProgressMonitor(monitor, 10));
+					if (inheritedAuthorityID == null) {
+						inheritedAuthority = null;
+						monitor.worked(10);
+					}
+					else
+						inheritedAuthority = AuthorityDAO.sharedInstance().getAuthority(
+								inheritedAuthorityID,
+								new String[] { FetchPlan.DEFAULT, Authority.FETCH_GROUP_NAME},
+								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+								new SubProgressMonitor(monitor, 10));
 				}
 
 				authorityType = AuthorityTypeDAO.sharedInstance().getAuthorityType(

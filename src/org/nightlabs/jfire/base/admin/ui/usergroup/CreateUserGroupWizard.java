@@ -40,10 +40,10 @@ import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
-import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.jfire.security.JFireSecurityManager;
 import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
+import org.nightlabs.jfire.security.User;
+import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -92,7 +92,8 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 //			newGroup.getPerson().deflate();
 			
 			JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			userManager.saveUser(newGroup, null);
+//			userManager.saveUser(newGroup, null);
+			userManager.storeUser(newGroup, null, false, null, 1);
 			return true;
 		}
 		catch (RuntimeException e) {

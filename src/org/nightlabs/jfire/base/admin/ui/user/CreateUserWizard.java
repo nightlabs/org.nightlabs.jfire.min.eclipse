@@ -90,7 +90,8 @@ public class CreateUserWizard extends DynamicPathWizard
 			newUser.getPerson().deflate();
 
 			JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			userManager.saveUser(newUser, cuPage.getPassword1());
+//			userManager.saveUser(newUser, cuPage.getPassword1());
+			userManager.storeUser(newUser, cuPage.getPassword1(), false, null, 1);
 			return true;
 		}
 		catch (RuntimeException e)
