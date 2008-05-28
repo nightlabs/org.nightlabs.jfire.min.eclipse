@@ -12,8 +12,6 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 public class StructLocalEditorPageController
 extends EntityEditorPageController
 {
-	private static final long serialVersionUID = 1L;
-
 	public StructLocalEditorPageController(EntityEditor editor) {
 		super(editor);
 	}
