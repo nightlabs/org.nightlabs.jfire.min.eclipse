@@ -27,7 +27,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 	 * @see org.eclipse.jface.window.Window.IExceptionHandler#handleException(java.lang.Throwable)
 	 */
 	@Override
-	public void handleException(Thread thread, Throwable thrownException, Throwable triggerException) {
+	public boolean handleException(Thread thread, Throwable thrownException, Throwable triggerException) {
 		logger.info("handleException: called for this triggerException: " + triggerException);
 
 		if (!(triggerException instanceof SecurityException))
@@ -36,7 +36,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 			try {
 				RemoteExceptionClassHandler handler = new RemoteExceptionClassHandler();
 				if (handler.handleException(thread, thrownException, (SecurityException) triggerException))
-					return;
+					return true;
 			} catch (NoClassDefFoundError x) {
 				// ignore and use fallback-dialog below
 			}
@@ -46,6 +46,8 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 				"Insufficient permissions", 
 				"You don't have enough permissions for the requested action. Contact your boss or your administrator.", 
 				thrownException, triggerException);
+
+		return true;
 	}
 
 	// We handle the MissingRoleException in a subclass, because it might happen that we cannot load
@@ -73,7 +75,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 				// If we come here, the exception is thrown by the JavaEE server when checking the EJB method permissions.
 				// So we try to parse the exception message.
 
-				// TODO WARNING: This is JBoss dependent code. When we support another JavaEE server, we very likely have to change this code!
+				// TODO WARNING: This is JBoss dependent code. When we support another JavaEE server, we very likely have to extend this code!
 				//
 				// JBoss 4.2.2: We search for a message like this:
 				//   Insufficient method permissions, principal=marco@chezfrancois.jfire.org?sessionID=LKsC9cN-tCN9&workstationID=ws00&, ejbName=jfire/ejb/JFireBaseBean/JFireSecurityManager, method=getUserIDs, interface=REMOTE, requiredRoles=[org.nightlabs.jfire.security.JFireSecurityManager#accessRightManagement, TestTestTest], principalRoles=[_Guest_]

@@ -350,11 +350,9 @@
          point="org.nightlabs.base.ui.exceptionhandler">
       <exceptionHandler
             class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
+            name="Insufficient permissions: Handler showing the user which role groups are required."
+            priority="150"
             targetType="java.lang.SecurityException">
-      </exceptionHandler>
-      <exceptionHandler
-            class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
-            targetType="org.nightlabs.jfire.security.MissingRoleException">
       </exceptionHandler>
    </extension>
 </plugin>
