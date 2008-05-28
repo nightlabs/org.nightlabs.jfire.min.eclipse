@@ -556,7 +556,7 @@ public class AuthorityPageControllerHelper
 						true,
 						FETCH_GROUPS_AUTHORITY,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						new SubProgressMonitor(monitor, 10)
+						new SubProgressMonitor(monitor, 20)
 				);
 				AuthorityID aid = (AuthorityID) JDOHelper.getObjectId(a);
 				if (aid == null)
@@ -566,26 +566,26 @@ public class AuthorityPageControllerHelper
 				authority = a;
 			}
 			else
-				monitor.worked(10);
+				monitor.worked(20);
 
-			Set<UserID> userIDsToRemove = NLJDOHelper.getObjectIDSet(usersToRemove);
-			UserDAO.sharedInstance().removeUsersFromAuthority(
-					userIDsToRemove,
-					authorityID,
-					new SubProgressMonitor(monitor, 10)
-			);
+//			Set<UserID> userIDsToRemove = NLJDOHelper.getObjectIDSet(usersToRemove);
+//			UserDAO.sharedInstance().removeUsersFromAuthority(
+//					userIDsToRemove,
+//					authorityID,
+//					new SubProgressMonitor(monitor, 10)
+//			);
 			usersToRemove.clear();
 
-			Set<UserID> userIDsToAdd = NLJDOHelper.getObjectIDSet(usersToAdd);
-			UserDAO.sharedInstance().removeUsersFromAuthority(
-					userIDsToAdd,
-					authorityID,
-					new SubProgressMonitor(monitor, 10)
-			);
+//			Set<UserID> userIDsToAdd = NLJDOHelper.getObjectIDSet(usersToAdd);
+//			UserDAO.sharedInstance().removeUsersFromAuthority(
+//					userIDsToAdd,
+//					authorityID,
+//					new SubProgressMonitor(monitor, 10)
+//			);
 			usersToAdd.clear();
 
 			{
-				int ticksForThisWorkPart = 70;
+				int ticksForThisWorkPart = 80;
 
 				if (changedModels.isEmpty())
 					monitor.worked(ticksForThisWorkPart);
@@ -598,10 +598,16 @@ public class AuthorityPageControllerHelper
 						if (userID == null)
 							throw new IllegalStateException("JDOHelper.getObjectId(user) returned null for user: " + user);
 
-						Set<RoleGroupID> roleGroupIDs = NLJDOHelper.getObjectIDSet(
-								roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly()
-						);
 
+						Set<RoleGroupID> roleGroupIDs = null;
+
+						if (roleGroupSecurityPreferencesModel.isInAuthority()) {
+							roleGroupIDs = NLJDOHelper.getObjectIDSet(
+									roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly()
+							);
+						}
+
+						// roleGroupIDs being null means that the user is removed from the authority by the following call.
 						UserDAO.sharedInstance().setRoleGroupsOfUser(userID, authorityID, roleGroupIDs,
 								new SubProgressMonitor(monitor, ticksPerModel));
 

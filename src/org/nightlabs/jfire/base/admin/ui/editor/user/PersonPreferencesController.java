@@ -149,7 +149,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 			logger.info("Saving user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
 			User oldUser = user;
 			user = UserDAO.sharedInstance().storeUser(
-					user, true, FETCH_GROUPS,
+					user, (String)null, true, FETCH_GROUPS,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(new ProgressMonitorWrapper(monitor), 5)
 			);
 			user = Util.cloneSerializable(user);

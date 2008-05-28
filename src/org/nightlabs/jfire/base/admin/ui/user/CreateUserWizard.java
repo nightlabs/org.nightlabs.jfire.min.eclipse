@@ -36,8 +36,7 @@ import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.JFireSecurityManager;
-import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
+import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -85,13 +84,14 @@ public class CreateUserWizard extends DynamicPathWizard
 			newUser.setName(cuPage.getUserName());
 			newUser.setDescription(cuPage.getUserDescription());
 			newUser.setAutogenerateName(cuPage.isAutogenerateName());
-			
+
 			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
 			newUser.getPerson().deflate();
 
-			JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-//			userManager.saveUser(newUser, cuPage.getPassword1());
-			userManager.storeUser(newUser, cuPage.getPassword1(), false, null, 1);
+//			JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+////			userManager.saveUser(newUser, cuPage.getPassword1());
+//			userManager.storeUser(newUser, cuPage.getPassword1(), false, null, 1);
+			UserDAO.sharedInstance().storeUser(newUser, cuPage.getPassword1(), false, null, 1, new NullProgressMonitor()); // TODO do this asynchronously in a job!
 			return true;
 		}
 		catch (RuntimeException e)
