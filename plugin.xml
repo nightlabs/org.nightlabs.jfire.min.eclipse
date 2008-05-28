@@ -346,4 +346,15 @@
          point="org.nightlabs.jfire.base.j2ee.remoteResourceFilter">
       <exclusion pattern="org.nightlabs.jfire.base.ui.exclusion1"/>
    </extension>
+   <extension
+         point="org.nightlabs.base.ui.exceptionhandler">
+      <exceptionHandler
+            class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
+            targetType="java.lang.SecurityException">
+      </exceptionHandler>
+      <exceptionHandler
+            class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
+            targetType="org.nightlabs.jfire.security.MissingRoleException">
+      </exceptionHandler>
+   </extension>
 </plugin>
