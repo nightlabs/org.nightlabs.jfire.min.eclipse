@@ -26,7 +26,6 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 import javax.jdo.FetchPlan;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
@@ -40,6 +39,7 @@ import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
 import org.nightlabs.util.Util;
 
@@ -100,7 +100,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	 * Load the user data and user groups.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doLoad(IProgressMonitor monitor)
+	public void doLoad(ProgressMonitor monitor)
 	{
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesController.loadingUserPerson"), 4); //$NON-NLS-1$
 		try {
@@ -111,10 +111,10 @@ public class PersonPreferencesController extends EntityEditorPageController
 				User user = UserDAO.sharedInstance().getUser(
 						userID, FETCH_GROUPS,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						new ProgressMonitorWrapper(monitor)
+						monitor
 				);
 				monitor.worked(1);
-				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new ProgressMonitorWrapper(monitor));
+				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, monitor);
 				this.user = Util.cloneSerializable(user);
 				logger.info("Loading user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.info("Loading user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -130,7 +130,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	 * Save the user data.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doSave(IProgressMonitor monitor)
+	public void doSave(ProgressMonitor monitor)
 	{
 		if ( logger.isInfoEnabled() ) {
 			logger.info("***********************************"); //$NON-NLS-1$
@@ -150,7 +150,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 			User oldUser = user;
 			user = UserDAO.sharedInstance().storeUser(
 					user, (String)null, true, FETCH_GROUPS,
-					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(new ProgressMonitorWrapper(monitor), 5)
+					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 5)
 			);
 			user = Util.cloneSerializable(user);
 			fireModifyEvent(oldUser, getUser());

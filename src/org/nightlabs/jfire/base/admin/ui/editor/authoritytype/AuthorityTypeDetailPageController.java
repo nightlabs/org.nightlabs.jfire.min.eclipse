@@ -2,7 +2,6 @@ package org.nightlabs.jfire.base.admin.ui.editor.authoritytype;
 
 import javax.jdo.FetchPlan;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
@@ -11,6 +10,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
+import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.Util;
 
 public class AuthorityTypeDetailPageController extends EntityEditorPageController
@@ -35,7 +35,7 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 	private AuthorityType authorityType;
 
 	@Override
-	public void doLoad(IProgressMonitor monitor) {
+	public void doLoad(ProgressMonitor monitor) {
 		JDOObjectEditorInput<AuthorityTypeID> input = (JDOObjectEditorInput<AuthorityTypeID>) getEntityEditor().getEditorInput();
 		AuthorityTypeID authorityTypeID = input.getJDOObjectID();
 		this.authorityType = Util.cloneSerializable(
@@ -43,7 +43,7 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 						authorityTypeID,
 						FETCH_GROUPS_AUTHORITY_TYPE,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						new ProgressMonitorWrapper(monitor)
+						monitor
 				)
 		);
 	}
@@ -53,7 +53,7 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 	}
 
 	@Override
-	public void doSave(IProgressMonitor monitor) {
+	public void doSave(ProgressMonitor monitor) {
 		// TODO Auto-generated method stub
 	}
 

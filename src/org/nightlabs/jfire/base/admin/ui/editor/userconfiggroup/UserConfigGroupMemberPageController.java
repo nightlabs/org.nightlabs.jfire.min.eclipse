@@ -1,9 +1,9 @@
 package org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.jfire.base.admin.ui.editor.configgroup.AbstractConfigGroupPageController;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
@@ -21,14 +21,16 @@ extends AbstractConfigGroupPageController
 		super(editor, startBackgroundLoading);
 	}
 
-	public void doLoad(IProgressMonitor monitor)
+	@Override
+	public void doLoad(ProgressMonitor monitor)
 	{
 		monitor.beginTask("Load User Config Group Members", 2); //$NON-NLS-1$ // this is probably never shown since this method finishes really quickly (there's nothing to do) => we don't localise it
 		monitor.worked(1);
 		monitor.worked(1);
 	}
 
-	public void doSave(IProgressMonitor monitor)
+	@Override
+	public void doSave(ProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof UserConfigGroupMemberPage) {

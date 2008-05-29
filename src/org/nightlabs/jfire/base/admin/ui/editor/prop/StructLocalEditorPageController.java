@@ -1,9 +1,9 @@
 package org.nightlabs.jfire.base.admin.ui.editor.prop;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
@@ -20,7 +20,7 @@ extends EntityEditorPageController
 		super(editor, startBackgroundLoading);
 	}
 
-	public void doLoad(IProgressMonitor monitor) {
+	public void doLoad(ProgressMonitor monitor) {
 		try {
 			monitor.beginTask("Loading structure members", 1); //$NON-NLS-1$ // this doesn't take long and is therefore probably never displayed => no externalisation necessary. Marco.
 			monitor.worked(1);
@@ -29,7 +29,7 @@ extends EntityEditorPageController
 		}
 	}
 
-	public void doSave(IProgressMonitor monitor)
+	public void doSave(ProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof StructEditorPage) {

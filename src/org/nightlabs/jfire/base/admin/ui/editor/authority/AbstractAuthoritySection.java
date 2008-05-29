@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
+import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditorMultiLine;
@@ -113,6 +114,11 @@ extends ToolBarSectionPart
 								assignAuthorityWizard.getNewAuthority(),
 								monitor);
 
+						authorityPageControllerHelper.setAssignSecuringAuthority(
+								assignAuthorityWizard.getAuthorityID(),
+								assignAuthorityWizard.isAuthorityIDInherited()
+						);
+
 						getSection().getDisplay().asyncExec(new Runnable() {
 							public void run() {
 								authorityChanged();
@@ -145,6 +151,14 @@ extends ToolBarSectionPart
 			}
 		});
 	}
+
+	/**
+	 * This method should takes your implementation of {@link IEntityEditorPageController} and must call
+	 * {@link #setAuthorityPageControllerHelper(AuthorityPageControllerHelper)}.
+	 *
+	 * @param pageController your use-case-specific implementation of {@link IEntityEditorPageController}.
+	 */
+	public abstract void setPageController(IEntityEditorPageController pageController);
 
 	private void authorityChanged() {
 		if (name.isDisposed())

@@ -359,5 +359,10 @@
               editorID="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
               indexHint="10">
         </pageFactory>
+        <pageFactory
+              class="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityPage$Factory"
+              editorID="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
+              indexHint="20">
+        </pageFactory>
     </extension>
 </plugin>

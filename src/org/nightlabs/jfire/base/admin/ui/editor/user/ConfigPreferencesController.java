@@ -26,11 +26,11 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage;
 import org.nightlabs.jfire.config.ConfigModule;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * Simple controller that will not load anything
@@ -70,7 +70,7 @@ public class ConfigPreferencesController extends EntityEditorPageController
 	 * Nothing to do by now
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doLoad(IProgressMonitor monitor)
+	public void doLoad(ProgressMonitor monitor)
 	{
 	}
 
@@ -78,7 +78,7 @@ public class ConfigPreferencesController extends EntityEditorPageController
 	 * Save the user data.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doSave(IProgressMonitor monitor)
+	public void doSave(ProgressMonitor monitor)
 	{
 		if (pagesToStore == null || pagesToStore.isEmpty()) {
 			logger.debug("No config modules dirty, saving nothing."); //$NON-NLS-1$

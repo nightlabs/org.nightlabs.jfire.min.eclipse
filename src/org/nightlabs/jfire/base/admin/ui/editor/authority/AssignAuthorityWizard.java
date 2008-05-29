@@ -39,6 +39,11 @@ public class AssignAuthorityWizard extends DynamicPathWizard
 		return selectAuthorityPage.getNewAuthority();
 	}
 
+	public boolean isAuthorityIDInherited()
+	{
+		return SelectAuthorityPage.Action.inherit == selectAuthorityPage.getAction();
+	}
+
 	@Override
 	public boolean performFinish() {
 		return true;

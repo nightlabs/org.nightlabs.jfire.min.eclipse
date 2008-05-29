@@ -19,15 +19,18 @@ import javax.jdo.JDOHelper;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
+import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
+import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.RoleGroupSetCarrier;
+import org.nightlabs.jfire.security.SecuredObject;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.jfire.security.dao.AuthorityDAO;
@@ -83,14 +86,27 @@ public class AuthorityPageControllerHelper
 		Authority.FETCH_GROUP_DESCRIPTION
 	};
 
-	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, ProgressMonitor monitor)
-	{
-		load(authorityTypeID, authorityID, null, monitor);
-	}
+//	public void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, ProgressMonitor monitor)
+//	{
+//		load(authorityTypeID, authorityID, null, monitor);
+//	}
+//
+//	public void load(AuthorityTypeID authorityTypeID, Authority newAuthority, ProgressMonitor monitor)
+//	{
+//		load(authorityTypeID, null, newAuthority, monitor);
+//	}
 
-	public void load(AuthorityTypeID authorityTypeID, Authority newAuthority, ProgressMonitor monitor)
+	private SecuredObject securedObject;
+
+	public void load(SecuredObject securedObject, ProgressMonitor monitor)
 	{
-		load(authorityTypeID, null, newAuthority, monitor);
+		this.securedObject = securedObject;
+		load(
+				(securedObject == null ? null : securedObject.getSecuringAuthorityTypeID()),
+				(securedObject == null ? null : securedObject.getSecuringAuthorityID()),
+				null,
+				monitor
+		);
 	}
 
 	/**
@@ -107,7 +123,7 @@ public class AuthorityPageControllerHelper
 	 * @throws LoginException if login fails.
 	 * @throws RemoteException if communication via RMI fails.
 	 */
-	public synchronized void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
+	protected synchronized void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
 	{
 		monitor.beginTask("Loading authority data", 100);
 
@@ -234,8 +250,8 @@ public class AuthorityPageControllerHelper
 				((UserGroup)u).getUsers();
 		}
 
-		usersToAdd = new HashSet<User>();
-		usersToRemove = new HashSet<User>();
+//		usersToAdd = new HashSet<User>();
+//		usersToRemove = new HashSet<User>();
 
 		monitor.done();
 
@@ -260,8 +276,10 @@ public class AuthorityPageControllerHelper
 			}
 			else if (User.USERID_OTHER.equals(user.getUserID())) {
 				Set<RoleGroup> rightsOfOtherUser = new HashSet<RoleGroup>();
-				rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly());
-				rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedToUserGroups()); // not sure if it can be in groups, but better assume that yes
+				if (roleGroupSecurityPreferencesModel.isInAuthority()) {
+					rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly());
+					rightsOfOtherUser.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedToUserGroups()); // not sure if it can be in groups, but better assume that yes
+				}
 
 				// recalculate rights for all users that are neither directly nor via a user-group in this authority
 				for (User u : users.keySet()) {
@@ -296,18 +314,9 @@ public class AuthorityPageControllerHelper
 	private Map<RoleGroupSecurityPreferencesModel, User> roleGroupSecurityPreferencesModel2User = new HashMap<RoleGroupSecurityPreferencesModel, User>();
 
 	private Map<User, Boolean> users = new HashMap<User, Boolean>();
-	private Set<User> usersToAdd = new HashSet<User>();
-	private Set<User> usersToRemove = new HashSet<User>();
+//	private Set<User> usersToAdd = new HashSet<User>();
+//	private Set<User> usersToRemove = new HashSet<User>();
 	private Set<RoleGroupSecurityPreferencesModel> changedModels = new HashSet<RoleGroupSecurityPreferencesModel>();
-
-//	/**
-//	 * Get a read-only view of the {@link RoleGroup}s within the currently managed {@link AuthorityType}.
-//	 *
-//	 * @return a read-only <code>Set</code> of {@link RoleGroup}s.
-//	 */
-//	public Set<RoleGroup> getRoleGroupsInAuthorityType() {
-//		return Collections.unmodifiableSet(roleGroupsInAuthorityType);
-//	}
 
 	/**
 	 * Get a read-only mapping from {@link User} to {@link RoleGroupSecurityPreferencesModel}.
@@ -400,23 +409,23 @@ public class AuthorityPageControllerHelper
 		}
 	}
 
-	/**
-	 * Get the users that will be added to the authority when the data is stored to the server.
-	 *
-	 * @return the set of users to be added to the current authority.
-	 */
-	public Set<User> getUsersToAdd() {
-		return Collections.unmodifiableSet(usersToAdd);
-	}
+//	/**
+//	 * Get the users that will be added to the authority when the data is stored to the server.
+//	 *
+//	 * @return the set of users to be added to the current authority.
+//	 */
+//	public Set<User> getUsersToAdd() {
+//		return Collections.unmodifiableSet(usersToAdd);
+//	}
 
-	/**
-	 * Get the users that will be removed from the authority when the data is stored to the server.
-	 *
-	 * @return the set of users to be removed from the current authority.
-	 */
-	public Set<User> getUsersToRemove() {
-		return Collections.unmodifiableSet(usersToRemove);
-	}
+//	/**
+//	 * Get the users that will be removed from the authority when the data is stored to the server.
+//	 *
+//	 * @return the set of users to be removed from the current authority.
+//	 */
+//	public Set<User> getUsersToRemove() {
+//		return Collections.unmodifiableSet(usersToRemove);
+//	}
 
 	public void addUserToAuthority(User user)
 	{
@@ -429,8 +438,8 @@ public class AuthorityPageControllerHelper
 		// replace the user by our internal one (where we are sure about fetch-groups
 		user = roleGroupSecurityPreferencesModel2User.get(roleGroupSecurityPreferencesModel);
 
-		usersToAdd.add(user);
-		usersToRemove.remove(user);
+//		usersToAdd.add(user);
+//		usersToRemove.remove(user);
 
 		roleGroupSecurityPreferencesModel.beginDeferModelChangedEvents();
 		try {
@@ -491,8 +500,8 @@ public class AuthorityPageControllerHelper
 		// replace the user by our internal one (where we are sure about fetch-groups
 		user = roleGroupSecurityPreferencesModel2User.get(roleGroupSecurityPreferencesModel);
 
-		usersToAdd.remove(user);
-		usersToRemove.add(user);
+//		usersToAdd.remove(user);
+//		usersToRemove.add(user);
 		
 		roleGroupSecurityPreferencesModel.beginDeferModelChangedEvents();
 		try {
@@ -516,10 +525,13 @@ public class AuthorityPageControllerHelper
 			}
 			else if (User.USERID_OTHER.equals(user.getUserID())) {
 				Set<RoleGroup> emptySet = Collections.emptySet();
-				for (User u : users.keySet()) {
-					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+				for (RoleGroupSecurityPreferencesModel m : user2RoleGroupSecurityPreferencesModel.values())
 					m.setRoleGroupsAssignedToOtherUser(emptySet);
-				}
+
+//				for (User u : users.keySet()) {
+//					RoleGroupSecurityPreferencesModel m = user2RoleGroupSecurityPreferencesModel.get(u);
+//					m.setRoleGroupsAssignedToOtherUser(emptySet);
+//				}
 			}
 		} finally {
 			roleGroupSecurityPreferencesModel.endDeferModelChangedEvents();
@@ -541,10 +553,37 @@ public class AuthorityPageControllerHelper
 		return false;
 	}
 
-	public synchronized void save(ProgressMonitor monitor)
+	/**
+	 * This method assigns the securing authority to the server, if {@link #isAssignSecuringAuthorityRequested()}
+	 * returns <code>true</code>. Otherwise, it returns without writing to the server. It clears the flag
+	 * {@link #assignSecuringAuthorityRequested}.
+	 *
+	 * @param monitor the monitor for progress feedback
+	 */
+	protected void assignSecuringAuthority(ProgressMonitor monitor)
+	{
+		monitor.beginTask("Assigning authority", 100);
+		try {
+			if (assignSecuringAuthorityRequested) {
+				AuthorityDAO.sharedInstance().assignSecuringAuthority(
+						JDOHelper.getObjectId(securedObject), assignSecuringAuthorityID, assignSecuringAuthorityInherited,
+						new SubProgressMonitor(monitor, 100));
+
+				assignSecuringAuthorityRequested = false;
+			}
+			else
+				monitor.worked(100);
+		} finally {
+			monitor.done();
+		}
+	}
+
+	public synchronized void store(ProgressMonitor monitor)
 	{
 		monitor.beginTask("Saving authority", 200);
 		try {
+			if (this.securedObject == null)
+				throw new IllegalStateException("this.securedObject == null");
 			if (this.authorityType == null)
 				throw new IllegalStateException("this.authorityType == null");
 			if (this.authority == null)
@@ -568,21 +607,21 @@ public class AuthorityPageControllerHelper
 			else
 				monitor.worked(20);
 
-//			Set<UserID> userIDsToRemove = NLJDOHelper.getObjectIDSet(usersToRemove);
-//			UserDAO.sharedInstance().removeUsersFromAuthority(
-//					userIDsToRemove,
-//					authorityID,
-//					new SubProgressMonitor(monitor, 10)
-//			);
-			usersToRemove.clear();
-
-//			Set<UserID> userIDsToAdd = NLJDOHelper.getObjectIDSet(usersToAdd);
-//			UserDAO.sharedInstance().removeUsersFromAuthority(
-//					userIDsToAdd,
-//					authorityID,
-//					new SubProgressMonitor(monitor, 10)
-//			);
-			usersToAdd.clear();
+////			Set<UserID> userIDsToRemove = NLJDOHelper.getObjectIDSet(usersToRemove);
+////			UserDAO.sharedInstance().removeUsersFromAuthority(
+////					userIDsToRemove,
+////					authorityID,
+////					new SubProgressMonitor(monitor, 10)
+////			);
+//			usersToRemove.clear();
+//
+////			Set<UserID> userIDsToAdd = NLJDOHelper.getObjectIDSet(usersToAdd);
+////			UserDAO.sharedInstance().removeUsersFromAuthority(
+////					userIDsToAdd,
+////					authorityID,
+////					new SubProgressMonitor(monitor, 10)
+////			);
+//			usersToAdd.clear();
 
 			{
 				int ticksForThisWorkPart = 80;
@@ -621,12 +660,52 @@ public class AuthorityPageControllerHelper
 				}
 			}
 
+			// assign the new securingAuthority (if necessary)
+			assignSecuringAuthority(new SubProgressMonitor(monitor, 10));
+
 			// reload everything
-			load(authorityTypeID, authorityID, new SubProgressMonitor(monitor, 100));
+			load(authorityTypeID, authorityID, null, new SubProgressMonitor(monitor, 90));
 		} finally {
 			monitor.done();
 		}
 	}
+
+	//////////////////
+	// BEGIN stuff for assigning a new authority
+	//////////////////
+
+	/**
+	 * Indicates whether the property <code>securingAuthorityID</code> of the <code>SecuredObject</code> shall be modified
+	 * on the server when the contents of this page are saved. If this method returns <code>true</code>, your implementation of
+	 * {@link IEntityEditorPageController} (preferably a subclass of {@link ActiveEntityEditorPageController}) used to manage the
+	 * {@link SecuredObject} shall assign the {@link Authority} by a call to
+	 * {@link AuthorityDAO#assignSecuringAuthority(Object, AuthorityID, boolean, org.nightlabs.progress.ProgressMonitor)}. Note,
+	 * that this method should be called after 
+	 */
+	private boolean assignSecuringAuthorityRequested;
+
+	/**
+	 * @see #getAssignSecuringAuthorityID()
+	 */
+	private AuthorityID assignSecuringAuthorityID;
+
+	/**
+	 * Get the id of the newly assigned authority. This can be <code>null</code> in order to indicate that the
+	 * property <code>securingAuthorityID</code> of the <code>SecuredObject</code> shall be set to <code>null</code>.
+	 *
+	 * @return <code>null</code> or the new authority-id.
+	 */
+	public AuthorityID getAssignSecuringAuthorityID() {
+		return assignSecuringAuthorityID;
+	}
+
+	public void setAssignSecuringAuthority(AuthorityID newAuthorityID, boolean inherited) {
+		this.assignSecuringAuthorityID = newAuthorityID;
+		this.assignSecuringAuthorityInherited = inherited;
+		assignSecuringAuthorityRequested = true;
+	}
+
+	private boolean assignSecuringAuthorityInherited;
 
 	//////////////////
 	// BEGIN PropertyChangeSupport

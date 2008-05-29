@@ -28,13 +28,13 @@ import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.id.UserID;
 
-public abstract class AbstractUserSection
+public class UserSection
 extends ToolBarSectionPart
 implements ISelectionProvider
 {
 	private UserTableViewer userTable;
 
-	public AbstractUserSection(IFormPage page, Composite parent) {
+	public UserSection(IFormPage page, Composite parent) {
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, "Users && user groups in authority");
 
 		userTable = new UserTableViewer(getContainer(), this);
@@ -70,7 +70,7 @@ implements ISelectionProvider
 	 *
 	 * @param authorityPageControllerHelper an instance of <code>AuthorityPageControllerHelper</code> or <code>null</code>.
 	 */
-	protected void setAuthorityPageControllerHelper(AuthorityPageControllerHelper authorityPageControllerHelper) {
+	public void setAuthorityPageControllerHelper(AuthorityPageControllerHelper authorityPageControllerHelper) {
 		if (this.authorityPageControllerHelper != null) {
 			this.authorityPageControllerHelper.removePropertyChangeListener(
 					AuthorityPageControllerHelper.PROPERTY_NAME_AUTHORITY_LOADED, 
