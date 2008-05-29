@@ -10,7 +10,6 @@ import java.util.List;
 import javax.jdo.JDOHelper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.events.SelectionEvent;
@@ -232,7 +231,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					break;
 				case loadRemoteChanges:
 					// reload
-					doReload(new NullProgressMonitor());
+					doReload(new org.nightlabs.progress.NullProgressMonitor());
 					setStale(false);
 					break;
 				case viewRemoteChanges:
@@ -325,7 +324,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 									getEntityEditor().getStaleHandler().addEntityEdiorStaleHandler(createEntityChangedHandler(dirtyObjectID));
 								} else {
 									// no local changes, reload
-									doReload(new org.eclipse.core.runtime.SubProgressMonitor(getProgressMonitor(), 100));
+									doReload(new SubProgressMonitor(new ProgressMonitorWrapper(getProgressMonitor()), 100));
 									setStale(false);
 								}
 							}
@@ -365,7 +364,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	/**
 	 * The EntityChangeListener of this controller.
 	 * This value will be set when the change listener
-	 * is registered {@link #doLoad(IProgressMonitor)}.
+	 * is registered {@link #doLoad(ProgressMonitor)}.
 	 */
 	private EntityChangeListener entityChangeListener = null;
 	
@@ -394,13 +393,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * </p>
 	 */
 	@Override
-	public void doLoad(IProgressMonitor monitor) {
+	public void doLoad(ProgressMonitor monitor) {
 		EntityType oldControllerObject = null;
 		monitor.beginTask(getLoadJobName(), 100);
 		synchronized (mutex) {
 			oldControllerObject = getControllerObject();
-			ProgressMonitorWrapper pMonitor = new ProgressMonitorWrapper(monitor);
-			EntityType newObj = retrieveEntity(new SubProgressMonitor(pMonitor, 100));
+			EntityType newObj = retrieveEntity(new SubProgressMonitor(monitor, 100));
 			if (newObj == null)
 				controllerObject = newObj;
 			else {
@@ -429,13 +427,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * </p>
 	 */
 	@Override
-	public void doSave(IProgressMonitor monitor) {
+	public void doSave(ProgressMonitor monitor) {
 		monitor.beginTask(getSaveJobName(), 100);
 		EntityType oldControllerObject = null;
 		synchronized (mutex) {
 			oldControllerObject = controllerObject;
-			ProgressMonitorWrapper pMonitor = new ProgressMonitorWrapper(monitor);
-			controllerObject = storeEntity(controllerObject, new SubProgressMonitor(pMonitor, 100));
+			controllerObject = storeEntity(controllerObject, new SubProgressMonitor(monitor, 100));
 			// we don't put the result into the Cache, as the Cache will be notified
 			// of the change and the change listener will put the object into the cache
 			controllerObject = Util.cloneSerializable(controllerObject);
@@ -449,7 +446,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	/**
 	 * Reload the controller object. Currently only wraps {@link #reload(IProgressMonitor)}.
 	 */
-	protected void doReload(IProgressMonitor monitor) {
+	protected void doReload(ProgressMonitor monitor) {
 		// TODO: Think about doing this in a job and notifying the page before the reload (so it can show the progress view)
 		
 //		Collection<IEntityEditorPageController> controllers = getEntityEditorController().getPageControllers();
