@@ -30,6 +30,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.form.AbstractBaseFormPage;
 import org.nightlabs.base.ui.part.ControllablePart;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
@@ -43,7 +44,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  */
 public class OverviewEntryEditor
 	extends FormEditor
-	implements ControllablePart
+	implements ControllablePart, ICloseOnLogoutEditorPart
 {
 	private static final Logger logger = Logger.getLogger(OverviewEntryEditor.class);
 	

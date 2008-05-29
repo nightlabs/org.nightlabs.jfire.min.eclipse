@@ -355,4 +355,10 @@
             targetType="java.lang.SecurityException">
       </exceptionHandler>
    </extension>
+   <extension
+         point="org.nightlabs.jfire.base.ui.loginstatelistener">
+      <loginStateListener
+            class="org.nightlabs.jfire.base.ui.login.part.LoginStateListenerForCloseOnLogoutEditorParts">
+      </loginStateListener>
+   </extension>
 </plugin>
