@@ -603,6 +603,9 @@ public class AuthorityPageControllerHelper
 
 				authorityID = aid;
 				authority = a;
+
+				if (assignSecuringAuthorityRequested && assignSecuringAuthorityID == null && authorityID != null)
+					assignSecuringAuthorityID = authorityID;
 			}
 			else
 				monitor.worked(20);

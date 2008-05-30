@@ -142,11 +142,11 @@ extends ToolBarSectionPart
 	 *
 	 * @param authorityPageControllerHelper an instance of <code>AuthorityPageControllerHelper</code> or <code>null</code>.
 	 */
-	protected void setAuthorityPageControllerHelper(AuthorityPageControllerHelper authorityPageControllerHelper) {
+	protected void setAuthorityPageControllerHelper(final AuthorityPageControllerHelper authorityPageControllerHelper) {
 		this.authorityPageControllerHelper = authorityPageControllerHelper;
-		assignAuthorityAction.setEnabled(authorityPageControllerHelper != null);
 		getSection().getDisplay().asyncExec(new Runnable() {
 			public void run() {
+				assignAuthorityAction.setEnabled(authorityPageControllerHelper != null);
 				authorityChanged();
 			}
 		});

@@ -73,8 +73,13 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 */
 	public RoleGroupsSection(FormPage page, Composite parent, boolean showTotalAvailColumn)
 	{
+		this(page, parent, showTotalAvailColumn, true);
+	}
+
+	public RoleGroupsSection(FormPage page, Composite parent, boolean showTotalAvailColumn, boolean showCheckBoxes)
+	{
 		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
-		createClient(getSection(), page.getEditor().getToolkit(), showTotalAvailColumn);
+		createClient(getSection(), page.getEditor().getToolkit(), showTotalAvailColumn, showCheckBoxes);
 	}
 
 	/**
@@ -82,15 +87,15 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
 	 */
-	protected void createClient(Section section, FormToolkit toolkit, boolean showAssignmentSourceColum)
+	protected void createClient(Section section, FormToolkit toolkit, boolean showAssignmentSourceColum, boolean showCheckBoxes)
 	{
 		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		createDescriptionControl(section, toolkit, showAssignmentSourceColum);
-		
+		createDescriptionControl(section, toolkit, showAssignmentSourceColum, showCheckBoxes);
+
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1); // Why was that "3" instead of "1"? We only need one column! I changed it and hope it has no special reason. If so, please COMMENT IT!!!! Marco.
 
 		ViewerComparator roleGroupComparator = new ViewerComparator() {
@@ -104,7 +109,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 		
 		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION);
 		toolkit.paintBordersFor(fTable);
-		roleGroupTableViewer = new RoleGroupTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this), showAssignmentSourceColum);
+		roleGroupTableViewer = new RoleGroupTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this), showAssignmentSourceColum, showCheckBoxes);
 		roleGroupTableViewer.setComparator(roleGroupComparator);
 		
 //		excludedRoleGroupsViewer = new TableViewer(createRoleGroupsTable(toolkit, container));
@@ -120,7 +125,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 //		includedRoleGroupsViewer.setComparator(roleGroupComparator);
 	}
 
-	private void createDescriptionControl(Section section, FormToolkit toolkit, boolean showAssignmentSourceColum)
+	private void createDescriptionControl(Section section, FormToolkit toolkit, boolean showAssignmentSourceColum, boolean showCheckBoxes)
 	{
 		FormText text = toolkit.createFormText(section, true);
 		if(showAssignmentSourceColum)

@@ -4,9 +4,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.security.AuthorityType;
 
 public class AuthorityTypeDetailPage extends EntityEditorPageWithProgress
 {
@@ -24,20 +26,39 @@ public class AuthorityTypeDetailPage extends EntityEditorPageWithProgress
 		}
 	}
 
+	private AuthorityTypeSection authorityTypeSection;
+	private RoleGroupsSection roleGroupsSection;
+	private AuthorityListSection authorityListSection;
+
 	public AuthorityTypeDetailPage(FormEditor editor) {
 		super(editor, AuthorityTypeDetailPage.class.getName(), "General");
 	}
 
 	@Override
 	protected void addSections(Composite parent) {
-		// TODO Auto-generated method stub
+		authorityTypeSection = new AuthorityTypeSection(this, parent);
+		getManagedForm().addPart(authorityTypeSection);
 
+		roleGroupsSection = new RoleGroupsSection(this, parent);
+		getManagedForm().addPart(roleGroupsSection);
+
+		authorityListSection = new AuthorityListSection(this, parent);
+		getManagedForm().addPart(authorityListSection);
 	}
 
+	private AuthorityType authorityType;
+
 	@Override
-	protected void asyncCallback() {
-		// TODO can we get rid of this method? isn't there a better API based on listeners? Marco.
-		switchToContent();
+	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
+		getManagedForm().getForm().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				authorityType = ((AuthorityTypeDetailPageController)getPageController()).getAuthorityType();
+
+				authorityTypeSection.setAuthorityType(authorityType);		
+				roleGroupsSection.setRoleGroups(authorityType.getRoleGroups());
+				authorityListSection.setAuthorityType(authorityType);
+			}
+		});
 	}
 
 	@Override

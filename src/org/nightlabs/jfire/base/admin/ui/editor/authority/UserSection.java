@@ -70,7 +70,7 @@ implements ISelectionProvider
 	 *
 	 * @param authorityPageControllerHelper an instance of <code>AuthorityPageControllerHelper</code> or <code>null</code>.
 	 */
-	public void setAuthorityPageControllerHelper(AuthorityPageControllerHelper authorityPageControllerHelper) {
+	public synchronized void setAuthorityPageControllerHelper(AuthorityPageControllerHelper authorityPageControllerHelper) {
 		if (this.authorityPageControllerHelper != null) {
 			this.authorityPageControllerHelper.removePropertyChangeListener(
 					AuthorityPageControllerHelper.PROPERTY_NAME_AUTHORITY_LOADED, 

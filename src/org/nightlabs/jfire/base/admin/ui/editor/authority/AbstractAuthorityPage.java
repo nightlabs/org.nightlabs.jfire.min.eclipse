@@ -8,7 +8,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
-import org.nightlabs.base.ui.entity.editor.IEntityEditorPageControllerModifyListener;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection;
 import org.nightlabs.jfire.security.User;
@@ -54,21 +53,13 @@ public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 				roleGroupsSection.setModel(model);
 			}
 		});
-
-		// TODO Is this the way the API is supposed to be used? Have to check tomorrow. Marco.
-		getPageController().addModifyListener(new IEntityEditorPageControllerModifyListener() {
-			@Override
-			public void controllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
-				authoritySection.setPageController(getPageController());
-				userSection.setAuthorityPageControllerHelper(getAuthorityPageControllerHelper());
-				roleGroupsSection.setModel(null);
-			}
-		});
 	}
 
 	@Override
-	protected void asyncCallback() {
-		switchToContent(); // necessary? TODO talk to Bieber - he already removed this method in a branch - why is it still here? Marco.
+	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
+		authoritySection.setPageController(getPageController());
+		userSection.setAuthorityPageControllerHelper(getAuthorityPageControllerHelper());
+		roleGroupsSection.setModel(null);
 	}
 
 	@Override

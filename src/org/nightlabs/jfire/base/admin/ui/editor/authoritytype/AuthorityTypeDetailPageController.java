@@ -5,9 +5,9 @@ import javax.jdo.FetchPlan;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
-import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.security.AuthorityType;
+import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
 import org.nightlabs.progress.ProgressMonitor;
@@ -19,9 +19,9 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 		FetchPlan.DEFAULT,
 		AuthorityType.FETCH_GROUP_NAME,
 		AuthorityType.FETCH_GROUP_DESCRIPTION,
-//		AuthorityType.FETCH_GROUP_ROLE_GROUPS,
-//		RoleGroup.FETCH_GROUP_NAME,
-//		RoleGroup.FETCH_GROUP_DESCRIPTION
+		AuthorityType.FETCH_GROUP_ROLE_GROUPS,
+		RoleGroup.FETCH_GROUP_NAME,
+		RoleGroup.FETCH_GROUP_DESCRIPTION
 	};
 
 	public AuthorityTypeDetailPageController(EntityEditor editor) {
@@ -36,8 +36,8 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 
 	@Override
 	public void doLoad(ProgressMonitor monitor) {
-		JDOObjectEditorInput<AuthorityTypeID> input = (JDOObjectEditorInput<AuthorityTypeID>) getEntityEditor().getEditorInput();
-		AuthorityTypeID authorityTypeID = input.getJDOObjectID();
+		JDOObjectEditorInput<?> input = (JDOObjectEditorInput<?>) getEntityEditor().getEditorInput();
+		AuthorityTypeID authorityTypeID = (AuthorityTypeID) input.getJDOObjectID();
 		this.authorityType = Util.cloneSerializable(
 				AuthorityTypeDAO.sharedInstance().getAuthorityType(
 						authorityTypeID,
@@ -46,6 +46,7 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 						monitor
 				)
 		);
+		fireModifyEvent(null, this.authorityType);
 	}
 
 	public AuthorityType getAuthorityType() {
@@ -54,7 +55,7 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 
 	@Override
 	public void doSave(ProgressMonitor monitor) {
-		// TODO Auto-generated method stub
+		// there is nothing to save - it's all read-only.
 	}
 
 }

@@ -56,7 +56,7 @@ public class RoleGroupTableViewer extends TableViewer
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			switch (columnIndex) {
-			case 1: return getCheckBoxImage(model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element));
+			case 1: return showCheckBoxes ? getCheckBoxImage(model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element)) : null;
 			case 2:	return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), RoleGroupsLabelProvider.class);
 			default: return null;
 			}
@@ -91,10 +91,14 @@ public class RoleGroupTableViewer extends TableViewer
 	private RoleGroupSecurityPreferencesModel model;
 	private IDirtyStateManager dirtyStateManager;
 
-	public RoleGroupTableViewer(Table table, IDirtyStateManager dirtyStateManager, boolean showAssignmentSourceColum) {
+	private boolean showCheckBoxes;
+
+	public RoleGroupTableViewer(Table table, IDirtyStateManager dirtyStateManager, boolean showAssignmentSourceColum, boolean showCheckBoxes)
+	{
 		super(table);
 
 		this.dirtyStateManager = dirtyStateManager;
+		this.showCheckBoxes = showCheckBoxes;
 
 		ViewerComparator roleGroupComparator = new ViewerComparator() {
 			/* (non-Javadoc)
@@ -130,8 +134,9 @@ public class RoleGroupTableViewer extends TableViewer
 		col4.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.description")); //$NON-NLS-1$
 
 		int column1Width = showAssignmentSourceColum ? 30 : 0;
+		int column2Witdh = showCheckBoxes ? 22 : 0;
 
-		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, 22, -1, -1 });
+		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, column2Witdh, -1, -1 });
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
