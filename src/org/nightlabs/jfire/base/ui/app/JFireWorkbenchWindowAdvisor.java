@@ -34,9 +34,7 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.nightlabs.base.ui.action.ContributionItemSetRegistry;
 import org.nightlabs.base.ui.editor.Editor2PerspectiveRegistry;
-import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.base.ui.part.PartVisibilityTracker;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.language.LocaleStatusLineContribution;
@@ -75,12 +73,12 @@ extends WorkbenchWindowAdvisor
 	public void postWindowCreate() {
 		super.postWindowCreate();
 		PartVisibilityTracker.sharedInstance().initialize();
-		logger.debug("Initialized part-visibibity-tracker"); //$NON-NLS-1$
-		try {
-			ContributionItemSetRegistry.sharedInstance().checkPerspectiveListenerAdded();
-		} catch (EPProcessorException e) {
-			logger.error("There occured an error getting the ContributionItemSetRegistry", e); //$NON-NLS-1$
-		}
+//		logger.debug("Initialized part-visibibity-tracker"); //$NON-NLS-1$
+//		try {
+//			ContributionItemSetRegistry.sharedInstance().checkPerspectiveListenerAdded();
+//		} catch (EPProcessorException e) {
+//			logger.error("There occured an error getting the ContributionItemSetRegistry", e); //$NON-NLS-1$
+//		}
 
 		// activates the editor2Perspective check
 		Editor2PerspectiveRegistry.sharedInstance().activate();
@@ -90,11 +88,11 @@ extends WorkbenchWindowAdvisor
 	@Override
 	public void postWindowRestore() throws WorkbenchException {
 		super.postWindowRestore();
-		try {
-			ContributionItemSetRegistry.sharedInstance().checkPerspectiveListenerAdded();
-		} catch (EPProcessorException e) {
-			logger.error("There occured an error getting the ContributionItemSetRegistry", e); //$NON-NLS-1$
-		}
+//		try {
+//			ContributionItemSetRegistry.sharedInstance().checkPerspectiveListenerAdded();
+//		} catch (EPProcessorException e) {
+//			logger.error("There occured an error getting the ContributionItemSetRegistry", e); //$NON-NLS-1$
+//		}
 	}
 
 	/**
