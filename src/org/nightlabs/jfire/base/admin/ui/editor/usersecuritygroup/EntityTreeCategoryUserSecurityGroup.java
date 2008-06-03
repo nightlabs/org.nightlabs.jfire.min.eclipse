@@ -21,10 +21,11 @@
  * Or get it online :                                                          *
  *     http://opensource.org/licenses/lgpl-license.php                         *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,33 +34,30 @@ import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
-import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
-import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
-import org.nightlabs.jfire.security.UserLifecycleListenerFilter;
-import org.nightlabs.jfire.security.dao.UserDAO;
-import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.jdo.notification.SimpleLifecycleListenerFilter;
+import org.nightlabs.jfire.security.UserSecurityGroup;
+import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
+import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.progress.ProgressMonitor;
-import org.nightlabs.util.CollectionUtil;
 
 /**
- * Entity tree category for {@link UserGroup}s.
+ * Entity tree category for {@link UserSecurityGroup}s.
  *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class EntityTreeCategoryUserGroup
-extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
+public class EntityTreeCategoryUserSecurityGroup
+extends ActiveJDOEntityTreeCategory<UserSecurityGroupID, UserSecurityGroup>
 {
 	protected class LabelProvider extends TableLabelProvider {
 		public String getColumnText(Object o, int arg1) {
 			if (o instanceof String)
 				return (String)o;
-			else if (o instanceof UserGroup) {
-				final UserGroup group = (UserGroup)o;                //     cut off prefixed "!"
-				return "".equals(group.getName()) ? group.getUserID().substring(User.USERID_PREFIX_TYPE_USERGROUP.length()) : group.getName(); //$NON-NLS-1$
+			else if (o instanceof UserSecurityGroup) {
+				final UserSecurityGroup group = (UserSecurityGroup)o;
+				return group.getName() == null || "".equals(group.getName()) ? group.getUserSecurityGroupID() : group.getName(); //$NON-NLS-1$
 			}
 			else
 				return o.toString();
@@ -68,9 +66,9 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 
 	public IEditorInput createEditorInput(Object o)
 	{
-		UserGroup userGroup = (UserGroup)o;
-		UserID userGroupID = UserID.create(userGroup.getOrganisationID(), userGroup.getUserID());
-		return new UserGroupEditorInput(userGroupID);
+		UserSecurityGroup userSecurityGroup = (UserSecurityGroup)o;
+		UserSecurityGroupID userSecurityGroupID = UserSecurityGroupID.create(userSecurityGroup.getOrganisationID(), userSecurityGroup.getUserSecurityGroupID());
+		return new UserSecurityGroupEditorInput(userSecurityGroupID);
 	}
 
 	public ITableLabelProvider createLabelProvider() {
@@ -78,9 +76,9 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 	}
 
 	@Override
-	protected Class<UserGroup> getJDOObjectClass()
+	protected Class<UserSecurityGroup> getJDOObjectClass()
 	{
-		return UserGroup.class;
+		return UserSecurityGroup.class;
 	}
 
 	/**
@@ -91,40 +89,45 @@ extends ActiveJDOEntityTreeCategory<UserID, UserGroup>
 	@Override
 	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
 	{
-		return new UserLifecycleListenerFilter(
-				User.USERTYPE_USERGROUP, new JDOLifecycleState[] { JDOLifecycleState.NEW });
+		return new SimpleLifecycleListenerFilter(UserSecurityGroup.class, false, new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
 
 	@Override
-	protected Collection<UserGroup> retrieveJDOObjects(Set<UserID> objectIDs, ProgressMonitor monitor)
+	protected Collection<UserSecurityGroup> retrieveJDOObjects(Set<UserSecurityGroupID> objectIDs, ProgressMonitor monitor)
 	{
-		return CollectionUtil.castCollection(
-				UserDAO.sharedInstance().getUsers(
-						objectIDs,
-						FETCH_GROUPS_USER_GROUP,
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						monitor));
+		return UserSecurityGroupDAO.sharedInstance().getUserSecurityGroups(
+				objectIDs,
+				FETCH_GROUPS_USER_GROUP,
+				NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+				monitor
+		);
 	}
 
-	private String[] FETCH_GROUPS_USER_GROUP = { User.FETCH_GROUP_THIS_USER };
+	private String[] FETCH_GROUPS_USER_GROUP = {
+			javax.jdo.FetchPlan.DEFAULT,
+			UserSecurityGroup.FETCH_GROUP_NAME
+	};
 
 	@Override
-	protected Collection<UserGroup> retrieveJDOObjects(ProgressMonitor monitor)
+	protected Collection<UserSecurityGroup> retrieveJDOObjects(ProgressMonitor monitor)
 	{
-		return CollectionUtil.castCollection(
-				UserDAO.sharedInstance().getUsers(
-						IDGenerator.getOrganisationID(),
-						Collections.singleton(User.USERTYPE_USERGROUP),
+		return UserSecurityGroupDAO.sharedInstance().getUserSecurityGroups(
 						FETCH_GROUPS_USER_GROUP,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						monitor
-				)
 		);
 	}
 
 	@Override
-	protected void sortJDOObjects(List<UserGroup> objects)
+	protected void sortJDOObjects(List<UserSecurityGroup> objects)
 	{
-		Collections.sort(objects); // User implements Comparable - no Comparator needed
+		Collections.sort(objects, new Comparator<UserSecurityGroup>() {
+			@Override
+			public int compare(UserSecurityGroup o1, UserSecurityGroup o2) {
+				String n1 = o1.getName() == null || "".equals(o1.getName()) ? o1.getUserSecurityGroupID() : o1.getName(); //$NON-NLS-1$
+				String n2 = o2.getName() == null || "".equals(o2.getName()) ? o2.getUserSecurityGroupID() : o2.getName(); //$NON-NLS-1$
+				return n1.compareTo(n2);
+			}
+		});
 	}
 }

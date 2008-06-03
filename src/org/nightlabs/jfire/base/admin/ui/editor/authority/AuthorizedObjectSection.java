@@ -25,38 +25,38 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
-import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.security.AuthorizedObject;
+import org.nightlabs.jfire.security.id.AuthorizedObjectID;
 
-public class UserSection
+public class AuthorizedObjectSection
 extends ToolBarSectionPart
 implements ISelectionProvider
 {
-	private UserTableViewer userTable;
+	private AuthorizedObjectTableViewer authorizedObjectTable;
 
-	public UserSection(IFormPage page, Composite parent) {
-		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, "Users && user groups in authority");
+	public AuthorizedObjectSection(IFormPage page, Composite parent) {
+		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, "AuthorizedObjects && authorizedObject groups in authority");
 
-		userTable = new UserTableViewer(getContainer(), this);
-		userTable.setInput(users);
-		userTable.getTable().addDisposeListener(new DisposeListener() {
+		authorizedObjectTable = new AuthorizedObjectTableViewer(getContainer(), this);
+		authorizedObjectTable.setInput(authorizedObjects);
+		authorizedObjectTable.getTable().addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent event) {
 				setAuthorityPageControllerHelper(null);
 			}
 		});
 
-		userTable.addSelectionChangedListener(new ISelectionChangedListener() {
+		authorizedObjectTable.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				selectedUsers = null;
+				selectedAuthorizedObjects = null;
 				selection = null;
 				fireSelectionChangedEvent();
 			}
 		});
 	}
 
-	private List<Map.Entry<User, Boolean>> users = new ArrayList<Map.Entry<User,Boolean>>();
+	private List<Map.Entry<AuthorizedObject, Boolean>> authorizedObjects = new ArrayList<Map.Entry<AuthorizedObject,Boolean>>();
 	private AuthorityPageControllerHelper authorityPageControllerHelper;
 
 	protected AuthorityPageControllerHelper getAuthorityPageControllerHelper() {
@@ -107,12 +107,12 @@ implements ISelectionProvider
 
 	private void authorityChanged()
 	{
-		users.clear();
+		authorizedObjects.clear();
 		if (authorityPageControllerHelper != null && authorityPageControllerHelper.getAuthority() != null)
-			users.addAll(authorityPageControllerHelper.createModifiableUserList());
+			authorizedObjects.addAll(authorityPageControllerHelper.createModifiableAuthorizedObjectList());
 
-		if (!userTable.getTable().isDisposed())
-			userTable.refresh();
+		if (!authorizedObjectTable.getTable().isDisposed())
+			authorizedObjectTable.refresh();
 	}
 
 	private ListenerList selectionChangedListeners = new ListenerList();
@@ -135,23 +135,23 @@ implements ISelectionProvider
 		selectionChangedListeners.remove(listener);
 	}
 
-	private List<User> selectedUsers = null;
+	private List<AuthorizedObject> selectedAuthorizedObjects = null;
 	private IStructuredSelection selection = null;
 
 	/**
-	 * Get the selected users. This method provides a more specific API than the general (and not typed)
-	 * {@link #getSelection()}, but the returned instances of {@link User} are the same.
+	 * Get the selected authorizedObjects. This method provides a more specific API than the general (and not typed)
+	 * {@link #getSelection()}, but the returned instances of {@link AuthorizedObject} are the same.
 	 *
-	 * @return the selected users.
+	 * @return the selected authorizedObjects.
 	 */
-	public List<User> getSelectedUsers() {
+	public List<AuthorizedObject> getSelectedAuthorizedObjects() {
 		getSelection(); // ensure the existence of our data and that we are on the correct thread
-		return selectedUsers;
+		return selectedAuthorizedObjects;
 	}
 
 	/**
-	 * Get an {@link IStructuredSelection} containing {@link User} instances. The instances are the same as
-	 * returned by {@link #getSelectedUsers()}.
+	 * Get an {@link IStructuredSelection} containing {@link AuthorizedObject} instances. The instances are the same as
+	 * returned by {@link #getSelectedAuthorizedObjects()}.
 	 *
 	 * {@inheritDoc}
 	 */
@@ -161,24 +161,24 @@ implements ISelectionProvider
 		if (Display.getCurrent() == null)
 			throw new IllegalStateException("Wrong thread! This method must be called on the SWT UI thread!");
 
-		if (selectedUsers == null || selection == null) {
-			selectedUsers = new ArrayList<User>();
+		if (selectedAuthorizedObjects == null || selection == null) {
+			selectedAuthorizedObjects = new ArrayList<AuthorizedObject>();
 			selection = null;
-			IStructuredSelection sel = (IStructuredSelection) userTable.getSelection();
+			IStructuredSelection sel = (IStructuredSelection) authorizedObjectTable.getSelection();
 			
 			for (Object object : sel.toArray()) {
-				Map.Entry<User, Boolean> me = (Entry<User, Boolean>) object;
-				selectedUsers.add(me.getKey());
+				Map.Entry<AuthorizedObject, Boolean> me = (Entry<AuthorizedObject, Boolean>) object;
+				selectedAuthorizedObjects.add(me.getKey());
 			}
 
-			selection = new StructuredSelection(selectedUsers);
+			selection = new StructuredSelection(selectedAuthorizedObjects);
 		}
 
 		return selection;
 	}
 
 	/**
-	 * Set an {@link IStructuredSelection} containing {@link User} or {@link UserID} instances.
+	 * Set an {@link IStructuredSelection} containing {@link AuthorizedObject} or {@link AuthorizedObjectID} instances.
 	 */
 	@Override
 	public void setSelection(ISelection selection) {
@@ -189,28 +189,28 @@ implements ISelectionProvider
 			throw new IllegalStateException("Wrong thread! This method must be called on the SWT UI thread!");
 
 		IStructuredSelection sel = (IStructuredSelection) selection;
-		Set<UserID> selectedUserIDs = new HashSet<UserID>(sel.size());
+		Set<AuthorizedObjectID> selectedAuthorizedObjectIDs = new HashSet<AuthorizedObjectID>(sel.size());
 		for (Object object : sel.toArray()) {
-			if (object instanceof UserID)
-				selectedUserIDs.add((UserID) object);
-			else if (object instanceof User) {
-				UserID userID = (UserID) JDOHelper.getObjectId(object);
-				if (userID == null)
-					throw new IllegalArgumentException("The selection contains a User that has no UserID assigned!"); // should never happen, since all the users we manage are already persisted and detached.
+			if (object instanceof AuthorizedObjectID)
+				selectedAuthorizedObjectIDs.add((AuthorizedObjectID) object);
+			else if (object instanceof AuthorizedObject) {
+				AuthorizedObjectID authorizedObjectID = (AuthorizedObjectID) JDOHelper.getObjectId(object);
+				if (authorizedObjectID == null)
+					throw new IllegalArgumentException("The selection contains a AuthorizedObject that has no AuthorizedObjectID assigned!"); // should never happen, since all the authorizedObjects we manage are already persisted and detached.
 
-				selectedUserIDs.add(userID);
+				selectedAuthorizedObjectIDs.add(authorizedObjectID);
 			}
 			else
-				throw new IllegalArgumentException("The selection contains an object that's neither an instance of UserID nor an instance of User! The object is: " + object);
+				throw new IllegalArgumentException("The selection contains an object that's neither an instance of AuthorizedObjectID nor an instance of AuthorizedObject! The object is: " + object);
 		}
 
-		// now that we have all UserIDs that should be selected in our set, we iterate the users that are in our userTable and collect the elements that should be selected
-		List<Map.Entry<User, Boolean>> elementsToBeSelected = new ArrayList<Entry<User,Boolean>>(selectedUserIDs.size());
-		for (Map.Entry<User, Boolean> me : users) {
-			if (selectedUserIDs.contains(JDOHelper.getObjectId(me.getKey())))
+		// now that we have all AuthorizedObjectIDs that should be selected in our set, we iterate the authorizedObjects that are in our authorizedObjectTable and collect the elements that should be selected
+		List<Map.Entry<AuthorizedObject, Boolean>> elementsToBeSelected = new ArrayList<Entry<AuthorizedObject,Boolean>>(selectedAuthorizedObjectIDs.size());
+		for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+			if (selectedAuthorizedObjectIDs.contains(JDOHelper.getObjectId(me.getKey())))
 				elementsToBeSelected.add(me);
 		}
 
-		userTable.setSelection(new StructuredSelection(elementsToBeSelected));
+		authorizedObjectTable.setSelection(new StructuredSelection(elementsToBeSelected));
 	}
 }

@@ -24,7 +24,6 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,22 +46,26 @@ import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.RoleGroupSetCarrier;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
+import org.nightlabs.jfire.security.UserLocal;
+import org.nightlabs.jfire.security.UserSecurityGroup;
+import org.nightlabs.jfire.security.dao.AuthorityDAO;
 import org.nightlabs.jfire.security.dao.RoleGroupDAO;
 import org.nightlabs.jfire.security.dao.UserDAO;
+import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
 import org.nightlabs.jfire.security.id.AuthorityID;
+import org.nightlabs.jfire.security.id.AuthorizedObjectID;
 import org.nightlabs.jfire.security.id.RoleGroupID;
 import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.security.id.UserLocalID;
+import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
-import org.nightlabs.util.CollectionUtil;
 
 /**
  * Controller class for the security preferences of a user.
@@ -119,7 +122,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 			public void modelChanged(ModelChangeEvent event) {
 				if (!loading) {
 					// TODO maybe get a better progress monitor here.
-					reloadRoleGroupsFromUserGroups();
+					reloadRoleGroupsFromUserSecurityGroups();
 				}
 			}
 		});
@@ -154,43 +157,47 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 				User user = UserDAO.sharedInstance().getUser(
 						userID,
 						new String[] {
-								User.FETCH_GROUP_THIS_USER,
-								User.FETCH_GROUP_USERGROUPS,
-								PropertySet.FETCH_GROUP_FULL_DATA },
+								User.FETCH_GROUP_NAME,
+								User.FETCH_GROUP_USER_LOCAL,
+								UserLocal.FETCH_GROUP_USER_SECURITY_GROUPS,
+//								PropertySet.FETCH_GROUP_FULL_DATA // TODO is the person really necessary here?!
+								},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								new SubProgressMonitor(monitor, 33));
 
 				userModel.setUser(user);
 
 				// load user groups
-				Collection<UserGroup> availableUserGroups = CollectionUtil.castCollection( 
-					UserDAO.sharedInstance().getUsers(
-						Login.getLogin().getOrganisationID(),
-						Collections.singleton(User.USERTYPE_USERGROUP),
+				Collection<UserSecurityGroup> availableUserSecurityGroups = UserSecurityGroupDAO.sharedInstance().getUserSecurityGroups(
 						new String[] {
-								User.FETCH_GROUP_THIS_USER },
-//								FetchGroupsPerson.FETCH_GROUP_PERSON_FULL_DATA },
-								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-								new SubProgressMonitor(monitor, 33))
+								UserSecurityGroup.FETCH_GROUP_NAME,
+								UserSecurityGroup.FETCH_GROUP_DESCRIPTION,
+								UserSecurityGroup.FETCH_GROUP_MEMBERS
+						},
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+						new SubProgressMonitor(monitor, 33)
 				);
-				//model.setUserGroups(availableUserGroups);
+				//model.setUserSecurityGroups(availableUserSecurityGroups);
 
-//				Collection<UserGroup> excludedUserGroups = new HashSet<UserGroup>(availableUserGroups);
-//				excludedUserGroups.removeAll(user.getUserGroups());
-//				userModel.setExcludedUserGroups(excludedUserGroups);
+//				Collection<UserSecurityGroup> excludedUserSecurityGroups = new HashSet<UserSecurityGroup>(availableUserSecurityGroups);
+//				excludedUserSecurityGroups.removeAll(user.getUserSecurityGroups());
+//				userModel.setExcludedUserSecurityGroups(excludedUserSecurityGroups);
 
-				Collection<UserGroup> includedUserGroups = new HashSet<UserGroup>(user.getUserGroups());
-				userModel.setUserGroups(includedUserGroups);
+				Collection<UserSecurityGroup> includedUserSecurityGroups = new HashSet<UserSecurityGroup>();
+				for (UserSecurityGroup userSecurityGroup : user.getUserLocal().getUserSecurityGroups())
+					includedUserSecurityGroups.add(userSecurityGroup);
 
-				userModel.setAvailableUserGroups(availableUserGroups);
+				userModel.setUserSecurityGroups(includedUserSecurityGroups);
+				userModel.setAvailableUserSecurityGroups(availableUserSecurityGroups);
+				UserLocalID userLocalID = UserLocalID.create(userID.organisationID, userID.userID);
 
 				// load role groups
-				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getUserRoleGroupSetCarrier(
-						userID,
+				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getRoleGroupSetCarrier(
+						userLocalID,
 						getAuthorityID(),
 						(String[])null, 1, // not interested in User
 						(String[])null, 1, // not interested in Authority
-						new String[] { FetchPlan.DEFAULT, RoleGroup.FETCH_GROUP_NAME, RoleGroup.FETCH_GROUP_DESCRIPTION },
+						FETCH_GROUPS_ROLE_GROUP,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						new SubProgressMonitor(monitor, 34)
 				);
@@ -213,28 +220,49 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		}
 	}
 
-	private Job reloadRoleGroupsFromUserGroupsJob;
+	private static final String[] FETCH_GROUPS_ROLE_GROUP = {
+		FetchPlan.DEFAULT, RoleGroup.FETCH_GROUP_NAME, RoleGroup.FETCH_GROUP_DESCRIPTION
+	};
 
-	public void reloadRoleGroupsFromUserGroups() {
+	private Job reloadRoleGroupsFromUserSecurityGroupsJob;
+
+	public void reloadRoleGroupsFromUserSecurityGroups() {
 		Job loadJob = new Job("Reloading role groups...") {
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
-				Set<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserGroups(
-						JDOHelper.getObjectIds(userModel.getUserGroups()),
+				Collection<UserSecurityGroupID> userSecurityGroupIDs = NLJDOHelper.getObjectIDSet(userModel.getUserSecurityGroups());
+				Set<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserSecurityGroups(
+						userSecurityGroupIDs,
 						getAuthorityID(),
-						new String[] {RoleGroup.FETCH_GROUP_THIS},
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+						FETCH_GROUPS_ROLE_GROUP,
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+						monitor
+				);
 
-				if (reloadRoleGroupsFromUserGroupsJob == this) {
+				if (reloadRoleGroupsFromUserSecurityGroupsJob == this) {
 					roleGroupModel.setRoleGroupsAssignedToUserGroups(roleGroups);
 					fireModifyEvent(null, roleGroupModel);
 				}
 
+//				UserLocalID userLocalID = UserLocalID.create(userID.organisationID, userID.userID);
+//				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getRoleGroupSetCarrier(
+//						userLocalID,
+//						getAuthorityID(),
+//						(String[])null, 1, // not interested in User
+//						(String[])null, 1, // not interested in Authority
+//						new String[] { FetchPlan.DEFAULT, RoleGroup.FETCH_GROUP_NAME, RoleGroup.FETCH_GROUP_DESCRIPTION },
+//						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+//						monitor
+//				);
+//				if (reloadRoleGroupsFromUserSecurityGroupsJob == this) {
+//					roleGroupModel.setRoleGroupsAssignedToUserGroups(roleGroupSetCarrier.getAssignedToUserGroups());
+//					fireModifyEvent(null, roleGroupModel);
+//				}
 				return Status.OK_STATUS;
 			}
 		};
 
-		reloadRoleGroupsFromUserGroupsJob = loadJob;
+		reloadRoleGroupsFromUserSecurityGroupsJob = loadJob;
 		loadJob.schedule();
 	}
 
@@ -263,55 +291,34 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 			logger.info("User not loaded will return. User "+userID.userID); //$NON-NLS-1$
 			return;
 		}
-		logger.info("Saving user "+userID.userID); //$NON-NLS-1$
+		logger.info("Saving user: "+userID); //$NON-NLS-1$
 
-		Collection<UserGroup> includedUserGroups = userModel.getUserGroups();
-		Collection<UserGroup> excludedUserGroups = new HashSet<UserGroup>(userModel.getAvailableUserGroups());
-		excludedUserGroups.removeAll(includedUserGroups);
+		Collection<UserSecurityGroup> includedUserSecurityGroups = userModel.getUserSecurityGroups();
+		Set<UserSecurityGroupID> includedUserSecurityGroupIDs = NLJDOHelper.getObjectIDSet(includedUserSecurityGroups);
 
 		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroupsAssignedDirectly();
-		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAllRoleGroupsInAuthority());
-		excludedRoleGroups.removeAll(includedRoleGroups);
+		Set<RoleGroupID> includedRoleGroupIDs = NLJDOHelper.getObjectIDSet(includedRoleGroups);
 
-		int taskTicks = includedRoleGroups.size() + excludedRoleGroups.size() +	includedUserGroups.size() + excludedUserGroups.size();
-
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.doSave.monitor.taskName"), taskTicks); //$NON-NLS-1$
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.doSave.monitor.taskName"), 100); //$NON-NLS-1$
 		try	{
 			User user = userModel.getUser();
-			if(includedUserGroups != null) {
-				for (UserGroup userGroup : includedUserGroups) {
-					if(!user.getUserGroups().contains(userGroup))
-						UserDAO.sharedInstance().addUserToUserGroup(user, userGroup, new SubProgressMonitor(monitor, 1));
-				}
-			}
+			AuthorizedObjectID authorizedObjectID = (AuthorizedObjectID) JDOHelper.getObjectId(user.getUserLocal());
 
-			if(excludedUserGroups != null) {
-				for (UserGroup userGroup : excludedUserGroups) {
-					if(user.getUserGroups().contains(userGroup))
-						UserDAO.sharedInstance().removeUserFromUserGroup(user, userGroup, new SubProgressMonitor(monitor, 1));
-				}
-			}
+			UserSecurityGroupDAO.sharedInstance().setUserSecurityGroupsOfMember(
+					includedUserSecurityGroupIDs,
+					authorizedObjectID,
+					new SubProgressMonitor(monitor, 50)
+			);
 
-			if (includedRoleGroups != null) {
-				for (RoleGroup roleGroup : includedRoleGroups) {
-					UserDAO.sharedInstance().addRoleGroupToUser(
-							(UserID)JDOHelper.getObjectId(user),
-							getAuthorityID(),
-							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(monitor, 1));
-				}
-			}
-
-			if (excludedRoleGroups != null) {
-				for (RoleGroup roleGroup : excludedRoleGroups) {
-					UserDAO.sharedInstance().removeRoleGroupFromUser(
-							(UserID)JDOHelper.getObjectId(user),
-							getAuthorityID(),
-							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(monitor, 1));
-				}
-			}
+			AuthorityDAO.sharedInstance().setGrantedRoleGroups(
+					authorizedObjectID,
+					getAuthorityID(),
+					includedRoleGroupIDs,
+					new SubProgressMonitor(monitor, 50)
+			);
 
 			monitor.done();
-			logger.info("Saving user "+userID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.info("Saving user done without errors: " + userID); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch(Exception e) {
 			logger.error("Saving user failed", e); //$NON-NLS-1$
 			monitor.setCanceled(true);

@@ -21,7 +21,7 @@
  * Or get it online :                                                          *
  *     http://opensource.org/licenses/lgpl-license.php                         *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -74,7 +74,7 @@ public class UsersSection extends RestorableSectionPart
 	 */
 	protected void createClient(Section section, FormToolkit toolkit)
 	{
-		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.sectionTitle")); //$NON-NLS-1$
+		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UsersSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -91,7 +91,7 @@ public class UsersSection extends RestorableSectionPart
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
 	{
 		FormText text = toolkit.createFormText(section, true);
-		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.description"), false, false); //$NON-NLS-1$
+		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UsersSection.description"), false, false); //$NON-NLS-1$
 //		text.addHyperlinkListener(new HyperlinkAdapter() {
 //			/* (non-Javadoc)
 //			 * @see org.eclipse.ui.forms.events.HyperlinkAdapter#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)

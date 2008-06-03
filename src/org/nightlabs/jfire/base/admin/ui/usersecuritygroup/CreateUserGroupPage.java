@@ -24,7 +24,7 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jfire.base.admin.ui.usergroup;
+package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -54,22 +54,22 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 
 	public CreateUserGroupPage()
 	{
-		super(CreateUserGroupPage.class.getName(), Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.title"), null); //$NON-NLS-1$
+		super(CreateUserGroupPage.class.getName(), Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.title"), null); //$NON-NLS-1$
 		setImageDescriptor(
 				SharedImages.getWizardPageImageDescriptor(
 						BaseAdminPlugin.getDefault(),
 						CreateUserGroupPage.class
 				));
-		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.description")); //$NON-NLS-1$
+		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.description")); //$NON-NLS-1$
 	}
 
 	@Override
 	public Control createPageContents(Composite parent)
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
-		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$
-		name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.name.labelText"), null); //$NON-NLS-1$
-		description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.description.labelText"), null); //$NON-NLS-1$
+		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$
+		name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.name.labelText"), null); //$NON-NLS-1$
+		description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.description.labelText"), null); //$NON-NLS-1$
 
 		verifyInput();
 		setControl(f);
@@ -81,11 +81,11 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	{
 		try {
 			if("".equals(getUserGroupID()))  //$NON-NLS-1$
-				updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.errorUserGroupIDMissing")); //$NON-NLS-1$
+				updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDMissing")); //$NON-NLS-1$
 			else {
 				JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 				if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserGroupID())))
-					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupPage.errorUserGroupIDConflict")); //$NON-NLS-1$
+					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDConflict")); //$NON-NLS-1$
 				else
 					updateStatus(null);
 			}
@@ -95,7 +95,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	}
 
 	/**
-	 * @return Returns the userGroupID.
+	 * @return Returns the userSecurityGroupID.
 	 */
 	public String getUserGroupID()
 	{

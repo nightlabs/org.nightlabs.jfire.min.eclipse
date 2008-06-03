@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * JFire - it's hot - Free ERP System - http://jfire.org                       *
- * Copyright (C) 2004-2006 NightLabs - http://NightLabs.org                    *
+ * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
  * modify it under the terms of the GNU Lesser General Public                  *
@@ -19,63 +19,41 @@
  *     Boston, MA  02110-1301  USA                                             *
  *                                                                             *
  * Or get it online :                                                          *
- *     http://www.gnu.org/copyleft/lesser.html                                 *
+ *     http://opensource.org/licenses/lgpl-license.php                         *
+ *                                                                             *
+ *                                                                             *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
 
-import org.nightlabs.jfire.security.UserGroup;
-import org.nightlabs.jfire.security.id.UserID;
+package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
+
+import org.eclipse.jface.action.IAction;
+import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 
 /**
- * @version $Revision$ - $Date$
+ * An action that opens a {@link CreateUserGroupWizard}.
+ * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class UserGroupEditorModel
+public class CreateUserGroupAction extends WorkbenchWindowAndViewActionDelegate
 {
-	/**
-	 * The user group id.
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
-	private UserID userGroupID;
-	
-	/**
-	 * The user group
-	 */
-	private UserGroup userGroup;
-	
-	/**
-	 * Create an instance of SecurityPreferencesModel.
-	 * @param userID The user id.
-	 */
-	public UserGroupEditorModel(UserID userGroupID)
+	public void run(IAction action)
 	{
-		this.userGroupID = userGroupID;
+		try {
+			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(new CreateUserGroupWizard());
+//			{
+//				@Override
+//				protected void configureShell(Shell newShell) {
+//					newShell.setSize(500,300);
+//					super.configureShell(newShell);
+//				}
+//			};
+			dynamicPathWizardDialog.open();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-
-	/**
-	 * Get the userGroup.
-	 * @return the userGroup
-	 */
-	public UserGroup getUserGroup()
-	{
-		return userGroup;
-	}
-
-	/**
-	 * Get the userGroupID.
-	 * @return the userGroupID
-	 */
-	public UserID getUserGroupID()
-	{
-		return userGroupID;
-	}
-
-	/**
-	 * Set the userGroup.
-	 * @param userGroup the userGroup to set
-	 */
-	public void setUserGroup(UserGroup userGroup)
-	{
-		this.userGroup = userGroup;
-	}
-	
 }

@@ -21,23 +21,23 @@
  * Or get it online :                                                          *
  *     http://opensource.org/licenses/lgpl-license.php                         *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditorInput;
+import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 
 /**
- * Editor input for {@link UserGroupEditor}s.
+ * Editor input for {@link UserSecurityGroupEditor}s.
  * 
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class UserGroupEditorInput extends UserEditorInput
+public class UserSecurityGroupEditorInput extends JDOObjectEditorInput<UserSecurityGroupID>
 {
-	public UserGroupEditorInput(UserID userGroupID)
+	public UserSecurityGroupEditorInput(UserSecurityGroupID userSecurityGroupID)
 	{
-		super(userGroupID);
-		setName(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UserGroupEditorInput.name")); //$NON-NLS-1$
+		super(userSecurityGroupID);
+		setName(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditorInput.name")); //$NON-NLS-1$
 	}
 }

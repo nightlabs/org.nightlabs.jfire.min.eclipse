@@ -21,7 +21,7 @@
  * Or get it online :                                                          *
  *     http://opensource.org/licenses/lgpl-license.php                         *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,8 +31,7 @@ import java.util.Set;
 import org.nightlabs.jfire.base.admin.ui.editor.user.BaseModel;
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
-import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.security.UserSecurityGroup;
 
 /**
  * A model for a the security preferences of a usergroup.
@@ -43,33 +42,13 @@ import org.nightlabs.jfire.security.id.UserID;
  */
 public class GroupSecurityPreferencesModel extends BaseModel
 {
-	/**
-	 * The user group id.
-	 */
-	private UserID userID;
-
-	/**
-	 * The user
-	 */
-	private UserGroup userGroup;
+	private UserSecurityGroup userSecurityGroup;
 
 	private Set<User> users = Collections.emptySet();
 
 	private Set<User> availableUsers = Collections.emptySet();
 
 	private Config userConfig;
-
-	/**
-	 * Create an instance of SecurityPreferencesModel.
-	 * @param userID The user id.
-	 */
-	public GroupSecurityPreferencesModel(UserID userID) {
-//		ModelChangeListener listener = new ModelChangeListener() {
-//			public void modelChanged(ModelChangeEvent event) {
-//				GroupSecurityPreferencesModel.this.modelChanged();
-//			}
-//		};
-	}
 
 	/**
 	 * Get included users.
@@ -109,25 +88,17 @@ public class GroupSecurityPreferencesModel extends BaseModel
 	 * Get the usergroup.
 	 * @return the usergroup
 	 */
-	public UserGroup getUserGroup() {
-		return userGroup;
+	public UserSecurityGroup getUserSecurityGroup() {
+		return userSecurityGroup;
 	}
 
 	/**
 	 * Set the usergroup.
-	 * @param userGroup the user group to set
+	 * @param userSecurityGroup the user group to set
 	 */
-	public void setUserGroup(UserGroup userGroup) {
-		this.userGroup = userGroup;
+	public void setUserSecurityGroup(UserSecurityGroup userGroup) {
+		this.userSecurityGroup = userGroup;
 		modelChanged();
-	}
-
-	/**
-	 * Get the userID.
-	 * @return the userID
-	 */
-	public UserID getUserID() {
-		return userID;
 	}
 
 	/**

@@ -10,7 +10,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection;
-import org.nightlabs.jfire.security.User;
+import org.nightlabs.jfire.security.AuthorizedObject;
 
 public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 {
@@ -19,7 +19,7 @@ public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 	}
 
 	private AbstractAuthoritySection authoritySection;
-	private UserSection	userSection;
+	private AuthorizedObjectSection	authorizedObjectSection;
 	private RoleGroupsSection roleGroupsSection;
 
 	protected abstract AbstractAuthoritySection createAuthoritySection(Composite parent);
@@ -30,24 +30,24 @@ public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 		authoritySection = createAuthoritySection(parent);
 		getManagedForm().addPart(authoritySection);
 
-		userSection = new UserSection(this, parent);
-		getManagedForm().addPart(userSection);
+		authorizedObjectSection = new AuthorizedObjectSection(this, parent);
+		getManagedForm().addPart(authorizedObjectSection);
 
 		roleGroupsSection = new RoleGroupsSection(this, parent, true);
 		getManagedForm().addPart(roleGroupsSection);
 
-		userSection.addSelectionChangedListener(new ISelectionChangedListener() {
+		authorizedObjectSection.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				RoleGroupSecurityPreferencesModel model = null;
-				List<User> selectedUsers = userSection.getSelectedUsers();
-				User selectedUser = null;
-				if (!selectedUsers.isEmpty())
-					selectedUser = selectedUsers.get(0);
+				List<AuthorizedObject> selectedAuthorizedObjects = authorizedObjectSection.getSelectedAuthorizedObjects();
+				AuthorizedObject selectedAuthorizedObject = null;
+				if (!selectedAuthorizedObjects.isEmpty())
+					selectedAuthorizedObject = selectedAuthorizedObjects.get(0);
 
-				if (selectedUser != null) {
+				if (selectedAuthorizedObject != null) {
 					AuthorityPageControllerHelper helper = getAuthorityPageControllerHelper();
-					model = helper.getUser2RoleGroupSecurityPreferencesModel().get(selectedUser);
+					model = helper.getAuthorizedObject2RoleGroupSecurityPreferencesModel().get(selectedAuthorizedObject);
 				}
 
 				roleGroupsSection.setModel(model);
@@ -58,7 +58,7 @@ public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 	@Override
 	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
 		authoritySection.setPageController(getPageController());
-		userSection.setAuthorityPageControllerHelper(getAuthorityPageControllerHelper());
+		authorizedObjectSection.setAuthorityPageControllerHelper(getAuthorityPageControllerHelper());
 		roleGroupsSection.setModel(null);
 	}
 

@@ -11,7 +11,6 @@ import java.util.Set;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
 import org.nightlabs.util.Util;
 
 /**

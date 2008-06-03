@@ -98,9 +98,9 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	}
 
 	public static final String[] FETCH_GROUPS_USER = {
-		User.FETCH_GROUP_THIS_USER,
-		FetchPlan.DEFAULT
-		};
+		FetchPlan.DEFAULT,
+		User.FETCH_GROUP_NAME,
+	};
 
 	@Override
 	protected Collection<User> retrieveJDOObjects(Set<UserID> userIDs, ProgressMonitor monitor)

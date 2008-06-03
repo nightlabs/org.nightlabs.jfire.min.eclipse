@@ -63,7 +63,7 @@ public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 		
 	}
 	
-	UserGroupsSection userGroupsSection;
+	UserSecurityGroupsSection userGroupsSection;
 	RoleGroupsSection roleGroupsSection;
 
 	/**
@@ -82,7 +82,7 @@ public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 
 	@Override
 	protected void addSections(Composite parent) {
-		userGroupsSection = new UserGroupsSection(this, parent);
+		userGroupsSection = new UserSecurityGroupsSection(this, parent);
  		getManagedForm().addPart(userGroupsSection);
  		roleGroupsSection = new RoleGroupsSection(this, parent, true);
  		getManagedForm().addPart(roleGroupsSection);

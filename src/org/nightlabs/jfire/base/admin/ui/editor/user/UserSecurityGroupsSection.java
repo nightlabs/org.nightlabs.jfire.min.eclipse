@@ -21,21 +21,21 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
  * 
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class UserGroupsSection extends RestorableSectionPart {
+public class UserSecurityGroupsSection extends RestorableSectionPart {
 	
 	/**
 	 * The editor model.
 	 */
 	UserSecurityPreferencesModel model;
 	
-	UserGroupTableViewer userGroupTableViewer;
+	UserSecurityGroupTableViewer userSecurityGroupTableViewer;
 	
 	/**
-	 * Create an instance of UserGroupsSection.
+	 * Create an instance of UserSecurityGroupsSection.
 	 * @param parent The parent for this section
 	 * @param toolkit The toolkit to use
 	 */
-	public UserGroupsSection(FormPage page, Composite parent)
+	public UserSecurityGroupsSection(FormPage page, Composite parent)
 	{
 		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
 		createClient(getSection(), page.getEditor().getToolkit());
@@ -50,7 +50,7 @@ public class UserGroupsSection extends RestorableSectionPart {
 	 */
 	protected void createClient(Section section, FormToolkit toolkit)
 	{
-		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.sectionTitle")); //$NON-NLS-1$
+		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -59,14 +59,14 @@ public class UserGroupsSection extends RestorableSectionPart {
 
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
 
-		userGroupTableViewer = new UserGroupTableViewer(createUserGroupsTable(toolkit, container), UserUtil.getSectionDirtyStateManager(this));
+		userSecurityGroupTableViewer = new UserSecurityGroupTableViewer(createUserSecurityGroupsTable(toolkit, container), UserUtil.getSectionDirtyStateManager(this));
 	}
 
 	public void setModel(final UserSecurityPreferencesModel model) {
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				userGroupTableViewer.setModel(model);
+				userSecurityGroupTableViewer.setModel(model);
 			}
 		});
 	}
@@ -74,7 +74,7 @@ public class UserGroupsSection extends RestorableSectionPart {
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
 	{
 		FormText text = toolkit.createFormText(section, true);
-		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.descriptionText"), true, false); //$NON-NLS-1$
+		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.descriptionText"), true, false); //$NON-NLS-1$
 //		text.addHyperlinkListener(new HyperlinkAdapter() {
 //			/* (non-Javadoc)
 //			 * @see org.eclipse.ui.forms.events.HyperlinkAdapter#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
@@ -88,16 +88,16 @@ public class UserGroupsSection extends RestorableSectionPart {
 		section.setDescriptionControl(text);
 	}
 
-	private Table createUserGroupsTable(FormToolkit toolkit, Composite container)
+	private Table createUserSecurityGroupsTable(FormToolkit toolkit, Composite container)
 	{
 		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 100;
 		fTable.setLayoutData(gd);
 //		TableColumn col1 = new TableColumn(fTable, SWT.NULL);
-//		col1.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.col0")); //$NON-NLS-1$
+//		col1.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.col0")); //$NON-NLS-1$
 //		TableColumn col2 = new TableColumn(fTable, SWT.NULL);
-//		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupsSection.col1")); //$NON-NLS-1$
+//		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.col1")); //$NON-NLS-1$
 //		TableLayout tlayout = new TableLayout();
 //		tlayout.addColumnData(new ColumnWeightData(30, 30));
 //		tlayout.addColumnData(new ColumnWeightData(70, 70));

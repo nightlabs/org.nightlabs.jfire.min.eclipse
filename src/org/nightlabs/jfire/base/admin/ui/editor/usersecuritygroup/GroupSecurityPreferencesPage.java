@@ -21,7 +21,7 @@
  * Or get it online :                                                          *
  *     http://www.gnu.org/copyleft/lesser.html                                 *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -80,7 +80,7 @@ public class GroupSecurityPreferencesPage extends EntityEditorPageWithProgress
 	 */
 	public GroupSecurityPreferencesPage(FormEditor editor)
 	{
-		super(editor, ID_PAGE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesPage.pageTitle")); //$NON-NLS-1$
+		super(editor, ID_PAGE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.SecurityPreferencesPage.pageTitle")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -107,6 +107,6 @@ public class GroupSecurityPreferencesPage extends EntityEditorPageWithProgress
 	
 	@Override
 	protected String getPageFormTitle() {
-		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesPage.pageFormTitle"); //$NON-NLS-1$
+		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.SecurityPreferencesPage.pageFormTitle"); //$NON-NLS-1$
 	}
 }

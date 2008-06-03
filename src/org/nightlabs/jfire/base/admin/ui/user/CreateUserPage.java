@@ -105,8 +105,8 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
         updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDMissing")); //$NON-NLS-1$
       else if (getUserID().startsWith(User.USERID_PREFIX_TYPE_ORGANISATION))
       	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USERID_PREFIX_TYPE_ORGANISATION); //$NON-NLS-1$
-      else if (getUserID().startsWith(User.USERID_PREFIX_TYPE_USERGROUP))
-      	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USERID_PREFIX_TYPE_USERGROUP); //$NON-NLS-1$
+//      else if (getUserID().startsWith(User.USERID_PREFIX_TYPE_USERGROUP))
+//      	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USERID_PREFIX_TYPE_USERGROUP); //$NON-NLS-1$
       else {
       	// TODO we should ask for a list of all userIDs and cache it here - so we don't need to ask the server again and again
       	// especially, all expensive work should be done asynchronously - not on the UI thread!

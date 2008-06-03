@@ -30,7 +30,7 @@ import java.util.Set;
 
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
+import org.nightlabs.jfire.security.UserSecurityGroup;
 import org.nightlabs.jfire.security.id.UserID;
 
 /**
@@ -41,7 +41,7 @@ import org.nightlabs.jfire.security.id.UserID;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
+public class UserSecurityPreferencesModel extends CollectionModel<UserSecurityGroup> {
 	/**
 	 * The user id.
 	 */
@@ -54,7 +54,7 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 
 	private Config userConfig;
 
-	private Set<UserGroup> availableUserGroups;
+	private Set<UserSecurityGroup> availableUserSecurityGroups;
 
 	/**
 	 * Create an instance of SecurityPreferencesModel.
@@ -68,7 +68,7 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	 * Adds the given user group to the model.
 	 * @param userGroup The {@link UserGroup} to be added.
 	 */
-	public void addUserGroup(UserGroup userGroup) {
+	public void addUserSecurityGroup(UserSecurityGroup userGroup) {
 		addElement(userGroup);
 	}
 
@@ -76,7 +76,7 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	 * Removes the given user group from the model if it exists.
 	 * @param userGroup The {@link UserGroup} to be removed.
 	 */
-	public void removeUserGroup(UserGroup userGroup) {
+	public void removeUserSecurityGroup(UserSecurityGroup userGroup) {
 		removeElement(userGroup);
 	}
 
@@ -84,7 +84,7 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	 * Returns an unmodifiable set of the {@link UserGroup}s of this model.
 	 * @return all {@link UserGroup}s of this model.
 	 */
-	public Collection<UserGroup> getUserGroups() {
+	public Collection<UserSecurityGroup> getUserSecurityGroups() {
 		return getElements();
 	}
 
@@ -92,7 +92,7 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	 * Sets the {@link UserGroup}s of this model
 	 * @param userGroups The {@link UserGroup}s to be set.
 	 */
-	public void setUserGroups(Collection<UserGroup> userGroups) {
+	public void setUserSecurityGroups(Collection<UserSecurityGroup> userGroups) {
 		setElements(userGroups);
 	}
 
@@ -140,10 +140,10 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 
 	/**
 	 * Sets the user groups currently available
-	 * @param availableUserGroups A collection of the available user groups
+	 * @param availableUserSecurityGroups A collection of the available user groups
 	 */
-	public void setAvailableUserGroups(Collection<UserGroup> availableUserGroups) {
-		this.availableUserGroups = new HashSet<UserGroup>(availableUserGroups);
+	public void setAvailableUserSecurityGroups(Collection<UserSecurityGroup> availableUserGroups) {
+		this.availableUserSecurityGroups = new HashSet<UserSecurityGroup>(availableUserGroups);
 		modelChanged();
 	}
 
@@ -151,7 +151,7 @@ public class UserSecurityPreferencesModel extends CollectionModel<UserGroup> {
 	 * Returns an unmodifiable collection of the available user groups of this model
 	 * @return an unmodifiable collection of the available user groups of this model
 	 */
-	public Collection<UserGroup> getAvailableUserGroups() {
-		return Collections.unmodifiableSet(availableUserGroups);
+	public Collection<UserSecurityGroup> getAvailableUserSecurityGroups() {
+		return Collections.unmodifiableSet(availableUserSecurityGroups);
 	}
 }

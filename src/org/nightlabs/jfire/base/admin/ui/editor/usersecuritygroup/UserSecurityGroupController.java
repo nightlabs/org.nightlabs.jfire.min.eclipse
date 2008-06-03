@@ -21,7 +21,7 @@
  * Or get it online :                                                          *
  *     http://opensource.org/licenses/lgpl-license.php                         *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.user;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import javax.jdo.FetchPlan;
 
@@ -30,93 +30,78 @@ import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.person.Person;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.dao.UserDAO;
-import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.security.UserSecurityGroup;
+import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
+import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
 import org.nightlabs.util.Util;
 
 /**
- * A controller that loads a user with its person.
+ * A controller that loads a userSecurityGroup with its person.
  *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class PersonPreferencesController extends EntityEditorPageController
+public class UserSecurityGroupController extends EntityEditorPageController
 {
 
-	private static final String[] FETCH_GROUPS = new String[] {
+	private static final String[] FETCH_GROUPS_USER_SECURITY_GROUP = new String[] {
 		FetchPlan.DEFAULT,
 		User.FETCH_GROUP_USER_LOCAL,
 		User.FETCH_GROUP_PERSON,
-		PropertySet.FETCH_GROUP_FULL_DATA
-	};
+		PropertySet.FETCH_GROUP_FULL_DATA}
+	;
 
 	private static final long serialVersionUID = -1651161683093714800L;
 
 	/**
 	 * LOG4J logger used by this class
 	 */
-	private static final Logger logger = Logger.getLogger(PersonPreferencesController.class);
+	private static final Logger logger = Logger.getLogger(UserSecurityGroupController.class);
 
 	/**
-	 * The user id.
+	 * The userSecurityGroup id.
 	 */
-	private UserID userID;
+	private UserSecurityGroupID userSecurityGroupID;
 
 	/**
-	 * The user editor.
+	 * The userSecurityGroup editor.
 	 */
 	private EntityEditor editor;
 
 	/**
 	 * The editor model
 	 */
-	private User user;
-
-	/**
-	 * The structLocal to use.
-	 */
-	private StructLocal structLocal;
+	private UserSecurityGroup userSecurityGroup;
 
 	/**
 	 * Create an instance of this controller for
 	 * an {@link UserEditor} and load the data.
 	 */
-	public PersonPreferencesController(EntityEditor editor)
+	public UserSecurityGroupController(EntityEditor editor)
 	{
 		super(editor);
-		this.userID = (UserID) ((JDOObjectEditorInput<?>)editor.getEditorInput()).getJDOObjectID();
+		this.userSecurityGroupID = (UserSecurityGroupID) ((JDOObjectEditorInput<?>)editor.getEditorInput()).getJDOObjectID();
 		this.editor = editor;
 	}
 
-	/**
-	 * Load the user data and user groups.
-	 * @param monitor The progress monitor to use.
-	 */
+	@Override
 	public void doLoad(ProgressMonitor monitor)
 	{
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesController.loadingUserPerson"), 4); //$NON-NLS-1$
+		monitor.beginTask("Loading userSecurityGroup security group", 1);
 		try {
-//			Thread.sleep(1000);
-			if(userID != null) {
-				logger.info("Loading user "+userID.userID); //$NON-NLS-1$
-				// load user with person data
-				User user = UserDAO.sharedInstance().getUser(
-						userID, FETCH_GROUPS,
+			if(userSecurityGroupID != null) {
+				// load userSecurityGroup with person data
+				UserSecurityGroup group = UserSecurityGroupDAO.sharedInstance().getUserSecurityGroup(
+						userSecurityGroupID, FETCH_GROUPS_USER_SECURITY_GROUP,
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						monitor
+						new SubProgressMonitor(monitor, 1)
 				);
 				monitor.worked(1);
-				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, monitor);
-				this.user = Util.cloneSerializable(user);
-				logger.info("Loading user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.info("Loading user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
+				this.userSecurityGroup = Util.cloneSerializable(group);
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
@@ -125,10 +110,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 		}
 	}
 
-	/**
-	 * Save the user data.
-	 * @param monitor The progress monitor to use.
-	 */
+	@Override
 	public void doSave(ProgressMonitor monitor)
 	{
 		if ( logger.isInfoEnabled() ) {
@@ -137,32 +119,25 @@ public class PersonPreferencesController extends EntityEditorPageController
 			logger.info("***********************************"); //$NON-NLS-1$
 		}
 
-		if (!isLoaded()) {
-			logger.info("User not loaded will return. User "+userID.userID); //$NON-NLS-1$
+		if (!isLoaded())
 			return;
-		}
-		logger.info("Saving user "+userID.userID); //$NON-NLS-1$
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesController.doSave.monitor.taskName"), 6); //$NON-NLS-1$
+
+		monitor.beginTask("Storing user security group", 6);
 		try	{
 			monitor.worked(1);
-			logger.info("Saving user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
-			User oldUser = user;
-			user = UserDAO.sharedInstance().storeUser(
-					user, (String)null, true, FETCH_GROUPS,
+			UserSecurityGroup oldGroup = userSecurityGroup;
+			userSecurityGroup = UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(
+					userSecurityGroup, true, FETCH_GROUPS_USER_SECURITY_GROUP,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 5)
 			);
-			user = Util.cloneSerializable(user);
-			fireModifyEvent(oldUser, getUser());
-
-			logger.info("Saving user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
+			userSecurityGroup = Util.cloneSerializable(userSecurityGroup);
+			fireModifyEvent(oldGroup, getUserSecurityGroup());
 		} catch(Exception e) {
-			logger.error("Saving user failed", e); //$NON-NLS-1$
 			monitor.setCanceled(true);
 			throw new RuntimeException(e);
 		} finally {
 			monitor.done();
 		}
-
 	}
 
 	/**
@@ -178,19 +153,15 @@ public class PersonPreferencesController extends EntityEditorPageController
 	 * Get the userID.
 	 * @return the userID
 	 */
-	public UserID getUserID()
+	public UserSecurityGroupID getUserSecurityGroupID()
 	{
-		return userID;
+		return userSecurityGroupID;
 	}
 
 	/**
-	 * Returns the user associated with this controller
+	 * Returns the userSecurityGroup associated with this controller
 	 */
-	public User getUser() {
-		return user;
-	}
-
-	public StructLocal getStructLocal() {
-		return structLocal;
+	public UserSecurityGroup getUserSecurityGroup() {
+		return userSecurityGroup;
 	}
 }

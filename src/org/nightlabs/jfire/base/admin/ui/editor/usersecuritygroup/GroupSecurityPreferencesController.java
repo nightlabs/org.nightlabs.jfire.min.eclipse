@@ -21,11 +21,12 @@
  * Or get it online :                                                          *
  *     http://opensource.org/licenses/lgpl-license.php                         *
  ******************************************************************************/
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
@@ -45,15 +46,20 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.security.Authority;
+import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.RoleGroupSetCarrier;
 import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
+import org.nightlabs.jfire.security.UserSecurityGroup;
+import org.nightlabs.jfire.security.dao.AuthorityDAO;
 import org.nightlabs.jfire.security.dao.RoleGroupDAO;
 import org.nightlabs.jfire.security.dao.UserDAO;
+import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.RoleGroupID;
 import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.security.id.UserLocalID;
+import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
@@ -78,7 +84,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	/**
 	 * The user id.
 	 */
-	UserID userGroupID;
+	UserSecurityGroupID userSecurityGroupID;
 
 	/**
 	 * The user editor.
@@ -102,21 +108,21 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	public GroupSecurityPreferencesController(EntityEditor editor)
 	{
 		super(editor, true);
-		this.userGroupID = ((UserGroupEditorInput)editor.getEditorInput()).getJDOObjectID();
+		this.userSecurityGroupID = ((UserSecurityGroupEditorInput)editor.getEditorInput()).getJDOObjectID();
 		this.editor = editor;
-		this.userGroupModel = new GroupSecurityPreferencesModel(userGroupID);
+		this.userGroupModel = new GroupSecurityPreferencesModel();
 		this.roleGroupModel = new RoleGroupSecurityPreferencesModel();
-		JDOLifecycleManager.sharedInstance().addNotificationListener(UserGroup.class, userGroupChangedListener);
+		JDOLifecycleManager.sharedInstance().addNotificationListener(UserSecurityGroup.class, userGroupChangedListener);
 	}
 
 	@Override
 	public void dispose()
 	{
-		JDOLifecycleManager.sharedInstance().removeNotificationListener(UserGroup.class, userGroupChangedListener);
+		JDOLifecycleManager.sharedInstance().removeNotificationListener(UserSecurityGroup.class, userGroupChangedListener);
 		super.dispose();
 	}
 	
-	private NotificationListener userGroupChangedListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.GroupSecurityPreferencesController.loadingChangedGroup")) //$NON-NLS-1$
+	private NotificationListener userGroupChangedListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.GroupSecurityPreferencesController.loadingChangedGroup")) //$NON-NLS-1$
 	{
 		public void notify(NotificationEvent notificationEvent) {
 			doLoad(new ProgressMonitorWrapper(getProgressMonitor()));
@@ -129,41 +135,48 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	 */
 	public void doLoad(ProgressMonitor monitor)
 	{
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.loadingUsers"), 100); //$NON-NLS-1$
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.SecurityPreferencesController.loadingUsers"), 100); //$NON-NLS-1$
 		try {
-			if(userGroupID != null) {
-				logger.info("Loading usergroup "+userGroupID.userID); //$NON-NLS-1$
-				// load user with person data
-				UserGroup userGroup = UserDAO.sharedInstance().getUserGroup(
-						userGroupID,
+			if(userSecurityGroupID != null) {
+				UserSecurityGroup group = UserSecurityGroupDAO.sharedInstance().getUserSecurityGroup(
+						userSecurityGroupID,
 						new String[] {
-								User.FETCH_GROUP_THIS_USER,
-								UserGroup.FETCH_GROUP_USERS,
-//								PropertySet.FETCH_GROUP_FULL_DATA
+								User.FETCH_GROUP_NAME,
+								User.FETCH_GROUP_USER_LOCAL,
+								UserSecurityGroup.FETCH_GROUP_MEMBERS,
 								},
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 								new SubProgressMonitor(monitor, 33));
 
-				userGroupModel.setUserGroup(userGroup);
+				userGroupModel.setUserSecurityGroup(group);
 
 				// load users
 				Collection<User> users = UserDAO.sharedInstance().getUsers(
 						IDGenerator.getOrganisationID(),
-						new String[] { User.USERTYPE_ORGANISATION, User.USERTYPE_USER },
+//						new String[] { User.USERTYPE_ORGANISATION, User.USERTYPE_USER },
+						(String[]) null, // all types - groups are separate objects now
 						new String[] {
-								User.FETCH_GROUP_THIS_USER},
-								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-								new SubProgressMonitor(monitor, 33));
+							User.FETCH_GROUP_NAME,
+							User.FETCH_GROUP_USER_LOCAL
+						},
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+						new SubProgressMonitor(monitor, 33)
+				);
 
 				// filter out all internal users (concrete _System_ and _Other_), since they should not end up in a user-group
+				Set<AuthorizedObject> groupMembers = new HashSet<AuthorizedObject>(group.getMembers());
+				Set<User> members = new HashSet<User>(groupMembers.size());
 				for (Iterator<User> it = users.iterator(); it.hasNext(); ) {
 					User user = it.next();
 					if (user.getName().startsWith("_") && user.getName().endsWith("_"))
 						it.remove();
+
+					if (groupMembers.contains(user.getUserLocal()))
+						members.add(user);
 				}
 
 				userGroupModel.setAvailableUsers(users);
-				userGroupModel.setUsers(userGroup.getUsers());
+				userGroupModel.setUsers(members);
 
 //				Collection<User> excludedUsers = new HashSet<User>(users);
 //				excludedUsers.removeAll(userGroup.getUsers());
@@ -175,8 +188,8 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 //				userGroupModel.setIncludedUsersUnchanged(new ArrayList<User>(includedUsers));
 
 				// load role groups
-				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getUserRoleGroupSetCarrier(
-						userGroupID,
+				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getRoleGroupSetCarrier(
+						userSecurityGroupID,
 						getAuthorityID(),
 						(String[])null, 1, // not interested in User
 						(String[])null, 1, // not interested in Authority
@@ -191,9 +204,8 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				roleGroupModel.setInAuthority(roleGroupSetCarrier.isInAuthority());
 				roleGroupModel.setControlledByOtherUser(roleGroupSetCarrier.isControlledByOtherUser());
 
-				logger.info("Loading usergroup "+userGroupID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				setLoaded(true); // must be done before fireModifyEvent!
-				fireModifyEvent(null, userGroup);
+				fireModifyEvent(null, group);
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
@@ -217,65 +229,36 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	 */
 	public void doSave(ProgressMonitor monitor)
 	{
-		if (logger.isDebugEnabled()) {
-			logger.debug("***********************************"); //$NON-NLS-1$
-			logger.debug("doSave()"); //$NON-NLS-1$
-			logger.debug("***********************************"); //$NON-NLS-1$
-		}
-
-		if (!isLoaded()) {
-			logger.info("UserGroup not loaded will return. UserGroup "+userGroupID.userID); //$NON-NLS-1$
+		if (!isLoaded())
 			return;
-		}
-		logger.info("Saving usergroup "+userGroupID.userID); //$NON-NLS-1$
-		
+
 		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroupsAssignedDirectly();
-		Collection<RoleGroup> excludedRoleGroups = new HashSet<RoleGroup>(roleGroupModel.getAllRoleGroupsInAuthority());
-		excludedRoleGroups.removeAll(includedRoleGroups);
+		Set<RoleGroupID> includedRoleGroupIDs = NLJDOHelper.getObjectIDSet(includedRoleGroups);
 		
 		Collection<User> includedUsers = userGroupModel.getIncludedUsers();
-		Collection<User> excludedUsers = new HashSet<User>(userGroupModel.getAvailableUsers());
-		excludedUsers.removeAll(includedUsers);
-		
-		int taskTicks = roleGroupModel.getAllRoleGroupsInAuthority().size() + userGroupModel.getAvailableUsers().size();
-		
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.SecurityPreferencesController.doSave.monitor.taskName"), taskTicks); //$NON-NLS-1$
+		Set<UserLocalID> includedUserLocalIDs = new HashSet<UserLocalID>(includedUsers.size());
+		for (User u : includedUsers)
+			includedUserLocalIDs.add((UserLocalID) JDOHelper.getObjectId(u.getUserLocal()));
+
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.SecurityPreferencesController.doSave.monitor.taskName"), 100); //$NON-NLS-1$
 		try	{
-			UserGroup userGroup = userGroupModel.getUserGroup();
-			if(includedUsers != null) {
-				for (User user : includedUsers) {
-					if(!userGroup.getUsers().contains(user))
-						UserDAO.sharedInstance().addUserToUserGroup(user, userGroup, new SubProgressMonitor(monitor, 1));
-				}
-			}
+			UserSecurityGroup userSecurityGroup = userGroupModel.getUserSecurityGroup();
+			UserSecurityGroupID userSecurityGroupID = (UserSecurityGroupID) JDOHelper.getObjectId(userSecurityGroup);
 
-			if(excludedUsers != null) {
-				for (User user : excludedUsers) {
-					if(userGroup.getUsers().contains(user))
-						UserDAO.sharedInstance().removeUserFromUserGroup(user, userGroup, new SubProgressMonitor(monitor, 1));
-				}
-			}
+			UserSecurityGroupDAO.sharedInstance().setMembersOfUserSecurityGroup(
+					userSecurityGroupID,
+					includedUserLocalIDs,
+					new SubProgressMonitor(monitor, 50)
+			);
 
-			if (includedRoleGroups != null) {
-				for (RoleGroup roleGroup : includedRoleGroups) {
-					UserDAO.sharedInstance().addRoleGroupToUser(
-							(UserID)JDOHelper.getObjectId(userGroup),
-							getAuthorityID(),
-							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(monitor, 1));
-				}
-			}
+			AuthorityDAO.sharedInstance().setGrantedRoleGroups(
+					userSecurityGroupID,
+					getAuthorityID(),
+					includedRoleGroupIDs,
+					new SubProgressMonitor(monitor, 50)
+			);
 
-			if (excludedRoleGroups != null) {
-				for (RoleGroup roleGroup : excludedRoleGroups) {
-					UserDAO.sharedInstance().removeRoleGroupFromUser(
-							(UserID)JDOHelper.getObjectId(userGroup),
-							getAuthorityID(),
-							(RoleGroupID)JDOHelper.getObjectId(roleGroup), new SubProgressMonitor(monitor, 1));
-				}
-			}
-			
 			monitor.done();
-			logger.info("Saving user "+userGroupID.userID+" done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch(Exception e) {
 			logger.error("Saving user failed", e); //$NON-NLS-1$
 			monitor.setCanceled(true);
@@ -319,9 +302,9 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	 * Get the userID.
 	 * @return the userID
 	 */
-	public UserID getUserGroupID()
+	public UserSecurityGroupID getUserSecurityGroupID()
 	{
-		return userGroupID;
+		return userSecurityGroupID;
 	}
 
 	public void setPage(IFormPage page) {

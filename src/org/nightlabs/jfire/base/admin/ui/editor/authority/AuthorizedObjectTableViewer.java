@@ -18,17 +18,16 @@ import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.security.User;
+import org.nightlabs.jfire.security.AuthorizedObject;
 
-public class UserTableViewer extends TableViewer
+public class AuthorizedObjectTableViewer extends TableViewer
 {
 	/**
-	 * Label provider for users.
+	 * Label provider for authorizedObjects.
 	 */
-	private class UserLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
+	private class AuthorizedObjectLabelProvider extends EmulatedNativeCheckBoxTableLabelProvider
 	{
-		public UserLabelProvider(TableViewer viewer) {
+		public AuthorizedObjectLabelProvider(TableViewer viewer) {
 			super(viewer);
 		}
 
@@ -36,10 +35,10 @@ public class UserTableViewer extends TableViewer
 		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
-			Map.Entry<User, Boolean> me = (Map.Entry<User, Boolean>)element;
+			Map.Entry<AuthorizedObject, Boolean> me = (Map.Entry<AuthorizedObject, Boolean>)element;
 			switch(columnIndex) {
 				case 0: return getCheckBoxImage(me.getValue());
-				case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), UserLabelProvider.class);
+				case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), AuthorizedObjectLabelProvider.class);
 				default: return null;
 			}
 		}
@@ -47,7 +46,7 @@ public class UserTableViewer extends TableViewer
 		@SuppressWarnings("unchecked")
 		public String getColumnText(Object element, int columnIndex)
 		{
-			Map.Entry<User, Boolean> me = (Map.Entry<User, Boolean>)element;
+			Map.Entry<AuthorizedObject, Boolean> me = (Map.Entry<AuthorizedObject, Boolean>)element;
 			switch(columnIndex) {
 				case 1: return me.getKey().getName();
 				case 2: return me.getKey().getDescription();
@@ -59,13 +58,13 @@ public class UserTableViewer extends TableViewer
 		@SuppressWarnings("unchecked")
 		@Override
 		public String getText(Object element) {
-			return ((Map.Entry<User, Boolean>)element).getKey().getName();
+			return ((Map.Entry<AuthorizedObject, Boolean>)element).getKey().getName();
 		}
 	}
 
 	private IDirtyStateManager dirtyStateManager;
 
-	public UserTableViewer(Composite parent, IDirtyStateManager dirtyStateManager) {
+	public AuthorizedObjectTableViewer(Composite parent, IDirtyStateManager dirtyStateManager) {
 		super(parent, SWT.NONE);
 
 		this.dirtyStateManager = dirtyStateManager;
@@ -82,27 +81,27 @@ public class UserTableViewer extends TableViewer
 		TableViewerColumn col1 = new TableViewerColumn(this, SWT.CENTER);
 		col1.getColumn().setResizable(false);
 		col1.getColumn().setText("");
-		col1.setEditingSupport(new CheckboxEditingSupport<Map.Entry<User, Boolean>>(this) {
+		col1.setEditingSupport(new CheckboxEditingSupport<Map.Entry<AuthorizedObject, Boolean>>(this) {
 			@Override
-			protected boolean doGetValue(Map.Entry<User, Boolean> element) {
+			protected boolean doGetValue(Map.Entry<AuthorizedObject, Boolean> element) {
 				return element.getValue().booleanValue();
 			}
 
 			@Override
-			protected void doSetValue(Map.Entry<User, Boolean> element, boolean value) {
+			protected void doSetValue(Map.Entry<AuthorizedObject, Boolean> element, boolean value) {
 				element.setValue(value);
-				UserTableViewer.this.dirtyStateManager.markDirty();
+				AuthorizedObjectTableViewer.this.dirtyStateManager.markDirty();
 			}
 		});
 
 		TableColumn col2 = new TableColumn(getTable(), SWT.NULL);
-		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.user")); //$NON-NLS-1$
+		col2.setText("Authorized object");
 
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, 100 }, new int[] { 22, -1 });
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
 		setContentProvider(new TableContentProvider());
-		setLabelProvider(new UserLabelProvider(this));
+		setLabelProvider(new AuthorizedObjectLabelProvider(this));
 	}
 }

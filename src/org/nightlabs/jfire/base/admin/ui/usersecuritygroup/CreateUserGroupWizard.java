@@ -24,7 +24,7 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jfire.base.admin.ui.usergroup;
+package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
 
 import java.rmi.RemoteException;
 
@@ -40,9 +40,8 @@ import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
-import org.nightlabs.jfire.security.User;
-import org.nightlabs.jfire.security.UserGroup;
-import org.nightlabs.jfire.security.dao.UserDAO;
+import org.nightlabs.jfire.security.UserSecurityGroup;
+import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -60,7 +59,7 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 		super();
 
 		setNeedsProgressMonitor(true);
-		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.usergroup.CreateUserGroupWizard.windowTitle")); //$NON-NLS-1$
+		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupWizard.windowTitle")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -83,7 +82,10 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 	public boolean performFinish()
 	{
 		try {
-			UserGroup newGroup = new UserGroup(Login.getLogin().getOrganisationID(), User.USERID_PREFIX_TYPE_USERGROUP + cugPage.getUserGroupID());
+			UserSecurityGroup newGroup = new UserSecurityGroup(
+					Login.getLogin().getOrganisationID(),
+					cugPage.getUserGroupID()
+			);
 			newGroup.setName(cugPage.getUserName());
 			newGroup.setDescription(cugPage.getUserGroupDescription());
 			
@@ -93,13 +95,17 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 //			JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 ////			userManager.saveUser(newGroup, null);
 //			userManager.storeUser(newGroup, null, false, null, 1);
-			UserDAO.sharedInstance().storeUser(newGroup, (String) null, false, (String[]) null, 1, new NullProgressMonitor()); // TODO do this asynchronously in a job!
+			UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(
+					newGroup,
+					false,
+					(String[]) null,
+					1,
+					new NullProgressMonitor()); // TODO do this asynchronously in a job!
+
 			return true;
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

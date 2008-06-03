@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.admin.ui.editor.usergroup;
+package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
@@ -97,7 +97,7 @@ public class UserTableViewer extends TableViewer
 		});
 
 		TableColumn col2 = new TableColumn(getTable(), SWT.NULL);
-		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usergroup.UsersSection.user")); //$NON-NLS-1$
+		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UsersSection.user")); //$NON-NLS-1$
 
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, 100 }, new int[] { 22, -1 });
 		getTable().setLayout(tlayout);

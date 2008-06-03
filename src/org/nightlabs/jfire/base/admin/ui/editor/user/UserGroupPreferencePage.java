@@ -8,8 +8,9 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.security.UserGroup;
+import org.nightlabs.jfire.security.UserSecurityGroup;
 
 public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 	
@@ -19,7 +20,7 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 	public static final String ID_PAGE = PersonPreferencesPage.class.getName();
 	
 //	private BlockBasedEditorSection userPropertiesSection;
-	private UserGroupDataSection userGroupDataSection;
+	private UserSecurityGroupDataSection userGroupDataSection;
 
 	/**
 	 * The Factory is registered to the extension-point and creates
@@ -31,7 +32,7 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 			return new UserGroupPreferencePage(formEditor);
 		}
 		public IEntityEditorPageController createPageController(EntityEditor editor) {
-			return new PersonPreferencesController(editor);
+			return new UserSecurityGroupController(editor);
 		}
 	}
 
@@ -51,7 +52,7 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 
 	@Override
 	protected void addSections(Composite parent) {
-		userGroupDataSection = new UserGroupDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupPreferencePage.userGroupDataSectionTitle")); //$NON-NLS-1$
+		userGroupDataSection = new UserSecurityGroupDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupPreferencePage.userGroupDataSectionTitle")); //$NON-NLS-1$
 		getManagedForm().addPart(userGroupDataSection);
 	}
 
@@ -59,9 +60,9 @@ public class UserGroupPreferencePage extends EntityEditorPageWithProgress {
 	protected void asyncCallback() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				PersonPreferencesController controller = (PersonPreferencesController)getPageController();
-				UserGroup userGroup = (UserGroup) controller.getUser();
-				userGroupDataSection.setUserGroup(userGroup);
+				UserSecurityGroupController controller = (UserSecurityGroupController)getPageController();
+				UserSecurityGroup group = controller.getUserSecurityGroup();
+				userGroupDataSection.setUserSecurityGroup(group);
 				switchToContent();
 			}
 		});
