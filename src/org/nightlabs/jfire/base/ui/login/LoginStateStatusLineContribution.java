@@ -117,6 +117,18 @@ implements LoginStateListener
 				if (txt != null) {
 					text.setText(txt);
 					text.setToolTipText(txt);
+
+					text.getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							if (wrapper.isDisposed())
+								return;
+
+							Composite topParent = wrapper;
+							while (topParent.getParent() != null)
+								topParent = topParent.getParent();
+							topParent.layout(true, true);
+						}
+					});
 				}
 //			}
 //		});
