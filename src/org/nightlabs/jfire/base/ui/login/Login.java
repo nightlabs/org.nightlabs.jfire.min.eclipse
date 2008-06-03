@@ -745,6 +745,17 @@ extends AbstractEPProcessor
 	}
 
 	/**
+	 * Returns the {@link UserID} of the user
+	 * @return the {@link UserID} of the user
+	 */
+	public UserID getCompleteUserID() {
+		if (loginData == null)
+			return null;
+		
+		return UserID.create(getOrganisationID(), getUserID());
+	}
+	
+	/**
 	 * @return Returns the password.
 	 */
 	public String getPassword() {
