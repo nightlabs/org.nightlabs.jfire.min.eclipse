@@ -45,6 +45,7 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
+import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.RoleGroup;
@@ -57,13 +58,13 @@ import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.RoleGroupID;
-import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.jfire.security.id.UserLocalID;
 import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
+import org.nightlabs.util.Util;
 
 /**
  * Controller class for the security preferences of a user.
@@ -125,7 +126,16 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	private NotificationListener userGroupChangedListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.GroupSecurityPreferencesController.loadingChangedGroup")) //$NON-NLS-1$
 	{
 		public void notify(NotificationEvent notificationEvent) {
-			doLoad(new ProgressMonitorWrapper(getProgressMonitor()));
+			for (Object o : notificationEvent.getSubjects()) {
+				if (o == null)
+					continue;
+
+				DirtyObjectID dirtyObjectID = (DirtyObjectID) o;
+				if (Util.equals(dirtyObjectID.getObjectID(), userSecurityGroupID)) {
+					doLoad(new ProgressMonitorWrapper(getProgressMonitor()));
+					break;
+				}
+			}					
 		}
 	};
 

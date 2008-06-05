@@ -54,7 +54,7 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 
 		authorities.clear();
 		if (authorityTypeID != null) {
-			AuthorityType dummyAT = new AuthorityType("dummy", "dummy");
+			AuthorityType dummyAT = new AuthorityType("dummy");
 			Authority dummy = new Authority("dummy", "dummy", dummyAT);
 			dummy.getName().setText(NLLocale.getDefault().getLanguage(), "Loading...");
 			authorities.add(dummy);

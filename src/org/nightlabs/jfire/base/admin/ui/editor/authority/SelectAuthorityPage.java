@@ -172,7 +172,7 @@ public class SelectAuthorityPage extends WizardHopPage
 			}
 		});
 
-		AuthorityType dummyAT = new AuthorityType("dummy", "dummy");
+		AuthorityType dummyAT = new AuthorityType("dummy");
 		Authority dummy = new Authority("dummy", "dummy", dummyAT);
 		dummy.getName().setText(NLLocale.getDefault().getLanguage(), "Loading...");
 		authorityList.addElement(dummy);
