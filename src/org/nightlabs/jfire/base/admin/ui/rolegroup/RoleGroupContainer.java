@@ -69,8 +69,10 @@ public class RoleGroupContainer implements Comparable<RoleGroupContainer>
 		return roleGroup;
 	}
 
-  public int compareTo(RoleGroupContainer container)
-  {
-     return this.roleGroup.compareTo((container).getRoleGroup());
-  }
+	@Override
+	public int compareTo(RoleGroupContainer other)
+	{
+		RoleGroup otherRoleGroup = other.getRoleGroup();
+		return this.roleGroup.getName().getText().compareTo(otherRoleGroup.getName().getText());
+	}
 }
