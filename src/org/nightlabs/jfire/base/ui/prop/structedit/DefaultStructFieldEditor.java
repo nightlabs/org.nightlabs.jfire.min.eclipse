@@ -6,8 +6,13 @@ import org.nightlabs.jfire.prop.StructField;
 public class DefaultStructFieldEditor extends AbstractStructFieldEditor<StructField> {
 
 	public static class DefaultStructFieldEditorFactory extends AbstractStructFieldEditorFactory {
-		public String getStructFieldEditorClass() {
-			return DefaultStructFieldEditor.class.getName();
+//		public String getStructFieldEditorClass() {
+//			return DefaultStructFieldEditor.class.getName();
+//		}
+
+		@Override
+		public StructFieldEditor createStructFieldEditor() {
+			return new DefaultStructFieldEditor();
 		}
 	}
 	

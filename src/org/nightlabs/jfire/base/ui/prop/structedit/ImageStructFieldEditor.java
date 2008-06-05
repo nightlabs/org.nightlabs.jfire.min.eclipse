@@ -27,8 +27,13 @@ public class ImageStructFieldEditor extends AbstractStructFieldEditor<ImageStruc
 	private ImageStructField imageField;
 	
 	public static class ImageStructFieldEditorFactory extends AbstractStructFieldEditorFactory {
-		public String getStructFieldEditorClass() {
-			return ImageStructFieldEditor.class.getName();
+//		public String getStructFieldEditorClass() {
+//			return ImageStructFieldEditor.class.getName();
+//		}
+
+		@Override
+		public StructFieldEditor createStructFieldEditor() {
+			return new ImageStructFieldEditor();
 		}
 	}
 	

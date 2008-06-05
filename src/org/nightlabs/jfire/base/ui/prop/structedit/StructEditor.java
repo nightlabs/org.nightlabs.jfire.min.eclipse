@@ -1,6 +1,8 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.jdo.JDOHelper;
@@ -42,7 +44,6 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.exception.IllegalStructureModificationException;
-import org.nightlabs.jfire.prop.exception.PropertyException;
 import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
@@ -80,6 +81,8 @@ public class StructEditor {
 		propertyManager = getPropertyManager();
 		this.structBlockEditor = new StructBlockEditor();
 	}
+
+	private Map<StructField<?>, StructFieldEditor<?>> structField2structFieldEditorMap = new HashMap<StructField<?>, StructFieldEditor<?>>();
 
 	/**
 	 * Create the {@link Composite} of this editor.
@@ -128,8 +131,14 @@ public class StructEditor {
 
 					if (selected instanceof StructFieldNode) {
 						StructField field = ((StructFieldNode) selected).getField();
-						try {
-							StructFieldEditor editor = structFieldFactoryRegistry.getEditorSingleton(field);
+//						try {
+//							StructFieldEditor editor = structFieldFactoryRegistry.getEditorSingleton(field);
+							StructFieldEditor editor = structField2structFieldEditorMap.get(field);
+							if (editor == null) {
+								editor = structFieldFactoryRegistry.getStructFieldEditorFactory(field.getClass()).createStructFieldEditor();
+								structField2structFieldEditorMap.put(field, editor);
+							}
+
 							structEditorComposite.setPartEditor(editor);
 							editor.setData(field);
 //							if (field.getStructBlock().isLocal()) {
@@ -140,10 +149,10 @@ public class StructEditor {
 							currentStructPartEditor = editor;
 							// save the data of the editor to make it able to be restored later
 							editor.saveData();
-						} catch (PropertyException e) {
-							e.printStackTrace();
-							throw new RuntimeException(e);
-						}
+//						} catch (PropertyException e) {
+//							e.printStackTrace();
+//							throw new RuntimeException(e);
+//						}
 					} else if (selected instanceof StructBlockNode) {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);

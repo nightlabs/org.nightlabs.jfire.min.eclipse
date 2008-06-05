@@ -16,6 +16,11 @@ public class RegexStructFieldEditor extends AbstractStructFieldEditor<RegexStruc
 		public String getStructFieldEditorClass() {
 			return RegexStructFieldEditor.class.getName();
 		}
+
+		@Override
+		public StructFieldEditor createStructFieldEditor() {
+			return new RegexStructFieldEditor();
+		}
 	}
 
 	private RegexStructField regexField;

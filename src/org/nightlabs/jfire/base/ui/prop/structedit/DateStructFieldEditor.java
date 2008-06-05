@@ -6,8 +6,13 @@ import org.nightlabs.jfire.prop.structfield.DateStructField;
 
 public class DateStructFieldEditor extends AbstractStructFieldEditor<DateStructField> {
 	public static class DateStructFieldEditorFactory extends AbstractStructFieldEditorFactory {
-		public String getStructFieldEditorClass() {
-			return DateStructFieldEditor.class.getName();
+//		public String getStructFieldEditorClass() {
+//			return DateStructFieldEditor.class.getName();
+//		}
+
+		@Override
+		public StructFieldEditor createStructFieldEditor() {
+			return new DateStructFieldEditor();
 		}
 	}
 

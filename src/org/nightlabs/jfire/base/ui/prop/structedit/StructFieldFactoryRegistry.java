@@ -8,8 +8,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
-import org.nightlabs.jfire.prop.StructField;
-import org.nightlabs.jfire.prop.exception.PropertyException;
 
 public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 	/**
@@ -34,8 +32,14 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 		;
 	}
 
-	public synchronized void addFieldMetadata(String fieldClass, StructFieldFactory fieldFactory,
-			StructFieldEditorFactory editorFactory, String fieldName, String description) {
+	public synchronized void addFieldMetadata(StructFieldFactory fieldFactory,
+			StructFieldEditorFactory editorFactory, String fieldName, String description
+	)
+	{
+		String fieldClass = fieldFactory.getStructFieldClass();
+		if (!fieldClass.equals(editorFactory.getStructFieldClass()))
+			throw new IllegalArgumentException("fieldFactory.getStructFieldClass() != editorFactory.getStructFieldClass()");
+
 		fieldMetaDataMap.put(fieldClass, new StructFieldMetaData(fieldFactory, editorFactory, fieldName, description));
 		fieldClassMap.put(fieldName, fieldClass);
 	}
@@ -45,12 +49,13 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 		fieldMetaDataMap.remove(fieldClass);
 	}
 
-	private StructFieldEditorFactory getEditorFactory(Class fieldClass) throws PropertyException {
+	public StructFieldEditorFactory getStructFieldEditorFactory(Class structFieldClass) // throws PropertyException
+	{
 		// make sure the EP was already processed
 		checkProcessing();
 
 		StructFieldEditorFactory editorFactory = null;
-		Class current = fieldClass;
+		Class current = structFieldClass;
 		String currentName;
 		StructFieldMetaData sfmd;
 
@@ -67,16 +72,16 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 		if (editorFactory != null)
 			return editorFactory;
 		else {
-			logger.warn("No editor found for class " + fieldClass.getName() + ". Using DefaultStructFieldEditor instead."); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.warn("No editor found for class " + structFieldClass.getName() + ". Using DefaultStructFieldEditor instead."); //$NON-NLS-1$ //$NON-NLS-2$
 			return new DefaultStructFieldEditor.DefaultStructFieldEditorFactory();
 			//throw new StructFieldEditorFactoryNotFoundException("No editor found for class "+fieldClass.getName());
 		}
 	}
 
-	public StructFieldEditor getEditorSingleton(StructField field) throws PropertyException {
-		StructFieldEditorFactory editorFactory = getEditorFactory(field.getClass());
-		return editorFactory.getStructFieldEditorSingleton(field.getClass().getName());
-	}
+//	public StructFieldEditor getEditorSingleton(StructField field) throws PropertyException {
+//		StructFieldEditorFactory editorFactory = getEditorFactory(field.getClass());
+//		return editorFactory.getStructFieldEditorSingleton(field.getClass().getName());
+//	}
 
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception {
@@ -85,13 +90,13 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 				StructFieldEditorFactory editorFactory = (StructFieldEditorFactory) element
 						.createExecutableExtension("editorFactoryClass"); //$NON-NLS-1$
 				StructFieldFactory fieldFactory = (StructFieldFactory) element.createExecutableExtension("factoryClass"); //$NON-NLS-1$
-				String structFieldClass = element.getAttribute("class"); //$NON-NLS-1$
+//				String structFieldClass = element.getAttribute("class"); //$NON-NLS-1$
 				String fieldName = element.getAttribute("name"); //$NON-NLS-1$
 				String description = element.getAttribute("description"); //$NON-NLS-1$
 				description = description == null ? "" : description; //$NON-NLS-1$
-				editorFactory.setStructFieldClass(structFieldClass);
+//				editorFactory.setStructFieldClass(structFieldClass);
 
-				sharedInstance().addFieldMetadata(structFieldClass, fieldFactory, editorFactory, fieldName, description);
+				addFieldMetadata(fieldFactory, editorFactory, fieldName, description);
 			} else {
 				throw new IllegalArgumentException("Element " + element.getName() + " is not supported by extension-point " //$NON-NLS-1$ //$NON-NLS-2$
 						+ EXTENSION_POINT_ID);

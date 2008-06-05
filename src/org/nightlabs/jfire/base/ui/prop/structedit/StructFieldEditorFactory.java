@@ -34,30 +34,32 @@ import org.nightlabs.jfire.prop.StructField;
  */
 public interface StructFieldEditorFactory extends IExecutableExtension
 {
-	/**
-	 * Editors should return an appropriate {@link StructFieldEditor} for the given {@link StructField}
-	 */
-	public StructFieldEditor getStructFieldEditorSingleton(String structFieldClass);
-	
-	/**
-	 * Should return the editor which must implement {@link StructFieldEditor}.
-	 */
-	public String getStructFieldEditorClass();
-	
-	/**
-	 * Sets the editor class
-	 * @param theClass Must implement {@link StructFieldEditor}
-	 */
-	public void setStructFieldEditorClass(String theClass);
+//	/**
+//	 * Editors should return an appropriate {@link StructFieldEditor} for the given {@link StructField}
+//	 */
+//	public StructFieldEditor getStructFieldEditorSingleton(String structFieldClass);
+
+//	/**
+//	 * Should return the editor which must implement {@link StructFieldEditor}.
+//	 */
+//	public String getStructFieldEditorClass();
+//	
+//	/**
+//	 * Sets the editor class
+//	 * @param theClass Must implement {@link StructFieldEditor}
+//	 */
+//	public void setStructFieldEditorClass(String theClass);
 	
 	/**
 	 * Should return a subclass of {@link StructField}
 	 */
 	public String getStructFieldClass();
-	
-	/**
-	 * Sets the struct field.
-	 * @param theClass Must be a subclass of {@link StructField}
-	 */
-	public void setStructFieldClass(String theClass);
+
+//	/**
+//	 * Sets the struct field.
+//	 * @param theClass Must be a subclass of {@link StructField}
+//	 */
+//	public void setStructFieldClass(String theClass);
+
+	StructFieldEditor createStructFieldEditor();
 }

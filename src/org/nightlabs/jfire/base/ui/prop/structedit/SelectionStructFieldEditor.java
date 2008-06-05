@@ -37,6 +37,11 @@ public class SelectionStructFieldEditor extends AbstractStructFieldEditor<Select
 		public String getStructFieldEditorClass() {
 			return SelectionStructFieldEditor.class.getName();
 		}
+
+		@Override
+		public StructFieldEditor createStructFieldEditor() {
+			return new SelectionStructFieldEditor();
+		}
 	}
 
 	private SelectionStructField selectionField;

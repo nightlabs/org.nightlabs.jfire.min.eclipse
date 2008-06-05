@@ -7,8 +7,11 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 
 public abstract class AbstractStructFieldFactory implements StructFieldFactory
 {
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
+	private String structFieldClass;
+
+	public void setInitializationData(IConfigurationElement element, String propertyName, Object data) throws CoreException
 	{
+		structFieldClass = element.getAttribute("class"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -18,5 +21,9 @@ public abstract class AbstractStructFieldFactory implements StructFieldFactory
 	 */
 	public DynamicPathWizardPage createWizardPage() {
 		return null;
+	}
+
+	public String getStructFieldClass() {
+		return structFieldClass;
 	}
 }

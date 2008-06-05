@@ -5,9 +5,14 @@ import org.nightlabs.jfire.prop.structfield.NumberStructField;
 
 public class NumberStructFieldEditor extends AbstractStructFieldEditor<NumberStructField> {
 	public static class NumberStructFieldEditorFactory extends AbstractStructFieldEditorFactory {
-		public String getStructFieldEditorClass() {
-			return NumberStructFieldEditor.class.getName();
+
+		@Override
+		public StructFieldEditor createStructFieldEditor() {
+			return new NumberStructFieldEditor();
 		}
+//		public String getStructFieldEditorClass() {
+//			return NumberStructFieldEditor.class.getName();
+//		}
 	}
 
 	private NumberStructField numberField;
