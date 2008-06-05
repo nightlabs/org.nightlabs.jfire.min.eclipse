@@ -14,6 +14,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.DateDataField;
 import org.nightlabs.jfire.prop.structfield.DateStructField;
 
@@ -24,6 +25,10 @@ import org.nightlabs.jfire.prop.structfield.DateStructField;
  */
 public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> {
 	
+	public DateDataFieldEditor(IStruct struct, DateDataField data) {
+		super(struct, data);
+	}
+
 	public static class Factory extends AbstractDataFieldEditorFactory<DateDataField> {
 
 		/* (non-Javadoc)
@@ -34,12 +39,17 @@ public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> 
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
-		/* (non-Javadoc)
-		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
-		 */
+//		/* (non-Javadoc)
+//		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
+//		 */
+//		@Override
+//		public Class<? extends DataFieldEditor<DateDataField>> getDataFieldEditorClass() {
+//			return DateDataFieldEditor.class;
+//		}
+
 		@Override
-		public Class<? extends DataFieldEditor<DateDataField>> getDataFieldEditorClass() {
-			return DateDataFieldEditor.class;
+		public DataFieldEditor<DateDataField> createPropDataFieldEditor(IStruct struct, DateDataField data) {
+			return new DateDataFieldEditor(struct, data);
 		}
 
 		/* (non-Javadoc)
@@ -52,10 +62,6 @@ public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> 
 	}
 	
 	private DateDataFieldComposite comp;
-	
-	public DateDataFieldEditor() {
-		super();
-	}
 	
 //	@Override
 //	protected void setDataField(DateDataField dataField) {

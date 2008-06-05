@@ -15,15 +15,25 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.PhoneNumberDataField;
 import org.nightlabs.util.NLLocale;
 
 public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNumberDataField> {
 	
+	public PhoneNumberDataFieldEditor(IStruct struct, PhoneNumberDataField data) {
+		super(struct, data);
+	}
+
 	public static class PhoneNumberDataFieldEditorFactory extends AbstractDataFieldEditorFactory<PhoneNumberDataField> {
+//		@Override
+//		public Class<? extends DataFieldEditor<PhoneNumberDataField>> getDataFieldEditorClass() {
+//			return PhoneNumberDataFieldEditor.class;
+//		}
+
 		@Override
-		public Class<? extends DataFieldEditor<PhoneNumberDataField>> getDataFieldEditorClass() {
-			return PhoneNumberDataFieldEditor.class;
+		public DataFieldEditor<PhoneNumberDataField> createPropDataFieldEditor(IStruct struct, PhoneNumberDataField data) {
+			return new PhoneNumberDataFieldEditor(struct, data);
 		}
 
 		/**

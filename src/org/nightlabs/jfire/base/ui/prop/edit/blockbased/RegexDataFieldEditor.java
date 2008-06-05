@@ -22,6 +22,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.RegexDataField;
 import org.nightlabs.jfire.prop.structfield.RegexStructField;
 import org.nightlabs.language.LanguageCf;
@@ -42,17 +43,22 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
-		@Override
-		public Class<? extends DataFieldEditor<RegexDataField>> getDataFieldEditorClass() {
-			return RegexDataFieldEditor.class;
-		}
+//		@Override
+//		public Class<? extends DataFieldEditor<RegexDataField>> getDataFieldEditorClass() {
+//			return RegexDataFieldEditor.class;
+//		}
 
 		@Override
 		public Class<RegexDataField> getPropDataFieldType() {
 			return RegexDataField.class;
 		}
+
+		@Override
+		public DataFieldEditor<RegexDataField> createPropDataFieldEditor(IStruct struct, RegexDataField data) {
+			return new RegexDataFieldEditor(struct, data);
+		}
 	}
-	
+
 	private LanguageCf language;
 	private XComposite comp;
 	private Label title;
@@ -63,8 +69,8 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 	private RegexDataField regexDataField;
 	private RegexStructField regexStructField;
 	
-	public RegexDataFieldEditor() {
-		super();
+	public RegexDataFieldEditor(IStruct struct, RegexDataField data) {
+		super(struct, data);
 		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
 	

@@ -31,7 +31,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.I18nTextDataField;
 import org.nightlabs.jfire.prop.datafield.TextDataField;
 
@@ -43,13 +45,12 @@ import org.nightlabs.jfire.prop.datafield.TextDataField;
  */
 public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDataField> {
 
-	public I18nTextDataFieldEditor() {
+	public I18nTextDataFieldEditor(IStruct struct, I18nTextDataField data) {
+		super(struct, data);
+		// TODO Auto-generated constructor stub
 	}
 
 	public static class Factory extends AbstractDataFieldEditorFactory<I18nTextDataField> {
-		/**
-		 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory#getPropDataFieldType()
-		 */
 		@Override
 		public Class<I18nTextDataField> getPropDataFieldType() {
 			return I18nTextDataField.class;
@@ -61,12 +62,16 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
-		/**
-		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
-		 */
+//		/**
+//		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
+//		 */
+//		@Override
+//		public Class<I18nTextDataFieldEditor> getDataFieldEditorClass() {
+//			return I18nTextDataFieldEditor.class;
+//		}
 		@Override
-		public Class<I18nTextDataFieldEditor> getDataFieldEditorClass() {
-			return I18nTextDataFieldEditor.class;
+		public DataFieldEditor<I18nTextDataField> createPropDataFieldEditor(IStruct struct, I18nTextDataField data) {
+			return new I18nTextDataFieldEditor(struct, data);
 		}
 	}
 

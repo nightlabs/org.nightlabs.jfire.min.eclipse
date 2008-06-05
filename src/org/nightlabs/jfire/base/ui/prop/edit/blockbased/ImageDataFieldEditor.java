@@ -34,6 +34,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.ImageDataField;
 import org.nightlabs.jfire.prop.structfield.ImageStructField;
 import org.nightlabs.language.LanguageCf;
@@ -63,14 +64,19 @@ extends AbstractDataFieldEditor<ImageDataField>
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
-		@Override
-		public Class<? extends DataFieldEditor<ImageDataField>> getDataFieldEditorClass() {
-			return ImageDataFieldEditor.class;
-		}
+//		@Override
+//		public Class<? extends DataFieldEditor<ImageDataField>> getDataFieldEditorClass() {
+//			return ImageDataFieldEditor.class;
+//		}
 
 		@Override
 		public Class<ImageDataField> getPropDataFieldType() {
 			return ImageDataField.class;
+		}
+
+		@Override
+		public DataFieldEditor<ImageDataField> createPropDataFieldEditor(IStruct struct, ImageDataField data) {
+			return new ImageDataFieldEditor(struct, data);
 		}
 	}
 	
@@ -89,11 +95,11 @@ extends AbstractDataFieldEditor<ImageDataField>
 	private static final int maxThumbnailWidth = 200;
 	private static final int maxThumbnailHeight = 200;
 	
-	public ImageDataFieldEditor() {
-		super();
+	public ImageDataFieldEditor(IStruct struct, ImageDataField data) {
+		super(struct, data);
 		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#setDataField(org.nightlabs.jfire.prop.DataField)
 	 */

@@ -49,6 +49,8 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  * the user for editing.
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ *
+ *  TODO Why the hell is a composite itself used as instance of an extension point?! That's infringing on our rules concerning extension-point-design! Needs refactoring! Marco.
  */
 public abstract class AbstractDataBlockEditor extends Composite implements DataFieldEditorChangeListener {
 

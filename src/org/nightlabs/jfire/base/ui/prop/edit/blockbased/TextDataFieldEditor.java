@@ -31,7 +31,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.TextDataField;
 
 /**
@@ -42,30 +44,26 @@ import org.nightlabs.jfire.prop.datafield.TextDataField;
  */
 public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> {
 
-	public TextDataFieldEditor() {
+	public TextDataFieldEditor(IStruct struct, TextDataField data) {
+		super(struct, data);
 	}
 
 	public static class Factory extends AbstractDataFieldEditorFactory<TextDataField> {
-		/**
-		 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory#getPropDataFieldType()
-		 */
 		@Override
 		public Class<TextDataField> getPropDataFieldType() {
 			return TextDataField.class;
 		}
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
-		/**
-		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
-		 */
+//		@Override
+//		public Class<TextDataFieldEditor> getDataFieldEditorClass() {
+//			return TextDataFieldEditor.class;
+//		}
 		@Override
-		public Class<TextDataFieldEditor> getDataFieldEditorClass() {
-			return TextDataFieldEditor.class;
+		public DataFieldEditor<TextDataField> createPropDataFieldEditor(IStruct struct, TextDataField data) {
+			return new TextDataFieldEditor(struct, data);
 		}
 	}
 

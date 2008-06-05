@@ -58,5 +58,5 @@ public interface DataFieldEditorFactory<F extends DataField> {
 	 * @param data
 	 * @return
 	 */
-	public DataFieldEditor<F> createPropDataFieldEditor(IStruct struct, F data, boolean setData);
+	public DataFieldEditor<F> createPropDataFieldEditor(IStruct struct, F data);
 }

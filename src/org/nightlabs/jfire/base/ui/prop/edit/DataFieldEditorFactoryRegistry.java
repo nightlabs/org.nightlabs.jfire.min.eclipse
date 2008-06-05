@@ -126,29 +126,8 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	/**
 	 * Find the DataFieldEditorFactory for the Class of the given dataField,
 	 * editorType and context and invokes createPropDataFieldEditor(dataField, setData)
-	 * 
-	 * @param dataField
 	 * @param editorType
 	 * @param context May be null to indicate default context
-	 * @param setData
-	 * @return A new instance of the appropriate DataFieldEditor
-	 * @throws DataFieldEditorNotFoundException
-	 */
-	public DataFieldEditor getNewEditorInstance(
-			IStruct struct, String editorType,
-			String context, DataField dataField, boolean setData
-		)
-	throws DataFieldEditorNotFoundException
-	{
-		DataFieldEditorFactory fieldEditorFactry = getEditorFactory(editorType, dataField.getClass());
-		return fieldEditorFactry.createPropDataFieldEditor(struct, dataField, setData);
-	}
-	
-	/**
-	 * Find the DataFieldEditorFactory for the Class of the given dataField
-	 * and editorType and invokes createPropDataFieldEditor(dataField, true)
-	 * @param editorType
-	 * @param context may be null to indicate default context.
 	 * @param dataField
 	 * 
 	 * @return A new instance of the appropriate DataFieldEditor
@@ -160,9 +139,29 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 		)
 	throws DataFieldEditorNotFoundException
 	{
-		DataFieldEditorFactory fieldEditorFactory = getEditorFactory(editorType, dataField.getClass());
-		return fieldEditorFactory.createPropDataFieldEditor(struct, dataField, true);
+		DataFieldEditorFactory fieldEditorFactry = getEditorFactory(editorType, dataField.getClass());
+		return fieldEditorFactry.createPropDataFieldEditor(struct, dataField);
 	}
+	
+//	/**
+//	 * Find the DataFieldEditorFactory for the Class of the given dataField
+//	 * and editorType and invokes createPropDataFieldEditor(dataField, true)
+//	 * @param editorType
+//	 * @param context may be null to indicate default context.
+//	 * @param dataField
+//	 * 
+//	 * @return A new instance of the appropriate DataFieldEditor
+//	 * @throws DataFieldEditorNotFoundException
+//	 */
+//	public DataFieldEditor getNewEditorInstance(
+//			IStruct struct, String editorType,
+//			String context, DataField dataField
+//		)
+//	throws DataFieldEditorNotFoundException
+//	{
+//		DataFieldEditorFactory fieldEditorFactory = getEditorFactory(editorType, dataField.getClass());
+//		return fieldEditorFactory.createPropDataFieldEditor(struct, dataField, true);
+//	}
 	
 	/**
 	 * 

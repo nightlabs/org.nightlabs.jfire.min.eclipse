@@ -61,7 +61,7 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 public class CommentDataBlockEditor extends AbstractDataBlockEditor
 	implements
 		ModifyListener,
-		DataFieldEditor
+		DataFieldEditor // FIXME: Why the hell does a composite implement this interface?!
 {
 	
 	/**

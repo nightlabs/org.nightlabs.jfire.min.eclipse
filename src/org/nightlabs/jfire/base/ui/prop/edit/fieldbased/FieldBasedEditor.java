@@ -298,7 +298,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 							try {
 								editor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
 										propertySet.getStructure(), getEditorType(), null,
-										field, false
+										field
 									);
 							} catch (DataFieldEditorNotFoundException e) {
 								LOGGER.error("Could not find DataFieldEditor for "+field.getClass().getName(),e); //$NON-NLS-1$

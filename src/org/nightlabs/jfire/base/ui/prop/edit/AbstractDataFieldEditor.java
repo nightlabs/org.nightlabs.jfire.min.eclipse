@@ -48,9 +48,10 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	private StructField<F> structField;
 	private IStruct struct;
 
-	public AbstractDataFieldEditor()
+	public AbstractDataFieldEditor(IStruct struct, F data)
 	{
-//		this.refStruct = refStruct;
+		this.struct = struct;
+		setDataField(data);
 	}
 
 	/**

@@ -10,6 +10,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.SelectionDataField;
 
 /**
@@ -17,19 +18,25 @@ import org.nightlabs.jfire.prop.datafield.SelectionDataField;
  */
 public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionDataField> {
 
+	public SelectionDataFieldEditor(IStruct struct, SelectionDataField data) {
+		super(struct, data);
+	}
+
 	public static class Factory extends AbstractDataFieldEditorFactory<SelectionDataField> {
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
+//		@Override
+//		public Class<? extends DataFieldEditor<SelectionDataField>> getDataFieldEditorClass() {
+//			return SelectionDataFieldEditor.class;
+//		}
+	
 		@Override
-		public Class<? extends DataFieldEditor<SelectionDataField>> getDataFieldEditorClass() {
-			return SelectionDataFieldEditor.class;
+		public DataFieldEditor<SelectionDataField> createPropDataFieldEditor(IStruct struct, SelectionDataField data) {
+			return new SelectionDataFieldEditor(struct, data);
 		}
 
 		@Override
@@ -40,10 +47,6 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 	};
 
 	private SelectionDataFieldComposite composite;
-
-	public SelectionDataFieldEditor() {
-		super();
-	}
 
 	/*
 	 * (non-Javadoc)

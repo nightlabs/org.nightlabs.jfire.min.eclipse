@@ -17,6 +17,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.NumberDataField;
 import org.nightlabs.jfire.prop.structfield.NumberStructField;
 import org.nightlabs.language.LanguageCf;
@@ -37,9 +38,14 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
+//		@Override
+//		public Class<? extends DataFieldEditor<NumberDataField>> getDataFieldEditorClass() {
+//			return NumberDataFieldEditor.class;
+//		}
+
 		@Override
-		public Class<? extends DataFieldEditor<NumberDataField>> getDataFieldEditorClass() {
-			return NumberDataFieldEditor.class;
+		public DataFieldEditor<NumberDataField> createPropDataFieldEditor(IStruct struct, NumberDataField data) {
+			return new NumberDataFieldEditor(struct, data);
 		}
 
 		@Override
@@ -51,11 +57,11 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 	private LanguageCf language;
 	private NumberDataFieldComposite comp;
 	
-	public NumberDataFieldEditor() {
-		super();
+	public NumberDataFieldEditor(IStruct struct, NumberDataField data) {
+		super(struct, data);
 		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
-	
+
 	@Override
 	protected void setDataField(NumberDataField dataField) {
 		super.setDataField(dataField);

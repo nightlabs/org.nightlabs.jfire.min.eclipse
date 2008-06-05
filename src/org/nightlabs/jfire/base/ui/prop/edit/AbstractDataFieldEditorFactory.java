@@ -27,7 +27,6 @@
 package org.nightlabs.jfire.base.ui.prop.edit;
 
 import org.nightlabs.jfire.prop.DataField;
-import org.nightlabs.jfire.prop.IStruct;
 
 /**
  * Abstract base class for all {@link DataFieldEditorFactory}s
@@ -51,25 +50,25 @@ public abstract class AbstractDataFieldEditorFactory<F extends DataField> implem
 	 */
 	public abstract String[] getEditorTypes();
 	
-	public abstract Class<? extends DataFieldEditor<F>> getDataFieldEditorClass();
+//	public abstract Class<? extends DataFieldEditor<F>> getDataFieldEditorClass();
 
-	/**
-	 * Default implementation instatiates a new instance of getEditorClass.getNewInstance()
-	 * invokes setData(data) and returnes the new instance.
-	 * 
-	 */
-	public DataFieldEditor<F> createPropDataFieldEditor(IStruct struct, F data, boolean setData) {
-		DataFieldEditor<F> editor;
-		try {
-			editor = getDataFieldEditorClass().newInstance();
-		} catch (Throwable t) {
-			IllegalStateException ill = new IllegalStateException("Error instantiating "+getDataFieldEditorClass().getName()); //$NON-NLS-1$
-			ill.initCause(t);
-			throw ill;
-		}
-		if (setData)
-			editor.setData(struct, data);
-		return editor;
-	}
+//	/**
+//	 * Default implementation instatiates a new instance of getEditorClass.getNewInstance()
+//	 * invokes setData(data) and returnes the new instance.
+//	 * 
+//	 */
+//	public DataFieldEditor<F> createPropDataFieldEditor(IStruct struct, F data, boolean setData) {
+//		DataFieldEditor<F> editor;
+//		try {
+//			editor = getDataFieldEditorClass().newInstance();
+//		} catch (Throwable t) {
+//			IllegalStateException ill = new IllegalStateException("Error instantiating "+getDataFieldEditorClass().getName()); //$NON-NLS-1$
+//			ill.initCause(t);
+//			throw ill;
+//		}
+//		if (setData)
+//			editor.setData(struct, data);
+//		return editor;
+//	}
 	
 }
