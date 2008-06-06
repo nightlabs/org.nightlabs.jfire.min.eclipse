@@ -16,6 +16,7 @@ import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.DefaultQueryProvider;
 import org.nightlabs.jdo.query.QueryCollection;
+import org.nightlabs.jdo.query.QueryProvider;
 
 /**
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
@@ -27,6 +28,8 @@ extends ResizableTitleAreaDialog
 	private String scope;
 	private QueryCollection<? extends AbstractSearchQuery> queryCollection;
 //	private Set<AbstractQueryFilterComposite> filterComposites;
+	private QueryProvider queryProvider = null;
+	private Class<?> targetType = null;
 	
 	/**
 	 * @param parentShell
@@ -35,21 +38,28 @@ extends ResizableTitleAreaDialog
 			QueryCollection<? extends AbstractSearchQuery> queryCollection) 
 	{
 		super(parentShell, null);
+		if (scope == null)
+			throw new IllegalArgumentException("scope must not be null!");
+
+		if (queryCollection == null)
+			throw new IllegalArgumentException("queryCollection must not be null!");
+		
 		this.scope = scope;
 		this.queryCollection = queryCollection;
+		this.targetType = queryCollection.getResultClass();
+		this.queryProvider = new DefaultQueryProvider(targetType);
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) 
 	{
 		Composite wrapper = new XComposite(parent, SWT.NONE);
-		Class<?> targetType = queryCollection.getResultClass();
 		SortedSet<QueryFilterFactory> factories = QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(
 				scope, targetType);
 		if (factories != null) {
 			for (QueryFilterFactory factory : factories) {
 				AbstractQueryFilterComposite filterComp = factory.createQueryFilter(wrapper, SWT.NONE, 
-						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, new DefaultQueryProvider(targetType));
+						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, queryProvider);
 //				filterComposites.add(filterComp);
 				filterComp.getQueryProvider().loadQueries(queryCollection);
 			}
@@ -67,5 +77,8 @@ extends ResizableTitleAreaDialog
 		setTitle("Search Criteria");
 		setMessage("Search with the given criteria");
 	}
-	
+
+	public QueryCollection<?> getQueryCollection() {
+		return queryProvider.getManagedQueries();
+	}
 }
