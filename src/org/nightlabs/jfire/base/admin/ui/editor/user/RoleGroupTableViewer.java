@@ -263,7 +263,7 @@ public class RoleGroupTableViewer extends TableViewer
 
 // This fucking ToolTip doesn't work in a clean way in GTK+ (Linux)! Even this workaround with the thread didn't help. It seems, there
 // is only one shared tool-tip-GTK-widget (heavy weight) that's somehow shared and accessed by the table itself and by my manual code
-// (i.e. my ToolTip instance). It works pretty well with SWT.BALLOON. Shall we use this instead? How does it look on Windows?
+// (i.e. my ToolTip instance). It works pretty well with SWT.BALLOON. Shall we use this instead? How does it look on Windows? Marco.
 
 	private void disposeToolTip() {
 		lastToolTipRequest = new ToolTipRequest(null, null);
