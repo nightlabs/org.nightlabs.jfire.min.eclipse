@@ -492,7 +492,6 @@ extends AbstractEPProcessor
 	 */
 	private void doLogin(final boolean forceLogoutFirst) throws LoginException
 	{
-		LoginState newLoginState = LoginState.ABOUT_TO_LOG_IN;
 		logger.debug("Login requested by thread "+Thread.currentThread());		 //$NON-NLS-1$
 //		if ((currLoginState == LoginState.OFFLINE)){
 //			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
@@ -509,22 +508,16 @@ extends AbstractEPProcessor
 			return;
 		}
 		boolean iAmHandlingLogin = acquireHandlingLogin();
-		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
+//		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
+		if (Display.getCurrent() == null) {
 			if (iAmHandlingLogin) {
 				logger.info("Non-UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Delegating loginHandlerRunnable to UI thread.");
-
-				changeLoginStateAndNotifyListeners(newLoginState);
-				newLoginState = LoginState.LOGGED_IN;
-
-//				Display.getDefault().asyncExec(loginHandlerRunnable);
-//				UISynchronizer.startupThread.set(Boolean.TRUE); // without this, the following syncExec will not be executed before the workbench-startup finished => causing it to hang forever!
-//				Display.getDefault().syncExec(loginHandlerRunnable);
-
 				loginHandlerRunnablePending = true;
 				Display.getDefault().syncExec(new Runnable() {
 					public void run()
 					{
 						if (loginHandlerRunnablePending) {
+							changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 							loginHandlerRunnablePending = false;
 							loginHandlerRunnable.run();
 						}
@@ -550,9 +543,7 @@ extends AbstractEPProcessor
 			if (iAmHandlingLogin) {
 				logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()...");
 
-				changeLoginStateAndNotifyListeners(newLoginState);
-				newLoginState = LoginState.LOGGED_IN;
-
+				changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 				loginHandlerRunnable.run();
 				logger.info("...loginHandlerRunnable.run() returned.");
 			}
@@ -564,6 +555,7 @@ extends AbstractEPProcessor
 					// During start-up, the syncExecs are *not* executed, because this obviously is deferred till the workbench is completely up.
 					// Hence, we must take over the login-process here in order to prevent dead-lock.
 					if (loginHandlerRunnablePending) {
+						changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 						loginHandlerRunnablePending = false;
 						loginHandlerRunnable.run();
 					}
@@ -583,7 +575,6 @@ extends AbstractEPProcessor
 				// if user decided to work OFFLINE first notify loginstate listeners
 //				currLoginState = LoginState.LOGGED_OUT;
 //				notifyLoginStateListeners_afterChange(currLoginState);
-				newLoginState = LoginState.LOGGED_OUT;
 				changeLoginStateAndNotifyListeners(LoginState.LOGGED_OUT);
 				// but then still throw Exception with WorkOffline as cause
 				LoginException lEx = new LoginException(loginResult.getMessage());
@@ -992,6 +983,9 @@ extends AbstractEPProcessor
 
 //	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
 	protected void changeLoginStateAndNotifyListeners(final LoginState newLoginState) {
+		if (Display.getCurrent() == null)
+			throw new IllegalStateException("This method must be called on the SWT UI thread!");
+
 		final LoginState oldLoginState;
 		final LinkedList<LoginStateListenerRegistryItem> loginStateListenerRegistryItems;
 
@@ -1041,8 +1035,10 @@ extends AbstractEPProcessor
 
 		// We trigger the LoginStateListeners on the UI thread and outside of the synchronized block.
 		// It is important to trigger them outside of this block, because this prevents dead-locks.
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
+		// We ensure now above already that we are on the UI thread! But it's still important to trigger the listeners
+		// outside of the synchronized block.
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
 				for (LoginStateListenerRegistryItem item : loginStateListenerRegistryItems) {
 					try {
 						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
@@ -1054,8 +1050,8 @@ extends AbstractEPProcessor
 						logger.warn("Caught exception while notifying LoginStateListener.", t); //$NON-NLS-1$
 					}
 				}
-			}
-		});
+//			}
+//		});
 	}
 
 //	/** // I think this method is not called anymore. Marco :-)
