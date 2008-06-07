@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.exceptionhandler.DefaultErrorDialog;
 import org.nightlabs.base.ui.exceptionhandler.ErrorDialogFactory;
 import org.nightlabs.base.ui.exceptionhandler.IExceptionHandler;
+import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.MissingRoleException;
 import org.nightlabs.jfire.security.Role;
 import org.nightlabs.jfire.security.id.RoleID;
@@ -62,8 +63,11 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 			String authorityName = null;
 
 			if (securityException instanceof MissingRoleException) {
+				requiredRoleIDs = ((MissingRoleException)securityException).getRequiredRoleIDs();
 				requiredRoles = ((MissingRoleException)securityException).getRequiredRoles();
-				authorityName = ((MissingRoleException)securityException).getAuthority().getName().getText();
+				Authority authority = ((MissingRoleException)securityException).getAuthority();
+				if (authority != null)
+					authorityName = authority.getName().getText();
 			}
 			else {
 				// check if the securityException comes from the server by scanning thrownException for a remote exception
@@ -78,10 +82,10 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 				// TODO WARNING: This is JBoss dependent code. When we support another JavaEE server, we very likely have to extend this code!
 				//
 				// JBoss 4.2.2: We search for a message like this:
-				//   Insufficient method permissions, principal=marco@chezfrancois.jfire.org?sessionID=LKsC9cN-tCN9&workstationID=ws00&, ejbName=jfire/ejb/JFireBaseBean/JFireSecurityManager, method=getUserIDs, interface=REMOTE, requiredRoles=[org.nightlabs.jfire.security.JFireSecurityManager#accessRightManagement, TestTestTest], principalRoles=[_Guest_]
+				//   Insufficient method permissions, principal=marco@chezfrancois.jfire.org?sessionID=LKsC9cN-tCN9&workstationID=ws00&, ejbName=jfire/ejb/JFireBaseBean/JFireSecurityManager, method=getUserIDs, interface=REMOTE, requiredRoles=[org.nightlabs.jfire.security.accessRightManagement, TestTestTest], principalRoles=[_Guest_]
 				//
 				// Hence, we search for this to parse the role-ids:
-				//   requiredRoles=[org.nightlabs.jfire.security.JFireSecurityManager#accessRightManagement, TestTestTest]
+				//   requiredRoles=[org.nightlabs.jfire.security.accessRightManagement, TestTestTest]
 
 				String exceptionMessage = securityException.getMessage();
 				if (exceptionMessage == null) {
