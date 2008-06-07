@@ -511,7 +511,8 @@ extends AbstractEPProcessor
 //		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
 		if (Display.getCurrent() == null) {
 			if (iAmHandlingLogin) {
-				logger.info("Non-UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Delegating loginHandlerRunnable to UI thread.");
+				final String threadName = Thread.currentThread().getName();
+				logger.info("Non-UI thread (" + threadName + ") is responsible for login. Delegating loginHandlerRunnable to UI thread.");
 				loginHandlerRunnablePending = true;
 				Display.getDefault().syncExec(new Runnable() {
 					public void run()
@@ -521,6 +522,8 @@ extends AbstractEPProcessor
 							loginHandlerRunnablePending = false;
 							loginHandlerRunnable.run();
 						}
+						else
+							logger.info("Non-UI thread (" + threadName + ") was not responsible anymore for login when the scheduled Runnable was finally executed on the UI thread. Skipped login in this runnable.");
 					}
 				});
 
@@ -555,6 +558,8 @@ extends AbstractEPProcessor
 					// During start-up, the syncExecs are *not* executed, because this obviously is deferred till the workbench is completely up.
 					// Hence, we must take over the login-process here in order to prevent dead-lock.
 					if (loginHandlerRunnablePending) {
+						logger.info("Hijacking responsibility for login, since I'm the UI thread and want to login, too. Will execute login now here.");
+
 						changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 						loginHandlerRunnablePending = false;
 						loginHandlerRunnable.run();
@@ -575,7 +580,11 @@ extends AbstractEPProcessor
 				// if user decided to work OFFLINE first notify loginstate listeners
 //				currLoginState = LoginState.LOGGED_OUT;
 //				notifyLoginStateListeners_afterChange(currLoginState);
-				changeLoginStateAndNotifyListeners(LoginState.LOGGED_OUT);
+				Display.getDefault().syncExec(new Runnable() {
+					public void run() {
+						changeLoginStateAndNotifyListeners(LoginState.LOGGED_OUT);
+					}
+				});
 				// but then still throw Exception with WorkOffline as cause
 				LoginException lEx = new LoginException(loginResult.getMessage());
 				lEx.initCause(new LoginAbortedException(loginResult.getMessage()));
