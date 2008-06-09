@@ -5,6 +5,7 @@ package org.nightlabs.jfire.base.ui.login;
 
 import javax.security.auth.login.LoginException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.StatusLineLayoutData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -29,6 +30,8 @@ public class LoginStateStatusLineContribution
 extends AbstractContributionItem
 implements LoginStateListener
 {
+	private static Logger logger = Logger.getLogger(LoginStateStatusLineContribution.class);
+
 	private XComposite wrapper;
 	private Label image;
 	private Label text;
@@ -69,10 +72,9 @@ implements LoginStateListener
 		image.setLayoutData(new GridData());
 		text = new Label(wrapper, SWT.NONE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		// Set some dummy text to give the item some width.
-		text.setText("********@************ on *********************"); //$NON-NLS-1$
+		setText("");
 		if (earlyLoginText != null) { // if the login happened already before UI creation
-			text.setText(earlyLoginText);
+			setText(earlyLoginText);
 			text.setToolTipText(earlyLoginText);
 			earlyLoginText = null;
 		}
@@ -88,50 +90,61 @@ implements LoginStateListener
 		return wrapper;
 	}
 
+	private static int MAX_WIDTH = 240;
+	private static String TRIPLE_DOT = "...";
+
+	private void setText(String txt)
+	{
+		long start = System.currentTimeMillis();
+
+		text.setText(txt);
+		boolean appendedTripleDot = false;
+		while (text.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x > MAX_WIDTH) {
+			if (!appendedTripleDot) {
+				txt += TRIPLE_DOT;
+				appendedTripleDot = true;
+			}
+
+			txt = txt.substring(0, txt.length() - TRIPLE_DOT.length() - 1) + TRIPLE_DOT;
+			text.setText(txt);
+		}
+
+		// we need to fill with spaces, because there seems to be no way to re-layout and grow the label later
+		while (text.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x < MAX_WIDTH) {
+			txt += ' ';
+			text.setText(txt);
+		}
+
+		if (logger.isDebugEnabled())
+			logger.debug("Setting text took " + (System.currentTimeMillis() - start) + " msec.");
+	}
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.login.LoginStateListener#loginStateChanged(int, org.eclipse.jface.action.IAction)
 	 */
 	public void loginStateChanged(final LoginStateChangeEvent event)
 	{
-//		Display.getDefault().asyncExec(new Runnable() {
-//			public void run() {
-				Login login = Login.sharedInstance();
+		Login login = Login.sharedInstance();
 
-				String txt = null;
+		String txt = null;
 
-				if(event.getNewLoginState() == LoginState.LOGGED_IN)
-					txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
-				else if(event.getNewLoginState() == LoginState.LOGGED_OUT)
-					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedOutStatus"); //$NON-NLS-1$
-				else
-					return;
+		if(event.getNewLoginState() == LoginState.LOGGED_IN)
+			txt = String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedInStatus"), login.getUserID(), login.getOrganisationID(), login.getWorkstationID()); //$NON-NLS-1$
+		else if(event.getNewLoginState() == LoginState.LOGGED_OUT)
+			txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.loggedOutStatus"); //$NON-NLS-1$
+		else
+			return;
 
-//				if(event.getNewLoginState() == LoginState.OFFLINE)
-//					txt = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution.offlineStatus"); //$NON-NLS-1$
+		if (text == null || text.isDisposed()) {
+			earlyLoginText = txt;
+			return;
+		}
 
-				if (text == null || text.isDisposed()) {
-					earlyLoginText = txt;
-					return;
-				}
+		if (txt != null) {
+			setText(txt);
+			text.setToolTipText(txt);
 
-				if (txt != null) {
-					text.setText(txt);
-					text.setToolTipText(txt);
-
-					text.getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							if (wrapper.isDisposed())
-								return;
-
-							Composite topParent = wrapper;
-							while (topParent.getParent() != null)
-								topParent = topParent.getParent();
-							topParent.layout(true, true);
-						}
-					});
-				}
-//			}
-//		});
+		}
 	}
 
 }
