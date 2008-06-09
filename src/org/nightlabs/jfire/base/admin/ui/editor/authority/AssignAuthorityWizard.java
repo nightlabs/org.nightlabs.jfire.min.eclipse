@@ -8,11 +8,11 @@ import org.nightlabs.jfire.security.id.AuthorityTypeID;
 public class AssignAuthorityWizard extends DynamicPathWizard
 {
 	private AuthorityTypeID authorityTypeID;
-	private InheritedAuthorityResolver inheritedAuthorityResolver;
+	private InheritedSecuringAuthorityResolver inheritedAuthorityResolver;
 
 	private SelectAuthorityPage selectAuthorityPage;
 
-	public AssignAuthorityWizard(AuthorityTypeID authorityTypeID, InheritedAuthorityResolver inheritedAuthorityResolver)
+	public AssignAuthorityWizard(AuthorityTypeID authorityTypeID, InheritedSecuringAuthorityResolver inheritedAuthorityResolver)
 	{
 		if (authorityTypeID == null)
 			throw new IllegalArgumentException("authorityTypeID == null");

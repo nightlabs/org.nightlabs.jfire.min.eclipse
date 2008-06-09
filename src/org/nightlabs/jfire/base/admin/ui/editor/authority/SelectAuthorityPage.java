@@ -48,7 +48,7 @@ public class SelectAuthorityPage extends WizardHopPage
 {
 	private AuthorityTypeID authorityTypeID;
 	private AuthorityType authorityType;
-	private InheritedAuthorityResolver inheritedAuthorityResolver;
+	private InheritedSecuringAuthorityResolver inheritedAuthorityResolver;
 
 	public static enum Action {
 		inherit,
@@ -78,7 +78,7 @@ public class SelectAuthorityPage extends WizardHopPage
 	 * @param authorityTypeID the ID of the {@link AuthorityType}. This must not be <code>null</code>, because it is required for creation of an authority!
 	 * @param inheritedAuthorityResolver Used to find out the inherited {@link Authority}. This can be <code>null</code>, if there is no inheritance in the current use case. If it is <code>null</code>, the "inherit" option will be hidden.
 	 */
-	public SelectAuthorityPage(AuthorityTypeID authorityTypeID, InheritedAuthorityResolver inheritedAuthorityResolver) {
+	public SelectAuthorityPage(AuthorityTypeID authorityTypeID, InheritedSecuringAuthorityResolver inheritedAuthorityResolver) {
 		super(SelectAuthorityPage.class.getName(), "Select authority");
 		if (authorityTypeID == null)
 			throw new IllegalArgumentException("authorityTypeID == null");
@@ -188,7 +188,7 @@ public class SelectAuthorityPage extends WizardHopPage
 					monitor.worked(20);
 				}
 				else {
-					AuthorityID inheritedAuthorityID = inheritedAuthorityResolver.getInheritedAuthorityID(new SubProgressMonitor(monitor, 10));
+					AuthorityID inheritedAuthorityID = inheritedAuthorityResolver.getInheritedSecuringAuthorityID(new SubProgressMonitor(monitor, 10));
 					if (inheritedAuthorityID == null) {
 						inheritedAuthority = null;
 						monitor.worked(10);

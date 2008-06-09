@@ -56,8 +56,6 @@ extends ActiveEntityEditorPageController<AuthorityType>
 
 			authorityPageControllerHelper.load(
 					authorityType,
-//					authorityType.getSecuringAuthorityTypeID(),
-//					authorityType.getSecuringAuthorityID(),
 					new SubProgressMonitor(monitor, 75));
 
 		} finally {
@@ -69,12 +67,7 @@ extends ActiveEntityEditorPageController<AuthorityType>
 
 	@Override
 	protected AuthorityType storeEntity(AuthorityType controllerObject, ProgressMonitor monitor) {
-		monitor.beginTask("Storing authority type", 100);
-		try {
-			authorityPageControllerHelper.store(new SubProgressMonitor(monitor, 75));
-		} finally {
-			monitor.done();
-		}
+		authorityPageControllerHelper.store(monitor);
 		return getControllerObject();
 	}
 }

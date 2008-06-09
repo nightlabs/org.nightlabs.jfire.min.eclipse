@@ -26,9 +26,10 @@ import org.nightlabs.jfire.security.SecuredObject;
  * <p>
  * When implementing an editor-page for editing the <code>Authority</code> (or its assignment to a {@link SecuredObject}),
  * you are encouraged to subclass this section as first section within your page. Simply implement the abstract method
- * {@link #createInheritedAuthorityResolver()} and call
+ * {@link #createInheritedSecuringAuthorityResolver()} and call
  * {@link #setAuthorityPageControllerHelper(AuthorityPageControllerHelper)} whenever
- * the <code>SecuredObject</code> you are managing is changed.
+ * the <code>SecuredObject</code> you are managing is changed. The best way to get an Authority-editor-page is to subclass
+ * {@link AbstractAuthorityPage}.
  * </p>
  *
  * @author marco schulze - marco at nightlabs dot de
@@ -81,14 +82,14 @@ extends ToolBarSectionPart
 	}
 
 	/**
-	 * Get the {@link InheritedAuthorityResolver} which is used to find out the {@link Authority} that is assigned to the
+	 * Get the {@link InheritedSecuringAuthorityResolver} which is used to find out the {@link Authority} that is assigned to the
 	 * parent-{@link SecuredObject} of that <code>SecuredObject</code> that is edited by the current editor. This method
 	 * can return <code>null</code> if there is no inheritance mechanism implemented
 	 * for the <code>SecuredObject</code> in the concrete use case.
 	 *
-	 * @return an instance of <code>InheritedAuthorityResolver</code> or <code>null</code>, if there is no inheritance mechanism.
+	 * @return an instance of <code>InheritedSecuringAuthorityResolver</code> or <code>null</code>, if there is no inheritance mechanism.
 	 */
-	protected abstract InheritedAuthorityResolver createInheritedAuthorityResolver();
+	protected abstract InheritedSecuringAuthorityResolver createInheritedSecuringAuthorityResolver();
 
 	private Action assignAuthorityAction = new Action() {
 		{
@@ -102,7 +103,7 @@ extends ToolBarSectionPart
 
 			final AssignAuthorityWizard assignAuthorityWizard = new AssignAuthorityWizard(
 					authorityPageControllerHelper.getAuthorityTypeID(),
-					createInheritedAuthorityResolver()
+					createInheritedSecuringAuthorityResolver()
 			);
 			DynamicPathWizardDialog dialog = new DynamicPathWizardDialog(getSection().getShell(), assignAuthorityWizard);
 			if (dialog.open() == Dialog.OK) {
