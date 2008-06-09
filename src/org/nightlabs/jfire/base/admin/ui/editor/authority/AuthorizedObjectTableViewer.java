@@ -65,7 +65,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 	private IDirtyStateManager dirtyStateManager;
 
 	public AuthorizedObjectTableViewer(Composite parent, IDirtyStateManager dirtyStateManager) {
-		super(parent, SWT.NONE);
+		super(parent, SWT.FULL_SELECTION);
 
 		this.dirtyStateManager = dirtyStateManager;
 
