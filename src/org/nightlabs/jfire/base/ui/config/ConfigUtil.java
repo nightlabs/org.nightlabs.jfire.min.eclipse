@@ -39,18 +39,23 @@ import org.nightlabs.progress.ProgressMonitor;
  * Provides static convenience methods for retrieving ConfigModules.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
-public class ConfigUtil {
-	
+public class ConfigUtil
+{
+	private ConfigUtil() { }
+
 	/**
 	 * Returns the ConfigModule of the given class for the user currently logged in.
 	 * 
 	 * @param cfModClass The class of the ConfigModule to get.
 	 * @param fetchGroups The fetch-groups the ConfigModule should be detached with
 	 */
-	public static ConfigModule getUserCfMod(Class cfModClass, String[] fetchGroups, int maxFetchDepth,
-			ProgressMonitor monitor) {
+	public static <T extends ConfigModule> T getUserCfMod(
+			Class<T> cfModClass,
+			String[] fetchGroups, int maxFetchDepth,
+			ProgressMonitor monitor
+	)
+	{
 		try {
 			UserID userID = UserID.create(Login.getLogin().getOrganisationID(), Login.getLogin().getUserID());
 			return ConfigModuleDAO.sharedInstance().getConfigModule(
@@ -73,7 +78,7 @@ public class ConfigUtil {
 	 * @param cfModClass The class of the ConfigModule to get.
 	 * @param fetchGroups The fetch-groups the ConfigModule should be detached with
 	 */
-	public static ConfigModule getWorkstationCfMod(Class cfModClass, String[] fetchGroups,
+	public static <T extends ConfigModule> T getWorkstationCfMod(Class<T> cfModClass, String[] fetchGroups,
 			int maxFetchDepth, ProgressMonitor monitor) {
 		try {
 			WorkstationID workstationID = WorkstationID.create(
