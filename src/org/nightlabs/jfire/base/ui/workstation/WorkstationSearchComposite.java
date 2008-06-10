@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.workstation;
 
 import java.util.Collection;
@@ -36,20 +33,19 @@ import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- *
  */
 public class WorkstationSearchComposite extends XComposite {
 
 	public static final int FLAG_MULTI_SELECTION = 1;
 	public static final int FLAG_SEARCH_BUTTON = 32;
-	
-	
+
+
 	private Text workstationIDText;
 	private Text descriptionText;
 	private WorkstationTable workstationTable;
-	
+
 	private int flags = 0;
-	
+
 	/**
 	 * @param parent
 	 * @param style
@@ -57,19 +53,19 @@ public class WorkstationSearchComposite extends XComposite {
 	public WorkstationSearchComposite(Composite parent, int style) {
 		this(parent, style, 0);
 	}
-	
+
 	public WorkstationSearchComposite(Composite parent, int style, int flags) {
 		super(parent, style);
 		this.flags = flags;
 		createComposite();
 	}
-	
+
 	protected void createComposite() {
 		XComposite searchComp = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		searchComp.getGridLayout().numColumns = isShowSearchButton() ? 3 : 2;
 		searchComp.getGridLayout().makeColumnsEqualWidth = false;
 		searchComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		workstationIDText = createTextSearchEntry(searchComp, "WorkstationID");
 		descriptionText = createTextSearchEntry(searchComp, "Description");
 		if (isShowSearchButton()) {
@@ -83,19 +79,19 @@ public class WorkstationSearchComposite extends XComposite {
 				}
 			});
 		}
-				
+
 		workstationTable = new WorkstationTable(this, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER : AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 		workstationTable.setLinesVisible(true);
 		workstationTable.setHeaderVisible(true);
 	}
-	
+
 	protected boolean isMultiSelelect() {
 		return (flags & FLAG_MULTI_SELECTION) > 0;
 	}
 	protected boolean isShowSearchButton() {
 		return (flags & FLAG_SEARCH_BUTTON) > 0;
 	}
-	
+
 	protected Text createTextSearchEntry(Composite parent, String labelString)
 	{
 		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -105,21 +101,21 @@ public class WorkstationSearchComposite extends XComposite {
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		return text;
 	}
-	
+
 	protected WorkstationQuery getWorkstationQuery()
 	{
 		WorkstationQuery workstationQuery = new WorkstationQuery();
-		
+
 		if (!workstationIDText.getText().trim().equals("")) //$NON-NLS-1$
 			workstationQuery.setWorkstationID(workstationIDText.getText());
 
 		if (!descriptionText.getText().trim().equals("")) //$NON-NLS-1$
 			workstationQuery.setDescription(descriptionText.getText());
-		
+
 		return workstationQuery;
 	}
-	
-	
+
+
 	public void searchPressed()
 	{
 		workstationTable.setInput("Searching...");

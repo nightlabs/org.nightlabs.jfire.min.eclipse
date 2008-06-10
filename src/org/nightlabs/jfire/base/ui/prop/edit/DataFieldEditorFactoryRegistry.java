@@ -39,16 +39,16 @@ import org.nightlabs.jfire.prop.IStruct;
 /**
  * A Registry holding associations from subclasses of {@link org.nightlabs.jfire.base.ui.prop.DataField} to
  * {@link org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor}s grouped by editorTypes.<br/>
- * 
+ *
  * As EPProcessor it processes extensions to org.nightlabs.jfire.base.ui.prop.edit.propDataFieldEditor.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.propDataFieldEditorFactory"; //$NON-NLS-1$
 	public static final String EXTENSION_POINT_ELEMENT_NAME = "propdatafieldeditorfactory"; // lower case for error tolerance //$NON-NLS-1$
-	
+
 	/**
 	 * A Map holding the registries for all editorTypes.<br/>
 	 *   key: String editorType<br/>
@@ -56,80 +56,80 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 *     key: Class targetType<br/>
 	 *     value: DataFieldEditor editor<br/>
 	 */
-	private static Map<String, Map<Class, DataFieldEditorFactory>> registriesMap =
-		new HashMap<String, Map<Class,DataFieldEditorFactory>>();
-	
-	private Map<Class, DataFieldEditorFactory> getTypedRegistry(String type)
+	private static Map<String, Map<Class<?>, DataFieldEditorFactory<?>>> registriesMap =
+		new HashMap<String, Map<Class<?>, DataFieldEditorFactory<?>>>();
+
+	private Map<Class<?>, DataFieldEditorFactory<?>> getTypedRegistry(String type)
 	{
-		Map registry = registriesMap.get(type);
+		Map<Class<?>, DataFieldEditorFactory<?>> registry = registriesMap.get(type);
 		if (registry == null)
 		{
-			registry = new HashMap<String, Map<Class,DataFieldEditorFactory>>();
+			registry = new HashMap<Class<?>, DataFieldEditorFactory<?>>();
 			registriesMap.put(type, registry);
 		}
-		
+
 		return registry;
 	}
-	
+
 	/**
 	 * Add a new {@link DataFieldEditor} to the registry.
 	 * Checks if {@link DataFieldEditor#getTargetPropStructType()} returns
 	 * a subclass of {@link org.nightlabs.jfire.base.ui.prop.DataField}
 	 * and throws a {@link IllegalArgumentException}
-	 * 
+	 *
 	 * @param context The context in which this binding should be used. <code>null</code> can be used to indicate
 	 *        the default context.
 	 * @param targetType
 	 * @param editorFactory
 	 */
-	public synchronized void addDataFieldEditorFactory(DataFieldEditorFactory editorFactory)
+	public synchronized void addDataFieldEditorFactory(DataFieldEditorFactory<?> editorFactory)
 	{
 		if (editorFactory == null)
 			throw new IllegalArgumentException("Parameter editor must not be null!"); //$NON-NLS-1$
-		Class targetType = editorFactory.getPropDataFieldType();
+		Class<?> targetType = editorFactory.getPropDataFieldType();
 		if (targetType == null)
 			throw new IllegalArgumentException("Parameter targetType must not be null!"); //$NON-NLS-1$
-		
+
 		if (!(DataField.class.isAssignableFrom(targetType)))
 			throw new IllegalArgumentException("TargetType must be subclass of DataField but is "+targetType.getName()); //$NON-NLS-1$
-		
+
 		for (String editorType : editorFactory.getEditorTypes()) {
 			getTypedRegistry(editorType).put(targetType, editorFactory);
 		}
 	}
-		
+
 	/**
 	 * Find the editor for a specific PropDataField-type and editor type und a specific context.
 	 * context may be <code>null</code> to indicate the default context.
 	 * @param editorType
 	 * @param targetType
-	 * 
+	 *
 	 * @return The registered DataFieldEditor for the given targetType
 	 * @throws DataFieldEditorNotFoundException
 	 */
-	public synchronized DataFieldEditorFactory getEditorFactory(String editorType, Class targetType)
+	public synchronized DataFieldEditorFactory<?> getEditorFactory(String editorType, Class<?> targetType)
 	throws DataFieldEditorNotFoundException
 	{
 		checkProcessing();
-		
+
 		if (targetType == null)
 			throw new IllegalArgumentException("Parameter targetType must not be null"); //$NON-NLS-1$
-		
-		Map<Class, DataFieldEditorFactory> registry = getTypedRegistry(editorType);
+
+		Map<Class<?>, DataFieldEditorFactory<?>> registry = getTypedRegistry(editorType);
 
 		if (!registry.containsKey(targetType))
 			throw new DataFieldEditorNotFoundException("No editor found for editorType=\""+editorType+"\" targetType=\""+targetType.getName()+"\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		return registry.get(targetType);
 	}
-	
+
 	/**
 	 * Find the DataFieldEditorFactory for the Class of the given dataField,
 	 * editorType and context and invokes createPropDataFieldEditor(dataField, setData)
 	 * @param editorType
 	 * @param context May be null to indicate default context
 	 * @param dataField
-	 * 
+	 *
 	 * @return A new instance of the appropriate DataFieldEditor
 	 * @throws DataFieldEditorNotFoundException
 	 */
@@ -142,14 +142,14 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 		DataFieldEditorFactory fieldEditorFactry = getEditorFactory(editorType, dataField.getClass());
 		return fieldEditorFactry.createPropDataFieldEditor(struct, dataField);
 	}
-	
+
 //	/**
 //	 * Find the DataFieldEditorFactory for the Class of the given dataField
 //	 * and editorType and invokes createPropDataFieldEditor(dataField, true)
 //	 * @param editorType
 //	 * @param context may be null to indicate default context.
 //	 * @param dataField
-//	 * 
+//	 *
 //	 * @return A new instance of the appropriate DataFieldEditor
 //	 * @throws DataFieldEditorNotFoundException
 //	 */
@@ -162,9 +162,9 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 //		DataFieldEditorFactory fieldEditorFactory = getEditorFactory(editorType, dataField.getClass());
 //		return fieldEditorFactory.createPropDataFieldEditor(struct, dataField, true);
 //	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param editorType
 	 * @param context may be null to indicate default context.
 	 * @param targetType
@@ -173,9 +173,9 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	public synchronized boolean hasRegistration(String editorType, String context, Class targetType) {
 		return getTypedRegistry(editorType).containsKey(targetType);
 	}
-	
+
 	private static DataFieldEditorFactoryRegistry sharedInstance;
-	
+
 	/**
 	 * Returns the static shared instance of a DataFieldEditorFactoryRegistry.
 	 * @return The static shared instance of a DataFieldEditorFactoryRegistry.
@@ -186,7 +186,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 		}
 		return sharedInstance;
 	}
-	
+
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
 	 */
