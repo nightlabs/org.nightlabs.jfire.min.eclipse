@@ -38,11 +38,11 @@ import org.nightlabs.jfire.prop.StructField;
  * Implementations of this interface are use to edit the {@link DataField}s
  * stored in a {@link PropertySet}. For each type of data field an own
  * DataFieldEditor should be registered as extension to the point <code>org.nightlabs.jfire.base.ui.propDataFieldEditorFactory</code>.
- * 
+ *
  * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public interface DataFieldEditor<F extends DataField> {
-	
+
 	/**
 	 * Set the factory this field editor is associated with.
 	 * @param factory The factory to set.
@@ -53,7 +53,7 @@ public interface DataFieldEditor<F extends DataField> {
 	 * @return The factory this field editor is associated with.
 	 */
 	public DataFieldEditorFactory<F> getPropDataFieldEditorFactory();
-	
+
 	/**
 	 * Here a data field editor should add its
 	 * control to a parent Composite.
@@ -62,44 +62,44 @@ public interface DataFieldEditor<F extends DataField> {
 	 * and be updated with data changes.
 	 * </p>
 	 * No data-display will be made here. See {@link #setData(IStruct, DataField)}.
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 * @return A newly create Control.
 	 */
 	public Control createControl(Composite parent);
-	
+
 	/**
 	 * Should return the Control created in {@link #createControl(Composite)}.
 	 * @return the Control created in {@link #createControl(Composite)}.
 	 */
 	public Control getControl();
-	
+
 	/**
 	 * Editors should refresh their data during this method.
 	 * The composite should be refreshed as well.
-	 * 
+	 *
 	 * @param struct The structure the given field is part of (used to obtain structure data like the field name etc.)
 	 * @param data The {@link DataField} this field editor should modify
 	 */
 	public void setData(IStruct struct, F data);
-	
+
 	/**
 	 * Editors should return the currently managed {@link DataField} here.
 	 * @return the currently managed {@link DataField} here.
 	 */
 	public F getDataField();
-	
+
 	/**
 	 * Editors should return the {@link StructField} that corresponds to the currently managed {@link DataField}.
 	 * @return the {@link StructField} that corresponds to the currently managed {@link DataField}.
 	 */
-	public StructField getStructField();
-	
+	public StructField<F> getStructField();
+
 	/**
 	 * Refresh the control with the data currently set.
 	 */
 	public void refresh();
-	
+
 	/**
 	 * Updates the PropertySet, sets the data from the UI control
 	 * to the {@link DataField} currently set.
@@ -108,7 +108,7 @@ public interface DataFieldEditor<F extends DataField> {
 	 * </p>
 	 */
 	public void updatePropertySet();
-	
+
 	/**
 	 * Add a change listener to this field editor. It will be triggered
 	 * when the user changes the field value.
@@ -130,5 +130,5 @@ public interface DataFieldEditor<F extends DataField> {
 	 * @return Whether the value of this field editor has changed.
 	 */
 	public boolean isChanged();
-	
+
 }

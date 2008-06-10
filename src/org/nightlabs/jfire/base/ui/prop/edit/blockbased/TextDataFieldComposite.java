@@ -122,6 +122,9 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		return fieldText.getText();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.swt.widgets.Widget#dispose()
+	 */
 	@Override
 	public void dispose() {
 		fieldText.removeModifyListener(modifyListener);

@@ -67,16 +67,17 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 		}
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
-	 */
-	public String getEditorType() {
-		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
-	}
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
+//	 */
+//	public String getEditorType() {
+//		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
+//	}
 
 	private TextDataFieldComposite<TextDataField> composite;
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
+	
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public Control createControl(Composite parent) {
@@ -87,16 +88,18 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 		return composite;
 	}
 
-	/**
+	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
 	 */
+	@Override
 	public Control getControl() {
 		return composite;
 	}
 
-	/**
+	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#updatePropertySet()
 	 */
+	@Override
 	public void updatePropertySet()
 	{
 //		Display.getDefault().syncExec(new Runnable(){
@@ -107,20 +110,19 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 	}
 
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#disposeControl()
-	 */
-	public void disposeControl() {
-		composite.dispose();
-	}
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#disposeControl()
+//	 */
+//	public void disposeControl() {
+//		composite.dispose();
+//	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#refresh()
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()
 	 */
 	@Override
 	public void doRefresh() {
 		if (composite != null)
 			composite.refresh();
 	}
-
 }
