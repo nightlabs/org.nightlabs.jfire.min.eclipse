@@ -748,7 +748,7 @@ extends AbstractEPProcessor
 	 * Returns the {@link UserID} of the user
 	 * @return the {@link UserID} of the user
 	 */
-	public UserID getCompleteUserID() {
+	public UserID getUserObjectID() {
 		if (loginData == null)
 			return null;
 		
