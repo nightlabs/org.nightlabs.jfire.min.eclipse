@@ -74,7 +74,7 @@ public class QueryFilterFactoryRegistry
 				factory = (QueryFilterFactory) element.createExecutableExtension(ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS);
 			}
 			catch (CoreException e) {
-				throw new EPProcessorException("Could't instantiate the given factory object!", e); 
+				throw new EPProcessorException("Coudn't instantiate the given factory object!", e); 
 			}
 		}
 		else

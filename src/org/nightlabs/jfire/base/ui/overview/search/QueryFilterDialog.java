@@ -27,7 +27,6 @@ extends ResizableTitleAreaDialog
 {
 	private String scope;
 	private QueryCollection<? extends AbstractSearchQuery> queryCollection;
-//	private Set<AbstractQueryFilterComposite> filterComposites;
 	private QueryProvider queryProvider = null;
 	private Class<?> targetType = null;
 	
@@ -60,7 +59,6 @@ extends ResizableTitleAreaDialog
 			for (QueryFilterFactory factory : factories) {
 				AbstractQueryFilterComposite filterComp = factory.createQueryFilter(wrapper, SWT.NONE, 
 						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, queryProvider);
-//				filterComposites.add(filterComp);
 				filterComp.getQueryProvider().loadQueries(queryCollection);
 			}
 		}
@@ -79,6 +77,7 @@ extends ResizableTitleAreaDialog
 	}
 
 	public QueryCollection<?> getQueryCollection() {
-		return queryProvider.getManagedQueries();
+//		return queryProvider.getManagedQueries();
+		return queryCollection;
 	}
 }
