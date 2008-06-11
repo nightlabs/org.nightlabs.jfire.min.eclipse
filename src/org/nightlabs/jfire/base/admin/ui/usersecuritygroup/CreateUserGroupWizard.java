@@ -66,7 +66,8 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 	public void addPages()
 	{
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
-		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());
+		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(
+				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
 		person.inflate(personStruct);
 		cugPage = new CreateUserGroupPage();
 		addPage(cugPage);

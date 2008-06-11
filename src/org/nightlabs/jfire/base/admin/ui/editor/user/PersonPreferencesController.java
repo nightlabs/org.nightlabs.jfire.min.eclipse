@@ -113,7 +113,8 @@ public class PersonPreferencesController extends EntityEditorPageController
 						monitor
 				);
 				monitor.worked(1);
-				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, monitor);
+				structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, monitor);
 				this.user = Util.cloneSerializable(user);
 				logger.info("Loading user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.info("Loading user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
