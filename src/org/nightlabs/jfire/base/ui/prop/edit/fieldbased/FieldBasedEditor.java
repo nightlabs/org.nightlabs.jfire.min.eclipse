@@ -328,7 +328,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
-				propertySet.getStructLocalLinkClass(), propertySet.getStructLocalScope(), monitor
+				propertySet.getStructLocalLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope(), monitor
 		);
 		monitor.worked(1);
 		return structure;

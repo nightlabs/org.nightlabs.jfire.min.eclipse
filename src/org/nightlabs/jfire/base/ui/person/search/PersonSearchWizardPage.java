@@ -73,7 +73,8 @@ public class PersonSearchWizardPage extends WizardHopPage {
 						SecurityReflector.getUserDescriptor().getOrganisationID(),
 						IDGenerator.nextID(PropertySet.class)
 					);
-					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor());
+					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+							Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
 					newPerson.inflate(structLocal);
 					editorWizardHop = new PersonEditorWizardHop();
 					editorWizardHop.initialise(newPerson);					

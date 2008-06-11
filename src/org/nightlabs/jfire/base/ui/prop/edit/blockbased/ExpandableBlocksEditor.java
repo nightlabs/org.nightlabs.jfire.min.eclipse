@@ -53,8 +53,8 @@ import org.nightlabs.progress.ProgressMonitor;
 /**
  * A PropertySetEditor based on PropStructBlocks/PropDataBlocks.
  * This will present one expandable Composite with all PropDataFields
- * for all StructBlock/DataBlock it gets assosiated with.<br/>
- * Control wich blocks a editor displays by associating a list of blocks
+ * for all StructBlock/DataBlock it gets associated with.<br/>
+ * Control which blocks a editor displays by associating a list of blocks
  * to a editor-domain.
  *
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
@@ -72,7 +72,8 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 
 	public ExpandableBlocksEditor(PropertySet prop) {
 		this.prop = prop;
-		structBlockRegistry = new EditorStructBlockRegistry(prop.getStructLocalLinkClass(), prop.getStructLocalScope());
+		structBlockRegistry = new EditorStructBlockRegistry(
+				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope());
 	}
 
 
@@ -92,7 +93,8 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	 */
 	public void setPropertySet(PropertySet prop, boolean refresh) {
 		this.prop = prop;
-		structBlockRegistry = new EditorStructBlockRegistry(prop.getStructLocalLinkClass(), prop.getStructLocalScope());
+		structBlockRegistry = new EditorStructBlockRegistry(
+				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope());
 		if (refresh)
 			refreshControl();
 	}
@@ -137,7 +139,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 			return prop.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
-				prop.getStructLocalLinkClass(), prop.getStructLocalScope(), monitor
+				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope(), monitor
 		);
 		monitor.worked(1);
 		return structure;

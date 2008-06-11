@@ -38,6 +38,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.Struct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -76,8 +77,8 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		if (propStruct != null) {
 			String scope = StructLocal.DEFAULT_SCOPE;
 			if (propStruct instanceof StructLocal)
-				scope = ((StructLocal)propStruct).getScope();
-			structBlockRegistry = new EditorStructBlockRegistry(propStruct.getLinkClass(), scope);
+				scope = ((StructLocal)propStruct).getStructLocalScope();
+			structBlockRegistry = new EditorStructBlockRegistry(propStruct.getLinkClass(), propStruct.getStructScope(), scope);
 		}
 	}
 
@@ -118,7 +119,8 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractBlockBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
-				propertySet.getStructLocalLinkClass(), propertySet.getStructLocalScope(), monitor
+				propertySet.getStructLocalLinkClass(), 
+				propertySet.getStructScope(), propertySet.getStructLocalScope(), monitor
 		);
 		monitor.worked(1);
 		return structure;

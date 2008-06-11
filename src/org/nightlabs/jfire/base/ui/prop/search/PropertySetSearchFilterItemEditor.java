@@ -138,7 +138,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		List<PropertySetStructFieldSearchItemEditorHelper> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorHelper>();
 		// We query the Struct instead of the StructLocal, and search for common features
 		// TODO I think this is OK right now, but there should be a possibility to search for structfields defined in StructLocals
-		for (StructBlock structBlock : StructDAO.sharedInstance().getStruct(Person.class.getName(), monitor).getStructBlocks()) {
+		for (StructBlock structBlock : StructDAO.sharedInstance().getStruct(Person.class.getName(), Person.STRUCT_SCOPE, monitor).getStructBlocks()) {
 			for (StructField structField : structBlock.getStructFields()) {
 				if (PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().hasHelper(structField.getClass()))
 					helperList.add(new PropertySetStructFieldSearchItemEditorManager(structField));

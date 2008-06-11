@@ -35,7 +35,8 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 	 */
 	public BlockBasedPropertySetEditorWizardHop(PropertySet propertySet) {
 		this.propertySet = propertySet;
-		editorStructBlockRegistry = new EditorStructBlockRegistry(propertySet.getStructLocalLinkClass(), propertySet.getStructLocalScope());
+		editorStructBlockRegistry = new EditorStructBlockRegistry(
+				propertySet.getStructLocalLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope());
 	}
 	
 	/**

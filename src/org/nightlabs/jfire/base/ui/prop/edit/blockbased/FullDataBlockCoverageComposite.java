@@ -64,7 +64,8 @@ public class FullDataBlockCoverageComposite extends Composite {
 			throw new IllegalArgumentException("The given propertySet was not exploded by a StructLocal"); //$NON-NLS-1$
 		this.structBlockRegistry = structBlockRegistry;
 		if (structBlockRegistry == null) {
-			this.structBlockRegistry = new EditorStructBlockRegistry(propertySet.getStructLocalLinkClass(), propertySet.getStructLocalScope());
+			this.structBlockRegistry = new EditorStructBlockRegistry(
+					propertySet.getStructLocalLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope());
 		}
 		StructBlockID[] fullCoverageBlockIDs = this.structBlockRegistry.getUnassignedBlockKeyArray();
 		createPropEditors(validationResultManager);

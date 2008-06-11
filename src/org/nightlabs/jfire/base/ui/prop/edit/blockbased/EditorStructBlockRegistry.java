@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.Struct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -52,9 +53,14 @@ public class EditorStructBlockRegistry
 	 */
 	private String linkClass;
 	/**
+	 * The {@link Struct} scope to use.
+	 */
+	private String structScope;
+	/**
 	 * The {@link StructLocal} scope to use.
 	 */
 	private String structLocalScope;
+	
 	
 	/**
 	 * key:   String editorName
@@ -62,14 +68,15 @@ public class EditorStructBlockRegistry
 	 */
 	private Map<String, List<StructBlockID>> editorsStructBlocks;
 	
-	public EditorStructBlockRegistry(Class<?> linkClass, String stuctLocalScope)
+	public EditorStructBlockRegistry(Class<?> linkClass, String structScope, String stuctLocalScope)
 	{
-		this(linkClass.getName(), stuctLocalScope);
+		this(linkClass.getName(), structScope, stuctLocalScope);
 	}
 	
-	public EditorStructBlockRegistry(String linkClass, String structLocalScope)
+	public EditorStructBlockRegistry(String linkClass, String structScope, String structLocalScope)
 	{
 		this.linkClass = linkClass;
+		this.structScope = structScope;
 		this.structLocalScope = structLocalScope;
 		editorsStructBlocks = new HashMap<String, List<StructBlockID>>();
 	}
@@ -138,7 +145,7 @@ public class EditorStructBlockRegistry
 	public List<StructBlockID> getUnassignedBlockKeyList()
 	{
 		List<StructBlockID> toReturn = new LinkedList<StructBlockID>();
-		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(linkClass, structLocalScope, new NullProgressMonitor());
+		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(linkClass, structScope, structLocalScope, new NullProgressMonitor());
 		for (StructBlock structBlock : struct.getStructBlocks())
 		{
 			if (!hasEditorCoverage(structBlock))

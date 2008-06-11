@@ -48,7 +48,8 @@ public class PersonResultTable extends PropertySetTable<Person> {
 	public PersonResultTable(Composite parent, int style) {
 		super(
 			parent, style,
-			StructLocalDAO.sharedInstance().getStructLocal(Person.class, StructLocal.DEFAULT_SCOPE, new NullProgressMonitor()),
+			StructLocalDAO.sharedInstance().getStructLocal(
+					Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor()),
 			new StructFieldID[] {
 				PersonStruct.PERSONALDATA_COMPANY, PersonStruct.PERSONALDATA_NAME, PersonStruct.PERSONALDATA_FIRSTNAME,
 				PersonStruct.POSTADDRESS_CITY, PersonStruct.POSTADDRESS_ADDRESS
