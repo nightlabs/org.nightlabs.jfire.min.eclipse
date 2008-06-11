@@ -65,6 +65,7 @@ public class AsyncInvokeProblemTable
 	public AsyncInvokeProblemTable(Composite parent, int style)
 	{
 		super(parent, style);
+		load();
 	}
 
 	public static boolean isLoadingData(Object element)
