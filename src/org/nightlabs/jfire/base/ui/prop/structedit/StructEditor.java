@@ -142,7 +142,6 @@ public class StructEditor {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);
 						structBlockEditor.setData(block);
-						System.err.println(structEditorComposite.getDisplay().getFocusControl());
 //						if (block.isLocal()) {
 //							structBlockEditor.setEnabled(true);
 //						} else {
