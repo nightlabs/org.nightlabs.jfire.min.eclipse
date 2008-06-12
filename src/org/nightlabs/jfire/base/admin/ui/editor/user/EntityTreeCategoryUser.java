@@ -131,11 +131,6 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 		List<User> res = new ArrayList<User>(users.size());
 
 		for (User user : users) {
-
-			// We filter out all internal users (should be System and Other), because they should not be editable anyway.
-			if (user.getUserID().startsWith("_") && user.getUserID().endsWith("_"))
-				continue;
-
 			res.add(user);
 		}
 
