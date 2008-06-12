@@ -1,11 +1,7 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
-import javax.jdo.JDOHelper;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
@@ -15,41 +11,31 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
-import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jdo.ObjectIDUtil;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
-import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertyManager;
 import org.nightlabs.jfire.prop.PropertyManagerUtil;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
-import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.exception.IllegalStructureModificationException;
 import org.nightlabs.jfire.prop.id.StructLocalID;
-import org.nightlabs.notification.NotificationEvent;
-import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.Util;
-import org.nightlabs.util.reflect.ReflectUtil;
 
 /**
  * Editor to change the structure ({@link IStruct}) linked to a certain {@link Class}.
@@ -89,20 +75,19 @@ public class StructEditor {
 	 *
 	 * @param parent The parent to add the {@link Composite}.
 	 * @param style The style for the outer {@link Composite} of the Editors GUI.
-	 * @param createStructIDCombo Whether to create a {@link Combo} control that allows switching of the edited {@link IStruct}.
 	 * @return The newly created {@link StructEditorComposite}.
 	 */
-	public StructEditorComposite createComposite(Composite parent, int style, boolean createStructIDCombo) {
+	public StructEditorComposite createComposite(Composite parent, int style) {
 		if (structEditorComposite == null) {
 			structTree = new StructTree(this);
-			structEditorComposite = new StructEditorComposite(parent, style, this, structTree, createStructIDCombo);
+			structEditorComposite = new StructEditorComposite(parent, style, this, structTree);
 			languageChooser = structEditorComposite.getLanguageChooser();
-			JDOLifecycleManager.sharedInstance().addNotificationListener(StructLocal.class, changeListener);
-			structEditorComposite.addDisposeListener(new DisposeListener() {
-				public void widgetDisposed(DisposeEvent e) {
-					JDOLifecycleManager.sharedInstance().removeNotificationListener(StructLocal.class, changeListener);
-				}
-			});
+//			JDOLifecycleManager.sharedInstance().addNotificationListener(StructLocal.class, changeListener);
+//			structEditorComposite.addDisposeListener(new DisposeListener() {
+//				public void widgetDisposed(DisposeEvent e) {
+//					JDOLifecycleManager.sharedInstance().removeNotificationListener(StructLocal.class, changeListener);
+//				}
+//			});
 
 			structTree.addSelectionChangedListener(new ISelectionChangedListener() {
 				@SuppressWarnings("unchecked")
@@ -157,6 +142,7 @@ public class StructEditor {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);
 						structBlockEditor.setData(block);
+						System.err.println(structEditorComposite.getDisplay().getFocusControl());
 //						if (block.isLocal()) {
 //							structBlockEditor.setEnabled(true);
 //						} else {
@@ -165,15 +151,17 @@ public class StructEditor {
 						currentStructPartEditor = structBlockEditor;
 					}
 
-					I18nTextEditor partNameEditor = currentStructPartEditor.getPartNameEditor();
-					partNameEditor.setSelection(0, partNameEditor.getEditText().length());
-					partNameEditor.setFocus();
-					partNameEditor.addModifyListener(new ModifyListener() {
-						public void modifyText(ModifyEvent e) {
-							StructEditor.this.setChanged(true);
-							structTree.refreshSelected();
-						}
-					});
+					if (currentStructPartEditor != null && !currentStructPartEditor.getPartNameEditor().isDisposed()) {
+						I18nTextEditor partNameEditor = currentStructPartEditor.getPartNameEditor();
+						partNameEditor.setSelection(0, partNameEditor.getEditText().length());
+						partNameEditor.setFocus();
+						partNameEditor.addModifyListener(new ModifyListener() {
+							public void modifyText(ModifyEvent e) {
+								StructEditor.this.setChanged(true);
+								structTree.refreshSelected();
+							}
+						});
+					}
 				}
 			});
 		}
@@ -275,28 +263,29 @@ public class StructEditor {
 		return true;
 	}
 
-	private NotificationListener changeListener = new NotificationAdapterJob() {
-
-		public void notify(NotificationEvent notificationEvent) {
-			for (DirtyObjectID dirtyObjectID : (Set<? extends DirtyObjectID>)notificationEvent.getSubjects()) {
-				final StructLocalID currentStructID = (StructLocalID) (currentStruct == null ? null : JDOHelper.getObjectId(currentStruct));
-				if (dirtyObjectID.getObjectID().equals(currentStructID)) {
-					final IStruct struct = fetchStructure(currentStructID, getProgressMonitorWrapper());
-//				 TODO: Same problem as with ConfigModules: we cannot check whether the content of two IStructs are identical or not.
-//					if (currentStruct.equals(struct))
-//						return;
-
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							setStruct(struct);
-						}
-					});
-
-				}
-			}
-		}
-
-	};
+//	Removed changeListener as the editor is now embedded in an editor page with an active controller
+//	private NotificationListener changeListener = new NotificationAdapterJob() {
+//
+//		public void notify(NotificationEvent notificationEvent) {
+//			for (DirtyObjectID dirtyObjectID : (Set<? extends DirtyObjectID>)notificationEvent.getSubjects()) {
+//				final StructLocalID currentStructID = (StructLocalID) (currentStruct == null ? null : JDOHelper.getObjectId(currentStruct));
+//				if (dirtyObjectID.getObjectID().equals(currentStructID)) {
+//					final IStruct struct = fetchStructure(currentStructID, getProgressMonitorWrapper());
+////				 TODO: Same problem as with ConfigModules: we cannot check whether the content of two IStructs are identical or not.<
+////					if (currentStruct.equals(struct))
+////						return;
+//
+//					Display.getDefault().asyncExec(new Runnable() {
+//						public void run() {
+//							setStruct(struct);
+//						}
+//					});
+//
+//				}
+//			}
+//		}
+//
+//	};
 
 	private PropertyManager getPropertyManager() {
 		if (propertyManager == null) {
@@ -310,30 +299,31 @@ public class StructEditor {
 		return propertyManager;
 	}
 
-	public void storeStructure() {
-		try {
-			ReflectUtil.findContainedObjectsByClass(
-					currentStruct, Serializable.class, false, true,
-					new ReflectUtil.IObjectFoundHandler() {
-						public void objectFound(String path, Object object) {
-							System.out.println("found not Serializable: "+path+"="+object.getClass()); //$NON-NLS-1$ //$NON-NLS-2$
-						}
-					}
-				);
-			getPropertyManager().storeStruct(currentStruct);
-//			currentStruct = getPropertyManager().storeStruct(currentStruct);
-//			Display.getDefault().asyncExec(new Runnable() {
-//				@Override
-//				public void run() {
-//					setStruct(currentStruct, true);
-//				}
-//			});
-			setChanged(false);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
+//	Not needed any more
+//	public void storeStructure() {
+//		try {
+//			ReflectUtil.findContainedObjectsByClass(
+//					currentStruct, Serializable.class, false, true,
+//					new ReflectUtil.IObjectFoundHandler() {
+//						public void objectFound(String path, Object object) {
+//							System.out.println("found not Serializable: "+path+"="+object.getClass()); //$NON-NLS-1$ //$NON-NLS-2$
+//						}
+//					}
+//				);
+//			getPropertyManager().storeStruct(currentStruct);
+////			currentStruct = getPropertyManager().storeStruct(currentStruct);
+////			Display.getDefault().asyncExec(new Runnable() {
+////				@Override
+////				public void run() {
+////					setStruct(currentStruct, true);
+////				}
+////			});
+//			setChanged(false);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	public void setChanged(boolean changed) {
 		this.changed = changed;

@@ -34,6 +34,7 @@ public class StructBlockEditorComposite extends XComposite {
 	public void setStructBlock(StructBlock psb) {
 		block = psb;
 		blockNameEditor.setI18nText(psb.getName(), EditMode.DIRECT);
+		blockNameEditor.setFocus();
 		checkComp.setSelection(block.isUnique());
 		this.setVisible(true);
 	}

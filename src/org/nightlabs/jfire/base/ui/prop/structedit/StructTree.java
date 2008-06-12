@@ -46,6 +46,10 @@ public class StructTree {
 		return structTreeComposite.getSelection();
 	}
 	
+	void triggerSelectionChangeEvent() {
+		structTreeComposite.setSelection(structTreeComposite.getSelection());
+	}
+	
 	public void setInput(Object input) {
 		structTreeComposite.getTreeViewer().setInput(input);
 	}
