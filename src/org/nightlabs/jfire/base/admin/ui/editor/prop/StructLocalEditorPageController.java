@@ -1,16 +1,20 @@
 package org.nightlabs.jfire.base.admin.ui.editor.prop;
 
-import org.eclipse.ui.forms.editor.IFormPage;
+import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
-import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
+import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.prop.StructLocal;
+import org.nightlabs.jfire.prop.dao.StructLocalDAO;
+import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.progress.ProgressMonitor;
+import org.nightlabs.progress.SubProgressMonitor;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
 public class StructLocalEditorPageController
-extends EntityEditorPageController
+extends AbstractStructEditorPageController<StructLocal>
 {
 	public StructLocalEditorPageController(EntityEditor editor) {
 		super(editor);
@@ -20,27 +24,31 @@ extends EntityEditorPageController
 		super(editor, startBackgroundLoading);
 	}
 
-	public void doLoad(ProgressMonitor monitor) {
-		try {
-			monitor.beginTask("Loading structure members", 1); //$NON-NLS-1$ // this doesn't take long and is therefore probably never displayed => no externalisation necessary. Marco.
-			monitor.worked(1);
-		} finally {
-			monitor.done();
-		}
+	@Override
+	protected String[] getEntityFetchGroups() {
+		return StructLocalDAO.DEFAULT_FETCH_GROUPS;
 	}
 
-	public void doSave(ProgressMonitor monitor)
-	{
-		for (IFormPage page : getPages()) {
-			if (page instanceof StructEditorPage) {
-				StructEditorPage structEditorPage = (StructEditorPage) page;
-				try {
-					structEditorPage.getStructEditorSection().getStructEditor().storeStructure();
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
+	@Override
+	protected StructLocal retrieveEntity(ProgressMonitor monitor) {
+		monitor.beginTask("Loading PropertySet structure", 2);
+		monitor.worked(1);
+		StructLocal struct = StructLocalDAO.sharedInstance().getStructLocal(getStructLocalID(), new SubProgressMonitor(monitor, 10));
+		monitor.done();
+		return struct;
 	}
 
+	@Override
+	protected StructLocal storeEntity(StructLocal controllerObject, ProgressMonitor monitor) {
+		monitor.beginTask("Storing PropertySet structure", 2);
+		monitor.worked(1);
+		StructLocal struct = StructLocalDAO.sharedInstance().storeStructLocal(
+				controllerObject, true, getEntityFetchGroups(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 10));
+		monitor.done();
+		return struct;
+	}
+
+	private StructLocalID getStructLocalID() {
+		return ((JDOObjectEditorInput<StructLocalID>)getEntityEditor().getEditorInput()).getJDOObjectID();		
+	}
 }

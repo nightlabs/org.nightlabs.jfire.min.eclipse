@@ -1,24 +1,26 @@
 package org.nightlabs.jfire.base.admin.ui.editor.prop;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.prop.id.StructLocalID;
+import org.nightlabs.jfire.prop.IStruct;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de
- *
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class StructEditorPage
 extends EntityEditorPageWithProgress
 {
+	private static Logger logger = Logger.getLogger(StructEditorPage.class);
 	/**
 	 * The Factory is registered to the extension-point and creates
 	 * new instances of {@link StructEditorPage}.
@@ -44,22 +46,32 @@ extends EntityEditorPageWithProgress
 	
 	@Override
 	protected void addSections(Composite parent) {
-		structEditorSection = new StructEditorSection(this, parent);
+		structEditorSection = new StructEditorSection(this, getStructEditorPageController(), parent);
 		getManagedForm().addPart(structEditorSection);
+	}
+	
+	protected AbstractStructEditorPageController<? extends IStruct> getStructEditorPageController() {
+		return (AbstractStructEditorPageController<IStruct>) getPageController();
 	}
 
 	@Override
-	protected void asyncCallback()
-	{
+	protected void handleControllerObjectModified(final EntityEditorPageControllerModifyEvent modifyEvent) {
+		super.handleControllerObjectModified(modifyEvent);
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
 			{
-				StructLocalID structLocalID = ((JDOObjectEditorInput<StructLocalID>)getEditor().getEditorInput()).getJDOObjectID();
-				structEditorSection.getStructEditor().setCurrentStructLocalID(structLocalID);
+				IStruct struct = (IStruct) modifyEvent.getNewObject();
+				structEditorSection.getStructEditor().setStruct(struct);
 				switchToContent();
 			}
 		});
+	}
+	
+	@Override
+	protected void asyncCallback()
+	{ 
+		// noop 
 	}
 
 	@Override

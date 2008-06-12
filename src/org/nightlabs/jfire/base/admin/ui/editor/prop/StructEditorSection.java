@@ -25,6 +25,7 @@ import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructBlockAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructFieldAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.RemoveStructElementAction;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.IStruct.OrderMoveDirection;
 
 /**
@@ -35,14 +36,15 @@ public class StructEditorSection
 extends ToolBarSectionPart
 implements StructureChangedListener
 {
-	public StructEditorSection(IFormPage page, Composite parent)
+	private AbstractStructEditorPageController<? extends IStruct> pageController;
+	public StructEditorSection(IFormPage page, AbstractStructEditorPageController<? extends IStruct> pageController, Composite parent)
 	{
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE,
 					Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.prop.StructEditorSection.title")); //$NON-NLS-1$
 
 		structEditor = new StructEditor();
 
-		structEditor.createComposite(getContainer(), SWT.NONE, false);
+		structEditor.createComposite(getContainer(), SWT.NONE);
 		structEditor.addStructureChangedListener(this);
 		structEditor.getStructTree().addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -79,6 +81,7 @@ implements StructureChangedListener
 		//  -> remove it for now. (Marius)
 //		page.getEditorSite().registerContextMenu("StructEditorPage.PropertyActions", menuManager, structTreeViewer); //$NON-NLS-1$
 //		((EntityEditorPageWithProgress)page).setMenu(popupMenu);
+		this.pageController = pageController;
 	}
 
 	private void updateActionStatus() {
@@ -111,6 +114,12 @@ implements StructureChangedListener
 
 	public void structureChanged() {
 		markDirty();
+	}
+	
+	@Override
+	public void commit(boolean onSave) {
+		super.commit(onSave);		
+		pageController.setStruct(structEditor.getStruct());
 	}
 
 }
