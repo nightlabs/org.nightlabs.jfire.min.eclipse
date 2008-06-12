@@ -69,6 +69,8 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 			}
 		};
 		String newPassword = ChangePasswordDialog.openDialog(RCPUtil.getActiveShell(), newPasswordValidator, null);
+		if (newPassword == null) 
+			return; // User canceled or somehow else entered no new and confirmed password -> do nothing
 		try {
 			JFireSecurityManager um = JFireSecurityManagerUtil.getHome(SecurityReflector.getInitialContextProperties()).create();
 			um.setUserPassword(newPassword);
@@ -77,8 +79,6 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
-//		ChangePasswordDialog.openDialog();
 	}
 
 	public void selectionChanged(IAction arg0, ISelection arg1) {
