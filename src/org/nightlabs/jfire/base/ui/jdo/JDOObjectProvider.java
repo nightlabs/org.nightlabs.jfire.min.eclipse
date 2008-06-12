@@ -32,12 +32,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.nightlabs.jfire.base.jdo.BaseJDOObjectDAO;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.util.Util;
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de
- * @deprecated Please use {@link JDOObjectDAO} for future client development
+ * @deprecated Please use {@link BaseJDOObjectDAO} for future client development
  */
 @Deprecated
 public abstract class JDOObjectProvider
