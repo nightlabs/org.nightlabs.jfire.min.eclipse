@@ -9,28 +9,16 @@ import org.nightlabs.base.ui.login.LoginState;
 /**
  * @author Fitas Amine - fitas at nightlabs dot de
  */
-
-
-
 public class LoginStateChangeEvent
 extends EventObject
 {
-
-	/**
-	 * The serial version of this class.
-	 * */
 	private static final long serialVersionUID = 1L;
 
 	private LoginState oldLoginState  = null;
-
 	private LoginState newLoginState  = null;
-
 	private IAction action;
 
-
-
-
-	public LoginStateChangeEvent(Object source, LoginState oldlogstate ,LoginState newlogstate , IAction action )
+	public LoginStateChangeEvent(Object source, LoginState oldlogstate, LoginState newlogstate, IAction action)
 	{
 		super(source);
 
@@ -40,19 +28,15 @@ extends EventObject
 		this.oldLoginState = oldlogstate;
 		this.newLoginState = newlogstate;
 		this.action = action;
-
 	}
 
-
-
 	/**
-	 * @return Returns the Action
+	 * @return Returns the <code>Action</code> or <code>null</code>.
 	 */
 	public IAction getAction()
 	{
 		return this.action;
 	}
-
 
 	/**
 	 * @return the new login state.
@@ -69,6 +53,5 @@ extends EventObject
 	{
 		return this.oldLoginState;
 	}
-
 
 }

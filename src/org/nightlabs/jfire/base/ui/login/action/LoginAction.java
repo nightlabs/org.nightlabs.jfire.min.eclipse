@@ -85,7 +85,7 @@ extends LSDWorkbenchWindowActionDelegate
 			logoutIcon_toolbar = SharedImages.getSharedImageDescriptor(JFireBasePlugin.getDefault(), LoginAction.class, "Logout", ImageDimension._24x24, ImageFormat.png); //$NON-NLS-1$
 
 		if (Login.isLoggedIn() && action != null) {
-			loginStateChanged(new LoginStateChangeEvent(this,Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action));
+			loginStateChanged(new LoginStateChangeEvent(this, Login.sharedInstance().getLoginState(), Login.sharedInstance().getLoginState(), action));
 		}
 	}
 
