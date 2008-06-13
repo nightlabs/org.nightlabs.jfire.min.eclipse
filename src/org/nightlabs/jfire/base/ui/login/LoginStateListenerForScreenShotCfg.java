@@ -26,7 +26,7 @@ implements LoginStateListener
 	{
 		ScreenShotCfMod screeShotCfMod = Config.sharedInstance().createConfigModule(ScreenShotCfMod.class);
 		// TODO: set the value according to access right of the user
-		screeShotCfMod.setScreenShotAllowed(false);
+		screeShotCfMod.setConfigScreenShotAllowed(false);
 	}
 
 	private void saveCfg() 
