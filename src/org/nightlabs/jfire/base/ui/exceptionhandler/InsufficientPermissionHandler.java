@@ -30,18 +30,14 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 	 */
 	@Override
 	public boolean handleException(ExceptionHandlerParam handlerParam) {
+		logger.info("handleException: called for this triggerException: " + handlerParam.getTriggerException());
 
-		Throwable triggerException =handlerParam.getTriggerException();
-		
-		logger.info("handleException: called for this triggerException: " + triggerException);
-
-		
-		if (!(triggerException instanceof SecurityException))
-			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (triggerException == null ? null : triggerException.getClass().getName()), handlerParam.getThrownException());
+		if (!(handlerParam.getTriggerException() instanceof SecurityException))
+			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (handlerParam.getTriggerException() == null ? null : handlerParam.getTriggerException().getClass().getName()), handlerParam.getThrownException());
 		else {
 			try {
 				RemoteExceptionClassHandler handler = new RemoteExceptionClassHandler();
-				if (handler.handleException(handlerParam.getThread(), handlerParam.getThrownException(), (SecurityException) triggerException))
+				if (handler.handleException(handlerParam.getThread(), handlerParam.getThrownException(), (SecurityException) handlerParam.getTriggerException()))
 					return true;
 			} catch (NoClassDefFoundError x) {
 				// ignore and use fallback-dialog below
@@ -51,7 +47,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 		ErrorDialogFactory.showError(DefaultErrorDialog.class, 
 				"Insufficient permissions", 
 				"You don't have enough permissions for the requested action. Contact your boss or your administrator.", 
-				thrownException, triggerException);
+				new ExceptionHandlerParam(handlerParam.getThrownException(), handlerParam.getTriggerException()));
 
 		return true;
 	}
@@ -157,7 +153,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 				ErrorDialogFactory.showError(InsufficientPermissionDialog.class, 
 						"Insufficient permissions", 
 						message, 
-						thrownException, securityException);
+						new ExceptionHandlerParam(thrownException, securityException));
 				
 			} finally {
 				InsufficientPermissionDialog.removeInsufficientPermissionDialogContext();

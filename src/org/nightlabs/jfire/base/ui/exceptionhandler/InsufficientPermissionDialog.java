@@ -81,11 +81,6 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 		return super.createCustomArea(parent);
 	}
 
-	@Override
-	public void showError(String dialogTitle, String message, Throwable thrownException, Throwable triggerException) {
-		super.showError(dialogTitle, message, thrownException, triggerException);
-	}
-
 	// this method is called within showError, the context is there
 	@Override
 	protected ErrorItem creatErrorItem(String dialogTitle, String message, Throwable thrownException, Throwable triggerException) {
