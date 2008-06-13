@@ -10,6 +10,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.exceptionhandler.DefaultErrorDialog;
 import org.nightlabs.base.ui.exceptionhandler.ErrorDialogFactory;
+import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerParam;
 import org.nightlabs.base.ui.exceptionhandler.IExceptionHandler;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.MissingRoleException;
@@ -28,15 +29,19 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 	 * @see org.eclipse.jface.window.Window.IExceptionHandler#handleException(java.lang.Throwable)
 	 */
 	@Override
-	public boolean handleException(Thread thread, Throwable thrownException, Throwable triggerException) {
+	public boolean handleException(ExceptionHandlerParam handlerParam) {
+
+		Throwable triggerException =handlerParam.getTriggerException();
+		
 		logger.info("handleException: called for this triggerException: " + triggerException);
 
+		
 		if (!(triggerException instanceof SecurityException))
-			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (triggerException == null ? null : triggerException.getClass().getName()), thrownException);
+			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (triggerException == null ? null : triggerException.getClass().getName()), handlerParam.getThrownException());
 		else {
 			try {
 				RemoteExceptionClassHandler handler = new RemoteExceptionClassHandler();
-				if (handler.handleException(thread, thrownException, (SecurityException) triggerException))
+				if (handler.handleException(handlerParam.getThread(), handlerParam.getThrownException(), (SecurityException) triggerException))
 					return true;
 			} catch (NoClassDefFoundError x) {
 				// ignore and use fallback-dialog below
