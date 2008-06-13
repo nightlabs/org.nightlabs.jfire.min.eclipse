@@ -361,4 +361,10 @@
             class="org.nightlabs.jfire.base.ui.login.part.LoginStateListenerForCloseOnLogoutEditorParts">
       </loginStateListener>
    </extension>
+   <extension
+         point="org.nightlabs.jfire.base.ui.loginstatelistener">
+      <loginStateListener
+            class="org.nightlabs.jfire.base.ui.login.LoginStateListenerForScreenShotCfg">
+      </loginStateListener>
+   </extension>
 </plugin>
