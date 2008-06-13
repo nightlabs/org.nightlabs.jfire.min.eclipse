@@ -14,8 +14,6 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 public class LoginStateListenerForScreenShotCfg 
 implements LoginStateListener 
 {
-	private Config config;
-
 	@Override
 	public void loginStateChanged(LoginStateChangeEvent event) {
 		if (event.getNewLoginState() == LoginState.LOGGED_IN)
@@ -26,24 +24,15 @@ implements LoginStateListener
 
 	private void loadCfg() 
 	{
-//		// TODO:  API for querying access rights on the client side
-//		// Logical Understanding
-//		// create and get a shared instance:
-//		config = Config.createSharedInstance( "screenshotCfg.xml",
-//				true,
-//				System.getProperty("user.home"));
-//		// create the config module lazily:
-//		ScreenShotCfMod myConfigModule = (ScreenShotCfMod)config
-//		.createConfigModule(ScreenShotCfMod.class);
-//		// set the value
-//		// the value will be read from the access rights API
-//		myConfigModule.setConfigScreenShotAllowed(false);
+		ScreenShotCfMod screeShotCfMod = Config.sharedInstance().createConfigModule(ScreenShotCfMod.class);
+		// TODO: set the value according to access right of the user
+		screeShotCfMod.setScreenShotAllowed(false);
 	}
 
 	private void saveCfg() 
-	{ 
-//		// save the config 
-//		config.save(true);
+	{
+		// TODO: Not really needed. JFire saves all changed configs when it exits.
+		Config.sharedInstance().save();
 	}
 
 }
