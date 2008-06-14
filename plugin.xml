@@ -359,10 +359,6 @@
             name="Connection refused. Handler showing a user friendly message when the connection is refused"
             targetType="java.net.ConnectException">
       </exceptionHandler>
-      <exceptionHandler
-            class="org.nightlabs.jfire.base.ui.ExceptionHandler3"
-            targetType="org.nightlabs.jfire.base.ui.Throwable:3">
-      </exceptionHandler>
    </extension>
    <extension
          point="org.nightlabs.jfire.base.ui.loginstatelistener">
