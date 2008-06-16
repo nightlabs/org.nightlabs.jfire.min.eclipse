@@ -123,25 +123,24 @@ public class WorkstationSearchComposite extends XComposite {
 			@Override
 			protected IStatus run(ProgressMonitor monitor){
 				try {
-					WorkstationManager um = WorkstationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-					final QueryCollection<WorkstationQuery> queries =
-						new QueryCollection<WorkstationQuery>(Workstation.class);
+					final QueryCollection<WorkstationQuery> queries = new QueryCollection<WorkstationQuery>(Workstation.class);
 					Display.getDefault().syncExec(new Runnable(){
 						public void run() {
 							queries.add(getWorkstationQuery());
 						}
 					});
-					Set<WorkstationID> workstationIDs = um.getWorkstaionIDs(queries);
-					if (workstationIDs != null && !workstationIDs.isEmpty()) {
-						String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
-						final Collection<Workstation> users = WorkstationDAO.sharedInstance().getWorkstations(workstationIDs, USER_FETCH_GROUPS,
-								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								workstationTable.setInput(users);
-							}
-						});
-					}
+
+					final Collection<Workstation> workstations = WorkstationDAO.sharedInstance().getWorkstations(queries,
+							new String[] {
+								FetchPlan.DEFAULT
+							},
+							NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor
+					);
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							workstationTable.setInput(workstations);
+						}
+					});
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
