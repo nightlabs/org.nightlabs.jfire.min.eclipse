@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -20,6 +20,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  */
 public class SpinnerSearchEntry
 extends XComposite
+implements ActiveStateManager
 {
 	public SpinnerSearchEntry(Composite parent, int style, LayoutMode layoutMode,
 			LayoutDataMode layoutDataMode, String text)
@@ -90,7 +91,7 @@ extends XComposite
 			spinnerComposite.setEnabled(activeButton.getSelection());
 		}
 	};
-		
+
 	public boolean isActive() {
 		return activeButton.getSelection();
 	}

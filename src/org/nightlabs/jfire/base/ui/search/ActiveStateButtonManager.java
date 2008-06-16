@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 import org.eclipse.swt.widgets.Button;
 

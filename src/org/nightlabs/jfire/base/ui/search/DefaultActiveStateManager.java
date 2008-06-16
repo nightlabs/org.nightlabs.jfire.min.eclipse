@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 import org.apache.log4j.Logger;
 

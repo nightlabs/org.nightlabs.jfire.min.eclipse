@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -64,7 +64,6 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	public AbstractQueryFilterComposite(Composite parent, int style, LayoutMode layoutMode,
 		LayoutDataMode layoutDataMode, QueryProvider<? super Q> queryProvider)
 	{
-
 		super(parent, style, layoutMode, layoutDataMode);
 		this.queryProvider = queryProvider;
 		if (queryProvider != null)

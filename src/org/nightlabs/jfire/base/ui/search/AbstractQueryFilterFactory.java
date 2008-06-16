@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -8,6 +8,8 @@ import org.eclipse.core.runtime.Status;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory;
+import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactoryRegistry;
 
 /**
  * 

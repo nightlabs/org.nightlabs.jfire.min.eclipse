@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.overview.Entry;
+import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 
 /**
  * Base Implementation of a {@link SearchEntryViewer} which is designed

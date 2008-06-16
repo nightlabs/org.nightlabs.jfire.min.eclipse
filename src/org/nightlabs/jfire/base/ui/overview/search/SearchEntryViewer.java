@@ -58,6 +58,8 @@ import org.nightlabs.jfire.base.ui.overview.AbstractEntryViewer;
 import org.nightlabs.jfire.base.ui.overview.Entry;
 import org.nightlabs.jfire.base.ui.overview.EntryViewer;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
+import org.nightlabs.jfire.base.ui.search.ActiveStateButtonManager;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**

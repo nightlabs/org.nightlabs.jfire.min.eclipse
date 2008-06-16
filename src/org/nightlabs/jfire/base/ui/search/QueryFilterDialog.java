@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 import java.util.SortedSet;
 
@@ -17,6 +17,8 @@ import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.DefaultQueryProvider;
 import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jdo.query.QueryProvider;
+import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory;
+import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactoryRegistry;
 
 /**
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
@@ -58,9 +60,12 @@ extends ResizableTitleAreaDialog
 		if (factories != null) {
 			for (QueryFilterFactory factory : factories) {
 				AbstractQueryFilterComposite filterComp = factory.createQueryFilter(wrapper, SWT.NONE, 
-						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, queryProvider);
+						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, queryProvider);				
+//				filterComp.getQueryProvider().loadQueries(queryCollection);
+				filterComp.setQueryProvider(queryProvider);
 				filterComp.getQueryProvider().loadQueries(queryCollection);
 			}
+//			queryProvider.loadQueries(queryCollection);
 		}
 		return wrapper;
 	}
@@ -77,7 +82,7 @@ extends ResizableTitleAreaDialog
 	}
 
 	public QueryCollection<?> getQueryCollection() {
-//		return queryProvider.getManagedQueries();
-		return queryCollection;
+		return queryProvider.getManagedQueries();
+//		return queryCollection;
 	}
 }

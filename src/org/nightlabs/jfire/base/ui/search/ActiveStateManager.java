@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.overview.search;
+package org.nightlabs.jfire.base.ui.search;
 
 /**
  * A simple interface for a state manager that manages a state of the assigned object and can be
