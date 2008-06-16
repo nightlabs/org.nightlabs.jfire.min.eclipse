@@ -213,9 +213,9 @@
             icon="icons/editor/user/UserEditor.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor" name="%org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor.name"/>
         <editor
-            class="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserGroupEditor"
+            class="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor"
             icon="icons/editor/usergroup/UserGroupEditor.16x16.png"
-            id="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserGroupEditor" name="%org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserGroupEditor.name"/>
+            id="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor" name="%org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor.name"/>
         <editor
             class="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor"
             default="false"
@@ -262,18 +262,18 @@
             editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor" indexHint="30"/>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.EntityTreeCategoryUserSecurityGroup"
-            icon="icons/editor/usergroup/EntityTreeCategoryUserGroup.16x16.png"
+            icon="icons/editor/usersecuritygroup/EntityTreeCategoryUserGroup.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.usergroup.EntityTreeCategoryUserGroup" name="%entityEditor.category.userGroup">
             <viewBinding
-                editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserGroupEditor"
+                editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor"
                 indexHint="10" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.user.UserGroupPreferencePage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserGroupEditor" indexHint="10"/>
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor" indexHint="10"/>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.GroupSecurityPreferencesPage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserGroupEditor" indexHint="20"/>
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor" indexHint="20"/>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.organisationuser.EntityTreeCategoryOrganisationUser"
             icon="icons/editor/organisationuser/EntityTreeCategoryOrganisationUser.16x16.png"

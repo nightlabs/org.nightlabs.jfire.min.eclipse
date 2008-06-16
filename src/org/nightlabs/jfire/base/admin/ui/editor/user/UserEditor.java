@@ -31,6 +31,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -43,7 +44,7 @@ import org.nightlabs.progress.NullProgressMonitor;
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class UserEditor extends EntityEditor implements IConfigSetupEditor
+public class UserEditor extends EntityEditor implements IConfigSetupEditor, ICloseOnLogoutEditorPart
 {
 	/**
 	 * The editor id.

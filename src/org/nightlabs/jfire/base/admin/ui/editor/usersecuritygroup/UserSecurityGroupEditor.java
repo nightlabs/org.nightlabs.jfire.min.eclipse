@@ -9,6 +9,7 @@ import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
 import org.nightlabs.jfire.security.id.UserSecurityGroupID;
@@ -18,7 +19,9 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Marius Heinzmann [marius<at>NightLabs<dot>de]
  * @author marco schulze - marco at nightlabs dot de
  */
-public class UserGroupEditor extends EntityEditor
+public class UserSecurityGroupEditor
+extends EntityEditor
+implements ICloseOnLogoutEditorPart
 {
 	private volatile String title = null;
 
