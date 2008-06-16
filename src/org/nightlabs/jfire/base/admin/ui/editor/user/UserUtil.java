@@ -43,31 +43,31 @@ public class UserUtil
 	private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger
 			.getLogger(UserUtil.class);
 	
-	/**
-	 * Get a display name for a user.
-	 * @param user The user to get the name for
-	 * @return The user's display name.
-	 */
-	public static String getUserDisplayName(User user)
-	{
-		if(user == null)
-			return null;
-		Person person = user.getPerson();
-		String displayName = null;
-		if(person != null) {
-			try {
-				displayName = person.getDisplayName();
-			} catch(JDODetachedFieldAccessException e) {
-				// field is not detached...
-				logger.warn("Field Person.personDisplayName is not detached. Cannot create full display name.", e); //$NON-NLS-1$
-				displayName = null;
-			}
-		}
-		if(displayName != null && !"".equals(displayName)) //$NON-NLS-1$
-			return String.format(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil.userFullDisplayName"), user.getUserID(), displayName); //$NON-NLS-1$
-		else
-			return user.getUserID();
-	}
+//	/**
+//	 * Get a display name for a user.
+//	 * @param user The user to get the name for
+//	 * @return The user's display name.
+//	 */
+//	public static String getUserDisplayName(User user)
+//	{
+//		if(user == null)
+//			return null;
+//		Person person = user.getPerson();
+//		String displayName = null;
+//		if(person != null) {
+//			try {
+//				displayName = person.getDisplayName();
+//			} catch(JDODetachedFieldAccessException e) {
+//				// field is not detached...
+//				logger.warn("Field Person.personDisplayName is not detached. Cannot create full display name.", e); //$NON-NLS-1$
+//				displayName = null;
+//			}
+//		}
+//		if(displayName != null && !"".equals(displayName)) //$NON-NLS-1$
+//			return String.format(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil.userFullDisplayName"), user.getUserID(), displayName); //$NON-NLS-1$
+//		else
+//			return user.getUserID();
+//	}
 	
 	/**
 	 * Returns an {@link IDirtyStateManager} that delegates markDirty/markUndirty events to the given section.

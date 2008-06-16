@@ -61,9 +61,10 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 			if(o instanceof String) {
 				return (String)o;
 			} else if(o instanceof User) {
-				return UserUtil.getUserDisplayName((User)o);
+				return ((User)o).getName();
+//				return UserUtil.getUserDisplayName((User)o);
 			} else {
-				return super.getText(o);
+				return "";
 			}
 		}
 	}
