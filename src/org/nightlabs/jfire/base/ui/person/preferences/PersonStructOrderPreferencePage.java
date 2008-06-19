@@ -36,6 +36,7 @@ import org.nightlabs.jfire.base.ui.preferences.LSDPreferencePage;
 
 
 /**
+ * @deprecated not used anymore
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class PersonStructOrderPreferencePage

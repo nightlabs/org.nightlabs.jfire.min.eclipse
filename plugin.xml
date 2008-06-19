@@ -156,31 +156,6 @@
          </action>
       </actionSet>
    </extension>   
-
-   <!-- ExceptionHandler
-   -->
-
-
-	<!-- Person preferences pages -->
-	<extension
-    	point="org.eclipse.ui.preferencePages">
-    	<page
-		name="%org.nightlabs.jfire.base.ui.person.preferences.PersonManagementPreferencePage.name"
-		class="org.nightlabs.jfire.base.ui.person.preferences.PersonManagementPreferencePage"
-		id="org.nightlabs.jfire.base.ui.person.preferences.PersonManagementPreferencePage">
-      </page>
-      <page
-            name="%org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderPreferencePage.name"
-            category="org.nightlabs.jfire.person.preferences.PersonManagementPreferencePage"
-            class="org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderPreferencePage"
-            id="org.nightlabs.jfire.base.ui.person.preferences.PersonStructOrderPreferencePage">
-      </page>  
-	</extension>
-
-	
- 	<!-- PersonDataFieldEditor extensions bock-based -->
-	
- 	<!-- PersonDataFieldEditor extensions field-based-disguised -->
  
  	<!-- Specialized PersonDataBlockEditors extensions -->
 <!-- I think, that fleque deleted these, is fine :-)
