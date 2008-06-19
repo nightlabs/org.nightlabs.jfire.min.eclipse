@@ -316,6 +316,24 @@
             attributePattern=".*eclipse.*resource.*"
             elementPath="perspective"
             extensionPointID="org.eclipse.ui.perspectives"/>
+      <removeExtension
+            attributeName="class"
+            attributePattern="org.eclipse.update.internal.ui.preferences.MainPreferencePage"
+            elementPath="page"
+            extensionPointID="org.eclipse.ui.preferencePages">
+      </removeExtension>
+      <removeExtension
+            attributeName="class"
+            attributePattern="org.eclipse.help.ui.internal.preferences.HelpPreferencePage"
+            elementPath="page"
+            extensionPointID="org.eclipse.ui.preferencePages">
+      </removeExtension>
+      <removeExtension
+            attributeName="class"
+            attributePattern="org.eclipse.help.ui.internal.preferences.HelpContentPreferencePage"
+            elementPath="page"
+            extensionPointID="org.eclipse.ui.preferencePages">
+      </removeExtension>
    </extension>
    <extension
          point="org.nightlabs.jfire.base.j2ee.remoteResourceFilter">
