@@ -67,14 +67,15 @@ public class QueryFilterFactoryRegistry
 				+ element.getName());
 		}
 		final QueryFilterFactory factory;
-		if (checkString(element.getAttribute(ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS)))
+		String factoryClassName = element.getAttribute(ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS);
+		if (checkString(factoryClassName))
 		{
 			try
 			{
 				factory = (QueryFilterFactory) element.createExecutableExtension(ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS);
 			}
 			catch (CoreException e) {
-				throw new EPProcessorException("Coudn't instantiate the given factory object!", e); 
+				throw new EPProcessorException("Coudn't instantiate the given factory object "+factoryClassName, e); 
 			}
 		}
 		else
