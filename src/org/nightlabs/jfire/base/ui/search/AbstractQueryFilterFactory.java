@@ -18,7 +18,7 @@ import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactoryRegistry;
 public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 	implements QueryFilterFactory<Q>
 {
-	private Class<?> viewerBaseClass;
+	private Class<?> targetClass;
 	private String sectionTitle;
 	private String scope;
 	private Integer orderHint;
@@ -47,7 +47,7 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 				final String viewerBaseClassName = 
 					config.getAttribute(QueryFilterFactoryRegistry.ATTRIBUTE_TARGET_CLASS);
 				
-				viewerBaseClass = JFireBasePlugin.getDefault().getBundle().loadClass(viewerBaseClassName);
+				targetClass = JFireBasePlugin.getDefault().getBundle().loadClass(viewerBaseClassName);
 			}
 			catch (InvalidRegistryObjectException e)
 			{
@@ -57,7 +57,7 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 			catch (ClassNotFoundException e)
 			{
 				throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-					"Could not find Class:" + viewerBaseClass, e));
+					"Could not find Class:" + targetClass, e));
 			}
 		}
 		else
@@ -116,7 +116,7 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 	@Override
 	public Class<?> getTargetClass()
 	{
-		return viewerBaseClass;
+		return targetClass;
 	}
 
 	/*
