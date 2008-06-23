@@ -585,6 +585,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return Whether the changed notified by the given {@link DirtyObjectID} was caused by this controller.
 	 */
 	protected boolean checkForSelfCausedChange(DirtyObjectID dirtyObjectID) {
+		// if JDO versioning is enabled for this object, we compare the version to the one we have locally
+		if (dirtyObjectID.getObjectVersion() != null) {
+			Object currentlyManagedObjectVersion = JDOHelper.getVersion(getControllerObject());
+			return dirtyObjectID.getObjectVersion().equals(currentlyManagedObjectVersion);
+		}
+
 		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs,
 		// so we check if the current sessionID is in the sourceSessionIDs and not if
 		// it is the only one, see issue: https://www.jfire.org/modules/bugs/view.php?id=471
