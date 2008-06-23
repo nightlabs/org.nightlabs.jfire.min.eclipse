@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
@@ -47,14 +48,14 @@ implements ActiveStateManager
 		GridData buttonData = new GridData(GridData.FILL_HORIZONTAL);
 		buttonData.horizontalSpan = 2;
 		activeButton.setLayoutData(buttonData);
-		activeButton.setText("Active");
+		activeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.search.ActiveTextComposite.button.active")); //$NON-NLS-1$
 		activeButton.addSelectionListener(activeSelectionListener);
 		text = new Text(group, SWT.BORDER);
 		text.setEnabled(false);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		text.addSelectionListener(browseSelectionListener);
 		browseButton = new Button(group, SWT.NONE);
-		browseButton.setText("Browse");
+		browseButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.search.ActiveTextComposite.button.browse")); //$NON-NLS-1$
 		browseButton.addSelectionListener(browseSelectionListener);
 		browseButton.setEnabled(false);
 		
@@ -80,7 +81,7 @@ implements ActiveStateManager
 	}
 	
 	public void clear() {
-		text.setText("");
+		text.setText(""); //$NON-NLS-1$
 	}
 	
 	public Button getActiveButton() {

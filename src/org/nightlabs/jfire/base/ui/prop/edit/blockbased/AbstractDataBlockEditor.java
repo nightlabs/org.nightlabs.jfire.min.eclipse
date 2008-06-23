@@ -38,6 +38,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -128,7 +129,7 @@ public abstract class AbstractDataBlockEditor extends Composite implements DataF
 			getValidationResultManager().setValidationResults(validationResults);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Iterator<DataField> getOrderedPropDataFieldsIterator() {
 		List<DataField> result = new LinkedList<DataField>();
 		Map<String, Integer> structFieldOrder = getStructFieldDisplayOrder();

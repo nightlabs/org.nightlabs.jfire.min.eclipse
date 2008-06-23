@@ -23,6 +23,7 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.workstation.Workstation;
 import org.nightlabs.jfire.workstation.WorkstationManager;
 import org.nightlabs.jfire.workstation.WorkstationManagerUtil;
@@ -66,12 +67,12 @@ public class WorkstationSearchComposite extends XComposite {
 		searchComp.getGridLayout().makeColumnsEqualWidth = false;
 		searchComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		workstationIDText = createTextSearchEntry(searchComp, "WorkstationID");
-		descriptionText = createTextSearchEntry(searchComp, "Description");
+		workstationIDText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationSearchComposite.entry.workstationID")); //$NON-NLS-1$
+		descriptionText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationSearchComposite.entry.description")); //$NON-NLS-1$
 		if (isShowSearchButton()) {
 			Button searchButton = new Button(searchComp, SWT.PUSH);
 			searchButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
-			searchButton.setText("&Search");
+			searchButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationSearchComposite.button.search.text")); //$NON-NLS-1$
 			searchButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -118,8 +119,8 @@ public class WorkstationSearchComposite extends XComposite {
 
 	public void searchPressed()
 	{
-		workstationTable.setInput("Searching...");
-		Job job = new Job("Searching workstations") {
+		workstationTable.setInput(Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationSearchComposite.label.searching")); //$NON-NLS-1$
+		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationSearchComposite.job.searchingWorkstation")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor){
 				try {

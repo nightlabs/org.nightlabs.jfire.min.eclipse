@@ -31,6 +31,7 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.notification.NotificationEvent;
@@ -95,10 +96,10 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * Enum of choices for the user when an object was changed.
 	 */
 	protected enum EntityStaleAction {
-		keepLocalChanges("Keep the local changes", "Save might overwrite remote changes"),
-		loadRemoteChanges("Load the changed object", "Looses local changes"),
-		viewRemoteChanges("View in another editor", "View the remote object in another editor instance"),
-		closeEditor("Close the editor", "Close the active editor");
+		keepLocalChanges(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.keepLocalChanges.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.keepLocalChanges.description")), //$NON-NLS-1$ //$NON-NLS-2$
+		loadRemoteChanges(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.loadRemoteChanges.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.loadRemoteChanges.description")), //$NON-NLS-1$ //$NON-NLS-2$
+		viewRemoteChanges(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.viewRemoteChanges.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.viewRemoteChanges.description")), //$NON-NLS-1$ //$NON-NLS-2$
+		closeEditor(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.closeEditor.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.closeEditor.description")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		private String message;
 		private String tooltip;
@@ -177,9 +178,9 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 						if (columnIndex == 0)
 							return getPageController().getName();
 						else if (columnIndex == 1)
-							return action != null ? action.getMessage() : "";
+							return action != null ? action.getMessage() : ""; //$NON-NLS-1$
 					}
-					return "";
+					return ""; //$NON-NLS-1$
 				}
 				
 			};
@@ -403,7 +404,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				controllerObject = newObj;
 			else {
 				if (controllerObjectClass != null && !controllerObjectClass.equals(newObj.getClass())) {
-					throw new IllegalStateException("The implementation of ActiveEntityEditorPageController '" + this.getClass().getSimpleName() + "' returned different types of objects on retrieveEntity (" + controllerObjectClass.getName() + " and " + newObj.getClass().getName() + ").");
+					throw new IllegalStateException("The implementation of ActiveEntityEditorPageController '" + this.getClass().getSimpleName() + "' returned different types of objects on retrieveEntity (" + controllerObjectClass.getName() + " and " + newObj.getClass().getName() + ")."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				setControllerObject(Util.cloneSerializable(newObj));
 				controllerObjectClass = controllerObject.getClass();
@@ -486,7 +487,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return The text that will be set as the load Jobs name.
 	 */
 	protected String getLoadJobName() {
-		return "Loading entity...";
+		return Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.job.load.name"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -497,7 +498,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return The text that will be set as the save Jobs name.
 	 */
 	protected String getSaveJobName() {
-		return "Saving entity...";
+		return Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.job.save.name"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -508,7 +509,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return The text that will be set as the name of the Job that processes entity changes.
 	 */
 	protected String getProcessChangesJobName() {
-		return "Processing entity changes...";
+		return Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.job.process.name"); //$NON-NLS-1$
 	}
 	
 	/**

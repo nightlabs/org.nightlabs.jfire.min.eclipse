@@ -20,6 +20,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.l10n.DateFormatter;
 
 public class ProcessEditLockTable extends AbstractTableComposite<EditLockCarrier> {
@@ -90,16 +91,16 @@ public class ProcessEditLockTable extends AbstractTableComposite<EditLockCarrier
 		TableColumn tc;
 		
 		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Description");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.ProcessEditLockTable.column.description")); //$NON-NLS-1$
 		
 		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Created");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.ProcessEditLockTable.column.created")); //$NON-NLS-1$
 		
 		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Last activity");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.ProcessEditLockTable.column.lastActivity")); //$NON-NLS-1$
 		
 		TableViewerColumn tvc = new TableViewerColumn(tableViewer, SWT.LEFT);
-		tvc.getColumn().setText("Action");
+		tvc.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.ProcessEditLockTable.column.action")); //$NON-NLS-1$
 		actionEditingSupport = new ActionEditingSupport();
 		tvc.setEditingSupport(actionEditingSupport);
 		
@@ -111,7 +112,7 @@ public class ProcessEditLockTable extends AbstractTableComposite<EditLockCarrier
 		tableViewer.setLabelProvider(new TableLabelProvider() {
 			public String getColumnText(Object element, int columnIndex) {
 				if (! (element instanceof EditLockCarrier))
-					throw new IllegalArgumentException("Got table element of type " + element.getClass() + ".");
+					throw new IllegalArgumentException("Got table element of type " + element.getClass() + "."); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				EditLockCarrier carrier = (EditLockCarrier) element;
 				switch(columnIndex) {
@@ -119,7 +120,7 @@ public class ProcessEditLockTable extends AbstractTableComposite<EditLockCarrier
 				case 1: return DateFormatter.formatDateShortTimeHMS(carrier.getEditLock().getCreateDT(), false);
 				case 2: return DateFormatter.formatDateShortTimeHMS(carrier.getEditLock().getLastAcquireDT(), false);
 				case 3: return getAction(carrier).getDescription();
-				default: return "";
+				default: return ""; //$NON-NLS-1$
 				}
 			}
 		});

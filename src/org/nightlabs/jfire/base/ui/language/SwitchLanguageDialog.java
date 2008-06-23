@@ -17,6 +17,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.LanguageChooserList;
 import org.nightlabs.base.ui.language.LanguageManager;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.language.LanguageCf;
 import org.nightlabs.util.NLLocale;
 
@@ -40,7 +41,7 @@ public class SwitchLanguageDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER);
 		Label l = new Label(wrapper, SWT.WRAP);
-		l.setText("Select the language for the application. Please note that a restart is required for a language switch.");
+		l.setText(Messages.getString("org.nightlabs.jfire.base.ui.language.SwitchLanguageDialog.label.selectLanguage")); //$NON-NLS-1$
 		l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		languageChooser = new LanguageChooserList(wrapper);
 		languageChooser.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -66,7 +67,7 @@ public class SwitchLanguageDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Choose language");
+		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.language.SwitchLanguageDialog.window.title")); //$NON-NLS-1$
 		newShell.setSize(300, 300);
 //		setToCenteredLocationPreferredSize(newShell, 300, 300);
 	}

@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.Util;
 
 /**
@@ -114,7 +115,7 @@ extends AbstractTreeComposite<JDOObject>
 		 * 
 		 * The {@link LoadListener} created here recurses into this method.
 		 */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		private void internalExpand(Object root, Object elementOrTreePath, int level, int totalLevel, Set<LoadListener> listenerStack) {
 			LoadListener listener = new LoadListener(root, elementOrTreePath, level, totalLevel, listenerStack);
 			getJDOObjectTreeController().addJDOTreeNodesChangedListener(listener);

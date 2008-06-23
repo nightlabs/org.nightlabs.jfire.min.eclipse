@@ -72,7 +72,7 @@ implements LoginStateListener
 		image.setLayoutData(new GridData());
 		text = new Label(wrapper, SWT.NONE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		setText("");
+		setText(""); //$NON-NLS-1$
 		if (earlyLoginText != null) { // if the login happened already before UI creation
 			setText(earlyLoginText);
 			text.setToolTipText(earlyLoginText);
@@ -91,7 +91,7 @@ implements LoginStateListener
 	}
 
 	private static int MAX_WIDTH = 240;
-	private static String TRIPLE_DOT = "...";
+	private static String TRIPLE_DOT = "..."; //$NON-NLS-1$
 
 	private void setText(String txt)
 	{
@@ -116,7 +116,7 @@ implements LoginStateListener
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("Setting text took " + (System.currentTimeMillis() - start) + " msec.");
+			logger.debug("Setting text took " + (System.currentTimeMillis() - start) + " msec."); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/* (non-Javadoc)

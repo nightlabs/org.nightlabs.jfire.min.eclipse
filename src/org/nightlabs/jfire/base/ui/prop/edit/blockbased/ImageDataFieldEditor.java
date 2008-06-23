@@ -50,12 +50,12 @@ extends AbstractDataFieldEditor<ImageDataField>
 	/**
 	 * Use this before extension.
 	 */
-	private static final String EXTENSION_PREFIX = "*.";
+	private static final String EXTENSION_PREFIX = "*."; //$NON-NLS-1$
 
 	/**
 	 * Separate extension in the file dialog using this string.
 	 */
-	private static final String EXTENSION_SEPARATOR = ";";
+	private static final String EXTENSION_SEPARATOR = ";"; //$NON-NLS-1$
 
 	public static class Factory extends AbstractDataFieldEditorFactory<ImageDataField> {
 
@@ -128,7 +128,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 
 		openFileChooserButton = new Button(group, SWT.PUSH);
 		openFileChooserButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.openFileChooserButton.text")); //$NON-NLS-1$
-		openFileChooserButton.setToolTipText("Browse for image");
+		openFileChooserButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.openFile.tooltip")); //$NON-NLS-1$
 		openFileChooserButton.setLayoutData(new GridData());
 		openFileChooserButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
@@ -138,8 +138,8 @@ extends AbstractDataFieldEditor<ImageDataField>
 		});
 		
 		clearButton = new Button(group, SWT.PUSH);
-		clearButton.setText("&Clear");
-		clearButton.setToolTipText("Remove the image");
+		clearButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.clear.text")); //$NON-NLS-1$
+		clearButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.clear.tooltip")); //$NON-NLS-1$
 		clearButton.setLayoutData(new GridData());
 		clearButton.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
@@ -245,7 +245,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 		
 		String[] extensions = new String[extList.size()+1];
 		String[] names = new String[extList.size()+1];
-		names[0] = "Image Files";
+		names[0] = Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.label.imageFiles"); //$NON-NLS-1$
 		int i = 1;
 		for (String ext : extList) {
 			String extension = EXTENSION_PREFIX + ext.toLowerCase() + EXTENSION_SEPARATOR + EXTENSION_PREFIX + ext.toUpperCase();
@@ -254,12 +254,12 @@ extends AbstractDataFieldEditor<ImageDataField>
 			else
 				extensions[0] += EXTENSION_SEPARATOR + extension;
 			extensions[i] = extension;
-			names[i] = String.format("%s Images", ext.toUpperCase());
+			names[i] = String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.images"), ext.toUpperCase()); //$NON-NLS-1$
 			i++;
 		}
 		
 		FileDialog fileDialog = new FileDialog(parent);
-		fileDialog.setText("Choose an Image File");
+		fileDialog.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.fileDialog.text")); //$NON-NLS-1$
 		fileDialog.setFilterNames(names);
 		fileDialog.setFilterExtensions(extensions);
 		fileDialog.setFilterPath(fileDialogFilterPath);
@@ -363,7 +363,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 	 */
 	private void clearButtonPressed()
 	{
-		filenameTextbox.setText("");
+		filenameTextbox.setText(""); //$NON-NLS-1$
 		setChanged(true);
 		displayImage(null);
 	}

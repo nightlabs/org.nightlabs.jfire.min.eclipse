@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.editlock;
 
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.editlock.id.EditLockTypeID;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -57,7 +58,7 @@ public class EditLockHandle {
 	/**
 	 * Asynchronously release the lock referenced by this handle. This method returns immediately and spawns a <code>Job</code> to do the work.
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") //$NON-NLS-1$
 	public void release() {
 		EditLockMan.sharedInstance().releaseEditLock(objectID);
 	}
@@ -68,7 +69,7 @@ public class EditLockHandle {
 	 *
 	 * @param monitor the monitor for progress feedback.
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") //$NON-NLS-1$
 	public void release(ProgressMonitor monitor) {
 		EditLockMan.sharedInstance().releaseEditLock(objectID, monitor);
 	}

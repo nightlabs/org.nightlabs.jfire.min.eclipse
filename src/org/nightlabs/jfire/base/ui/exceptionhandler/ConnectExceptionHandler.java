@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.exceptionhandler.DefaultErrorDialog;
 import org.nightlabs.base.ui.exceptionhandler.ErrorDialogFactory;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerParam;
 import org.nightlabs.base.ui.exceptionhandler.IExceptionHandler;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * An Implementation of IExceptionHandler, which shows a message user friendly message
@@ -31,10 +32,9 @@ public class ConnectExceptionHandler implements IExceptionHandler {
 		Throwable triggerException = handlerParam.getTriggerException();
 		Throwable thrownException = handlerParam.getThrownException();
 		if (triggerException instanceof java.net.ConnectException) {
-			String message = "The server "+getHost(thrownException)+" could not be reached. Please check your internet connection or consult your administrator. \n" +  
-			"If your internet connection is ok, maybe the server is temporary not available. Then please try again later.";						
+			String message = String.format(Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.ConnectExceptionHandler.message"), getHost(thrownException));						 //$NON-NLS-1$
 			ErrorDialogFactory.showError(DefaultErrorDialog.class,
-				"Connection refused",
+				Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.ConnectExceptionHandler.title"), //$NON-NLS-1$
 				message,
 				handlerParam);
 			return true;			
@@ -44,13 +44,13 @@ public class ConnectExceptionHandler implements IExceptionHandler {
 
 	private String getHost(Throwable thrownException) 
 	{
-		String host = "Unknown";
+		String host = Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.ConnectExceptionHandler.unknown"); //$NON-NLS-1$
 		Throwable t = null;
 		int index = ExceptionUtils.indexOfThrowable(thrownException, ConnectException.class);
 		if (index != -1) {
 			t = (Throwable) ExceptionUtils.getThrowableList(thrownException).get(index);
 			String message = t.getMessage();
-			int messageIndex = message.lastIndexOf(":");
+			int messageIndex = message.lastIndexOf(":"); //$NON-NLS-1$
 			if (messageIndex != -1) {
 				host = message.substring(index + 1);
 				return host;
@@ -61,8 +61,8 @@ public class ConnectExceptionHandler implements IExceptionHandler {
 		if (index2 != -1) {
 			t = (Throwable) ExceptionUtils.getThrowableList(thrownException).get(index2);			
 			String message = t.getMessage();
-			String replace = message.replace("Could not obtain connection to any of these urls:", "");
-			int lastIndex = replace.lastIndexOf("and discovery failed with error");
+			String replace = message.replace("Could not obtain connection to any of these urls:", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			int lastIndex = replace.lastIndexOf("and discovery failed with error"); //$NON-NLS-1$
 			if (lastIndex != -1) {
 				host = replace.substring(0, lastIndex);
 			}

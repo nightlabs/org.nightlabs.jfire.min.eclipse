@@ -10,6 +10,7 @@ import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactoryRegistry;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * 
@@ -52,19 +53,19 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 			catch (InvalidRegistryObjectException e)
 			{
 				throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-					"Invalid registry object!", e));
+					"Invalid registry object!", e)); //$NON-NLS-1$
 			}
 			catch (ClassNotFoundException e)
 			{
 				throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-					"Could not find Class:" + targetClass, e));
+					"Could not find Class:" + targetClass, e)); //$NON-NLS-1$
 			}
 		}
 		else
 		{
 			// TODO: how to get to the plugin that defined this invalid extension??
 			throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-				"A viewer base class has to be defined, but an empty string was found! config:"+config.getName()));			
+				"A viewer base class has to be defined, but an empty string was found! config:"+config.getName()));			 //$NON-NLS-1$
 		}
 		
 		if (AbstractEPProcessor.checkString(
@@ -76,7 +77,7 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 		{
 			// TODO: how to get to the plugin that defined this invalid extension??
 			throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-				"No section title set! config:"+config.getName()));
+				"No section title set! config:"+config.getName())); //$NON-NLS-1$
 		}
 		
 		if (AbstractEPProcessor.checkString(
@@ -87,7 +88,7 @@ public abstract class AbstractQueryFilterFactory<Q extends AbstractSearchQuery>
 		else
 		{
 			throw new CoreException(new Status(IStatus.ERROR, JFireBasePlugin.PLUGIN_ID, 
-				"No scope set! config:"+config.getName()));			
+				"No scope set! config:"+config.getName()));			 //$NON-NLS-1$
 		}
 		
 		if (AbstractEPProcessor.checkString(

@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.id.StructBlockID;
@@ -52,7 +53,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 	private EditorStructBlockRegistry structBlockRegistry;
 	/**
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public FullDataBlockCoverageComposite(
 			Composite parent, int style,
 			PropertySet propertySet,

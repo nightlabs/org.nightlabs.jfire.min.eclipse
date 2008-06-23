@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * 
@@ -18,13 +19,13 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 public class QueryFilterFactoryRegistry
 	extends AbstractEPProcessor
 {
-	private static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.queryFilterComposite";
-	private static final String ELEMENT_NAME = "QueryFilter";
-	public static final String ATTRIBUTE_TARGET_CLASS = "targetClass"; 
-	public static final String ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS = "queryFilterFactoryClass";
-	public static final String ATTRIBUTE_TITLE = "title";
-	public static final String ATTRIBUTE_SCOPE = "scope";
-	public static final String ATTRIBUTE_ORDERHINT = "orderHint";
+	private static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.queryFilterComposite"; //$NON-NLS-1$
+	private static final String ELEMENT_NAME = "QueryFilter"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_TARGET_CLASS = "targetClass";  //$NON-NLS-1$
+	public static final String ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS = "queryFilterFactoryClass"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_TITLE = "title"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_SCOPE = "scope"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_ORDERHINT = "orderHint"; //$NON-NLS-1$
 	
 	private static volatile QueryFilterFactoryRegistry sharedInstance = null;
 
@@ -63,7 +64,7 @@ public class QueryFilterFactoryRegistry
 	{
 		if (! ELEMENT_NAME.equals(element.getName()))
 		{
-			throw new EPProcessorException("While Processing an element, the element name didn't match! given name=" 
+			throw new EPProcessorException("While Processing an element, the element name didn't match! given name="  //$NON-NLS-1$
 				+ element.getName());
 		}
 		final QueryFilterFactory factory;
@@ -75,12 +76,12 @@ public class QueryFilterFactoryRegistry
 				factory = (QueryFilterFactory) element.createExecutableExtension(ATTRIBUTE_QUERY_FILTER_FACTORY_CLASS);
 			}
 			catch (CoreException e) {
-				throw new EPProcessorException("Coudn't instantiate the given factory object "+factoryClassName, e); 
+				throw new EPProcessorException("Coudn't instantiate the given factory object "+factoryClassName, e);  //$NON-NLS-1$
 			}
 		}
 		else
 		{
-			throw new EPProcessorException("the given factory class string is null or empty!");
+			throw new EPProcessorException("the given factory class string is null or empty!"); //$NON-NLS-1$
 		}
 		
 		ScopeTargetKey key = new ScopeTargetKey(factory);

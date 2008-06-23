@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.overview.Entry;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 
 /**
@@ -68,7 +69,7 @@ public abstract class JDOQuerySearchEntryViewer<R, Q extends AbstractSearchQuery
 	 * returns the AbstractTableComposite created by {@link #createListComposite(Composite)}
 	 * @return the AbstractTableComposite created by {@link #createListComposite(Composite)}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public AbstractTableComposite<R> getListComposite() {
 		return (AbstractTableComposite<R>) getResultComposite();
 	}

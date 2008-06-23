@@ -42,6 +42,7 @@ import org.nightlabs.config.ConfigException;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.language.Language;
 import org.nightlabs.jfire.language.LanguageException;
 import org.nightlabs.jfire.language.LanguageManagerUtil;
@@ -166,7 +167,7 @@ public class LanguageWatcher implements LoginStateListener {
 						try {
 							remoteLanguageManager.createLanguage(langCf); // TODO we should add additional translations of the language name to the server
 						} catch (LanguageException ex) {
-							logger.error("Failed creating language: " + langCf.getLanguageID(), ex);
+							logger.error("Failed creating language: " + langCf.getLanguageID(), ex); //$NON-NLS-1$
 							localLanguageManager.removeLanguage(langCf.getLanguageID());
 						}
 					}

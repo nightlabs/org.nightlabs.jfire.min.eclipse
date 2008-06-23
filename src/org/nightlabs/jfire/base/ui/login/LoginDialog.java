@@ -133,7 +133,7 @@ public class LoginDialog extends TitleAreaDialog
 	private static volatile boolean workbenchIsCompletelyUp = false;
 
 	static {
-		Job job = new Job("Testing job manager") {
+		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.job.name.testEjb")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
@@ -141,7 +141,7 @@ public class LoginDialog extends TitleAreaDialog
 					public void run()
 					{
 						workbenchIsCompletelyUp = true;
-						logger.info("Workbench seems to be completely up and running! Switching to asynchronous mode.");
+						logger.info("Workbench seems to be completely up and running! Switching to asynchronous mode."); //$NON-NLS-1$
 					}
 				});
 				return Status.OK_STATUS;
@@ -257,18 +257,18 @@ public class LoginDialog extends TitleAreaDialog
 		internallyModifying_suppressModifyEvents = true;
 		try {
 			LoginData newLoginData = loginConfiguration.getLoginData();
-			textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID());
-			textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID());
-			textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL());
-			textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory());
-			textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID());
+			textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID()); //$NON-NLS-1$
+			textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID()); //$NON-NLS-1$
+			textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL()); //$NON-NLS-1$
+			textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory()); //$NON-NLS-1$
+			textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID()); //$NON-NLS-1$
 			textPassword.setText(""); //$NON-NLS-1$
 			if (runtimeLoginModule.getLatestLoginConfiguration() != loginConfiguration) {
-				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName());
+				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName()); //$NON-NLS-1$
 				deleteButton.setEnabled(true);
 			}	else {
 //				textIdentityName.setText(""); //$NON-NLS-1$
-				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName());
+				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName()); //$NON-NLS-1$
 				deleteButton.setEnabled(false);
 			}
 
@@ -480,7 +480,7 @@ public class LoginDialog extends TitleAreaDialog
 
 		String identityName = textIdentityName.getText();
 		if (!checkBoxSaveSettings.getSelection() && recentLoginConfigs.getSelectionIndex() < 0)
-			identityName = "";
+			identityName = ""; //$NON-NLS-1$
 
 		runtimeLoginModule.setLatestLoginConfiguration(loginData, identityName);
 	}
@@ -744,7 +744,7 @@ public class LoginDialog extends TitleAreaDialog
 			storeUserInput();
 			monitor.worked(1);
 			final boolean saveSettings = checkBoxSaveSettings.getSelection();
-			logger.info("******************* async = "+async+" ********************");
+			logger.info("******************* async = "+async+" ********************"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (async) {
 				Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.authentication")) { //$NON-NLS-1$
 					@Override

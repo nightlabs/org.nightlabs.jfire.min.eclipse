@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.QueryEvent;
 import org.nightlabs.jdo.query.QueryProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * Abstract base class for a Composite that uses the given {@link QueryProvider} to retrieve the
@@ -267,7 +268,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 */
 	public Q getQuery()
 	{
-		assert queryProvider != null : "No query provider has been set before!";
+		assert queryProvider != null : "No query provider has been set before!"; //$NON-NLS-1$
 		return queryProvider.getQueryOfType(getQueryClass());
 	}
 

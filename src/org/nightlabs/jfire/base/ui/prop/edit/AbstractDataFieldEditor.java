@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.ModifyListener;
@@ -176,7 +177,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getStructField()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public StructField<F> getStructField() {
 		if (structField == null) {

@@ -14,6 +14,7 @@ import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -67,7 +68,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		blockBasedPersonEditor.updatePropertySet();
 	}
 
-	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey";
+	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey"; //$NON-NLS-1$
 
 	/**
 	 * Create the content for this section.

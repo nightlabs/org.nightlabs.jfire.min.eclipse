@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.ui.search;
 
 import org.apache.log4j.Logger;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * Default active state manager that keeps track of how many times the active state has been
@@ -46,8 +47,8 @@ public class DefaultActiveStateManager
 		
 		if (activePartsCounter < 0)
 		{
-			logger.warn("There seems to be an incorrect usage of this ActiveStateManager, since " +
-					"setActive(false) is called at least one time too ofter (counter is getting negative)!",
+			logger.warn("There seems to be an incorrect usage of this ActiveStateManager, since " + //$NON-NLS-1$
+					"setActive(false) is called at least one time too ofter (counter is getting negative)!", //$NON-NLS-1$
 					new Exception());
 			
 			activePartsCounter = 0;

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * Registry for the extension-point org.nightlabs.jfire.base.ui.quickSearchEntry
@@ -19,15 +20,15 @@ public class QuickSearchEntryRegistry
 extends AbstractEPProcessor
 {
 	private static final Logger logger = Logger.getLogger(QuickSearchEntryRegistry.class);
-	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.quickSearchEntry";
+	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.quickSearchEntry"; //$NON-NLS-1$
 	
-	public static String ELEMENT_QUICK_SEARCH_ENTRY_FACTORY = "quickSearchEntryFactory";
-	public static String ATTRIBUTE_CLASS = "class";
-	public static String ATTRIBUTE_ID = "id";
-	public static String ATTRIBUTE_NAME = "name";
-	public static String ATTRIBUTE_IMAGE = "image";
-	public static String ATTRIBUTE_DEFAULT = "default";
-	public static String ATTRIBUTE_DECORATOR_IMAGE = "decoratorImage";
+	public static String ELEMENT_QUICK_SEARCH_ENTRY_FACTORY = "quickSearchEntryFactory"; //$NON-NLS-1$
+	public static String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
+	public static String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
+	public static String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+	public static String ATTRIBUTE_IMAGE = "image"; //$NON-NLS-1$
+	public static String ATTRIBUTE_DEFAULT = "default"; //$NON-NLS-1$
+	public static String ATTRIBUTE_DECORATOR_IMAGE = "decoratorImage"; //$NON-NLS-1$
 	
 	private static QuickSearchEntryRegistry sharedInstance;
 	public static QuickSearchEntryRegistry sharedInstance() {

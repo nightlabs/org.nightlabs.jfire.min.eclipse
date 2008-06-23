@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.ui.exceptionhandler;
 
 import org.nightlabs.base.ui.exceptionhandler.ErrorItem;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class InsufficientPermissionErrorItem extends ErrorItem
 {
@@ -14,7 +15,7 @@ public class InsufficientPermissionErrorItem extends ErrorItem
 		super(message, thrownException, triggerException);
 		this.context = context;
 		if (context == null)
-			throw new IllegalArgumentException("context must not be null!");
+			throw new IllegalArgumentException("context must not be null!"); //$NON-NLS-1$
 	}
 
 	public InsufficientPermissionDialogContext getContext() {

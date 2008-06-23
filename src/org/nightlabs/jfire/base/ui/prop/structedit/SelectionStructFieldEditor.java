@@ -122,7 +122,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		});
 
 		moveUpButton = new Button(wrapper, SWT.NONE);
-		moveUpButton.setText("Move up"); 
+		moveUpButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.moveUp.text"));  //$NON-NLS-1$
 		moveUpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -131,7 +131,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		});
 		
 		moveDownButton = new Button(wrapper, SWT.NONE);
-		moveDownButton.setText("Move down"); 
+		moveDownButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.moveDown.text"));  //$NON-NLS-1$
 		moveDownButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -140,7 +140,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		});
 		
 		setDefaultButton = new Button(wrapper, SWT.NONE);
-		setDefaultButton.setText("Set Default");
+		setDefaultButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.default.text")); //$NON-NLS-1$
 		setDefaultButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -156,7 +156,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		});
 
 		removeDefaultButton = new Button(wrapper, SWT.NONE);
-		removeDefaultButton.setText("Remove Default");
+		removeDefaultButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.remove.text")); //$NON-NLS-1$
 		removeDefaultButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -316,7 +316,7 @@ class StructFieldValueTable extends AbstractTableComposite<StructFieldValue>
 			@Override
 			public String getText(Object element) {
 				StructFieldValue defValue = structField.getDefaultValue();
-				String suffix = defValue != null && defValue.equals(element) ? " [default]" : "";
+				String suffix = defValue != null && defValue.equals(element) ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.[Standard]") : ""; //$NON-NLS-1$ //$NON-NLS-2$
 				return ((StructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID()) + suffix;
 			}
 		});

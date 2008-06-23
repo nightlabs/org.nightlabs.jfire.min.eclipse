@@ -23,6 +23,7 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.JFireSecurityManager;
 import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 import org.nightlabs.jfire.security.Role;
@@ -126,16 +127,16 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 			});
 		}
 		else {
-			RoleGroup dummy = new RoleGroup("dummy");
-			dummy.getName().setText(Locale.getDefault().getLanguage(), "Loading role groups...");
+			RoleGroup dummy = new RoleGroup("dummy"); //$NON-NLS-1$
+			dummy.getName().setText(Locale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionDialog.name.loadingRoleGroups")); //$NON-NLS-1$
 			requiredRoleGroupList.addElement(dummy);
 
-			loadRoleGroupsJob = new Job("Loading role groups") {
+			loadRoleGroupsJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionDialog.job.loadingRoleGroups.name")) { //$NON-NLS-1$
 				@Override
 				protected IStatus run(ProgressMonitor monitor)
 				throws Exception
 				{
-					monitor.beginTask("Loading role groups", 1);
+					monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionDialog.job.loadingRoleGroups.name"), 1); //$NON-NLS-1$
 					try {
 						Set<Role> roles = getRoles(errorItem.getContext().getRequiredRoleIDs());
 	

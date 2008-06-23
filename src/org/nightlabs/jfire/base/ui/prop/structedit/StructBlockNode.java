@@ -7,6 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
@@ -112,6 +113,6 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 		if (block.isLocal())
 			return null;
 		else
-			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructBlockNode.class, "StructBlockNotLocal");
+			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructBlockNode.class, "StructBlockNotLocal"); //$NON-NLS-1$
 	}
 }

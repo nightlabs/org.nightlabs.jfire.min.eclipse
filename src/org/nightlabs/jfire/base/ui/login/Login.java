@@ -512,7 +512,7 @@ extends AbstractEPProcessor
 		if (Display.getCurrent() == null) {
 			if (iAmHandlingLogin) {
 				final String threadName = Thread.currentThread().getName();
-				logger.info("Non-UI thread (" + threadName + ") is responsible for login. Delegating loginHandlerRunnable to UI thread.");
+				logger.info("Non-UI thread (" + threadName + ") is responsible for login. Delegating loginHandlerRunnable to UI thread."); //$NON-NLS-1$ //$NON-NLS-2$
 				loginHandlerRunnablePending = true;
 				Display.getDefault().syncExec(new Runnable() {
 					public void run()
@@ -523,11 +523,11 @@ extends AbstractEPProcessor
 							loginHandlerRunnable.run();
 						}
 						else
-							logger.info("Non-UI thread (" + threadName + ") was not responsible anymore for login when the scheduled Runnable was finally executed on the UI thread. Skipped login in this runnable.");
+							logger.info("Non-UI thread (" + threadName + ") was not responsible anymore for login when the scheduled Runnable was finally executed on the UI thread. Skipped login in this runnable."); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				});
 
-				logger.info("... syncExec for loginHandlerRunnable returned.");
+				logger.info("... syncExec for loginHandlerRunnable returned."); //$NON-NLS-1$
 			}
 			else {
 				logger.debug("Login requestor-thread "+Thread.currentThread()+" waiting for login handler");		 //$NON-NLS-1$ //$NON-NLS-2$
@@ -544,11 +544,11 @@ extends AbstractEPProcessor
 		}
 		else {
 			if (iAmHandlingLogin) {
-				logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()...");
+				logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()..."); //$NON-NLS-1$ //$NON-NLS-2$
 
 				changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 				loginHandlerRunnable.run();
-				logger.info("...loginHandlerRunnable.run() returned.");
+				logger.info("...loginHandlerRunnable.run() returned."); //$NON-NLS-1$
 			}
 			else {
 				Display display = Display.getCurrent();
@@ -558,7 +558,7 @@ extends AbstractEPProcessor
 					// During start-up, the syncExecs are *not* executed, because this obviously is deferred till the workbench is completely up.
 					// Hence, we must take over the login-process here in order to prevent dead-lock.
 					if (loginHandlerRunnablePending) {
-						logger.info("Hijacking responsibility for login, since I'm the UI thread and want to login, too. Will execute login now here.");
+						logger.info("Hijacking responsibility for login, since I'm the UI thread and want to login, too. Will execute login now here."); //$NON-NLS-1$
 
 						changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 						loginHandlerRunnablePending = false;
@@ -993,7 +993,7 @@ extends AbstractEPProcessor
 //	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
 	protected void changeLoginStateAndNotifyListeners(final LoginState newLoginState) {
 		if (Display.getCurrent() == null)
-			throw new IllegalStateException("This method must be called on the SWT UI thread!");
+			throw new IllegalStateException("This method must be called on the SWT UI thread!"); //$NON-NLS-1$
 
 		final LoginState oldLoginState;
 		final LinkedList<LoginStateListenerRegistryItem> loginStateListenerRegistryItems;
@@ -1008,7 +1008,7 @@ extends AbstractEPProcessor
 
 				currentLoginState = newLoginState;
 
-				logger.info("changeLoginStateAndNotifyListeners: changing from " + oldLoginState + " to " + newLoginState);
+				logger.info("changeLoginStateAndNotifyListeners: changing from " + oldLoginState + " to " + newLoginState); //$NON-NLS-1$ //$NON-NLS-2$
 
 //				if (currLoginState == LoginState.OFFLINE)
 //					lastWorkOfflineDecisionTime = System.currentTimeMillis();

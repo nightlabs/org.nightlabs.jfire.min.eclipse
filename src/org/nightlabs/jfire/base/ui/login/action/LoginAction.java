@@ -107,7 +107,7 @@ extends LSDWorkbenchWindowActionDelegate
 					Login.getLogin();
 				} catch (Exception e) {
 					if (e instanceof LoginAbortedException || ExceptionUtils.indexOfThrowable(e, LoginException.class) >= 0)
-						logger.info("User aborted login.");
+						logger.info("User aborted login."); //$NON-NLS-1$
 					else {
 //					if (Login.sharedInstance().getLoginState() != LoginState.OFFLINE)
 						ExceptionHandlerRegistry.asyncHandleException(e);

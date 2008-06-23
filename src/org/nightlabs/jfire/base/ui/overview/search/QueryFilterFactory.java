@@ -7,6 +7,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.QueryProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 
 /**
@@ -16,7 +17,7 @@ import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 public interface QueryFilterFactory<Q extends AbstractSearchQuery>
 	extends IExecutableExtension, Comparable<QueryFilterFactory<Q>>
 {
-	public static final String GLOBAL_SCOPE = "global";
+	public static final String GLOBAL_SCOPE = "global"; //$NON-NLS-1$
 	
 	/**
 	 * Creates the filter composite with all the given parameters.

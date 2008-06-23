@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.dialog.CenteredDialog;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -33,11 +34,11 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 		XComposite comp = new XComposite(parent, SWT.NONE);
 		Label label = new Label(comp, SWT.WRAP);
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, label);
-		label.setText("You have acquired an edit lock and it has been detected that you did not change any data since a while.");
+		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.BlockingDueToInactivityDialog.label.editLockNotUsed")); //$NON-NLS-1$
 		
 		label = new Label(comp, SWT.WRAP);
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, label);
-		label.setText("Please choose for each of the edit locks below in the last column how you want to proceed.");
+		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.BlockingDueToInactivityDialog.label.choose")); //$NON-NLS-1$
 		
 		editLockTable = new ProcessEditLockTable(comp, SWT.NONE);
 		

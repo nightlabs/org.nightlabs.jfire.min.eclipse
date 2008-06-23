@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.exceptionhandler.DefaultErrorDialog;
 import org.nightlabs.base.ui.exceptionhandler.ErrorDialogFactory;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerParam;
 import org.nightlabs.base.ui.exceptionhandler.IExceptionHandler;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.MissingRoleException;
 import org.nightlabs.jfire.security.Role;
@@ -30,10 +31,10 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 	 */
 	@Override
 	public boolean handleException(ExceptionHandlerParam handlerParam) {
-		logger.info("handleException: called for this triggerException: " + handlerParam.getTriggerException());
+		logger.info("handleException: called for this triggerException: " + handlerParam.getTriggerException()); //$NON-NLS-1$
 
 		if (!(handlerParam.getTriggerException() instanceof SecurityException))
-			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (handlerParam.getTriggerException() == null ? null : handlerParam.getTriggerException().getClass().getName()), handlerParam.getThrownException());
+			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (handlerParam.getTriggerException() == null ? null : handlerParam.getTriggerException().getClass().getName()), handlerParam.getThrownException()); //$NON-NLS-1$
 		else {
 			try {
 				RemoteExceptionClassHandler handler = new RemoteExceptionClassHandler();
@@ -45,8 +46,8 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 		}
 
 		ErrorDialogFactory.showError(DefaultErrorDialog.class, 
-				"Insufficient permissions", 
-				"You don't have enough permissions for the requested action. Contact your boss or your administrator.", 
+				Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.dialog.insufficentPermissions.messgae"),  //$NON-NLS-1$
+				Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.dialog.insufficentPermissions.description"),  //$NON-NLS-1$
 				new ExceptionHandlerParam(handlerParam.getThrownException(), handlerParam.getTriggerException()));
 
 		return true;
@@ -73,7 +74,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 			else {
 				// check if the securityException comes from the server by scanning thrownException for a remote exception
 				if (ExceptionUtils.indexOfThrowable(thrownException, java.rmi.AccessException.class) < 0) {
-					logger.info("There is no java.rmi.AccessException in the stack trace, hence we don't try to parse the exception message and fall back to the default dialog.");
+					logger.info("There is no java.rmi.AccessException in the stack trace, hence we don't try to parse the exception message and fall back to the default dialog."); //$NON-NLS-1$
 					return false;
 				}
 
@@ -90,14 +91,14 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 
 				String exceptionMessage = securityException.getMessage();
 				if (exceptionMessage == null) {
-					logger.info("The SecurityException's message is null, hence we cannot parse it and fall back to the default dialog.");
+					logger.info("The SecurityException's message is null, hence we cannot parse it and fall back to the default dialog."); //$NON-NLS-1$
 					return false;
 				}
 
-				String requiredRolesBeginToken = "requiredRoles=[";
+				String requiredRolesBeginToken = Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.requiredRoles"); //$NON-NLS-1$
 				int indexOfRequiredRolesBegin = exceptionMessage.indexOf(requiredRolesBeginToken);
 				if (indexOfRequiredRolesBegin < 0) {
-					logger.info("The SecurityException's message does not contain begin-token \"" + requiredRolesBeginToken + "\" => falling back to default dialog.");
+					logger.info("The SecurityException's message does not contain begin-token \"" + requiredRolesBeginToken + "\" => falling back to default dialog."); //$NON-NLS-1$ //$NON-NLS-2$
 					return false;
 				}
 
@@ -105,25 +106,25 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 
 				// now, indexOfRequiredRoles points to the first character of the first roleID
 
-				String requiredRolesEndToken = "]";
+				String requiredRolesEndToken = "]"; //$NON-NLS-1$
 				int indexOfRequiredRolesEnd = exceptionMessage.indexOf(requiredRolesEndToken, indexOfRequiredRolesBegin);
 				if (indexOfRequiredRolesEnd < 0) {
-					logger.info("The SecurityException's message does not contain end-token \"" + requiredRolesEndToken + "\" after begin-token \"" + requiredRolesBeginToken + "\" => falling back to default dialog.");
+					logger.info("The SecurityException's message does not contain end-token \"" + requiredRolesEndToken + "\" after begin-token \"" + requiredRolesBeginToken + "\" => falling back to default dialog."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					return false;
 				}
 
 				// get the substring within the 2 tokens
 				String requiredRolesString = exceptionMessage.substring(indexOfRequiredRolesBegin, indexOfRequiredRolesEnd);
 				requiredRolesString = requiredRolesString.trim();
-				if ("".equals(requiredRolesString)) {
-					logger.info("The SecurityException's message does not contain any role between begin-token \"" + requiredRolesBeginToken + "\" and end-token \"" + requiredRolesEndToken + "\" => falling back to default dialog.");
+				if ("".equals(requiredRolesString)) { //$NON-NLS-1$
+					logger.info("The SecurityException's message does not contain any role between begin-token \"" + requiredRolesBeginToken + "\" and end-token \"" + requiredRolesEndToken + "\" => falling back to default dialog."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					return false;
 				}
 
 				// split it, because it might be multiple separated by "," (and having spaces => trim)
 				String[] requiredRoleIDStrings;
-				if (requiredRolesString.contains(",")) {
-					requiredRoleIDStrings = requiredRolesString.split(",");
+				if (requiredRolesString.contains(",")) { //$NON-NLS-1$
+					requiredRoleIDStrings = requiredRolesString.split(","); //$NON-NLS-1$
 					for (int i = 0; i < requiredRoleIDStrings.length; i++) {
 						requiredRoleIDStrings[i] = requiredRoleIDStrings[i].trim();
 					}
@@ -144,14 +145,14 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 				String message;
 
 				if (authorityName == null)
-					message = "You don't have enough permissions for the requested action. Contact your boss or your administrator.\n\nYou need at least one of the following role groups:";
+					message = Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.notEnoughPermission.message"); //$NON-NLS-1$
 				else
 					message = String.format(
-							"You don't have enough permissions for the requested action within the authority \"%s\". Contact your boss or your administrator.\n\nYou need at least one of the following role groups:",
+							Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.notEnoughPermissionAuthority.message"), //$NON-NLS-1$
 							authorityName);
 
 				ErrorDialogFactory.showError(InsufficientPermissionDialog.class, 
-						"Insufficient permissions", 
+						Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.dialog.insufficientPermissions.message"),  //$NON-NLS-1$
 						message, 
 						new ExceptionHandlerParam(thrownException, securityException));
 				

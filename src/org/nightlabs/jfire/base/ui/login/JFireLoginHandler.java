@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.NLBasePlugin;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.j2ee.LoginData;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.math.Base62Coder;
 
 /**
@@ -111,22 +112,22 @@ public class JFireLoginHandler implements ILoginHandler {
 
 					LoginData lastUsed = latestConfig.getLoginData();
 
-					if (loginData.getUserID() == null || "".equals(loginData.getUserID()))
+					if (loginData.getUserID() == null || "".equals(loginData.getUserID())) //$NON-NLS-1$
 						loginData.setUserID(lastUsed.getUserID());
 
-					if (loginData.getOrganisationID() == null || "".equals(loginData.getOrganisationID()))
+					if (loginData.getOrganisationID() == null || "".equals(loginData.getOrganisationID())) //$NON-NLS-1$
 						loginData.setOrganisationID(lastUsed.getOrganisationID());
 
-					if (loginData.getWorkstationID() == null || "".equals(loginData.getWorkstationID()))
+					if (loginData.getWorkstationID() == null || "".equals(loginData.getWorkstationID())) //$NON-NLS-1$
 						loginData.setWorkstationID(lastUsed.getWorkstationID());
 
-					if (loginData.getInitialContextFactory() == null || "".equals(loginData.getInitialContextFactory()))
+					if (loginData.getInitialContextFactory() == null || "".equals(loginData.getInitialContextFactory())) //$NON-NLS-1$
 						loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
 
-					if (loginData.getProviderURL() == null || "".equals(loginData.getProviderURL()))
+					if (loginData.getProviderURL() == null || "".equals(loginData.getProviderURL())) //$NON-NLS-1$
 						loginData.setProviderURL(lastUsed.getProviderURL());
 
-					if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol()))
+					if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol())) //$NON-NLS-1$
 						loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
 
 					loginConfigModule.setLatestLoginConfiguration(loginData, null);

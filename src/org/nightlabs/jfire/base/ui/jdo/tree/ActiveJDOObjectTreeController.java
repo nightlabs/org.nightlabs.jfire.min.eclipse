@@ -53,7 +53,7 @@ import org.nightlabs.notification.NotificationListener;
  * @param <JDOObject> The type of the JDO object used
  * @param <TreeNode> The type of {@link JDOObjectTreeNode} used to hold the data
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode>
 {
 	private static final Logger logger = Logger.getLogger(ActiveJDOObjectTreeController.class);
@@ -178,7 +178,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 	private NotificationListener changeListener;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected void handleChangeNotification(NotificationEvent notificationEvent, IProgressMonitor monitor) {
 		synchronized (objectID2TreeNode) {
 			if (hiddenRootNode == null)
@@ -239,13 +239,13 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 			super(name);
 		}
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void notify(NotificationEvent notificationEvent) {
 			handleChangeNotification(notificationEvent, getProgressMonitor());
 		}
 	};
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") //$NON-NLS-1$
 	protected void registerJDOLifecycleListener()
 	{
 		registerJDOLifecycleListeners();
@@ -288,7 +288,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") //$NON-NLS-1$
 	protected void registerChangeListener() {
 		createRegisterChangeListener();
 	}
@@ -324,7 +324,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 			return filter;
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void notify(JDOLifecycleEvent event)
 		{
 			if (logger.isDebugEnabled())
@@ -493,7 +493,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * @param parent The parent node or <code>null</code>.
 	 * @return A list of {@link TreeNode}s or <code>null</code>, if data is not yet ready.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public List<TreeNode> getNodes(TreeNode _parent)
 	{
 		if (_parent != null && _parent == hiddenRootNode)
@@ -654,7 +654,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 		treeNodesChangedListeners.remove(listener);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void fireJDOObjectsChangedEvent(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent)
 	{
 		if (logger.isDebugEnabled()) {

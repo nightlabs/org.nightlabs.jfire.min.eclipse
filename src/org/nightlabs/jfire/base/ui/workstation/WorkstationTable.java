@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.workstation.Workstation;
 
 /**
@@ -68,8 +69,8 @@ public class WorkstationTable extends AbstractTableComposite<Workstation> {
 	 */
 	@Override
 	protected void createTableColumns(TableViewer tableViewer, Table table) {
-		new TableColumn(table, SWT.LEFT).setText("WorkstationID");
-		new TableColumn(table, SWT.LEFT).setText("Description");
+		new TableColumn(table, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationTable.column.workstationID")); //$NON-NLS-1$
+		new TableColumn(table, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.ui.workstation.WorkstationTable.column.description")); //$NON-NLS-1$
 		TableLayout l = new TableLayout();
 		l.addColumnData(new ColumnWeightData(2));
 		l.addColumnData(new ColumnWeightData(3));

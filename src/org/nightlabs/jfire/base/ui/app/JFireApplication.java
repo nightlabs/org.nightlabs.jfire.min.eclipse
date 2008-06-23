@@ -46,6 +46,7 @@ import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginAbortedException;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -148,7 +149,7 @@ extends AbstractApplication
 			// In GNU/Linux, there is exactly one temp-directory for all users; hence we need to put the current OS user's name into the path.
 			// This is done by IOUtil.getUserTempDir().
 
-			File classLoaderCacheDir = new File(IOUtil.createUserTempDir("jfire.", null), "classloader.cache"); //$NON-NLS-1$
+			File classLoaderCacheDir = new File(IOUtil.createUserTempDir("jfire.", null), "classloader.cache"); //$NON-NLS-1$ //$NON-NLS-2$
 			org.nightlabs.jfire.classloader.JFireRCDLDelegate.createSharedInstance(
 					icp,
 					classLoaderCacheDir).setFilter(RemoteResourceFilterRegistry.sharedInstance());

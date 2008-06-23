@@ -19,6 +19,7 @@ import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jdo.query.QueryProvider;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactoryRegistry;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
@@ -40,10 +41,10 @@ extends ResizableTitleAreaDialog
 	{
 		super(parentShell, null);
 		if (scope == null)
-			throw new IllegalArgumentException("scope must not be null!");
+			throw new IllegalArgumentException("scope must not be null!"); //$NON-NLS-1$
 
 		if (queryCollection == null)
-			throw new IllegalArgumentException("queryCollection must not be null!");
+			throw new IllegalArgumentException("queryCollection must not be null!"); //$NON-NLS-1$
 		
 		this.scope = scope;
 		this.queryCollection = queryCollection;
@@ -76,9 +77,9 @@ extends ResizableTitleAreaDialog
 	@Override
 	public void create() {
 		super.create();
-		getShell().setText("Search Criteria");		
-		setTitle("Search Criteria");
-		setMessage("Search with the given criteria");
+		getShell().setText(Messages.getString("org.nightlabs.jfire.base.ui.search.QueryFilterDialog.window.title"));		 //$NON-NLS-1$
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.search.QueryFilterDialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.search.QueryFilterDialog.message")); //$NON-NLS-1$
 	}
 
 	public QueryCollection<?> getQueryCollection() {

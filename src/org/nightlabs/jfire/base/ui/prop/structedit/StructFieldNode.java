@@ -4,6 +4,7 @@ import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.util.NLLocale;
 import org.nightlabs.util.Util;
@@ -93,6 +94,6 @@ public class StructFieldNode extends TreeNode //implements Comparable<StructFiel
 		if (field.getStructBlock().isLocal())
 			return null;
 		else
-			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructFieldNode.class, "StructFieldNotLocal");
+			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructFieldNode.class, "StructFieldNotLocal"); //$NON-NLS-1$
 	}
 }

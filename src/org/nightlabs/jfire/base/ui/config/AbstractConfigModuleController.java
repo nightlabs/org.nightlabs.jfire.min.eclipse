@@ -11,6 +11,7 @@ import javax.jdo.JDOHelper;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ListenerList;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
@@ -163,7 +164,7 @@ implements IConfigModuleController
 	 * @return the ConfigModule of the Config with ID = <code>configID</code> and the parameter as set
 	 * 	by the abstract getters (e.g. <code>getPreferencePage().getConfigModuleClassName()</code>).
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public ConfigModule retrieveConfigModule(ProgressMonitor monitor)
 	{
 		if (getConfigID() == null)

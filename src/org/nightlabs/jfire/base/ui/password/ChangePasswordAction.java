@@ -13,6 +13,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.UserLocal;
 import org.nightlabs.jfire.security.JFireSecurityManager;
@@ -31,7 +32,7 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void run(IAction arg0) {
-		InputDialog dialog = new InputDialog(RCPUtil.getActiveShell(), "Enter Password", "Enter your current password to proceed.", "", null) {
+		InputDialog dialog = new InputDialog(RCPUtil.getActiveShell(), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.title"), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.message"), "", null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			@Override
 			protected void okPressed() {
 				try {
@@ -39,7 +40,7 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 						super.okPressed();
 					else {
 						Thread.sleep(2000);
-						MessageDialog.openError(RCPUtil.getActiveShell(), "Wrong password", "The entered password is not correct.\n\nPlease try again.");
+						MessageDialog.openError(RCPUtil.getActiveShell(), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.wrongPassword.title"), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.wrongPassword.message")); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -61,9 +62,9 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 			@Override
 			public String isValid(String password) {
 				if (password.length() < UserLocal.MIN_PASSWORD_LENGTH)
-					return "Minimum password length: " + UserLocal.MIN_PASSWORD_LENGTH;
-				if (password.matches("\\*+"))
-					return "Passwords only consisting of '*' are not valid.";
+					return Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.passwordToShort") + UserLocal.MIN_PASSWORD_LENGTH; //$NON-NLS-1$
+				if (password.matches("\\*+")) //$NON-NLS-1$
+					return Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.passwordInvalid"); //$NON-NLS-1$
 
 				return null;
 			}
@@ -75,7 +76,7 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 			JFireSecurityManager um = JFireSecurityManagerUtil.getHome(SecurityReflector.getInitialContextProperties()).create();
 			um.setUserPassword(newPassword);
 			Login.sharedInstance().setPassword(newPassword);
-			MessageDialog.openInformation(RCPUtil.getActiveShell(), "Password changed", "Your password has been changed successfully.");
+			MessageDialog.openInformation(RCPUtil.getActiveShell(), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.passwordChanged.title"), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.passwordChanged.message")); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

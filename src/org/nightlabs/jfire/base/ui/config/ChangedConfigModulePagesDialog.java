@@ -47,7 +47,7 @@ extends CenteredDialog // IconAndMessageDialog
 	protected static class ContentProvider implements ITreeContentProvider {
 		Map<Config, Set<PageModulePair>> updatedModules = null;
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof Map) {
 				updatedModules = (Map<Config, Set<PageModulePair>>) inputElement;

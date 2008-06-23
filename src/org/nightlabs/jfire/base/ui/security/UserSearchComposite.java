@@ -163,7 +163,7 @@ extends XComposite
 		if (isShowSearchButton()) {
 			Button searchButton = new Button(searchComp, SWT.PUSH);
 			searchButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
-			searchButton.setText("&Search");
+			searchButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.button.search.text")); //$NON-NLS-1$
 			searchButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {

@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 	/**
@@ -38,7 +39,7 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 	{
 		String fieldClass = fieldFactory.getStructFieldClass();
 		if (!fieldClass.equals(editorFactory.getStructFieldClass()))
-			throw new IllegalArgumentException("fieldFactory.getStructFieldClass() != editorFactory.getStructFieldClass()");
+			throw new IllegalArgumentException("fieldFactory.getStructFieldClass() != editorFactory.getStructFieldClass()"); //$NON-NLS-1$
 
 		fieldMetaDataMap.put(fieldClass, new StructFieldMetaData(fieldFactory, editorFactory, fieldName, description));
 		fieldClassMap.put(fieldName, fieldClass);

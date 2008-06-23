@@ -600,13 +600,13 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			{
 				if (activeMenuItem != null) // there is already an item declared as default.
 				{
-					logger.warn("There is already a quick search entry marked as default! This entry wit id="+
+					logger.warn("There is already a quick search entry marked as default! This entry wit id="+ //$NON-NLS-1$
 						quickSearchEntryFactory.getId() + " and with name=" +quickSearchEntryFactory.getName() +
-					" is also declared as 'default'! This declaration is ignored.");
+					" is also declared as 'default'! This declaration is ignored."); //$NON-NLS-1$
 				}
 				else
 				{
-					quickSearchEntry.setSearchConditionValue("");
+					quickSearchEntry.setSearchConditionValue(""); //$NON-NLS-1$
 					activeMenuItem = menuItem;
 					activeMenuItem.setSelection(true);
 				}
@@ -617,7 +617,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		{
 			activeMenuItem = quickSearchMenu.getItem(0);
 			activeMenuItem.setSelection(true);
-			((QuickSearchEntry)activeMenuItem.getData()).setSearchConditionValue("");
+			((QuickSearchEntry)activeMenuItem.getData()).setSearchConditionValue(""); //$NON-NLS-1$
 		}
 		
 		searchItem.addListener(SWT.Selection, new Listener()
