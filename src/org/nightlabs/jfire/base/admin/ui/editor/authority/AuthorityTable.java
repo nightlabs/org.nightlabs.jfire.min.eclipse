@@ -16,6 +16,7 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.dao.AuthorityDAO;
@@ -35,7 +36,7 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 				case 1:
 					return ((Authority)element).getDescription().getText();
 				default:
-					return "";
+					return ""; //$NON-NLS-1$
 			}
 		}
 	}
@@ -54,12 +55,12 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 
 		authorities.clear();
 		if (authorityTypeID != null) {
-			AuthorityType dummyAT = new AuthorityType("dummy");
-			Authority dummy = new Authority("dummy", "dummy", dummyAT);
-			dummy.getName().setText(NLLocale.getDefault().getLanguage(), "Loading...");
+			AuthorityType dummyAT = new AuthorityType(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.dummy")); //$NON-NLS-1$
+			Authority dummy = new Authority(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.dummy"), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.dummy"), dummyAT); //$NON-NLS-1$ //$NON-NLS-2$
+			dummy.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.loading")); //$NON-NLS-1$
 			authorities.add(dummy);
 
-			Job loadJob = new Job("Loading authorities") {
+			Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.job.loadingAuthorities")) { //$NON-NLS-1$
 				@Override
 				protected IStatus run(ProgressMonitor monitor) throws Exception
 				{
@@ -111,11 +112,11 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 		TableColumn tc;
 
 		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Name");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.column.name")); //$NON-NLS-1$
 //		tl.addColumnData(new ColumnWeightData(30));
 
 		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Description");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.column.description")); //$NON-NLS-1$
 //		tl.addColumnData(new ColumnWeightData(70));
 
 //		table.setLayout(tl);

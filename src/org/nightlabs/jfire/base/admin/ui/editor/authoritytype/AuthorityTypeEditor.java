@@ -9,6 +9,7 @@ import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
@@ -23,7 +24,7 @@ extends EntityEditor
 		if(getEditorInput() == null)
 			return super.getTitle();
 
-		Job loadTitleJob = new Job("Loading authority type") {
+		Job loadTitleJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor.job.loadingAuthorityType")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				final String title = AuthorityTypeDAO.sharedInstance().getAuthorityType(

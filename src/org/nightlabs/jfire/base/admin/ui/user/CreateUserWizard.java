@@ -72,8 +72,8 @@ public class CreateUserWizard extends DynamicPathWizard
 		addPage(cuPage);
 		
 		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
-		String msg = "Here you can enter additional information for the new user";
-		propertySetEditorWizardHop.addWizardPage(null, "RemainingData", "Additional data", msg);
+		String msg = Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.label.message"); //$NON-NLS-1$
+		propertySetEditorWizardHop.addWizardPage(null, Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.page.title.remainigData"), Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.page.title.additionalData"), msg); //$NON-NLS-1$ //$NON-NLS-2$
 		addPage(propertySetEditorWizardHop.getEntryPage());
 	}
 

@@ -42,7 +42,7 @@ public class RoleGroupTableViewer extends TableViewer
 		/* (non-Javadoc)
 		 * @see org.nightlabs.base.ui.table.TableContentProvider#getElements(java.lang.Object)
 		 */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		@Override
 		public Object[] getElements(Object inputElement) {
 			Collection<RoleGroup> roleGroups = (Collection<RoleGroup>) inputElement;
@@ -82,14 +82,14 @@ public class RoleGroupTableViewer extends TableViewer
 			switch (columnIndex) {
 			case 0:
 				if (model.isControlledByOtherUser() && model.getRoleGroupsAssignedToOtherUser().contains(element))
-					return "O";
+					return "O"; //$NON-NLS-1$
 				if (model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element) && model.getRoleGroupsAssignedToUserGroups().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirectAndGroup"); //$NON-NLS-1$
 				else if (model.isInAuthority() && model.getRoleGroupsAssignedDirectly().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceDirect"); //$NON-NLS-1$
 				else if (model.getRoleGroupsAssignedToUserGroups().contains(element))
 					return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.roleGroupSourceGroup"); //$NON-NLS-1$
-				return "";
+				return ""; //$NON-NLS-1$
 			case 2:	return g.getName().getText(NLLocale.getDefault().getLanguage());
 			case 3:	return g.getDescription().getText(NLLocale.getDefault().getLanguage());
 			}
@@ -165,14 +165,14 @@ public class RoleGroupTableViewer extends TableViewer
 			@Override
 			public void mouseExit(MouseEvent event) {
 				if (logger.isDebugEnabled())
-					logger.debug("table.MouseTrackListener.mouseExit: clearing tool tip");
+					logger.debug("table.MouseTrackListener.mouseExit: clearing tool tip"); //$NON-NLS-1$
 
 				disposeToolTip();
 			}
 			@Override
 			public void mouseHover(MouseEvent event) {
 				if (logger.isDebugEnabled())
-					logger.debug("table.MouseTrackListener.mouseHover: creating tool tip");
+					logger.debug("table.MouseTrackListener.mouseHover: creating tool tip"); //$NON-NLS-1$
 
 				createToolTip(new Point(event.x, event.y));
 			}
@@ -182,7 +182,7 @@ public class RoleGroupTableViewer extends TableViewer
 			@Override
 			public void mouseMove(MouseEvent event) {
 				if (logger.isDebugEnabled())
-					logger.debug("table.MouseMoveListener.mouseMove: clearing tool tip");
+					logger.debug("table.MouseMoveListener.mouseMove: clearing tool tip"); //$NON-NLS-1$
 
 				disposeToolTip();
 			}
@@ -267,7 +267,7 @@ public class RoleGroupTableViewer extends TableViewer
 
 	private void disposeToolTip() {
 		lastToolTipRequest = new ToolTipRequest(null, null);
-		getTable().setToolTipText("");
+		getTable().setToolTipText(""); //$NON-NLS-1$
 //		if (roleGroupDescriptionToolTip != null) {
 //			roleGroupDescriptionToolTip.setMessage("");
 //			roleGroupDescriptionToolTip.setVisible(false);
@@ -307,7 +307,7 @@ public class RoleGroupTableViewer extends TableViewer
 		Object o = tableItem == null ? null :tableItem.getData();
 		if (!(o instanceof RoleGroup)) {
 			if (logger.isDebugEnabled())
-				logger.debug("showToolTip: no role-group => disposing tool tip");
+				logger.debug("showToolTip: no role-group => disposing tool tip"); //$NON-NLS-1$
 
 			disposeToolTip();
 			return;
@@ -324,7 +324,7 @@ public class RoleGroupTableViewer extends TableViewer
 		disposeToolTip();
 
 		if (logger.isDebugEnabled())
-			logger.debug("createToolTip: setting tool tip to: " + toolTipText);
+			logger.debug("createToolTip: setting tool tip to: " + toolTipText); //$NON-NLS-1$
 
 		lastToolTipRequest = new ToolTipRequest(getTable().toDisplay(mousePositionRelativeToTable), toolTipText);
 

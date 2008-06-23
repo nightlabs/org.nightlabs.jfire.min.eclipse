@@ -15,6 +15,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.asyncinvoke.AsyncInvokeProblem;
 import org.nightlabs.jfire.asyncinvoke.dao.AsyncInvokeProblemDAO;
 import org.nightlabs.jfire.asyncinvoke.id.AsyncInvokeProblemID;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.progress.ProgressMonitor;
 
 public class DeleteViewAction
@@ -32,7 +33,7 @@ implements IViewActionDelegate
 	public void run(IAction arg0)
 	{
 		final Set<AsyncInvokeProblemID> asyncInvokeProblemIDs = NLJDOHelper.getObjectIDSet(view.getAsyncInvokeProblemTable().getSelectedElements());
-		Job job = new Job("Delete async invocations")
+		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.DeleteViewAction.job.deleteAsyncInvocations")) //$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(ProgressMonitor monitor)

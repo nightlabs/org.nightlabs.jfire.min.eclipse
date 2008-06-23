@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.admin.ui.editor.authority;
 
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
@@ -15,7 +16,7 @@ public class AssignAuthorityWizard extends DynamicPathWizard
 	public AssignAuthorityWizard(AuthorityTypeID authorityTypeID, InheritedSecuringAuthorityResolver inheritedAuthorityResolver)
 	{
 		if (authorityTypeID == null)
-			throw new IllegalArgumentException("authorityTypeID == null");
+			throw new IllegalArgumentException("authorityTypeID == null"); //$NON-NLS-1$
 
 		this.authorityTypeID = authorityTypeID;
 		this.inheritedAuthorityResolver = inheritedAuthorityResolver;

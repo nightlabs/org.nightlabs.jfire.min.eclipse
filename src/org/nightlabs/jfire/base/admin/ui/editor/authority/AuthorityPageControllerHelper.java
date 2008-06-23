@@ -24,6 +24,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
@@ -119,7 +120,7 @@ public class AuthorityPageControllerHelper
 	 */
 	protected synchronized void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
 	{
-		monitor.beginTask("Loading authority data", 100);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper.job.loadingAuthorityData"), 100); //$NON-NLS-1$
 
 		if (authorityTypeID == null) {
 			authorityID = null;
@@ -183,7 +184,7 @@ public class AuthorityPageControllerHelper
 						continue;
 
 					AuthorizedObjectID aoid = (AuthorizedObjectID) JDOHelper.getObjectId(ao);
-					assert aoid != null : "(AuthorizedObjectID) JDOHelper.getObjectId(ao) != null";
+					assert aoid != null : "(AuthorizedObjectID) JDOHelper.getObjectId(ao) != null"; //$NON-NLS-1$
 					authorizedObjectID2authorizedObjectMap.put(aoid, ao);
 					authorizedObjects.put(ao, Boolean.FALSE);
 
@@ -225,7 +226,7 @@ public class AuthorityPageControllerHelper
 					continue;
 
 				AuthorizedObjectID aoid = (AuthorizedObjectID) JDOHelper.getObjectId(ao);
-				assert aoid != null : "(AuthorizedObjectID) JDOHelper.getObjectId(ao) != null";
+				assert aoid != null : "(AuthorizedObjectID) JDOHelper.getObjectId(ao) != null"; //$NON-NLS-1$
 				authorizedObjectID2authorizedObjectMap.put(aoid, ao);
 				authorizedObjects.put(ao, roleGroupSetCarrier.isInAuthority() ? Boolean.TRUE : Boolean.FALSE);
 
@@ -264,7 +265,7 @@ public class AuthorityPageControllerHelper
 			changedModels.add(roleGroupSecurityPreferencesModel);
 			AuthorizedObject authorizedObject = roleGroupSecurityPreferencesModel2AuthorizedObject.get(roleGroupSecurityPreferencesModel);
 			if (authorizedObject == null)
-				throw new IllegalStateException("roleGroupSecurityPreferencesModel2AuthorizedObject.get(roleGroupSecurityPreferencesModel) returned null!");
+				throw new IllegalStateException("roleGroupSecurityPreferencesModel2AuthorizedObject.get(roleGroupSecurityPreferencesModel) returned null!"); //$NON-NLS-1$
 
 			if (authorizedObject instanceof UserSecurityGroup) {
 				// A user-security-group has been modified - that affects all authorizedObjects that are members of this group!
@@ -367,9 +368,9 @@ public class AuthorityPageControllerHelper
 
 		public AuthorizedObjectBooleanMapEntry(AuthorizedObject key, Boolean value) {
 			if (key == null)
-				throw new IllegalArgumentException("key must not be null!");
+				throw new IllegalArgumentException("key must not be null!"); //$NON-NLS-1$
 			if (value == null)
-				throw new IllegalArgumentException("value must not be null!");
+				throw new IllegalArgumentException("value must not be null!"); //$NON-NLS-1$
 
 			this.key = key;
 			this.value = value;
@@ -388,7 +389,7 @@ public class AuthorityPageControllerHelper
 		@Override
 		public Boolean setValue(Boolean value) {
 			if (value == null)
-				throw new IllegalArgumentException("value must not be null!");
+				throw new IllegalArgumentException("value must not be null!"); //$NON-NLS-1$
 
 			Boolean oldValue = this.value;
 
@@ -408,9 +409,9 @@ public class AuthorityPageControllerHelper
 	public void addAuthorizedObjectToAuthority(AuthorizedObject authorizedObject)
 	{
 		if (authority == null)
-			throw new IllegalStateException("authority == null");
+			throw new IllegalStateException("authority == null"); //$NON-NLS-1$
 		if (authorizedObject == null)
-			throw new IllegalArgumentException("authorizedObject == null");
+			throw new IllegalArgumentException("authorizedObject == null"); //$NON-NLS-1$
 
 		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = authorizedObject2RoleGroupSecurityPreferencesModel.get(authorizedObject);
 		// replace the authorizedObject by our internal one (where we are sure about fetch-groups
@@ -471,9 +472,9 @@ public class AuthorityPageControllerHelper
 	public void removeAuthorizedObjectFromAuthority(AuthorizedObject authorizedObject)
 	{
 		if (authority == null)
-			throw new IllegalStateException("authority == null");
+			throw new IllegalStateException("authority == null"); //$NON-NLS-1$
 		if (authorizedObject == null)
-			throw new IllegalArgumentException("authorizedObject == null");
+			throw new IllegalArgumentException("authorizedObject == null"); //$NON-NLS-1$
 
 		RoleGroupSecurityPreferencesModel roleGroupSecurityPreferencesModel = authorizedObject2RoleGroupSecurityPreferencesModel.get(authorizedObject);
 		// replace the authorizedObject by our internal one (where we are sure about fetch-groups
@@ -544,7 +545,7 @@ public class AuthorityPageControllerHelper
 	 */
 	protected void assignSecuringAuthority(ProgressMonitor monitor)
 	{
-		monitor.beginTask("Assigning authority", 100);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper.job.assignAuthority"), 100); //$NON-NLS-1$
 		try {
 			if (assignSecuringAuthorityRequested) {
 				AuthorityDAO.sharedInstance().assignSecuringAuthority(
@@ -562,14 +563,14 @@ public class AuthorityPageControllerHelper
 
 	public synchronized void store(ProgressMonitor monitor)
 	{
-		monitor.beginTask("Saving authority", 200);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper.job.saveAuthority"), 200); //$NON-NLS-1$
 		try {
 			if (this.securedObject == null)
-				throw new IllegalStateException("this.securedObject == null");
+				throw new IllegalStateException("this.securedObject == null"); //$NON-NLS-1$
 			if (this.authorityType == null)
-				throw new IllegalStateException("this.authorityType == null");
+				throw new IllegalStateException("this.authorityType == null"); //$NON-NLS-1$
 			if (this.authority == null)
-				throw new IllegalStateException("this.authority == null");
+				throw new IllegalStateException("this.authority == null"); //$NON-NLS-1$
 
 			if (authorityID == null || JDOHelper.isDirty(authority)) {
 				Authority a = AuthorityDAO.sharedInstance().storeAuthority(
@@ -581,7 +582,7 @@ public class AuthorityPageControllerHelper
 				);
 				AuthorityID aid = (AuthorityID) JDOHelper.getObjectId(a);
 				if (aid == null)
-					throw new IllegalStateException("Authority returned by server does not have an object-id assigned!");
+					throw new IllegalStateException("Authority returned by server does not have an object-id assigned!"); //$NON-NLS-1$
 
 				authorityID = aid;
 				authority = a;
@@ -620,7 +621,7 @@ public class AuthorityPageControllerHelper
 						AuthorizedObject authorizedObject = roleGroupSecurityPreferencesModel2AuthorizedObject.get(roleGroupSecurityPreferencesModel);
 						AuthorizedObjectID authorizedObjectID = (AuthorizedObjectID) JDOHelper.getObjectId(authorizedObject);
 						if (authorizedObjectID == null)
-							throw new IllegalStateException("JDOHelper.getObjectId(authorizedObject) returned null for authorizedObject: " + authorizedObject);
+							throw new IllegalStateException("JDOHelper.getObjectId(authorizedObject) returned null for authorizedObject: " + authorizedObject); //$NON-NLS-1$
 
 
 						Set<RoleGroupID> roleGroupIDs = null;
@@ -699,21 +700,21 @@ public class AuthorityPageControllerHelper
 	 * The {@link #load(AuthorityTypeID, AuthorityID, Authority, ProgressMonitor)} method has been called (and is finished).
 	 * The loaded authority can be accessed by {@link PropertyChangeEvent#getNewValue()}.
 	 */
-	public static final String PROPERTY_NAME_AUTHORITY_LOADED = "authorityLoaded";
+	public static final String PROPERTY_NAME_AUTHORITY_LOADED = "authorityLoaded"; //$NON-NLS-1$
 
 	/**
 	 * A {@link PropertyChangeEvent} with this property name is fired, when a authorizedObject has been removed from the
 	 * currently managed {@link Authority}. The affected authorizedObject object can be accessed by
 	 * {@link PropertyChangeEvent#getNewValue()}.
 	 */
-	public static final String PROPERTY_NAME_USER_REMOVED = "authorizedObjectRemoved";
+	public static final String PROPERTY_NAME_USER_REMOVED = "authorizedObjectRemoved"; //$NON-NLS-1$
 
 	/**
 	 * A {@link PropertyChangeEvent} with this property name is fired, when a authorizedObject has been added to the
 	 * currently managed {@link Authority}. The affected authorizedObject object can be accessed by
 	 * {@link PropertyChangeEvent#getNewValue()}.
 	 */
-	public static final String PROPERTY_NAME_USER_ADDED = "authorizedObjectAdded";
+	public static final String PROPERTY_NAME_USER_ADDED = "authorizedObjectAdded"; //$NON-NLS-1$
 
 	/**
 	 * A {@link PropertyChangeEvent} with this property name is fired, when a {@link RoleGroupSecurityPreferencesModel}
@@ -723,7 +724,7 @@ public class AuthorityPageControllerHelper
 	 * The affected authorizedObject can be obtained via the <code>Map</code> returned by {@link #getRoleGroupSecurityPreferencesModel2AuthorizedObject()}.
 	 * </p>
 	 */
-	public static final String PROPERTY_NAME_ROLE_GROUP_SECURITY_PREFERENCES_MODEL_CHANGED = "roleGroupSecurityPreferencesModelChanged";
+	public static final String PROPERTY_NAME_ROLE_GROUP_SECURITY_PREFERENCES_MODEL_CHANGED = "roleGroupSecurityPreferencesModelChanged"; //$NON-NLS-1$
 
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	

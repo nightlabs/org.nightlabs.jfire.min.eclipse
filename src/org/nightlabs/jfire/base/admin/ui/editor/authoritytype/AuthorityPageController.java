@@ -6,6 +6,7 @@ import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
@@ -40,7 +41,7 @@ extends ActiveEntityEditorPageController<AuthorityType>
 	protected AuthorityType retrieveEntity(ProgressMonitor monitor) {
 		AuthorityType authorityType;
 
-		monitor.beginTask("Loading authority type", 100);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityPageController.job.loadingAuthorityType"), 100); //$NON-NLS-1$
 		try {
 			JDOObjectEditorInput<?> input = (JDOObjectEditorInput<?>) getEntityEditor().getEditorInput();
 			AuthorityTypeID authorityTypeID = (AuthorityTypeID) input.getJDOObjectID();

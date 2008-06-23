@@ -22,6 +22,7 @@ import org.nightlabs.jfire.asyncinvoke.AsyncInvokeEnvelope;
 import org.nightlabs.jfire.asyncinvoke.AsyncInvokeProblem;
 import org.nightlabs.jfire.asyncinvoke.Invocation;
 import org.nightlabs.jfire.asyncinvoke.id.AsyncInvokeProblemID;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectTableComposite;
 import org.nightlabs.l10n.DateFormatter;
@@ -54,7 +55,7 @@ public class AsyncInvokeProblemTable
 				@Override
 				public String getAsyncInvokeEnvelopeID()
 				{
-					return "dummy";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.0"); //$NON-NLS-1$
 				}
 			});
 		} catch (NamingException e) {
@@ -87,13 +88,13 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.RIGHT);
-		c.getColumn().setText("ID");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.id")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "Loading data...";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.loadingData"); //$NON-NLS-1$
 
 				return getAsyncInvokeEnvelope(element).getAsyncInvokeEnvelopeID();
 			}
@@ -102,13 +103,13 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.LEFT);
-		c.getColumn().setText("Created");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.created")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				return DateFormatter.formatDateShortTimeHMS(getAsyncInvokeEnvelope(element).getCreateDT(), false);
 			}
@@ -117,13 +118,13 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.LEFT);
-		c.getColumn().setText("Invocation type");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.invocationType")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				return getAsyncInvokeEnvelope(element).getInvocation().getClass().getName();
 			}
@@ -132,13 +133,13 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.RIGHT);
-		c.getColumn().setText("Errors");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.errors")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				return String.valueOf(asyncInvokeProblem.getErrorCount());
@@ -148,28 +149,28 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.LEFT);
-		c.getColumn().setText("Error type");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.errortype")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.getLastError() == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				return asyncInvokeProblem.getLastError().getErrorClassName();
 			}
 			@Override
 			public String getToolTipText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.getLastError() == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				return asyncInvokeProblem.getLastError().getErrorStackTrace();
 			}
 		});
@@ -177,28 +178,28 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.LEFT);
-		c.getColumn().setText("Error message");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.ErrorMessage")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.getLastError() == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				return asyncInvokeProblem.getLastError().getErrorMessage();
 			}
 			@Override
 			public String getToolTipText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.getLastError() == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				return asyncInvokeProblem.getLastError().getErrorStackTrace();
 			}
 		});
@@ -206,28 +207,28 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.LEFT);
-		c.getColumn().setText("Error root cause type");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.errorRootCause")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.getLastError() == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				return asyncInvokeProblem.getLastError().getErrorRootCauseClassName();
 			}
 			@Override
 			public String getToolTipText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.getLastError() == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				return asyncInvokeProblem.getLastError().getErrorStackTrace();
 			}
 		});
@@ -235,19 +236,19 @@ public class AsyncInvokeProblemTable
 
 
 		c = new TableViewerColumn(tableViewer, SWT.LEFT);
-		c.getColumn().setText("Status");
+		c.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.column.status")); //$NON-NLS-1$
 		c.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element)
 			{
 				if (isLoadingData(element))
-					return "";
+					return ""; //$NON-NLS-1$
 
 				AsyncInvokeProblem asyncInvokeProblem = (AsyncInvokeProblem) element;
 				if (asyncInvokeProblem.isUndeliverable())
-					return "Undeliverable";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.undeliverable"); //$NON-NLS-1$
 				else
-					return "Still trying";
+					return Messages.getString("org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemTable.stillTrying"); //$NON-NLS-1$
 			}
 		});
 		tableLayout.addColumnData(new ColumnWeightData(30));

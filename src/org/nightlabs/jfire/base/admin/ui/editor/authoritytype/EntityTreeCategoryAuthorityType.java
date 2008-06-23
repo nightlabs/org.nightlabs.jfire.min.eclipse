@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
@@ -77,7 +78,7 @@ extends ActiveJDOEntityTreeCategory<AuthorityTypeID, AuthorityType>
 							return String.valueOf(element);
 
 					default:
-							return "";
+							return ""; //$NON-NLS-1$
 				}
 			}
 			@Override

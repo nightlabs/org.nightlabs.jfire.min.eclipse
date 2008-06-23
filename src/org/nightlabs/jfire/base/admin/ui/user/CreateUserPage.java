@@ -75,7 +75,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   	Formular f = new Formular(parent, SWT.NONE, this);
   	
   	userID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.userID.labelText"), null); //$NON-NLS-1$
-  	autogenerateNameCheckbox = f.addCheckBox("Autogenerate name: ", false);
+  	autogenerateNameCheckbox = f.addCheckBox(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.checkbox.autogenerateName"), false); //$NON-NLS-1$
   	name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.name.labelText"), null); //$NON-NLS-1$
   	description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.description.labelText"), null); //$NON-NLS-1$
   	password0 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.password.labelText"), null); //$NON-NLS-1$

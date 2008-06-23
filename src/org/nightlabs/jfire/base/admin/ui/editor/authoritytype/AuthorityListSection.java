@@ -10,6 +10,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.editor.MessageSectionPart;
 import org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
 
@@ -18,7 +19,7 @@ public class AuthorityListSection extends MessageSectionPart
 	private AuthorityTable authorityTable;
 
 	public AuthorityListSection(IFormPage page, Composite parent) {
-		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE, "Authorities");
+		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityListSection.title.authorities")); //$NON-NLS-1$
 
 		createDescriptionControl(getSection(), page.getEditor().getToolkit());
 
@@ -32,7 +33,7 @@ public class AuthorityListSection extends MessageSectionPart
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
 	{
 		FormText text = toolkit.createFormText(section, true);
-		text.setText("Within the current organisation, there exist the following authorities with the current type.", false, false);
+		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityListSection.text.text"), false, false); //$NON-NLS-1$
 		section.setDescriptionControl(text);
 	}
 

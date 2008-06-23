@@ -10,6 +10,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorizedObject;
 
@@ -26,7 +27,7 @@ import org.nightlabs.jfire.security.AuthorizedObject;
 public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 {
 	public AbstractAuthorityPage(FormEditor editor, String id) {
-		super(editor, id, "Authority");
+		super(editor, id, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthorityPage.authority")); //$NON-NLS-1$
 	}
 
 	private AbstractAuthoritySection authoritySection;
@@ -91,7 +92,7 @@ public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 
 	@Override
 	protected String getPageFormTitle() {
-		return "Authority configuration";
+		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthorityPage.page.title"); //$NON-NLS-1$
 	}
 
 }

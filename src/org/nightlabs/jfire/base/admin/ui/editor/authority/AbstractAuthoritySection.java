@@ -18,6 +18,7 @@ import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditorMultiLine;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.SecuredObject;
 
@@ -41,7 +42,7 @@ extends ToolBarSectionPart
 	private I18nTextEditor description;
 
 	public AbstractAuthoritySection(IFormPage page, Composite parent) {
-		super(page, parent, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, "Authority");
+		super(page, parent, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.title.authority")); //$NON-NLS-1$
 		((GridData)getSection().getLayoutData()).grabExcessVerticalSpace = false;
 
 		name = new I18nTextEditor(getContainer());
@@ -93,7 +94,7 @@ extends ToolBarSectionPart
 
 	private Action assignAuthorityAction = new Action() {
 		{
-			setText("Assign authority");
+			setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.action.text.assignAuthority")); //$NON-NLS-1$
 		}
 
 		@Override
@@ -107,7 +108,7 @@ extends ToolBarSectionPart
 			);
 			DynamicPathWizardDialog dialog = new DynamicPathWizardDialog(getSection().getShell(), assignAuthorityWizard);
 			if (dialog.open() == Dialog.OK) {
-				Job job = new Job("Loading authority") {
+				Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.job.loadingAuthority")) { //$NON-NLS-1$
 					protected org.eclipse.core.runtime.IStatus run(org.nightlabs.progress.ProgressMonitor monitor) throws Exception {
 						authorityPageControllerHelper.load(
 								assignAuthorityWizard.getAuthorityTypeID(),
@@ -170,9 +171,9 @@ extends ToolBarSectionPart
 			description.setI18nText(null, EditMode.DIRECT);
 
 			if (authorityPageControllerHelper == null)
-				setMessage("There is no secured object selected at the moment.");
+				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noSecuredObjectSelected")); //$NON-NLS-1$
 			else
-				setMessage("There is no authority assigned to this product type.");
+				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noAuthorityAssigned")); //$NON-NLS-1$
 
 			setEnabled(false);
 		}

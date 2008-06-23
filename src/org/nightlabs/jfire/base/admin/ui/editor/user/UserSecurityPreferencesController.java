@@ -227,7 +227,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 	private Job reloadRoleGroupsFromUserSecurityGroupsJob;
 
 	public void reloadRoleGroupsFromUserSecurityGroups() {
-		Job loadJob = new Job("Reloading role groups...") {
+		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesController.job.reloadingRoleGroups")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				Collection<UserSecurityGroupID> userSecurityGroupIDs = NLJDOHelper.getObjectIDSet(userModel.getUserSecurityGroups());

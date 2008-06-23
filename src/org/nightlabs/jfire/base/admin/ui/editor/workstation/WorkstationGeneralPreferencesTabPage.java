@@ -8,6 +8,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 public class WorkstationGeneralPreferencesTabPage extends EntityEditorPageWithProgress {
 	
@@ -26,12 +27,12 @@ public class WorkstationGeneralPreferencesTabPage extends EntityEditorPageWithPr
 	}
 
 	public WorkstationGeneralPreferencesTabPage(FormEditor editor) {
-		super(editor, ID_PAGE, "General");
+		super(editor, ID_PAGE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationGeneralPreferencesTabPage.title.general")); //$NON-NLS-1$
 	}
 	
 	@Override
 	protected void addSections(Composite parent) {
-		workstationDataSection = new WorkstationDataSection(this, parent, "Workstation data");
+		workstationDataSection = new WorkstationDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationGeneralPreferencesTabPage.section.workstationData")); //$NON-NLS-1$
 		getManagedForm().addPart(workstationDataSection);
 	}
 	
@@ -47,6 +48,6 @@ public class WorkstationGeneralPreferencesTabPage extends EntityEditorPageWithPr
 
 	@Override
 	protected String getPageFormTitle() {
-		return "General";
+		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationGeneralPreferencesTabPage.page.title.general"); //$NON-NLS-1$
 	}
 }

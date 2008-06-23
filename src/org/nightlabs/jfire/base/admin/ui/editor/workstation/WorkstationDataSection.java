@@ -15,6 +15,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.workstation.Workstation;
 
 public class WorkstationDataSection extends RestorableSectionPart {
@@ -33,12 +34,12 @@ public class WorkstationDataSection extends RestorableSectionPart {
 		section.setText(sectionDescriptionText);
 		
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
-		createLabel(container, "Workstation ID", 1);
+		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationDataSection.label.workstationID"), 1); //$NON-NLS-1$
 		workstationIdText = new Text(container, XComposite.getBorderStyle(container));
 		workstationIdText.setLayoutData(getGridData(1));
 		workstationIdText.setEditable(false);
 		
-		createLabel(container, "Workstation description", 1);
+		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationDataSection.label.workstationDescription"), 1); //$NON-NLS-1$
 		workstationDescText = new Text(container, XComposite.getBorderStyle(container));
 		workstationDescText.setLayoutData(getGridData(1));
 		workstationDescText.addModifyListener(new ModifyListener() {

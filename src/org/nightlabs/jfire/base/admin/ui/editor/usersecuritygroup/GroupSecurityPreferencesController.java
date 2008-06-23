@@ -178,7 +178,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				Set<User> members = new HashSet<User>(groupMembers.size());
 				for (Iterator<User> it = users.iterator(); it.hasNext(); ) {
 					User user = it.next();
-					if (user.getName().startsWith("_") && user.getName().endsWith("_"))
+					if (user.getName().startsWith("_") && user.getName().endsWith("_")) //$NON-NLS-1$ //$NON-NLS-2$
 						it.remove();
 
 					if (groupMembers.contains(user.getUserLocal()))

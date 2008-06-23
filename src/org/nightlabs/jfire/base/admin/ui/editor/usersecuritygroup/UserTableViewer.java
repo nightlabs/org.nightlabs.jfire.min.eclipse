@@ -50,7 +50,7 @@ public class UserTableViewer extends TableViewer
 				case 1: return u.getName();
 				case 2: return u.getDescription();
 			}
-			return ""; // must never return null - otherwise it causes an error
+			return ""; // must never return null - otherwise it causes an error //$NON-NLS-1$
 		}
 
 		// this method is used by the ViewerComparator (see below).
@@ -78,7 +78,7 @@ public class UserTableViewer extends TableViewer
 
 		TableViewerColumn col1 = new TableViewerColumn(this, SWT.CENTER);
 		col1.getColumn().setResizable(false);
-		col1.getColumn().setText("");
+		col1.getColumn().setText(""); //$NON-NLS-1$
 		col1.setEditingSupport(new CheckboxEditingSupport<User>(this) {
 			@Override
 			protected boolean doGetValue(User element) {

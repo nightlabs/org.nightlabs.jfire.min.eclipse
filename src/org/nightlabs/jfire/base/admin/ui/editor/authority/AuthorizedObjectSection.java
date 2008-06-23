@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.id.AuthorizedObjectID;
 
@@ -35,7 +36,7 @@ implements ISelectionProvider
 	private AuthorizedObjectTableViewer authorizedObjectTable;
 
 	public AuthorizedObjectSection(IFormPage page, Composite parent) {
-		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, "AuthorizedObjects && authorizedObject groups in authority");
+		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorizedObjectSection.title.authorizedObjects")); //$NON-NLS-1$
 
 		authorizedObjectTable = new AuthorizedObjectTableViewer(getContainer(), this);
 		authorizedObjectTable.setInput(authorizedObjects);
@@ -155,11 +156,11 @@ implements ISelectionProvider
 	 *
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public ISelection getSelection() {
 		if (Display.getCurrent() == null)
-			throw new IllegalStateException("Wrong thread! This method must be called on the SWT UI thread!");
+			throw new IllegalStateException("Wrong thread! This method must be called on the SWT UI thread!"); //$NON-NLS-1$
 
 		if (selectedAuthorizedObjects == null || selection == null) {
 			selectedAuthorizedObjects = new ArrayList<AuthorizedObject>();
@@ -183,10 +184,10 @@ implements ISelectionProvider
 	@Override
 	public void setSelection(ISelection selection) {
 		if (!(selection instanceof IStructuredSelection))
-			throw new IllegalArgumentException("selection must be an instance of IStructuredSelection!");
+			throw new IllegalArgumentException("selection must be an instance of IStructuredSelection!"); //$NON-NLS-1$
 
 		if (Display.getCurrent() == null)
-			throw new IllegalStateException("Wrong thread! This method must be called on the SWT UI thread!");
+			throw new IllegalStateException("Wrong thread! This method must be called on the SWT UI thread!"); //$NON-NLS-1$
 
 		IStructuredSelection sel = (IStructuredSelection) selection;
 		Set<AuthorizedObjectID> selectedAuthorizedObjectIDs = new HashSet<AuthorizedObjectID>(sel.size());
@@ -196,12 +197,12 @@ implements ISelectionProvider
 			else if (object instanceof AuthorizedObject) {
 				AuthorizedObjectID authorizedObjectID = (AuthorizedObjectID) JDOHelper.getObjectId(object);
 				if (authorizedObjectID == null)
-					throw new IllegalArgumentException("The selection contains a AuthorizedObject that has no AuthorizedObjectID assigned!"); // should never happen, since all the authorizedObjects we manage are already persisted and detached.
+					throw new IllegalArgumentException("The selection contains a AuthorizedObject that has no AuthorizedObjectID assigned!"); // should never happen, since all the authorizedObjects we manage are already persisted and detached. //$NON-NLS-1$
 
 				selectedAuthorizedObjectIDs.add(authorizedObjectID);
 			}
 			else
-				throw new IllegalArgumentException("The selection contains an object that's neither an instance of AuthorizedObjectID nor an instance of AuthorizedObject! The object is: " + object);
+				throw new IllegalArgumentException("The selection contains an object that's neither an instance of AuthorizedObjectID nor an instance of AuthorizedObject! The object is: " + object); //$NON-NLS-1$
 		}
 
 		// now that we have all AuthorizedObjectIDs that should be selected in our set, we iterate the authorizedObjects that are in our authorizedObjectTable and collect the elements that should be selected

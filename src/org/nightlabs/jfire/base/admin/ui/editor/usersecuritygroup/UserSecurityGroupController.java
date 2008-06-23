@@ -31,6 +31,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserSecurityGroup;
@@ -91,7 +92,7 @@ public class UserSecurityGroupController extends EntityEditorPageController
 	@Override
 	public void doLoad(ProgressMonitor monitor)
 	{
-		monitor.beginTask("Loading userSecurityGroup security group", 1);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController.job.loadingUserSecurityGroup"), 1); //$NON-NLS-1$
 		try {
 			if(userSecurityGroupID != null) {
 				// load userSecurityGroup with person data
@@ -122,7 +123,7 @@ public class UserSecurityGroupController extends EntityEditorPageController
 		if (!isLoaded())
 			return;
 
-		monitor.beginTask("Storing user security group", 6);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController.job.savingUserSecurityGroup"), 6); //$NON-NLS-1$
 		try	{
 			monitor.worked(1);
 			UserSecurityGroup oldGroup = userSecurityGroup;

@@ -8,6 +8,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 public class ConfigGroupGeneralPreferencesTabPage extends EntityEditorPageWithProgress {
 	
@@ -26,12 +27,12 @@ public class ConfigGroupGeneralPreferencesTabPage extends EntityEditorPageWithPr
 	}
 
 	public ConfigGroupGeneralPreferencesTabPage(FormEditor editor) {
-		super(editor, ID_PAGE, "General");
+		super(editor, ID_PAGE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage.title.general")); //$NON-NLS-1$
 	}
 	
 	@Override
 	protected void addSections(Composite parent) {
-		configGroupDataSection = new ConfigGroupDataSection(this, parent, "Config group data");
+		configGroupDataSection = new ConfigGroupDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage.section.configGroupData")); //$NON-NLS-1$
 		getManagedForm().addPart(configGroupDataSection);
 	}
 	
@@ -47,6 +48,6 @@ public class ConfigGroupGeneralPreferencesTabPage extends EntityEditorPageWithPr
 
 	@Override
 	protected String getPageFormTitle() {
-		return "General";
+		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage.page.title.general"); //$NON-NLS-1$
 	}
 }

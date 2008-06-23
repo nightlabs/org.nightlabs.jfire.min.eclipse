@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditorUtil;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
@@ -63,7 +64,7 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 				} else if(o instanceof StructLocal) {
 					StructLocal struct = (StructLocal) o;
 					if (struct.getName() == null)
-						return "Noname";
+						return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.prop.EntityTreeCategoryPropertyStructLocal.struct.name.noName"); //$NON-NLS-1$
 					else
 						return struct.getName().getText();
 				} else {

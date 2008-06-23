@@ -33,6 +33,7 @@ import org.nightlabs.i18n.I18nText;
 import org.nightlabs.i18n.I18nTextBuffer;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.ObjectIDUtil;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
@@ -79,9 +80,9 @@ public class SelectAuthorityPage extends WizardHopPage
 	 * @param inheritedAuthorityResolver Used to find out the inherited {@link Authority}. This can be <code>null</code>, if there is no inheritance in the current use case. If it is <code>null</code>, the "inherit" option will be hidden.
 	 */
 	public SelectAuthorityPage(AuthorityTypeID authorityTypeID, InheritedSecuringAuthorityResolver inheritedAuthorityResolver) {
-		super(SelectAuthorityPage.class.getName(), "Select authority");
+		super(SelectAuthorityPage.class.getName(), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.title.selectAuthority")); //$NON-NLS-1$
 		if (authorityTypeID == null)
-			throw new IllegalArgumentException("authorityTypeID == null");
+			throw new IllegalArgumentException("authorityTypeID == null"); //$NON-NLS-1$
 
 		this.authorityTypeID = authorityTypeID;
 		this.inheritedAuthorityResolver = inheritedAuthorityResolver;
@@ -89,7 +90,7 @@ public class SelectAuthorityPage extends WizardHopPage
 
 	private void setInheritedAuthorityName(String authorityName)
 	{
-		radioButtonInherit.setText(String.format("Inherit authority: %s", authorityName));
+		radioButtonInherit.setText(String.format(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.button.text.inheritAuthority"), authorityName)); //$NON-NLS-1$
 	}
 
 	@Override
@@ -105,12 +106,12 @@ public class SelectAuthorityPage extends WizardHopPage
 					setAction(Action.inherit);
 				}
 			});
-			setInheritedAuthorityName("{loading data}");
+			setInheritedAuthorityName(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.label.loadingData")); //$NON-NLS-1$
 		}
 
 		radioButtonNone = new Button(page, SWT.RADIO);
 		radioButtonNone.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		radioButtonNone.setText("Do not assign an authority.");
+		radioButtonNone.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.button.text.DoNotAssignAuthority")); //$NON-NLS-1$
 		radioButtonNone.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -121,7 +122,7 @@ public class SelectAuthorityPage extends WizardHopPage
 		radioButtonCreate = new Button(page, SWT.RADIO);
 		radioButtonCreate.setEnabled(false); // enabling this when the AuthorityType has been loaded.
 		radioButtonCreate.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		radioButtonCreate.setText("Create a new authority.");
+		radioButtonCreate.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.button.text.createNewAuthority")); //$NON-NLS-1$
 		radioButtonCreate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -149,7 +150,7 @@ public class SelectAuthorityPage extends WizardHopPage
 
 		radioButtonSelect = new Button(page, SWT.RADIO);
 		radioButtonSelect.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		radioButtonSelect.setText("Select an authority from the following list:");
+		radioButtonSelect.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.button.text.selectAuthority")); //$NON-NLS-1$
 		radioButtonSelect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -172,16 +173,16 @@ public class SelectAuthorityPage extends WizardHopPage
 			}
 		});
 
-		AuthorityType dummyAT = new AuthorityType("dummy");
-		Authority dummy = new Authority("dummy", "dummy", dummyAT);
-		dummy.getName().setText(NLLocale.getDefault().getLanguage(), "Loading...");
+		AuthorityType dummyAT = new AuthorityType(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.dummy")); //$NON-NLS-1$
+		Authority dummy = new Authority(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.dummy"), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.dummy"), dummyAT); //$NON-NLS-1$ //$NON-NLS-2$
+		dummy.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.loading")); //$NON-NLS-1$
 		authorityList.addElement(dummy);
 
-		Job loadJob = new Job("Loading authority type and authorities") {
+		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.job.loadingAuthorityTypes")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception
 			{
-				monitor.beginTask("Loading authority type and authorities", 100);
+				monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.job.loadingAuthorityTypes"), 100); //$NON-NLS-1$
 
 				if (inheritedAuthorityResolver == null) {
 					inheritedAuthority = null;
@@ -231,7 +232,7 @@ public class SelectAuthorityPage extends WizardHopPage
 							return;
 
 						if (inheritedAuthorityResolver != null)
-							setInheritedAuthorityName(inheritedAuthority == null ? "{none assigned}" : inheritedAuthority.getName().getText());
+							setInheritedAuthorityName(inheritedAuthority == null ? Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.SelectAuthorityPage.label.noneAssigned") : inheritedAuthority.getName().getText()); //$NON-NLS-1$
 
 						radioButtonCreate.setEnabled(true); // now we have the authorityType and thus can enable this.
 
@@ -282,7 +283,7 @@ public class SelectAuthorityPage extends WizardHopPage
 				return selectedAuthorityID != null;
 
 			default:
-				throw new IllegalStateException("Unknown action: " + action);
+				throw new IllegalStateException("Unknown action: " + action); //$NON-NLS-1$
 		}
 	}
 
@@ -319,7 +320,7 @@ public class SelectAuthorityPage extends WizardHopPage
 				return selectedAuthorityID;
 
 			default:
-				throw new IllegalStateException("Unknown action: " + action);
+				throw new IllegalStateException("Unknown action: " + action); //$NON-NLS-1$
 		}
 	}
 

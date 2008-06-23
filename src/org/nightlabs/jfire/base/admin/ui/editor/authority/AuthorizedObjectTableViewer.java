@@ -18,6 +18,7 @@ import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorizedObject;
 
 public class AuthorizedObjectTableViewer extends TableViewer
@@ -31,7 +32,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 			super(viewer);
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
@@ -43,7 +44,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 			}
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public String getColumnText(Object element, int columnIndex)
 		{
 			Map.Entry<AuthorizedObject, Boolean> me = (Map.Entry<AuthorizedObject, Boolean>)element;
@@ -51,11 +52,11 @@ public class AuthorizedObjectTableViewer extends TableViewer
 				case 1: return me.getKey().getName();
 				case 2: return me.getKey().getDescription();
 			}
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 
 		// This method is used by the ViewerComparator (see below).
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		@Override
 		public String getText(Object element) {
 			return ((Map.Entry<AuthorizedObject, Boolean>)element).getKey().getName();
@@ -80,7 +81,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 
 		TableViewerColumn col1 = new TableViewerColumn(this, SWT.CENTER);
 		col1.getColumn().setResizable(false);
-		col1.getColumn().setText("");
+		col1.getColumn().setText(""); //$NON-NLS-1$
 		col1.setEditingSupport(new CheckboxEditingSupport<Map.Entry<AuthorizedObject, Boolean>>(this) {
 			@Override
 			protected boolean doGetValue(Map.Entry<AuthorizedObject, Boolean> element) {
@@ -95,7 +96,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 		});
 
 		TableColumn col2 = new TableColumn(getTable(), SWT.NULL);
-		col2.setText("Authorized object");
+		col2.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorizedObjectTableViewer.column.authorizedObject")); //$NON-NLS-1$
 
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, 100 }, new int[] { 22, -1 });
 		getTable().setLayout(tlayout);

@@ -85,7 +85,7 @@ public class UserPropertiesSection extends RestorableSectionPart
 		blockBasedPersonEditor.updatePropertySet();
 	}
 
-	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey";
+	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey"; //$NON-NLS-1$
 
 	/**
 	 * Create the content for this section.

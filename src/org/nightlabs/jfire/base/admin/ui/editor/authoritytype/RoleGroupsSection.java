@@ -41,6 +41,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
 
 /**
@@ -76,7 +77,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 */
 	protected void createClient(Section section, FormToolkit toolkit)
 	{
-		section.setText("Role groups");
+		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.RoleGroupsSection.section.text")); //$NON-NLS-1$
 		section.setExpanded(true);
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -103,7 +104,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
 	{
 		FormText text = toolkit.createFormText(section, true);
-		text.setText("These role groups are assignable within authorities of this authority type.", false, false);
+		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.RoleGroupsSection.text.text"), false, false); //$NON-NLS-1$
 		section.setDescriptionControl(text);
 	}
 	

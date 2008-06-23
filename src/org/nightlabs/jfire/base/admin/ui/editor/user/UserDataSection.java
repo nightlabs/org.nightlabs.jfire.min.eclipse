@@ -188,7 +188,7 @@ public class UserDataSection extends RestorableSectionPart
 				personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
 					public void displayNameChanged(String displayName) {
 						refreshing = true;
-						System.out.println("UPDATING DISPLAY NAME");
+						System.out.println("UPDATING DISPLAY NAME"); //$NON-NLS-1$
 						updateDisplayName();
 						refreshing = false;
 					}

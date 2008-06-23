@@ -77,7 +77,7 @@ public class UserUtil
 	public static IDirtyStateManager getSectionDirtyStateManager(final RestorableSectionPart section) {
 		return new IDirtyStateManager() {
 			public boolean isDirty() {
-				throw new RuntimeException("isDirty() must not be called.");
+				throw new RuntimeException("isDirty() must not be called."); //$NON-NLS-1$
 			}
 			public void markDirty() {
 				section.markDirty();

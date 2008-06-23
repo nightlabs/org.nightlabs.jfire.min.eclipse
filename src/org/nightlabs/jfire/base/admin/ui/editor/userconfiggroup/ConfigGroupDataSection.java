@@ -15,6 +15,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.config.ConfigGroup;
 
 public class ConfigGroupDataSection extends RestorableSectionPart {
@@ -33,12 +34,12 @@ public class ConfigGroupDataSection extends RestorableSectionPart {
 		section.setText(sectionDescriptionText);
 		
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
-		createLabel(container, "Config group key", 1);
+		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupDataSection.label.configGroupKey"), 1); //$NON-NLS-1$
 		configGroupKeyText = new Text(container, XComposite.getBorderStyle(container));
 		configGroupKeyText.setLayoutData(getGridData(1));
 		configGroupKeyText.setEditable(false);
 		
-		createLabel(container, "Config group name", 1);
+		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupDataSection.label.ConfigGroupName"), 1); //$NON-NLS-1$
 		configGroupNameText = new Text(container, XComposite.getBorderStyle(container));
 		configGroupNameText.setLayoutData(getGridData(1));
 		configGroupNameText.addModifyListener(new ModifyListener() {

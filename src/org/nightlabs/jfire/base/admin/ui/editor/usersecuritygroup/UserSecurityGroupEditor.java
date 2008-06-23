@@ -9,6 +9,7 @@ import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
@@ -35,7 +36,7 @@ implements ICloseOnLogoutEditorPart
 
 		final UserSecurityGroupID groupID = (UserSecurityGroupID) ((JDOObjectEditorInput<?>)getEditorInput()).getJDOObjectID();
 
-		Job job = new Job("Loading user security group") {
+		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor.job.loadingUserSecurityGroup")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				// given that the User had to be loaded to be shown in the tree, this should not take long.
@@ -64,6 +65,6 @@ implements ICloseOnLogoutEditorPart
 		};
 		job.schedule();
 
-		return "User security group " + groupID.userSecurityGroupID;
+		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor.title.userSecurityGroup") + groupID.userSecurityGroupID; //$NON-NLS-1$
 	}
 }

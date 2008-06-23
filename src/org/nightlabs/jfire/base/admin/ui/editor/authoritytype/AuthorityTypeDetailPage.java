@@ -8,6 +8,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorityType;
 
 public class AuthorityTypeDetailPage extends EntityEditorPageWithProgress
@@ -31,7 +32,7 @@ public class AuthorityTypeDetailPage extends EntityEditorPageWithProgress
 	private AuthorityListSection authorityListSection;
 
 	public AuthorityTypeDetailPage(FormEditor editor) {
-		super(editor, AuthorityTypeDetailPage.class.getName(), "General");
+		super(editor, AuthorityTypeDetailPage.class.getName(), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeDetailPage.title.general")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class AuthorityTypeDetailPage extends EntityEditorPageWithProgress
 
 	@Override
 	protected String getPageFormTitle() {
-		return "General";
+		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeDetailPage.page.title.general"); //$NON-NLS-1$
 	}
 
 }
