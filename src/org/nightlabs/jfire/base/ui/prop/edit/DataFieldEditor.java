@@ -58,7 +58,7 @@ public interface DataFieldEditor<F extends DataField> {
 	 * Here a data field editor should add its
 	 * control to a parent Composite.
 	 * <p>
-	 * The Composite returned should be a singelton
+	 * The Composite returned should be a singleton
 	 * and be updated with data changes.
 	 * </p>
 	 * No data-display will be made here. See {@link #setData(IStruct, DataField)}.

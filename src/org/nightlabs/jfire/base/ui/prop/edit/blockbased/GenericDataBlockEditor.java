@@ -45,17 +45,17 @@ import org.nightlabs.jfire.prop.IStruct;
 /**
  * A Composite presenting all fields a propertySet has within a DataBlock to
  * the user for editing.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class GenericDataBlockEditor extends AbstractDataBlockEditor {
-	
+
 	private static Logger LOGGER = Logger.getLogger(GenericDataBlockEditor.class);
 
 	/**
 	 * Assumes to have a parent with GridLayout.
 	 * Adds its controls to the parent.
-	 * 
+	 *
 	 * @param parent Should be a ExpandableDataBlockGroupEditor
 	 * @param style SWT-style for the container-Composite
 	 * @param columnHint A hint for the column count the Editor should use
@@ -68,12 +68,12 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 		int columnHint
 	) {
 		super(struct, dataBlock, parent, style);
-		
+
 		// set grid data for this
 		GridData thisData = new GridData(GridData.FILL_HORIZONTAL);
 		thisData.grabExcessHorizontalSpace = true;
 		this.setLayoutData(thisData);
-		
+
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.numColumns = columnHint;
 		thisLayout.makeColumnsEqualWidth = true;
@@ -82,8 +82,8 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 		setLayout(thisLayout);
 		createFieldEditors();
 	}
-	
-	
+
+
 	public void createFieldEditors() {
 		for (Iterator<DataField> it = getOrderedPropDataFieldsIterator(); it.hasNext(); ) {
 			DataField dataField = it.next();
@@ -109,14 +109,14 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 				fieldEditor.createControl(wrapperComp);
 //				fieldEditor.addDataFieldEditorChangedListener(this);
 			}
-			
+
 			DataFieldEditor fieldEditor = getFieldEditor(dataField);
 			if (getStruct() != null)
 				fieldEditor.setData(getStruct(), dataField);
 			fieldEditor.refresh();
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor#refresh(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlock)
@@ -129,5 +129,5 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 		setStruct(struct);
 		createFieldEditors();
 	}
-	
+
 }
