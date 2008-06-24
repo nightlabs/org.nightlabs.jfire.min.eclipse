@@ -10,6 +10,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.security.AuthorityType;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
@@ -17,6 +18,7 @@ import org.nightlabs.progress.ProgressMonitor;
 
 public class AuthorityTypeEditor
 extends EntityEditor
+implements ICloseOnLogoutEditorPart
 {
 
 	@Override

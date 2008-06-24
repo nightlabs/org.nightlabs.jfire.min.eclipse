@@ -23,13 +23,8 @@
  ******************************************************************************/
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
-import javax.jdo.JDODetachedFieldAccessException;
-
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.security.User;
 
 /**
  * @version $Revision$ - $Date$

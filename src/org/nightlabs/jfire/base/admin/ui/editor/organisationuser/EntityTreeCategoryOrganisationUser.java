@@ -34,8 +34,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditorInput;
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;

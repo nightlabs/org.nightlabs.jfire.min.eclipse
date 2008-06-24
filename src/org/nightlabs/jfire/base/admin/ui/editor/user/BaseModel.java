@@ -3,7 +3,6 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 import org.eclipse.core.runtime.ListenerList;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 public class BaseModel
 {

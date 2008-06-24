@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.admin.ui.editor.authority;
 
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
