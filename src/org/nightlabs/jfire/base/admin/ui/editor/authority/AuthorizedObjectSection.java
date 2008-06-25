@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
+import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.id.AuthorizedObjectID;
@@ -38,7 +39,8 @@ implements ISelectionProvider
 	public AuthorizedObjectSection(IFormPage page, Composite parent) {
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorizedObjectSection.title.authorizedObjects")); //$NON-NLS-1$
 
-		authorizedObjectTable = new AuthorizedObjectTableViewer(getContainer(), this);
+		authorizedObjectTable = new AuthorizedObjectTableViewer(getContainer(), this,
+				AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 		authorizedObjectTable.setInput(authorizedObjects);
 		authorizedObjectTable.getTable().addDisposeListener(new DisposeListener() {
 			@Override
