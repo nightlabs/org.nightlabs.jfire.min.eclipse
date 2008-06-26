@@ -35,7 +35,7 @@ import org.nightlabs.jfire.prop.StructField;
 
 
 /**
- * Implementations of this interface are use to edit the {@link DataField}s
+ * Implementations of this interface are used to edit the {@link DataField}s
  * stored in a {@link PropertySet}. For each type of data field an own
  * DataFieldEditor should be registered as extension to the point <code>org.nightlabs.jfire.base.ui.propDataFieldEditorFactory</code>.
  *

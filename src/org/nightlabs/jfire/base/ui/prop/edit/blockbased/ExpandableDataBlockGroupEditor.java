@@ -98,7 +98,7 @@ implements DataBlockEditorChangedListener
 
 	}
 
-	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		blockGroupEditor.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
 	}
 

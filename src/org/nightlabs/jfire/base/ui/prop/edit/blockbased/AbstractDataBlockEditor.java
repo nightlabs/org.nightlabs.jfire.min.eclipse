@@ -26,165 +26,133 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
-import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
- * A Composite presenting all fields a propertySet has within a DataBlock to
- * the user for editing.
- *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
- *  TODO Why the hell is a composite itself used as instance of an extension point?! That's infringing on our rules concerning extension-point-design! Needs refactoring! Marco.
  */
-public abstract class AbstractDataBlockEditor extends Composite implements DataFieldEditorChangeListener {
+public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 
 	private IStruct struct;
-
-	protected AbstractDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
-		super(parent,style);
-		this.dataBlock = dataBlock;
-		this.struct = struct;
-	}
-
-	public abstract void refresh(IStruct struct, DataBlock block);
-
 	protected DataBlock dataBlock;
 
-	/**
-	 * key: String DataField.getPropRelativePK<br/>
-	 * value: DataFieldEditor fieldEditor
+	protected AbstractDataBlockEditor() {
+	}
+
+	private ListenerList dataBlockEditorListeners = new ListenerList();
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#addDataBlockEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener)
 	 */
-	private Map<String, DataFieldEditor<DataField>> fieldEditors = new HashMap<String, DataFieldEditor<DataField>>();
-
-
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor) {
-		addFieldEditor(dataField, fieldEditor, true);
-	}
-
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor, boolean addListener) {
-		fieldEditors.put(dataField.getPropRelativePK(), fieldEditor);
-		fieldEditor.addDataFieldEditorChangedListener(this);
-	}
-
-	protected DataFieldEditor<DataField> getFieldEditor(DataField dataField) {
-		return fieldEditors.get(dataField.getPropRelativePK());
-	}
-
-	protected boolean hasFieldEditorFor(DataField dataField) {
-		return fieldEditors.containsKey(dataField.getPropRelativePK());
-	}
-
-	private Collection<DataBlockEditorChangedListener> changeListener = new LinkedList<DataBlockEditorChangedListener>();
 	public synchronized void addDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
-		changeListener.add(listener);
+		dataBlockEditorListeners.add(listener);
 	}
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#removeDataBlockEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener)
+	 */
 	public synchronized void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
-		changeListener.add(listener);
+		dataBlockEditorListeners.add(listener);
 	}
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
-		for (DataBlockEditorChangedListener listener : new ArrayList<DataBlockEditorChangedListener>(changeListener)) {
-			listener.dataBlockEditorChanged(this,dataFieldEditor);
+		Object[] listeners = dataBlockEditorListeners.getListeners();
+		for (Object listener : listeners) {
+			if (listener instanceof DataBlockEditorChangedListener)
+				((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(this, dataFieldEditor);
 		}
 	}
 
-	public Map<String, Integer> getStructFieldDisplayOrder() {
-		// TODO re-enable this
-		//return AbstractPropStructOrderConfigModule.sharedInstance().structFieldDisplayOrder();
-		List<StructField<? extends DataField>> fields = struct.getStructBlock(dataBlock.getDataBlockGroup()).getStructFields();
-		Map<String, Integer> fieldOrdering = new HashMap<String, Integer>(fields.size());
-		int index = 0;
-		for (StructField<? extends DataField> field : fields) {
-			fieldOrdering.put(field.getPrimaryKey(), index);
-			index++;
+	private DataFieldEditorChangeListener fieldEditorChangeListener = new DataFieldEditorChangeListener() {
+		@Override
+		public void dataFieldEditorChanged(DataFieldEditor<? extends DataField> editor) {
+			notifyChangeListeners(editor);
+
+			List<ValidationResult> validationResults = getDataBlock().validate(struct);
+			if (getValidationResultManager() != null)
+				getValidationResultManager().setValidationResults(validationResults);
 		}
+	};
 
-		return fieldOrdering;
-	}
+//	@Override
+//	public IStruct getStruct() {
+//		return struct;
+//	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener#dataFieldEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
-	 */
-	public void dataFieldEditorChanged(DataFieldEditor<? extends DataField> editor) {
-		notifyChangeListeners(editor);
-
-		List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
-		if (getValidationResultManager() != null)
-			getValidationResultManager().setValidationResults(validationResults);
-	}
-
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
-	public Iterator<DataField> getOrderedPropDataFieldsIterator() {
-		List<DataField> result = new LinkedList<DataField>();
-		Map<String, Integer> structFieldOrder = getStructFieldDisplayOrder();
-		for (Iterator<DataField> it = dataBlock.getDataFields().iterator(); it.hasNext(); ) {
-			DataField dataField = it.next();
-			if (structFieldOrder.containsKey(dataField.getStructFieldPK())) {
-				Integer index = structFieldOrder.get(dataField.getStructFieldPK());
-				dataField.setPriority(index.intValue());
-			}
-			result.add(dataField);
-		}
-		Collections.sort(result);
-		return result.iterator();
-	}
-
-	protected IStruct getStruct() {
-		return struct;
-	}
-
-	protected void setStruct(IStruct struct) {
-		this.struct = struct;
+	@Override
+	public void updatePropertySet() {
+		getDataBlockEditorComposite().updatePropertySet();
 	}
 
 	@Override
-	public void dispose() {
-		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {
-			editor.removeDataFieldEditorChangedListener(this);
-		}
-		fieldEditors.clear();
-		super.dispose();
-	}
-
-	/**
-	 * Default implementation of updateProp() iterates through all
-	 * DataFieldEditor s added by {@link #addFieldEditor(DataField, DataFieldEditor)}
-	 * and calls their updateProp method.<br/>
-	 * Implementors might override if no registered PropDataFieldEditors are used.
-	 */
-	public void updatePropertySet() {
-		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {
-			editor.updatePropertySet();
-		}
-	}
-
 	public DataBlock getDataBlock() {
 		return dataBlock;
+	}
+	
+	@Override
+	public IStruct getStruct() {
+		return struct;
 	}
 
 	private IValidationResultManager validationResultManager;
 
+	@Override
 	public void setValidationResultManager(IValidationResultManager validationResultManager) {
 		this.validationResultManager = validationResultManager;
+		getDataBlockEditorComposite().setValidationResultManager(validationResultManager);
 	}
-
+	
 	public IValidationResultManager getValidationResultManager() {
 		return validationResultManager;
 	}
+	
+	@Override
+	public void setData(IStruct struct, DataBlock dataBlock) {
+		this.struct = struct;
+		this.dataBlock = dataBlock;
+		if (dataBlockEditorComposite != null)
+			dataBlockEditorComposite.refresh(struct, dataBlock);
+	}
+	
+	private IDataBlockEditorComposite dataBlockEditorComposite;
+	
+	@Override
+	public Control createControl(Composite parent) {
+		if (dataBlockEditorComposite != null)
+			throw new IllegalStateException("The control for this DataBlockEditor was already created");
+		dataBlockEditorComposite = createEditorComposite(parent);
+		dataBlockEditorComposite.addDataFieldEditorChangeListener(fieldEditorChangeListener);
+		dataBlockEditorComposite.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent evt) {
+				dataBlockEditorComposite.removeDataFieldEditorChangeListener(fieldEditorChangeListener);
+			}
+		});
+		if (!(dataBlockEditorComposite instanceof Control))
+			throw new IllegalStateException(this.getClass() + " is not implemented correctly, it did not return a " + Control.class.getName() + " in createEditorComposite()");
+		
+		return (Control) dataBlockEditorComposite;
+	}
+	
+	private IDataBlockEditorComposite getDataBlockEditorComposite() {
+		if (dataBlockEditorComposite == null)
+			throw new IllegalStateException("The control of this DataBlockEditor was not created yet, however this implementation relies on it in order to function");
+		return dataBlockEditorComposite;
+	}
+	
+	@Override
+	public Control getControl() {
+		return (Control) getDataBlockEditorComposite();
+	}
+	
+	protected abstract IDataBlockEditorComposite createEditorComposite(Composite parent);
 }

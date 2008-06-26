@@ -34,5 +34,5 @@ import org.nightlabs.jfire.prop.DataField;
  */
 public interface DataBlockEditorChangedListener {
 	
-	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor);
+	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor);
 }

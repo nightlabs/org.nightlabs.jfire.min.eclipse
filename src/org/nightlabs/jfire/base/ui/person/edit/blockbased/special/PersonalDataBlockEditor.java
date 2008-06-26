@@ -36,8 +36,11 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorFactory;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditorComposite;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditorFactory;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.IDataBlockEditorComposite;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
@@ -49,7 +52,6 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
 /**
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
 public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 
@@ -58,79 +60,7 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 	 */
 	private static final Logger logger = Logger.getLogger(PersonalDataBlockEditor.class);
 
-	public PersonalDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
-		super(struct, dataBlock, parent, style);
-		try {
-			setLayoutData(new GridData(GridData.FILL_BOTH));
-			GridLayout thisLayout = new GridLayout();
-			thisLayout.horizontalSpacing = 2;
-			thisLayout.numColumns = 3;
-			thisLayout.verticalSpacing = 2;
-			thisLayout.makeColumnsEqualWidth = true;
-			thisLayout.marginWidth = 0;
-			thisLayout.marginHeight = 0;
-			this.setLayout(thisLayout);
-
-			createFieldEditors();
-
-			this.layout();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void createFieldEditors() {
-		addDataFieldEditor(PersonStruct.PERSONALDATA_NAME,3);
-		addDataFieldEditor(PersonStruct.PERSONALDATA_FIRSTNAME,3);
-		addDataFieldEditor(PersonStruct.PERSONALDATA_COMPANY,3);
-		addDataFieldEditor(PersonStruct.PERSONALDATA_SALUTATION,1);
-		addDataFieldEditor(PersonStruct.PERSONALDATA_TITLE,1);
-		addDataFieldEditor(PersonStruct.PERSONALDATA_DATEOFBIRTH,1);
-		addDataFieldEditor(PersonStruct.PERSONALDATA_PHOTO,3);
-	}
-
-	private void addDataFieldEditor(StructFieldID fieldID, int horizontalSpan)
-	{
-		DataField field = null;
-		try {
-			field = dataBlock.getDataField(fieldID);
-		} catch (DataFieldNotFoundException e) {
-			logger.error("addDataFieldEditor(StructFieldID fieldID) DataField not found for fieldID continuing: "+fieldID.toString(),e); //$NON-NLS-1$
-		}
-		DataFieldEditor editor = null;
-		if (!hasFieldEditorFor(field)) {
-			try {
-				editor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
-						getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE,
-						"", // TODO: Context ?!? //$NON-NLS-1$
-						field
-				);
-			} catch (DataFieldEditorNotFoundException e1) {
-				logger.error("addPersonalDataFieldEditor(PersonStructFieldID fieldID) PersonDataFieldEditor not found for fieldID continuing: "+fieldID.toString(),e1); //$NON-NLS-1$
-			}
-			Control editorControl = editor.createControl(this);
-			GridData editorLData = new GridData();
-			editorLData.horizontalSpan = horizontalSpan;
-			editorLData.grabExcessHorizontalSpace = true;
-			editorLData.horizontalAlignment = GridData.FILL;
-			editorControl.setLayoutData(editorLData);
-			addFieldEditor(field, editor);
-		}
-		else {
-			editor = getFieldEditor(field);
-		}
-		editor.setData(getStruct(), field);
-		editor.refresh();
-	}
-
-	@Override
-	public void refresh(IStruct struct, DataBlock block) {
-		this.dataBlock = block;
-		createFieldEditors();
-	}
-
-
-	public static class Factory implements DataBlockEditorFactory {
+	public static class Factory extends AbstractDataBlockEditorFactory {
 		/**
 		 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonDataBlockEditorFactory#getProviderStructBlockID()
 		 */
@@ -138,11 +68,91 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 			return PersonStruct.PERSONALDATA;
 		}
 
-		/**
-		 * @see org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonDataBlockEditorFactory#createPersonDataBlockEditor(org.nightlabs.jfire.base.ui.person.PersonDataBlock, org.eclipse.swt.widgets.Composite, int)
-		 */
-		public AbstractDataBlockEditor createPropDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style) {
-			return new PersonalDataBlockEditor(struct, dataBlock, parent, style);
+		@Override
+		public DataBlockEditor createDataBlockEditor(IStruct struct, DataBlock dataBlock) {
+			return new PersonalDataBlockEditor(struct, dataBlock);
 		}
 	}
+	
+	private static class PersonalDataBlockEditorComposite extends AbstractDataBlockEditorComposite {
+
+		public PersonalDataBlockEditorComposite(DataBlockEditor blockEditor, Composite parent, int style) {
+			super(blockEditor, parent, style);
+			try {
+				setLayoutData(new GridData(GridData.FILL_BOTH));
+				GridLayout thisLayout = new GridLayout();
+				thisLayout.horizontalSpacing = 2;
+				thisLayout.numColumns = 3;
+				thisLayout.verticalSpacing = 2;
+				thisLayout.makeColumnsEqualWidth = true;
+				thisLayout.marginWidth = 0;
+				thisLayout.marginHeight = 0;
+				this.setLayout(thisLayout);
+
+				createFieldEditors();
+
+				this.layout();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		private void createFieldEditors() {
+			addDataFieldEditor(PersonStruct.PERSONALDATA_NAME,3);
+			addDataFieldEditor(PersonStruct.PERSONALDATA_FIRSTNAME,3);
+			addDataFieldEditor(PersonStruct.PERSONALDATA_COMPANY,3);
+			addDataFieldEditor(PersonStruct.PERSONALDATA_SALUTATION,1);
+			addDataFieldEditor(PersonStruct.PERSONALDATA_TITLE,1);
+			addDataFieldEditor(PersonStruct.PERSONALDATA_DATEOFBIRTH,1);
+			addDataFieldEditor(PersonStruct.PERSONALDATA_PHOTO,3);
+		}
+
+		private void addDataFieldEditor(StructFieldID fieldID, int horizontalSpan)
+		{
+			DataField field = null;
+			try {
+				field = getDataBlock().getDataField(fieldID);
+			} catch (DataFieldNotFoundException e) {
+				logger.error("addDataFieldEditor(StructFieldID fieldID) DataField not found for fieldID continuing: "+fieldID.toString(),e); //$NON-NLS-1$
+			}
+			DataFieldEditor<DataField> editor = null;
+			if (!hasFieldEditorFor(field)) {
+				try {
+					editor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
+							getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE,
+							"", // TODO: Context ?!? //$NON-NLS-1$
+							field
+					);
+				} catch (DataFieldEditorNotFoundException e1) {
+					logger.error("addPersonalDataFieldEditor(PersonStructFieldID fieldID) PersonDataFieldEditor not found for fieldID continuing: "+fieldID.toString(),e1); //$NON-NLS-1$
+				}
+				Control editorControl = editor.createControl(this);
+				GridData editorLData = new GridData();
+				editorLData.horizontalSpan = horizontalSpan;
+				editorLData.grabExcessHorizontalSpace = true;
+				editorLData.horizontalAlignment = GridData.FILL;
+				editorControl.setLayoutData(editorLData);
+				addFieldEditor(field, editor);
+			}
+			else {
+				editor = getFieldEditor(field);
+			}
+			editor.setData(getStruct(), field);
+			editor.refresh();
+		}
+
+		@Override
+		public void doRefresh() {
+			createFieldEditors();
+		}
+	}
+	
+	protected PersonalDataBlockEditor(IStruct struct, DataBlock dataBlock) {
+		super();
+	}
+
+	@Override
+	protected IDataBlockEditorComposite createEditorComposite(Composite parent) {
+		return new PersonalDataBlockEditorComposite(this, parent, SWT.NONE);
+	}	
 }

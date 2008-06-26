@@ -26,108 +26,24 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
 import org.nightlabs.jfire.prop.DataBlock;
-import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**
- * A Composite presenting all fields a propertySet has within a DataBlock to
- * the user for editing.
- *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 
-	private static Logger LOGGER = Logger.getLogger(GenericDataBlockEditor.class);
-
-	/**
-	 * Assumes to have a parent with GridLayout.
-	 * Adds its controls to the parent.
-	 *
-	 * @param parent Should be a ExpandableDataBlockGroupEditor
-	 * @param style SWT-style for the container-Composite
-	 * @param columnHint A hint for the column count the Editor should use
-	 */
-	public GenericDataBlockEditor(
-		IStruct struct,
-		DataBlock dataBlock,
-		Composite parent,
-		int style,
-		int columnHint
-	) {
-		super(struct, dataBlock, parent, style);
-
-		// set grid data for this
-		GridData thisData = new GridData(GridData.FILL_HORIZONTAL);
-		thisData.grabExcessHorizontalSpace = true;
-		this.setLayoutData(thisData);
-
-		GridLayout thisLayout = new GridLayout();
-		thisLayout.numColumns = columnHint;
-		thisLayout.makeColumnsEqualWidth = true;
-		thisLayout.marginWidth = 0;
-		thisLayout.marginHeight = 0;
-		setLayout(thisLayout);
-		createFieldEditors();
+	public GenericDataBlockEditor(IStruct struct, DataBlock dataBlock) {
+		super();
 	}
-
-
-	public void createFieldEditors() {
-		for (Iterator<DataField> it = getOrderedPropDataFieldsIterator(); it.hasNext(); ) {
-			DataField dataField = it.next();
-			if (!hasFieldEditorFor(dataField)) {
-				DataFieldEditor<DataField> fieldEditor;
-				try {
-					fieldEditor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
-							getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE,
-							null, dataField
-						);
-				} catch (DataFieldEditorNotFoundException e) {
-					// could not find editor for class log the error
-					LOGGER.error("Editor not found for one field, continuing",e); //$NON-NLS-1$
-					continue;
-				}
-				addFieldEditor(dataField, fieldEditor,true);
-				// have an editor, store it
-//				fieldEditors.put(dataFieldKey,fieldEditor);
-				// wrap the editor in a Composite to make it easier to layout
-				XComposite wrapperComp = new XComposite(this, SWT.PUSH, LayoutMode.TIGHT_WRAPPER);
-				((GridLayout)wrapperComp.getLayout()).verticalSpacing = 5;
-				// add the field editor
-				fieldEditor.createControl(wrapperComp);
-//				fieldEditor.addDataFieldEditorChangedListener(this);
-			}
-
-			DataFieldEditor fieldEditor = getFieldEditor(dataField);
-			if (getStruct() != null)
-				fieldEditor.setData(getStruct(), dataField);
-			fieldEditor.refresh();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor#refresh(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlock)
-	 */
+	
 	@Override
-	public void refresh(IStruct struct, DataBlock dataBlock) {
-		if (dataBlock == null)
-			throw new IllegalStateException("Parameter dataBlock must not be null");		 //$NON-NLS-1$
-		this.dataBlock = dataBlock;
-		setStruct(struct);
-		createFieldEditors();
+	protected IDataBlockEditorComposite createEditorComposite(Composite parent) {
+		return new GenericDataBlockEditorComposite(this, parent, SWT.NONE, 1);
 	}
 
 }

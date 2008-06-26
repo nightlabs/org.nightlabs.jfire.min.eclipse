@@ -182,7 +182,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	private class ChangeListenerProxy implements DataBlockEditorChangedListener {
 		private DataBlockEditorChangedListener changeListener;
 
-		public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+		public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 			if (!refreshing) {
 				updatePropertySet();
 				refreshDisplayNameComp();
@@ -214,7 +214,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		this.displayNameChangedListener = displayNameChangedListener;
 	}
 
-	protected void fireDataBlockEditorChangedEvent(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	protected void fireDataBlockEditorChangedEvent(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		changeListenerProxy.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
 
 		if (!refreshing)

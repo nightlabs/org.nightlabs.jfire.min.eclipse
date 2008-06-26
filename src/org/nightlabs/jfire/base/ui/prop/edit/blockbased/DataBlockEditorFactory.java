@@ -26,16 +26,22 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.core.runtime.IExecutableExtension;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataBlock;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
+ * {@link DataBlockEditorFactory}s are used to register specific types
+ * of {@link DataBlockEditor}s to edit their corresponding {@link DataField}.
+ * The factory is responsible for creating the field editors and should be
+ * registered as extension to the point <code>org.nightlabs.jfire.base.ui.propDataFieldEditorFactory</code>
+ *  
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
-public interface DataBlockEditorFactory {
+public interface DataBlockEditorFactory extends IExecutableExtension {
 	public StructBlockID getProviderStructBlockID();
-	public AbstractDataBlockEditor createPropDataBlockEditor(IStruct struct, DataBlock dataBlock, Composite parent, int style);
+	public DataBlockEditor createDataBlockEditor(IStruct struct, DataBlock dataBlock);
 }

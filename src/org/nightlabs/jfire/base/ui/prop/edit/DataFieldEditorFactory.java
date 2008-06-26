@@ -49,7 +49,7 @@ public interface DataFieldEditorFactory<F extends DataField> {
 
 	/**
 	 * Returns the editor types the field editor can be used with.
-	 * @return Tthe editor types the field editor can be used with.
+	 * @return The editor types the field editor can be used with.
 	 */
 	public String[] getEditorTypes();
 

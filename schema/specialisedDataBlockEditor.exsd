@@ -49,13 +49,21 @@
          </documentation>
       </annotation>
       <complexType>
+         <attribute name="structBlockID" type="string">
+            <annotation>
+               <documentation>
+                  The String representation of the StructBlockID for which the DataBlockEditor should be registered.
+Note, that the instance of DataBlockEditorFactory is asked to return this and does not necessarily read this attribute.
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  Specialised DataBlockEditorFactory to provide editors for the structBlock with the given structBlockID.
+                  Specialised DataBlockEditorFactory to provide editors for the StructBlock of a certain StructBlockID. The id is defined by the implementation itself.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.base.ui.prop.edit.blockbased.PropDataBlockEditorFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorFactory"/>
                </appInfo>
             </annotation>
          </attribute>

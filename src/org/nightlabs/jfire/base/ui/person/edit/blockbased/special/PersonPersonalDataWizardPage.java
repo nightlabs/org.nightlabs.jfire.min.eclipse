@@ -13,9 +13,9 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.composite.LabeledText;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockWizardPage;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
@@ -125,7 +125,7 @@ implements DataBlockEditorChangedListener
 				Person.class, Person.STRUCT_SCOPE, structLocalScope, new NullProgressMonitor()));
 	}
 
-	public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		pageChanged();
 	}
 
