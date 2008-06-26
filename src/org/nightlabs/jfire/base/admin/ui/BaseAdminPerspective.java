@@ -29,7 +29,10 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView;
 import org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView;
+import org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView;
+import org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView;
 
 /**
  * Administration perspective for Users, UserGroups,
@@ -39,12 +42,12 @@ import org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class BaseAdminPerspective2 implements IPerspectiveFactory
+public class BaseAdminPerspective implements IPerspectiveFactory
 {
 	/**
 	 * The perspective id.
 	 */
-	public static final String ID_PERSPECTIVE = BaseAdminPerspective2.class.getName();
+	public static final String ID_PERSPECTIVE = BaseAdminPerspective.class.getName();
 
 	/**
 	 * Create the initial perspective layout.
@@ -55,7 +58,17 @@ public class BaseAdminPerspective2 implements IPerspectiveFactory
 		layout.setEditorAreaVisible(true);
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.25f,	IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
 		left.addView(SysAdminEntityTreeView.ID_VIEW);
-		RCPUtil.addAllPerspectiveShortcuts(layout);
+
+		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, IPageLayout.ID_EDITOR_AREA);
+		bottom.addView(PendingOrganisationRegistrationsView.ID_VIEW);
+		bottom.addView(JMSQueueMessageListView.ID_VIEW);
+		bottom.addView(AsyncInvokeProblemView.ID_VIEW);
+		
 		layout.addShowViewShortcut(SysAdminEntityTreeView.ID_VIEW);
+		layout.addShowViewShortcut(PendingOrganisationRegistrationsView.ID_VIEW);
+		layout.addShowViewShortcut(JMSQueueMessageListView.ID_VIEW);
+		layout.addShowViewShortcut(AsyncInvokeProblemView.ID_VIEW);
+		
+		RCPUtil.addAllPerspectiveShortcuts(layout);
 	}
 }

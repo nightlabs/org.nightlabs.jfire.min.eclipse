@@ -46,6 +46,7 @@ import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 import org.nightlabs.jfire.organisation.OrganisationManager;
 import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
 import org.nightlabs.jfire.organisation.RegistrationStatus;
@@ -54,7 +55,8 @@ import org.nightlabs.l10n.NumberFormatter;
 /**
  * @author Marco Schulze - marco at nightlabs dot de
  */
-public class PendingOrganisationRegistrationsView extends ViewPart
+public class PendingOrganisationRegistrationsView 
+extends LSDViewPart
 {
 	/**
 	 * LOG4J logger used by this class
@@ -258,7 +260,8 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent)
+//	public void createPartControl(Composite parent)
+	public void createPartContents(Composite parent)
 	{
 		try {
 			Composite composite = parent;
@@ -268,27 +271,25 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 			Composite buttonBar = new Composite(composite, SWT.NULL);
 			buttonBar.setLayout(new GridLayout(5, false));
 	
-			// I didn't externalise the Strings for these buttons, because they should be ViewActions anyway. Need refactoring!
 			acceptButton = new Button(buttonBar, SWT.NULL);
-			acceptButton.setText("accept"); //$NON-NLS-1$
+			acceptButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.accept")); //$NON-NLS-1$
 			acceptButton.addSelectionListener(acceptButton_selectionListener);
 
 			rejectButton = new Button(buttonBar, SWT.NULL);
-			rejectButton.setText("reject"); //$NON-NLS-1$
+			rejectButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.reject")); //$NON-NLS-1$
 			rejectButton.addSelectionListener(rejectButton_selectionListener);
 
 			cancelButton = new Button(buttonBar, SWT.NULL);
-			cancelButton.setText("cancel"); //$NON-NLS-1$
+			cancelButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.cancel")); //$NON-NLS-1$
 			cancelButton.addSelectionListener(cancelButton_selectionListener);
 			
 			ackButton = new Button(buttonBar, SWT.NULL);
-			ackButton.setText("ack"); //$NON-NLS-1$
+			ackButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.acknowledge")); //$NON-NLS-1$
 			ackButton.addSelectionListener(ackButton_selectionListener);
 			
 			reloadButton = new Button(buttonBar, SWT.NULL);
-			reloadButton.setText("reload"); //$NON-NLS-1$
+			reloadButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.reload")); //$NON-NLS-1$
 			reloadButton.addSelectionListener(reloadButton_selectionListener);
-			
 
 			contentProvider = new RegistrationTableContentProvider();
 			labelProvider = new RegistrationTableLabelProvider();
@@ -327,8 +328,10 @@ public class PendingOrganisationRegistrationsView extends ViewPart
 		}
 		
 		// DEBUG ///////////////////////////////
-		System.out.println(NumberFormatter.formatInt(2384, 10));
-		System.out.println(NumberFormatter.formatFloat(2349.95752, 3));
+		if (logger.isDebugEnabled()) {
+			logger.debug(NumberFormatter.formatInt(2384, 10));
+			logger.debug(NumberFormatter.formatFloat(2349.95752, 3));			
+		}
 		// end DEBUG ///////////////////////////////
 	}
 

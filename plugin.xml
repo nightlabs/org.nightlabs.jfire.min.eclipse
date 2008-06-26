@@ -3,10 +3,10 @@
 <plugin>
     <extension point="org.eclipse.ui.perspectives">
         <perspective
-            class="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective2"
+            class="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective"
             fixed="false"
             icon="icons/systemadministration_perspective.new.16x16.png"
-            id="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective2" name="%perspectives.systemAdministration"/>
+            id="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective" name="%perspectives.systemAdministration"/>
         <perspective
             class="org.nightlabs.jfire.base.admin.ui.timer.TimerPerspective"
             icon="icons/timer/TimerPerspective.16x16.png"
@@ -35,7 +35,7 @@
             id="org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView" name="%org.nightlabs.jfire.base.admin.ui.j2ee.JMSQueueMessageListView.name"/>
         <view category="org.nightlabs.jfire.base.admin.ui"
             class="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView"
-            id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView" name="AsyncInvokeProblemView"/>
+            id="org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView" name="%org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView.name"/>
     </extension>
     <extension point="org.eclipse.ui.actionSets">
         <actionSet id="org.nightlabs.jfire.base.admin.ui.actions"
@@ -86,7 +86,7 @@
                 menubarPath="administrationMenu/entityGroup" tooltip="%actions.createUserConfigGroup.tooltip"/>
             <action
                 class="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupAction"
-                icon="icons/usergroup/CreateUserGroupAction.16x16.png"
+                icon="icons/usersecuritygroup/CreateUserGroupAction.16x16.png"
                 id="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupAction#menu"
                 label="%actions.createUserGroup.label"
                 menubarPath="administrationMenu/entityGroup" tooltip="%actions.createUserGroup.tooltip"/>
@@ -142,7 +142,7 @@
                 style="push" toolbarPath="additions" tooltip="%actions.createUserConfigGroup.tooltip"/>
             <action
                 class="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupAction"
-                icon="icons/usergroup/CreateUserGroupAction.16x16.png"
+                icon="icons/usersecuritygroup/CreateUserGroupAction.16x16.png"
                 id="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupAction"
                 label="%actions.createUserGroup.label" style="push"
                 toolbarPath="additions" tooltip="%actions.createUserGroup.tooltip"/>

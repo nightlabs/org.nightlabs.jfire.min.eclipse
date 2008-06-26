@@ -8,6 +8,8 @@ import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 public class AsyncInvokeProblemView
 		extends LSDViewPart
 {
+	public static final String ID_VIEW = AsyncInvokeProblemView.class.getName();
+	
 	private SelectionProviderProxy selectionProviderProxy = new SelectionProviderProxy();
 	private AsyncInvokeProblemTable asyncInvokeProblemTable;
 

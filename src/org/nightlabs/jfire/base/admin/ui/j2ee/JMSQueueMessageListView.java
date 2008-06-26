@@ -13,8 +13,11 @@ import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class JMSQueueMessageListView extends LSDViewPart
+public class JMSQueueMessageListView 
+extends LSDViewPart
 {
+	public static final String ID_VIEW = JMSQueueMessageListView.class.getName();
+	
 	private JMSQueueMessageList listComposite;
 	private boolean doAutoUpdate = false;
 
@@ -32,12 +35,6 @@ public class JMSQueueMessageListView extends LSDViewPart
 			setChecked(doAutoUpdate);
 		}
 	};
-
-	/**
-	 * 
-	 */
-	public JMSQueueMessageListView() {
-	}
 
 	/** {@inheritDoc}
 	 * @see org.nightlabs.base.ui.part.ControllablePart#createPartContents(org.eclipse.swt.widgets.Composite)
