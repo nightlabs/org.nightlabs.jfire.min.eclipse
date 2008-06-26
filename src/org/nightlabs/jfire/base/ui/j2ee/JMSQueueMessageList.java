@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComboComposite.CaptionOrientation;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
@@ -100,7 +101,7 @@ public class JMSQueueMessageList extends XComposite {
 	 */
 	public JMSQueueMessageList(Composite parent, int style) {
 		super(parent, style);
-		queuesCombo = new JMSQueueCombo(this, SWT.NONE, Messages.getString("org.nightlabs.jfire.base.j2ee.JMSQueueMessageList.queueCombo.caption")); //$NON-NLS-1$
+		queuesCombo = new JMSQueueCombo(this, SWT.NONE, Messages.getString("org.nightlabs.jfire.base.j2ee.JMSQueueMessageList.queueCombo.caption")); //$NON-NLS-1$ 
 		queuesCombo.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}

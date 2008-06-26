@@ -23,7 +23,7 @@ import org.nightlabs.progress.ProgressMonitor;
 public class JMSQueueCombo extends XComboComposite<String> {
 
 	public JMSQueueCombo(Composite parent, int comboStyle, String caption) {
-		super(parent, comboStyle, caption);
+		super(parent, comboStyle, caption, CaptionOrientation.LEFT);
 		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.j2ee.JMSQueueCombo.loadJob.name")) { //$NON-NLS-1$
 			@SuppressWarnings("unchecked") //$NON-NLS-1$
 			@Override
