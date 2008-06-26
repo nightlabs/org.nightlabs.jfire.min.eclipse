@@ -1125,6 +1125,7 @@ extends AbstractEPProcessor
 				}
 				else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
 					loginResult.setWasAuthenticationErr(true);
+					loginResult.setException(remoteException);
 				}
 				else {
 					if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {

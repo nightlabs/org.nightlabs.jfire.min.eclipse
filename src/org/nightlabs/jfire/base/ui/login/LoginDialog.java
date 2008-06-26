@@ -27,6 +27,9 @@
 package org.nightlabs.jfire.base.ui.login;
 
 import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+import javax.security.auth.login.LoginException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -35,7 +38,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -633,8 +635,14 @@ public class LoginDialog extends TitleAreaDialog
 		} else {
 			// login failed
 			if (loginResult.isWasAuthenticationErr()) {
-				setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorauthenticationFailed")); //$NON-NLS-1$
-				
+				Throwable error = loginResult.getException();
+				if (error != null && findCause(error, LoginException.class, "org.jfire.serverShuttingDown") != null)
+					setErrorMessage("Server is shutting down. Try again later (after it restarted).");
+				else if (error != null && findCause(error, LoginException.class, "org.jfire.serverNotYetUpAndRunning") != null)
+					setErrorMessage("Server is not yet up and running. Please try again later (when the boot process completed).");
+				else
+					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorauthenticationFailed")); //$NON-NLS-1$
+
 				// Pause for a while to prevent users from trying out passwords
 				try {
 					Thread.sleep(2000);
@@ -662,20 +670,59 @@ public class LoginDialog extends TitleAreaDialog
 		}
 	}
 
+	private static Throwable findCause(Throwable e, Class<? extends Throwable> searchedClass, String searchedMessageRegex)
+	{
+		if (e == null)
+			throw new IllegalArgumentException("e must not be null!");
+
+		if (searchedClass == null && searchedMessageRegex == null)
+			throw new IllegalArgumentException("searchedClass and searchedMessageRegex are both null! One must be defined!");
+
+		Pattern searchedMessageRegexPattern = searchedMessageRegex == null ? null : Pattern.compile(searchedMessageRegex);
+
+		Throwable cause = e;
+		while (cause != null) {
+			boolean found = true;
+
+			if (searchedClass != null) {
+				if (!searchedClass.isInstance(cause)) {
+					found = false;
+				}
+			}
+
+			if (found && searchedMessageRegexPattern != null) { // if the match already failed, there's no need to search further
+				String message = cause.getMessage();
+				if (message == null)
+					found = false;
+				else if (!searchedMessageRegexPattern.matcher(message).matches())
+					found = false;
+			}
+
+			if (found)
+				return cause;
+
+			Throwable newCause = ExceptionUtils.getCause(e);
+			if (cause == newCause) // really strange, but I just had an eternal loop because the cause of an exception was itself.
+				return null;
+
+			cause = newCause;
+		}
+		return null;
+	}
+
 	private String getMessageForException(Throwable e)
 	{
-		if(e.getMessage().contains("jfire not bound")) { //$NON-NLS-1$
+		if (findCause(e, null, "jfire not bound") != null) //$NON-NLS-1$
 			return Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.notBoundError"); //$NON-NLS-1$
-		} else {
-			StringBuffer message = new StringBuffer();
-			message.append(String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorAppend"), loginResult.getException().getClass().getName(), loginResult.getException().getLocalizedMessage())); //$NON-NLS-1$
-			Throwable cause = loginResult.getException();
-			while ( cause != null ) {
-				message.append(String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorAppend"), cause.getClass().getName(), cause.getLocalizedMessage())); //$NON-NLS-1$
-				cause = cause.getCause();
-			}
-			return message.toString();
+
+		StringBuffer message = new StringBuffer();
+		message.append(String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorAppend"), loginResult.getException().getClass().getName(), loginResult.getException().getLocalizedMessage())); //$NON-NLS-1$
+		Throwable cause = loginResult.getException();
+		while ( cause != null ) {
+			message.append(String.format(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorAppend"), cause.getClass().getName(), cause.getLocalizedMessage())); //$NON-NLS-1$
+			cause = cause.getCause();
 		}
+		return message.toString();
 	}
 
 	/**
