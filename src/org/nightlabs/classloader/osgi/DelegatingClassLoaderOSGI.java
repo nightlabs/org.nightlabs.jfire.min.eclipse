@@ -124,9 +124,9 @@ public class DelegatingClassLoaderOSGI
 	 * we often had deadlocks with the ClassPathManager which tries to synchronise on this object as well.
 	 */
 	@Override
-	public Class findLocalClass(String classname) throws ClassNotFoundException {
+	public Class<?> findLocalClass(String classname) throws ClassNotFoundException {
 		LogUtil.log_debug(this.getClass(), "findLocalClass", "Asked for "+classname);
-		Class result = null;
+		Class<?> result = null;
 
 //		ClassLoader cl = this;
 //		String prefix = "";
@@ -204,10 +204,11 @@ public class DelegatingClassLoaderOSGI
 	 * delegates when classes or resources could not be found by the
 	 * parent implementation.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Enumeration findLocalResources(String resource) {
+	public Enumeration<URL> findLocalResources(String resource) {
 		LogUtil.log_debug(this.getClass(), "findLocalResources", "Asked for "+resource);
-		Enumeration result = null;
+		Enumeration<URL> result = null;
 		result = super.findLocalResources(resource);
 		if (result == null) {
 			LogUtil.log_debug(this.getClass(), "findLocalResources", "Not found locally ask delegates.");
@@ -232,7 +233,7 @@ public class DelegatingClassLoaderOSGI
 		classLoadingDelegator.addDelegate(delegate);
 	}
 
-	public Class findDelegateClass(String name) throws ClassNotFoundException {
+	public Class<?> findDelegateClass(String name) throws ClassNotFoundException {
 		return classLoadingDelegator.findDelegateClass(name);
 	}
 
