@@ -28,8 +28,6 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -42,8 +40,6 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
 import org.nightlabs.jfire.prop.structfield.TextStructField;
 import org.nightlabs.util.NLLocale;
-
-import com.sun.xml.internal.bind.v2.runtime.reflect.Accessor.SetterOnlyReflection;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
