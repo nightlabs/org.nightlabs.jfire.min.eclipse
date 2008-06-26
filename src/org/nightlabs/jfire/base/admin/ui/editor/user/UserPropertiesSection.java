@@ -37,9 +37,9 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.ValidationResultManager;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
@@ -119,7 +119,7 @@ public class UserPropertiesSection extends RestorableSectionPart
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		blockBasedPersonEditor.setChangeListener(new DataBlockEditorChangedListener() {
-			public void dataBlockEditorChanged(AbstractDataBlockEditor dataBlockEditor, DataFieldEditor<?> dataFieldEditor) {
+			public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<?> dataFieldEditor) {
 				markDirty();
 			}
 		});
