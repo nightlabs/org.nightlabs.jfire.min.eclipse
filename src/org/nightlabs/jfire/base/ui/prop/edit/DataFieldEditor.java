@@ -47,12 +47,12 @@ public interface DataFieldEditor<F extends DataField> {
 	 * Set the factory this field editor is associated with.
 	 * @param factory The factory to set.
 	 */
-	public void setPropDataFieldEditorFactory(DataFieldEditorFactory<F> factory);
+	void setPropDataFieldEditorFactory(DataFieldEditorFactory<F> factory);
 	/**
 	 * Get the factory this field editor is associated with.
 	 * @return The factory this field editor is associated with.
 	 */
-	public DataFieldEditorFactory<F> getPropDataFieldEditorFactory();
+	DataFieldEditorFactory<F> getPropDataFieldEditorFactory();
 
 	/**
 	 * Here a data field editor should add its
@@ -66,14 +66,16 @@ public interface DataFieldEditor<F extends DataField> {
 	 * @param parent The parent to use.
 	 * @return A newly create Control.
 	 */
-	public Control createControl(Composite parent);
+	Control createControl(Composite parent);
 
 	/**
 	 * Should return the Control created in {@link #createControl(Composite)}.
 	 * @return the Control created in {@link #createControl(Composite)}.
 	 */
-	public Control getControl();
-
+	Control getControl();
+	
+	DataFieldEditorLayoutData getLayoutData();
+	
 	/**
 	 * Editors should refresh their data during this method.
 	 * The composite should be refreshed as well.
@@ -81,24 +83,24 @@ public interface DataFieldEditor<F extends DataField> {
 	 * @param struct The structure the given field is part of (used to obtain structure data like the field name etc.)
 	 * @param data The {@link DataField} this field editor should modify
 	 */
-	public void setData(IStruct struct, F data);
+	void setData(IStruct struct, F data);
 
 	/**
 	 * Editors should return the currently managed {@link DataField} here.
 	 * @return the currently managed {@link DataField} here.
 	 */
-	public F getDataField();
+	F getDataField();
 
 	/**
 	 * Editors should return the {@link StructField} that corresponds to the currently managed {@link DataField}.
 	 * @return the {@link StructField} that corresponds to the currently managed {@link DataField}.
 	 */
-	public StructField<F> getStructField();
+	StructField<F> getStructField();
 
 	/**
 	 * Refresh the control with the data currently set.
 	 */
-	public void refresh();
+	void refresh();
 
 	/**
 	 * Updates the PropertySet, sets the data from the UI control
@@ -107,28 +109,28 @@ public interface DataFieldEditor<F extends DataField> {
 	 * This method should be threadsafe (access GUI on the GUI-Thread).
 	 * </p>
 	 */
-	public void updatePropertySet();
+	void updatePropertySet();
 
 	/**
 	 * Add a change listener to this field editor. It will be triggered
 	 * when the user changes the field value.
 	 * @param listener The listener to add.
 	 */
-	public void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener);
+	void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener);
 	/**
 	 * Remove the given listener from the list of change listeners.
 	 * @param listener The listener to remove.
 	 */
-	public void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener);
+	void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener);
 	/**
 	 * Set the changed flag of this field editor.
 	 * @param changed The new value of the changed flag.
 	 */
-	public void setChanged(boolean changed);
+	void setChanged(boolean changed);
 	/**
 	 * Check whether the value of this field editor has changed.
 	 * @return Whether the value of this field editor has changed.
 	 */
-	public boolean isChanged();
+	boolean isChanged();
 
 }

@@ -28,45 +28,37 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
 import org.nightlabs.jfire.prop.DataField;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
+import org.nightlabs.jfire.prop.structfield.TextStructField;
 import org.nightlabs.util.NLLocale;
+
+import com.sun.xml.internal.bind.v2.runtime.reflect.Accessor.SetterOnlyReflection;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextDataField> extends AbstractInlineDataFieldComposite<AbstractDataFieldEditor<DataFieldType>> {
 
-//	private Label fieldName;
 	private Text fieldText;
-//	private LabeledText fieldText;
-//	private AbstractDataFieldEditor<DataFieldType> editor;
 	private ModifyListener modifyListener;
-	
 	
 	public TextDataFieldComposite(AbstractDataFieldEditor<DataFieldType> editor, Composite parent, int style, ModifyListener modListener, GridLayout gl) {
 		super(parent, style, editor);
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
 		
-//		this.editor = editor;
-//
-//		Layout layout = createLayout();
-//		setLayout(layout);
-//		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-//		setLayoutData(gridData);
-//
-//		fieldName = new Label(this, SWT.NONE);
-//		fieldName.setLayoutData(createLabelLayoutData());
-		
-		fieldText = new Text(this, getTextBorderStyle());
-//		fieldText.setEditable(true);
+		fieldText = new Text(this, createTextStyle());
 		fieldText.setEnabled(true);
 		fieldText.setLayoutData(createTextLayoutData());
 		this.modifyListener = modListener;
@@ -74,8 +66,6 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		
 		if (gl != null)
 			setLayout(gl);
-		
-//		fieldText = new LabeledText(this, "");
 	}
 	
 	/**
@@ -86,10 +76,24 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		this(editor, parent, style, modListener, null);
 	}
 	
+	protected int createTextStyle() {
+		if (isMultiLine())  {
+			return getTextBorderStyle() | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL;
+		} else {
+			 return getTextBorderStyle();
+		}
+		
+	}
+	
 	protected Object createTextLayoutData() {
-		GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-//		textData.grabExcessHorizontalSpace = true;
-		return textData;
+		if (isMultiLine()) {
+			GridData gd = new GridData(GridData.FILL_BOTH);
+			gd.minimumHeight = RCPUtil.getFontHeight(this) * getLineCount();
+			return gd;
+		} else {
+			GridData textData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			return textData;
+		}
 	}
 	
 	protected int getTextBorderStyle() {
@@ -101,21 +105,26 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	 */
 	@Override
 	public void _refresh() {
-//		StructField field = getEditor().getStructField();
-//		fieldText.setCaption(field.getName().getText());
-//		if (editor.getDataField().getText() == null)
-//			fieldText.setText("");
-//		else
-//			fieldText.setText(editor.getDataField().getText());
-		
-//		fieldName.setText(field.getName().getText());
 		if (getEditor().getDataField().getText(NLLocale.getDefault()) == null)
 			fieldText.setText(""); //$NON-NLS-1$
 		else
 			fieldText.setText(getEditor().getDataField().getText(NLLocale.getDefault()));
-		
-		// TODO set the text fields maximum line count to the one given by the struct field
-		// ((TextStructField)editor.getDataField().getStructField()).getLineCount();
+	}
+	
+	private boolean isMultiLine() {
+		StructField<DataFieldType> structField = getEditor().getStructField();
+		if (structField instanceof TextStructField) {
+			return ((TextStructField) structField).getLineCount() > 1;
+		}
+		return false;
+	}
+	
+	private int getLineCount() {
+		StructField<DataFieldType> structField = getEditor().getStructField();
+		if (structField instanceof TextStructField) {
+			return Math.max(((TextStructField) structField).getLineCount(), 1);
+		}
+		return 1;
 	}
 	
 	public String getText() {
@@ -130,4 +139,16 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		fieldText.removeModifyListener(modifyListener);
 		super.dispose();
 	}
+	
+//	@Override
+//	public Point computeSize(int hint, int hint2, boolean changed) {
+//		String text = fieldText.getText();
+//		try {
+//			return super.computeSize(hint, hint2, changed);
+//		} finally {
+//			fieldText.setText(text);
+//		}
+//	}
+//	
+	
 }

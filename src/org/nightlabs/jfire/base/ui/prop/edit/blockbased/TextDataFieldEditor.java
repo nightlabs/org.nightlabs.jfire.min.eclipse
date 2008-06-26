@@ -57,22 +57,11 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
-//		@Override
-//		public Class<TextDataFieldEditor> getDataFieldEditorClass() {
-//			return TextDataFieldEditor.class;
-//		}
 		@Override
 		public DataFieldEditor<TextDataField> createPropDataFieldEditor(IStruct struct, TextDataField data) {
 			return new TextDataFieldEditor(struct, data);
 		}
 	}
-
-//	/**
-//	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
-//	 */
-//	public String getEditorType() {
-//		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
-//	}
 
 	private TextDataFieldComposite<TextDataField> composite;
 	
@@ -102,20 +91,8 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 	@Override
 	public void updatePropertySet()
 	{
-//		Display.getDefault().syncExec(new Runnable(){
-//			public void run() {
-				getDataField().setText(composite.getText());
-//			}
-//		});
+		getDataField().setText(composite.getText());
 	}
-
-
-//	/**
-//	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#disposeControl()
-//	 */
-//	public void disposeControl() {
-//		composite.dispose();
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()

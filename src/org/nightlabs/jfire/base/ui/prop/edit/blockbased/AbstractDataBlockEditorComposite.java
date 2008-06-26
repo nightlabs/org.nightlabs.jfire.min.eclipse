@@ -41,6 +41,7 @@ import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.exception.DataFieldNotFoundException;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
@@ -61,8 +62,18 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 
 	@Override
 	public final void refresh(IStruct struct, DataBlock dataBlock) {
+		System.err.println(AbstractDataBlockEditorComposite.class.getSimpleName() + ".refresh()");
+		new Exception().printStackTrace();
 		this.struct = struct;
 		this.dataBlock = dataBlock;
+		for (DataFieldEditor<DataField> fieldEditor : fieldEditors.values()) {
+			try {
+				fieldEditor.setData(struct, dataBlock.getDataField(fieldEditor.getStructField().getStructFieldIDObj()));
+			} catch (DataFieldNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	protected abstract void doRefresh();

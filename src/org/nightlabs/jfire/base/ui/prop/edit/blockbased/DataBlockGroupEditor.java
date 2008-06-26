@@ -96,57 +96,27 @@ implements DataBlockEditorChangedListener
 		assert(dataBlockEditors.size() == blockGroup.getDataBlocks().size());
 
 		Iterator<DataBlockEditor> editorIt = dataBlockEditors.iterator();
-		Iterator<DataBlock> blockIt = blockGroup.getDataBlocks().iterator();
+//		Iterator<DataBlock> blockIt = blockGroup.getDataBlocks().iterator();
 
 		while (editorIt.hasNext()) {
 			DataBlockEditor dataBlockEditor = editorIt.next();
-			dataBlockEditor.setValidationResultManager(validationResultManager);
-			DataBlock block = blockIt.next();
-			dataBlockEditor.setData(struct, block);
+//			dataBlockEditor.setValidationResultManager(validationResultManager);
+//			DataBlock block = blockIt.next();
+//			dataBlockEditor.setData(struct, block);
 		}
-
-//		for (int i=0; i<dataBlockEditors.size(); i++){
-//			AbstractDataBlockEditor dataBlockEditor = (AbstractDataBlockEditor)dataBlockEditors.get(i);
-//			try {
-//				dataBlockEditor.refresh(struct, blockGroup.getDataBlock(i));
-//			} catch (DataBlockNotFoundException e) {
-//				IllegalStateException ill = new IllegalStateException("No datablock found on pos "+i); //$NON-NLS-1$
-//				ill.initCause(e);
-//				throw ill;
-//			}
-//		}
 		content.layout(true, true);
-//		scrolledComposite.layout(true, true);
 	}
 
-//	private SelectionListener addListener = new SelectionListener() {
-//		public void widgetDefaultSelected(SelectionEvent e) {}
-//		public void widgetSelected(SelectionEvent e) {
-//			Button addButton = (Button) e.widget;
-//			int index = ((Integer) addButton.getData()) + 1;
-//			try {
-//				blockGroup.addDataBlock(struct, index).explode(struct);
-//			} catch (DataBlockUniqueException e1) {
-//				e1.printStackTrace();
-//			}
-//			refresh(struct, blockGroup);
-//		}
-//	};
-//
-//	private SelectionListener removeListener = new SelectionListener() {
-//		public void widgetDefaultSelected(SelectionEvent e) {}
-//		public void widgetSelected(SelectionEvent e) {
-//			Button removeButton = (Button) e.widget;
-//			try {
-//				blockGroup.removeDataBlock(blockGroup.getBlockByIndex((Integer) removeButton.getData()));
-//			} catch (DataBlockRemovalException e1) {
-//				e1.printStackTrace();
-//			}
-//			refresh(struct, blockGroup);
-//		}
-//	};
-
+	
 	protected void createDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
+		if (blockGroup.getDataBlocks().size() == dataBlockEditors.size()) {
+			updateBlockEditors(_struct, wrapperComp);
+		} else {
+			reCreateDataBlockEditors(_struct, wrapperComp);
+		}
+	}
+	
+	protected void reCreateDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
 		for (Composite comp : blockComposites) {
 			comp.dispose();
 		}
@@ -175,6 +145,7 @@ implements DataBlockEditorChangedListener
 			blockEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
 			
 			blockEditor.addDataBlockEditorChangedListener(this);
+			blockEditor.setValidationResultManager(validationResultManager);
 			dataBlockEditors.add(blockEditor);
 
 			if (! _struct.getStructBlock(blockGroup).isUnique()) {
@@ -211,7 +182,15 @@ implements DataBlockEditorChangedListener
 			}
 		}
 	}
-
+	
+	protected void updateBlockEditors(final IStruct _struct, Composite wrapperComp) {
+		List<DataBlock> dataBlocks = blockGroup.getDataBlocks();
+		for (int i = 0; i < dataBlocks.size(); i++) {
+			DataBlock dataBlock = dataBlocks.get(i);
+			dataBlockEditors.get(i).setData(_struct, dataBlock);
+		}
+	}
+	
 	private ListenerList changeListener = new ListenerList();
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);

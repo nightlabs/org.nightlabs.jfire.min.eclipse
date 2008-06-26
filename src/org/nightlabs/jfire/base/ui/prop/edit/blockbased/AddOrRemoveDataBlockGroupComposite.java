@@ -13,6 +13,8 @@ import org.nightlabs.jfire.prop.DataBlock;
 public class AddOrRemoveDataBlockGroupComposite extends XComposite {
 	private Button addButton;
 	private Button removeButton;
+	private DataBlock dataBlock;
+	private int index;
 	
 	public static interface Listener {
 		public void addDataBlock(int index);
@@ -21,11 +23,11 @@ public class AddOrRemoveDataBlockGroupComposite extends XComposite {
 	
 	private Listener listener;
 
-	protected AddOrRemoveDataBlockGroupComposite(Composite parent, final DataBlock block, final int index) {
+	protected AddOrRemoveDataBlockGroupComposite(Composite parent, final DataBlock _block, final int _index) {
 		super(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA, 2);
-		
 		getGridLayout().marginLeft = 10;
-		
+		this.dataBlock = _block;
+		this.index = _index;
 		GridData gd = new GridData();
 		gd.widthHint = 20;
 		
@@ -48,12 +50,17 @@ public class AddOrRemoveDataBlockGroupComposite extends XComposite {
 				if (e.widget == addButton)
 					listener.addDataBlock(index+1);
 				else if (e.widget == removeButton)
-					listener.removeDataBlock(block);
+					listener.removeDataBlock(dataBlock);
 			}
 		};
 		
 		addButton.addSelectionListener(selectionListener);
 		removeButton.addSelectionListener(selectionListener);
+	}
+
+	public void setData(DataBlock dataBlock, int index) {
+		this.dataBlock = dataBlock;
+		this.index = index;
 	}
 	
 	public void setListener(Listener listener) {

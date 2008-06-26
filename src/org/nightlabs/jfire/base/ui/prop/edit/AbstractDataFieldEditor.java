@@ -238,4 +238,9 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	protected org.eclipse.swt.events.ModifyListener getSwtModifyListener() {
 		return swtModifyListener;
 	}
+	
+	@Override
+	public DataFieldEditorLayoutData getLayoutData() {
+		return new DataFieldEditorLayoutData(DataFieldEditorLayoutData.FILL_HORIZONTAL);
+	}
 }

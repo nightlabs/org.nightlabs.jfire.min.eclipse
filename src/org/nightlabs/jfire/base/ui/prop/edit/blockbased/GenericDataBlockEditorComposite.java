@@ -6,14 +6,12 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorLayoutData;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
 import org.nightlabs.jfire.prop.DataField;
 
@@ -70,15 +68,9 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 					continue;
 				}
 				addFieldEditor(dataField, fieldEditor,true);
-				// have an editor, store it
-//				fieldEditors.put(dataFieldKey,fieldEditor);
-				// wrap the editor in a GenericDataBlockEditorComposite to make it easier to layout
-//				XComposite wrapperComp = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
-//				((GridLayout) wrapperComp.getLayout()).verticalSpacing = 5;
-//				wrapperComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 				// add the field editor
 				fieldEditor.createControl(this);
-//				fieldEditor.addDataFieldEditorChangedListener(this);
+				fieldEditor.getControl().setLayoutData(translateLayoutData(fieldEditor.getLayoutData()));
 			}
 
 			DataFieldEditor fieldEditor = getFieldEditor(dataField);
@@ -91,5 +83,23 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 	@Override
 	public void doRefresh() {
 		createFieldEditors();
+	}
+	
+	public static GridData translateLayoutData(DataFieldEditorLayoutData layoutData) {
+		GridData gd = new GridData();
+		gd.exclude = layoutData.exclude;
+		gd.grabExcessHorizontalSpace = layoutData.grabExcessHorizontalSpace;
+		gd.grabExcessVerticalSpace = layoutData.grabExcessVerticalSpace;
+		gd.heightHint = layoutData.heightHint;
+		gd.horizontalAlignment = layoutData.horizontalAlignment;
+		gd.horizontalIndent = layoutData.horizontalIndent;
+		gd.horizontalSpan = layoutData.horizontalSpan;
+		gd.minimumHeight = layoutData.minimumHeight;
+		gd.minimumWidth = layoutData.minimumWidth;
+		gd.verticalAlignment = layoutData.verticalAlignment;
+		gd.verticalIndent = layoutData.verticalIndent;
+		gd.verticalSpan = layoutData.verticalSpan;
+		gd.widthHint = layoutData.widthHint;
+		return gd;
 	}
 }
