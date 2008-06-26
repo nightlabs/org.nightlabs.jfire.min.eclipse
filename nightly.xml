@@ -9,10 +9,10 @@
     <requires/>
     <provides
     	path="/org.nightlabs.jfire.base.j2ee.osgi"
-    	location="org.nightlabs.jfire.base.j2ee.osgi/dist/org.nightlabs.jfire.base.j2ee.osgi_0.9.3.jar"/>
+    	location="org.nightlabs.jfire.base.j2ee.osgi/dist/plugins/org.nightlabs.jfire.base.j2ee.osgi_0.9.3.jar"/>
     <publishes
     	description="..."
-    	location="org.nightlabs.jfire.base.j2ee.osgi/dist/org.nightlabs.jfire.base.j2ee.osgi_0.9.3.jar"/>
+    	location="org.nightlabs.jfire.base.j2ee.osgi/dist/plugins/org.nightlabs.jfire.base.j2ee.osgi_0.9.3.jar"/>
     <javadoc path="org.nightlabs.jfire.base.j2ee.osgi/src"/>
   </project>
 
