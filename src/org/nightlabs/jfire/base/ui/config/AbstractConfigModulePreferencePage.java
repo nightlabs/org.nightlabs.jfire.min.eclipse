@@ -761,7 +761,8 @@ extends LSDPreferencePage
 			if (doUpdateGUI) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						updatePreferencePage();
+						if (getControl() != null && !getControl().isDisposed())
+							updatePreferencePage();
 					}
 				});
 			}
