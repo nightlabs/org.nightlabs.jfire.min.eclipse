@@ -233,7 +233,7 @@
             id="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" name="%org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor.name"/>
         <editor
             class="org.nightlabs.jfire.base.admin.ui.editor.prop.StructLocalEditor"
-            default="false" icon="icons/setup.gif"
+            default="false" icon="icons/property_set_structures.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.prop.StructLocalEditor" name="%org.nightlabs.jfire.base.admin.ui.prop.StructLocalEditor.name"/>
         <editor
             class="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
@@ -336,7 +336,7 @@
             editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" indexHint="20"/>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.prop.EntityTreeCategoryPropertyStructLocal"
-            icon="icons/setup.gif"
+            icon="icons/property_set_structures.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.prop.EntityTreeCategoryPropertyStruct" name="%entityEditor.category.propertyStruct">
             <viewBinding
                 editorID="org.nightlabs.jfire.base.admin.ui.prop.StructLocalEditor" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
