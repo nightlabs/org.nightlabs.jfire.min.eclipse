@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
-import org.nightlabs.base.ui.dialog.CenteredDialog;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.config.ConfigModule;
@@ -34,11 +34,10 @@ import org.nightlabs.jfire.config.ConfigModule;
  * @author Marius Heinzmann <marius[AT]nightlabs[DOT]de>
  */
 public class ChangedConfigModulePagesDialog
-extends CenteredDialog // IconAndMessageDialog
+extends ResizableTitleAreaDialog
 {
-	
 	private ChangedConfigModulePagesDialog() {
-		super(RCPUtil.getActiveShell());
+		super(RCPUtil.getActiveShell(), null);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		setBlockOnOpen(false);
 //		message = "The following configurations changed. Mark the Modules that shall be reloaded.";
@@ -86,17 +85,13 @@ extends CenteredDialog // IconAndMessageDialog
 	}
 	
 	protected static class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-		 */
 		@Override
 		public String getText(Object element) {
 			if (element instanceof Config)
 				return ((Config) element).getConfigKey();
-			
-			return ((PageModulePair) element).getUpdatedConfigModule().getCfModKey();
-		}
+//			return ((PageModulePair) element).getUpdatedConfigModule().getCfModKey();
+			return ((PageModulePair) element).getCorrespondingPage().getTitle();
+		}		
 	}
 	
 	protected class PageModulePair {
@@ -116,11 +111,10 @@ extends CenteredDialog // IconAndMessageDialog
 			return updatedConfigModule;
 		}
 	}
-		
 
-	protected Map<Config, Set<PageModulePair>> updatedConfigs = new HashMap<Config, Set<PageModulePair>>();
+	private Map<Config, Set<PageModulePair>> updatedConfigs = new HashMap<Config, Set<PageModulePair>>();
 
-	protected TreeViewer treeViewer;
+	private TreeViewer treeViewer;
 	
 	private static ChangedConfigModulePagesDialog sharedInstance = null;
 
@@ -128,6 +122,8 @@ extends CenteredDialog // IconAndMessageDialog
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.title")); //$NON-NLS-1$
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.titlearea.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.message")); //$NON-NLS-1$
 	}
 	
 	@Override
