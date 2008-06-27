@@ -3,6 +3,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -29,8 +30,13 @@ public class StructTreeComposite extends AbstractTreeComposite<TreeNode> impleme
 		super(parent, getBorderStyle(parent) | SWT.H_SCROLL, true, init, false);
 		getGridLayout().marginHeight = 2;
 		getGridLayout().marginWidth = 2;
-		langChooser.addLanguageChangeListener(this);
-		this.currLanguageId = langChooser.getLanguage().getLanguageID();
+		if (langChooser != null) {
+			langChooser.addLanguageChangeListener(this);
+			this.currLanguageId = langChooser.getLanguage().getLanguageID();
+		}
+		else {
+			this.currLanguageId = Locale.getDefault().getLanguage();
+		}
 	}
 
 	@Override
@@ -70,6 +76,13 @@ public class StructTreeComposite extends AbstractTreeComposite<TreeNode> impleme
 		parentNode.addField(fieldNode);
 		refresh();
 		return fieldNode;
+	}
+	
+	public StructFieldNode getStructFieldNode() {
+		TreeNode current = (TreeNode) ((IStructuredSelection) getSelection()).getFirstElement();
+		if (current instanceof StructFieldNode)
+			return (StructFieldNode) current;
+		return null;
 	}
 
 	public void removeStructBlock(StructBlockNode blockNode) {
