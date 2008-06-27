@@ -62,16 +62,13 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 
 	@Override
 	public final void refresh(IStruct struct, DataBlock dataBlock) {
-		System.err.println(AbstractDataBlockEditorComposite.class.getSimpleName() + ".refresh()");
-		new Exception().printStackTrace();
 		this.struct = struct;
 		this.dataBlock = dataBlock;
 		for (DataFieldEditor<DataField> fieldEditor : fieldEditors.values()) {
 			try {
 				fieldEditor.setData(struct, dataBlock.getDataField(fieldEditor.getStructField().getStructFieldIDObj()));
 			} catch (DataFieldNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException("Could not find correct DataField: ", e);
 			}
 		}
 	}
