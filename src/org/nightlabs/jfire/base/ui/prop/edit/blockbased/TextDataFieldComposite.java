@@ -108,7 +108,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	}
 	
 	private boolean isMultiLine() {
-		StructField<DataFieldType> structField = getEditor().getStructField();
+		StructField<? extends DataFieldType> structField = getEditor().getStructField();
 		if (structField instanceof TextStructField) {
 			return ((TextStructField) structField).getLineCount() > 1;
 		}
@@ -116,7 +116,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	}
 	
 	private int getLineCount() {
-		StructField<DataFieldType> structField = getEditor().getStructField();
+		StructField<? extends DataFieldType> structField = getEditor().getStructField();
 		if (structField instanceof TextStructField) {
 			return Math.max(((TextStructField) structField).getLineCount(), 1);
 		}
