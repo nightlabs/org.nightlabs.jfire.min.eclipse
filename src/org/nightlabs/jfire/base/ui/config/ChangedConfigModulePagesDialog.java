@@ -122,10 +122,18 @@ extends ResizableTitleAreaDialog
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.title")); //$NON-NLS-1$
-		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.titlearea.title")); //$NON-NLS-1$
-		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.message")); //$NON-NLS-1$
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#create()
+	 */
+	@Override
+	public void create() {
+		super.create();
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.titlearea.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.message")); //$NON-NLS-1$		
+	}
+
 	@Override
 	protected Point getInitialSize() {
 		return new Point(400, 300);
