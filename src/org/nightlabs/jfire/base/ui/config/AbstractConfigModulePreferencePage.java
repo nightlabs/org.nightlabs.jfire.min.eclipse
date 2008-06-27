@@ -774,6 +774,9 @@ extends LSDPreferencePage
 	@Override
 	public boolean performOk() {
 		if (isConfigChanged()) {
+			// this has to be done here  
+			// because in the job it is skipped
+			// when the dialog was closed already.
 			updateConfigModule();
 		}
 		Job storeJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.storeJob.name")) { //$NON-NLS-1$
