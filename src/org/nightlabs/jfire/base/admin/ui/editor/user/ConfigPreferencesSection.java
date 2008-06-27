@@ -121,8 +121,11 @@ implements IConfigModuleChangedListener
 	}
 
 	public void configModuleChanged(ConfigModule configModule) {
-		markDirty(); // call the markDirty of the RestorableSectionPart super-class, which is not part of the EntityEditor framework
-		// hence, we need to call now the markDirty() in the page controller as well
+		// we need to call now the markDirty() in the page controller as well
+		// as the upper level will check this in isDirty().
 		((EntityEditor)page.getEditor()).getController().getPageController(page).markDirty();
+		// call the markDirty of the RestorableSectionPart super-class, 
+		// which is not part of the EntityEditor framework but notifies the Editor ;-)
+		markDirty(); 
 	}
 }
