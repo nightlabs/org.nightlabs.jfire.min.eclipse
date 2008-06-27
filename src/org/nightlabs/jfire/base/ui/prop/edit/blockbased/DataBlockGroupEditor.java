@@ -26,7 +26,6 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,15 +94,6 @@ implements DataBlockEditorChangedListener
 
 		assert(dataBlockEditors.size() == blockGroup.getDataBlocks().size());
 
-		Iterator<DataBlockEditor> editorIt = dataBlockEditors.iterator();
-//		Iterator<DataBlock> blockIt = blockGroup.getDataBlocks().iterator();
-
-		while (editorIt.hasNext()) {
-			DataBlockEditor dataBlockEditor = editorIt.next();
-//			dataBlockEditor.setValidationResultManager(validationResultManager);
-//			DataBlock block = blockIt.next();
-//			dataBlockEditor.setData(struct, block);
-		}
 		content.layout(true, true);
 	}
 
