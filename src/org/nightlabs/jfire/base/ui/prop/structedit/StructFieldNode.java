@@ -92,7 +92,7 @@ public class StructFieldNode extends TreeNode //implements Comparable<StructFiel
 	@Override
 	public Image getImage() {
 		if (field.getStructBlock().isLocal())
-			return null;
+			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructFieldNode.class, "StructFieldLocal"); //$NON-NLS-1$
 		else
 			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructFieldNode.class, "StructFieldNotLocal"); //$NON-NLS-1$
 	}

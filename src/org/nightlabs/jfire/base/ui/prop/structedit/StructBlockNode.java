@@ -111,7 +111,7 @@ public class StructBlockNode extends TreeNode //implements Comparable<StructBloc
 	@Override
 	public Image getImage() {
 		if (block.isLocal())
-			return null;
+			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructBlockNode.class, "StructBlockLocal"); //$NON-NLS-1$
 		else
 			return SharedImages.getSharedImage(JFireBasePlugin.getDefault(), StructBlockNode.class, "StructBlockNotLocal"); //$NON-NLS-1$
 	}
