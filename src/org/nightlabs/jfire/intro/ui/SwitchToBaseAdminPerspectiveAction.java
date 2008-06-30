@@ -7,6 +7,6 @@ public class SwitchToBaseAdminPerspectiveAction extends SwitchToPerspectiveActio
 {
 	public SwitchToBaseAdminPerspectiveAction()
 	{
-		super("org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective2");
+		super("org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective");
 	}
 }
