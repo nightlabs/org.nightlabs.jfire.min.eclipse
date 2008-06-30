@@ -115,7 +115,7 @@
     -->
     <extension
         id="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective.extension" point="org.eclipse.ui.perspectiveExtensions">
-        <perspectiveExtension targetID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective2">
+        <perspectiveExtension targetID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
             <actionSet id="org.nightlabs.jfire.base.admin.ui.actions"/>
         </perspectiveExtension>
     </extension>
