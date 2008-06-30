@@ -84,17 +84,6 @@
                 menubarPath="loginMenu/loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
         </actionSet>
     </extension>
-    <!-- Specialized PersonDataBlockEditors extensions -->
-    <!-- I think, that fleque deleted these, is fine :-)
- 	<extension
-       id="org.nightlabs.jfire.person.edit.blockbased.special.PersonalDataBlockEditor"
-       point="org.nightlabs.jfire.base.ui.person_edit_specializedDataBlockEditor">
-    <specializedDataBlockEditor
-          class="org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonalDataBlockEditor$Factory"
-	/>
-    <specializedDataBlockEditor class="org.nightlabs.jfire.base.ui.person.edit.blockbased.special.CommentDataBlockEditor$Factory"/>
-	</extension>
--->
     <extension point="org.nightlabs.jfire.base.ui.loginstatelistener">
         <loginStateListener class="org.nightlabs.jfire.base.ui.language.LanguageWatcher"/>
     </extension>
