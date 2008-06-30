@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -45,6 +46,8 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  */
 public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 
+	private static final Logger logger = Logger.getLogger(AbstractBlockBasedEditor.class);
+	
 	private IStruct struct;
 	protected DataBlock dataBlock;
 
@@ -76,12 +79,10 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		@Override
 		public void dataFieldEditorChanged(DataFieldEditor<? extends DataField> editor) {
 			notifyChangeListeners(editor);
-
-			List<ValidationResult> validationResults = getDataBlock().validate(struct);
-			if (getValidationResultManager() != null)
-				getValidationResultManager().setValidationResults(validationResults);
+			
+			validateDataBlock();
 		}
-	};
+	};	
 
 //	@Override
 //	public IStruct getStruct() {
@@ -109,10 +110,20 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	public void setValidationResultManager(IValidationResultManager validationResultManager) {
 		this.validationResultManager = validationResultManager;
 		getDataBlockEditorComposite().setValidationResultManager(validationResultManager);
+		validateDataBlock();
 	}
 	
 	public IValidationResultManager getValidationResultManager() {
 		return validationResultManager;
+	}
+	
+	protected void validateDataBlock() {
+		if (getDataBlock() != null) {
+			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
+			if (getValidationResultManager() != null)
+				getValidationResultManager().setValidationResults(validationResults);
+		} else
+			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()"); 
 	}
 	
 	@Override

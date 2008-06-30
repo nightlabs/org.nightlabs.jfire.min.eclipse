@@ -96,27 +96,31 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 		valueText = new Text(comp, comp.getBorderStyle());
 		valueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (!ignoreModify)
+				if (!ignoreModify) {
 					modified = true;
+					setChanged(modified);
+				}
+				
 			}
 		});
 		
-		valueText.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {}
-			public void focusLost(FocusEvent e) {
-				if (regexStructField != null) {
-					String text = valueText.getText();
-					if (!regexStructField.validateValue(text)) {
-						MessageBox box = new MessageBox(RCPUtil.getActiveShell(), SWT.OK);
-						box.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.RegexDataFieldEditor.invalidInputMessageBox.message")); //$NON-NLS-1$
-						box.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.RegexDataFieldEditor.invalidInputMessageBox.text")); //$NON-NLS-1$
-						box.open();
-					} else if (modified) {
-						setChanged(true);
-					}
-				}
-			}
-		});
+//		// TODO: Validation disabled, see https://www.jfire.org/modules/bugs/view.php?id=692
+//		valueText.addFocusListener(new FocusListener() {
+//			public void focusGained(FocusEvent e) {}
+//			public void focusLost(FocusEvent e) {
+//				if (regexStructField != null) {
+//					String text = valueText.getText();
+//					if (!regexStructField.validateValue(text)) {
+//						MessageBox box = new MessageBox(RCPUtil.getActiveShell(), SWT.OK);
+//						box.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.RegexDataFieldEditor.invalidInputMessageBox.message")); //$NON-NLS-1$
+//						box.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.RegexDataFieldEditor.invalidInputMessageBox.text")); //$NON-NLS-1$
+//						box.open();
+//					} else if (modified) {
+//						setChanged(true);
+//					}
+//				}
+//			}
+//		});
 		
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueText);
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, title);
@@ -161,9 +165,13 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 			return;
 		
 		String text = valueText.getText();
-		if (regexStructField.validateValue(text)) {
-				regexDataField.setText(text);
-		}
+		
+//		// TODO: Validation disabled, see https://www.jfire.org/modules/bugs/view.php?id=692
+//		if (regexStructField.validateValue(text)) {
+//				regexDataField.setText(text);
+//		}
+		regexDataField.setText(text);
+		// END Validation disabled
 		
 		modified = false;
 	}
