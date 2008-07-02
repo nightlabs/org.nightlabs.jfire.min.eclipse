@@ -205,5 +205,8 @@
         <loginStateListener class="org.nightlabs.jfire.base.ui.login.part.LoginStateListenerForCloseOnLogoutEditorParts"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.exceptionhandler.LoginStateListenerForScreenShotCfg"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.security.SecurityReflectorClientLoginStateListener"/>
+        <loginStateListener
+              class="org.nightlabs.jfire.base.ui.editlock.EditLockManLoginStateListener">
+        </loginStateListener>
     </extension>
 </plugin>

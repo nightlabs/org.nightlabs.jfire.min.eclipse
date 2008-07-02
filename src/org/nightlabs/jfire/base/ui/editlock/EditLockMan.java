@@ -163,12 +163,23 @@ public class EditLockMan
 			}
 
 			if (!Login.isLoggedIn()) {
-				logger.info("EditLockRefreshJob.run: we are not logged in anymore - cancelling."); //$NON-NLS-1$
+				logger.info("EditLockRefreshJob.run: we are not logged in anymore [1] - cancelling."); //$NON-NLS-1$
 				return Status.CANCEL_STATUS;
 			}
 
 			handleExpiredUserActivityIfNecessary(monitor);
+
+			if (!Login.isLoggedIn()) {
+				logger.info("EditLockRefreshJob.run: we are not logged in anymore [2] - cancelling."); //$NON-NLS-1$
+				return Status.CANCEL_STATUS;
+			}
+
 			reacquireEditLockOnServerIfNecessary(monitor);
+
+			if (!Login.isLoggedIn()) {
+				logger.info("EditLockRefreshJob.run: we are not logged in anymore [3] - cancelling."); //$NON-NLS-1$
+				return Status.CANCEL_STATUS;
+			}
 
 			scheduleWithEditLockTypeDelay();
 			return Status.OK_STATUS;
@@ -245,6 +256,16 @@ public class EditLockMan
 			oldJob.cancel();
 
 		job.scheduleWithEditLockTypeDelay();
+	}
+
+	void cancelAllJobs()
+	{
+		synchronized (editLockID2Job) {
+			for (EditLockRefreshJob job : editLockID2Job.values())
+				job.cancel();
+
+			editLockID2Job.clear();
+		}
 	}
 
 	private EditLockCarrier createEditLockCarrier(EditLock editLock, EditLockCarrier oldEditLockCarrier)
