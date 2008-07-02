@@ -162,8 +162,10 @@ public class EditLockMan
 				}
 			}
 
-			if (!Login.isLoggedIn())
+			if (!Login.isLoggedIn()) {
+				logger.info("EditLockRefreshJob.run: we are not logged in anymore - cancelling."); //$NON-NLS-1$
 				return Status.CANCEL_STATUS;
+			}
 
 			handleExpiredUserActivityIfNecessary(monitor);
 			reacquireEditLockOnServerIfNecessary(monitor);
@@ -361,6 +363,7 @@ public class EditLockMan
 				oldEditLockCarrier.setEditLockCallbackListener(editLockCallback);
 			}
 		}
+		
 		if (oldEditLockCarrier == null) { // we only need to communicate with the server, if the object is not yet locked there. and we don't open a dialog when refreshing - only when new.
 			final AcquireEditLockResult acquireEditLockResult;
 
