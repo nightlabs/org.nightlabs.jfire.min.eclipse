@@ -19,6 +19,7 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.editlock.AcquireEditLockResult;
 import org.nightlabs.jfire.editlock.EditLock;
@@ -160,6 +161,9 @@ public class EditLockMan
 					return Status.CANCEL_STATUS; // a new job has already been created - this job is out-of-charge now
 				}
 			}
+
+			if (!Login.isLoggedIn())
+				return Status.CANCEL_STATUS;
 
 			handleExpiredUserActivityIfNecessary(monitor);
 			reacquireEditLockOnServerIfNecessary(monitor);
