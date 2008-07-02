@@ -72,7 +72,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * The JFire login dialog.
- * 
+ *
  * @author Alexander Bieber
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -80,7 +80,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 public class LoginDialog extends TitleAreaDialog
 {
 	/**
-	 * LOG4J logger used by this class
+	 * LOG4J logger used by this class.
 	 */
 	private static final Logger logger = Logger.getLogger(LoginDialog.class);
 
@@ -247,9 +247,8 @@ public class LoginDialog extends TitleAreaDialog
 		Label labelPassword = new Label(mainArea, SWT.NONE);
 		labelPassword.setText(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.labelpass")); //$NON-NLS-1$
 
-		textPassword = new Text(mainArea, SWT.BORDER);
+		textPassword = new Text(mainArea, SWT.BORDER | SWT.PASSWORD);
 		textPassword.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textPassword.setEchoChar('*');
 
 		return mainArea;
 	}
@@ -857,24 +856,24 @@ public class LoginDialog extends TitleAreaDialog
 		monitor.worked(1);
 //		return testResult.isSuccess();
 
-		
+
 		LoginStateChangeEvent event;
-		
-		
+
+
 		if (loginStateListener != null) {
 			if (testResult.isSuccess())
 
 			 event = new LoginStateChangeEvent(this,
 						LoginState.LOGGED_OUT
-						/* I think this is not used, but we still pass a meaningful value. */, 
-						LoginState.LOGGED_IN, null);				
+						/* I think this is not used, but we still pass a meaningful value. */,
+						LoginState.LOGGED_IN, null);
 			else
 				 event = new LoginStateChangeEvent(this,
-							LoginState.LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */, 
+							LoginState.LOGGED_OUT /* I think this is not used, but we still pass a meaningful value. */,
 							LoginState.LOGGED_OUT, null);
-	
+
 			loginStateListener.loginStateChanged(event);
-			
+
 		}
 
 	}
