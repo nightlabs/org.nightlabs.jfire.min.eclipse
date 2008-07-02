@@ -41,7 +41,7 @@
             <property name="appName" value="%app.name"/>
             <property name="windowImages" value="icons/JFire-Logo.16x16.png"/>
             <property name="aboutText" value="%aboutText"/>
-            <property name="aboutImage" value="icons/JFire-Logo.250x84.jpg"/>
+            <property name="aboutImage" value="icons/JFire-Flame.80x160.jpg"/>
             <property name="preferenceCustomization" value="plugin_customization.ini"/>
             <property name="startupForegroundColor" value="000000"/>
             <property name="startupMessageRect" value="7,238,400,20"/>
