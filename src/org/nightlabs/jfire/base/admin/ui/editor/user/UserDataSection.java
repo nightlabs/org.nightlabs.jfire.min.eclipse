@@ -99,8 +99,15 @@ public class UserDataSection extends RestorableSectionPart
 			public void widgetDefaultSelected(SelectionEvent e) {}
 			public void widgetSelected(SelectionEvent e) {
 				userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
-				markDirty();
-				updateDisplayName();
+				String oldText = userNameText.getText();
+				refreshing = true;
+				try {
+					updateDisplayName();
+				} finally {
+					refreshing = false;
+				}
+				if (!oldText.equals(userNameText.getText()))
+					markDirty();
 			}
 		});
 		
@@ -172,28 +179,31 @@ public class UserDataSection extends RestorableSectionPart
 					return;
 				
 				refreshing = true;
-				userIdText.setText(user.getUserID());
-				if (user.getName() != null)
-					userNameText.setText(user.getName());
-				if (user.getDescription() != null)
-					userDescriptionText.setText(user.getDescription());
+				try {
+					userIdText.setText(user.getUserID());
+					if (user.getName() != null)
+						userNameText.setText(user.getName());
+					if (user.getDescription() != null)
+						userDescriptionText.setText(user.getDescription());
 
-				String pw = user.getUserLocal().getPassword();
-				
-				passwordButton.setEnabled(pw != null);
+					String pw = user.getUserLocal().getPassword();
 
-				autogenerateNameCheckBox.setSelection(user.isAutogenerateName());
-				userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
+					passwordButton.setEnabled(pw != null);
 
-				personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
-					public void displayNameChanged(String displayName) {
-						refreshing = true;
-						System.out.println("UPDATING DISPLAY NAME"); //$NON-NLS-1$
-						updateDisplayName();
-						refreshing = false;
-					}
-				});
-				refreshing = false;
+					autogenerateNameCheckBox.setSelection(user.isAutogenerateName());
+					userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
+
+					personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
+						public void displayNameChanged(String displayName) {
+							refreshing = true;
+							System.out.println("UPDATING DISPLAY NAME"); //$NON-NLS-1$
+							updateDisplayName();
+							refreshing = false;
+						}
+					});
+				} finally {
+					refreshing = false;
+				}
 			}
 		});
 	}

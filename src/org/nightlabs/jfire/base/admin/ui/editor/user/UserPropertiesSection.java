@@ -40,6 +40,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DisplayNameChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.ValidationResultManager;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
