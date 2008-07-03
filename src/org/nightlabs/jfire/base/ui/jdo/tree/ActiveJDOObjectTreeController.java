@@ -209,11 +209,11 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 				node.setJdoObject(retrievedObject);
 			}
 			for (Entry<JDOObjectID, TreeNode> deletedEntry : deletedNodes.entrySet()) {
-				JDOObjectID parentID = (JDOObjectID) treeNodeParentResolver.getParentObjectID(deletedEntry.getKey());
+				JDOObjectID parentID = (JDOObjectID) treeNodeParentResolver.getParentObjectID(deletedEntry.getValue().getJdoObject());
 				TreeNode parentNode = objectID2TreeNode.get(parentID);
 				objectID2TreeNode.remove(deletedEntry.getKey());
 				if (parentNode != null) {
-					parentNode.getChildNodes().remove(deletedEntry.getValue());
+					parentNode.removeChildNode(deletedEntry.getValue());
 					parentsToRefresh.add(parentNode == hiddenRootNode ? null : parentNode);
 				}
 			}
