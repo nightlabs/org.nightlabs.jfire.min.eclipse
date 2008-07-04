@@ -7,7 +7,6 @@
     <ant path="org.nightlabs.jdo.query.ui" file="build-nightlabs.xml" target="deploy"/>
     <requires/>
     <provides/>
-    <publishes description="..." location="org.nightlabs.jdo.query.ui/dist/org.nightlabs.jdo.query.ui_0.9.3.jar"/>
     <javadoc path="org.nightlabs.jdo.query.ui/src"/>
   </project>
 </nightlybuild>
