@@ -23,9 +23,6 @@
     <provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/JFireRCLBackendBean.jar"/>
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/jbossall-client.jar"/>
 
-<!-- TODO what's the right way to define the 'publishes' here? How can we know the qualifier?
-    <publishes description="..." location="org.nightlabs.jfire.base.j2ee/dist/org.nightlabs.jfire.base.j2ee_0.9.3.jar"/>
--->
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
   </project>
 
