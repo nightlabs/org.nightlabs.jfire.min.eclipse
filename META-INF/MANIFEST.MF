@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JFire Base Intro Plug-in
 Bundle-SymbolicName: org.nightlabs.jfire.base.intro.ui;singleton:=true
-Bundle-Version: 0.9.3
+Bundle-Version: 0.9.4.qualifier
 Bundle-ClassPath: org.nightlabs.jfire.base.intro.ui.jar
 Bundle-Activator: org.nightlabs.jfire.intro.ui.JFireIntroPlugin
 Bundle-Vendor: NightLabs.org
