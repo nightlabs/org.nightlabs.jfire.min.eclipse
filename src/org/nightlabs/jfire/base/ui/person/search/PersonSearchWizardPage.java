@@ -39,6 +39,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	private PersonSearchComposite searchComposite;
 	private String quickSearchText;
 	private Person newPerson;
+	private Button searchButton;
 	
 	public PersonSearchWizardPage(String quickSearchText) {
 		super(
@@ -87,7 +88,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		
 		new XComposite(buttonBar, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
 		
-		searchComposite.createSearchButton(buttonBar);
+		searchButton = searchComposite.createSearchButton(buttonBar);
 		searchComposite.getResultTable().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				personSelectionChanged();
@@ -121,16 +122,12 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	public void onShow() {
 		getWizardHop().removeAllHopPages();
 		getContainer().updateButtons();
+		getShell().setDefaultButton(searchButton);
 	}
 	
 	@Override
 	public boolean isPageComplete() {
-		return searchComposite != null && (searchComposite.getResultTable().getFirstSelectedElement() != null || !getWizardHop().getHopPages().isEmpty());
-		
-//		if (this.equals(getContainer().getCurrentPage())) {
-//			return searchComposite.getResultTable().getFirstSelectedElement() != null;
-//		}
-//		return true;
+		return searchComposite != null && (searchComposite.getResultTable().getFirstSelectedElement() != null || !getWizardHop().getHopPages().isEmpty());		
 	}
 	
 	/**
@@ -148,4 +145,5 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	protected String getCreateNewButtonText() {
 		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.createNewButton.text"); //$NON-NLS-1$
 	}
+	
 }
