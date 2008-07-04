@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osgi Fragment for ClassLoaderHook
 Bundle-SymbolicName: org.nightlabs.jfire.base.j2ee.osgi
-Bundle-Version: 0.9.3
+Bundle-Version: 0.9.4.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: NightLabs.org
 Fragment-Host: org.eclipse.osgi
