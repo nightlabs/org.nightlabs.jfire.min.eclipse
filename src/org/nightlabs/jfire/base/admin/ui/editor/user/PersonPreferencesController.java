@@ -31,6 +31,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
@@ -151,8 +152,18 @@ public class PersonPreferencesController extends EntityEditorPageController
 			user = UserDAO.sharedInstance().storeUser(
 					user, (String)null, true, FETCH_GROUPS,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 5)
-			);
+			);			
 			user = Util.cloneSerializable(user);
+			if (
+				oldUser.getUserID().equals(Login.getLogin().getUserID()) &&
+				oldUser.getUserLocal().getNewPassword() != null
+				)
+			{
+				// If the current users password is changed,
+				// this needs to be registered in Login
+				Login.sharedInstance().setPassword(oldUser.getUserLocal().getNewPassword());
+			}
+			
 			fireModifyEvent(oldUser, getUser());
 
 			logger.info("Saving user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
