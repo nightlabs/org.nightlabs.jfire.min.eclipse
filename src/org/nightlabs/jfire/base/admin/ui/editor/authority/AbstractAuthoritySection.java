@@ -47,7 +47,7 @@ extends ToolBarSectionPart
 
 		name = new I18nTextEditor(getContainer());
 		name.addModifyListener(markDirtyModifyListener);
-		description = new I18nTextEditorMultiLine(getContainer());
+		description = new I18nTextEditorMultiLine(getContainer(), name.getLanguageChooser());
 		description.addModifyListener(markDirtyModifyListener);
 
 		assignAuthorityAction.setEnabled(false);
