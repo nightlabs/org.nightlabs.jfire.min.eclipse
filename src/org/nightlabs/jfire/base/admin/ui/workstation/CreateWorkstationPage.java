@@ -35,6 +35,7 @@ import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
+import org.nightlabs.jdo.ObjectIDUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
@@ -78,8 +79,12 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 	
 	protected void verifyInput()
 	{
-		if("".equals(getWorkstationID())) //$NON-NLS-1$
+		if("".equals(getWorkstationID())) { //$NON-NLS-1$
 			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDMissing")); //$NON-NLS-1$
+		}
+		else if (!ObjectIDUtil.isValidIDString(getWorkstationID())) {
+			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDInvalid")); //$NON-NLS-1$
+		}
 		else
 			updateStatus(null);
 	}
