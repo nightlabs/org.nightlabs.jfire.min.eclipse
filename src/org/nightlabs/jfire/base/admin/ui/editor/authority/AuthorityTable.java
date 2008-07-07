@@ -55,8 +55,8 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 
 		authorities.clear();
 		if (authorityTypeID != null) {
-			AuthorityType dummyAT = new AuthorityType(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.dummy")); //$NON-NLS-1$
-			Authority dummy = new Authority(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.dummy"), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.dummy"), dummyAT); //$NON-NLS-1$ //$NON-NLS-2$
+			AuthorityType dummyAT = new AuthorityType("dummy"); //$NON-NLS-1$
+			Authority dummy = new Authority("dummy.jfire.org", "dummy", dummyAT); //$NON-NLS-1$ //$NON-NLS-2$
 			dummy.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityTable.loading")); //$NON-NLS-1$
 			authorities.add(dummy);
 
