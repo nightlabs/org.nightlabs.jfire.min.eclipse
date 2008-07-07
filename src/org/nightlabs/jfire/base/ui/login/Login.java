@@ -916,7 +916,7 @@ extends AbstractEPProcessor
 	}
 
 	/**
-	 * Removes all occurences of the given {@link LoginStateListener}
+	 * Removes all occurrences of the given {@link LoginStateListener}
 	 * @param loginStateListener
 	 */
 	public synchronized void removeLoginStateListener(LoginStateListener loginStateListener) {
