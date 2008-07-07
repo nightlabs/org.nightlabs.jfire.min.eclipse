@@ -38,15 +38,26 @@ public class I18nTextStructFieldEditor extends AbstractStructFieldEditor<I18nTex
 
 		lineCountSpinner.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
+				if (ignoreModifyEvent)
+					return;
+
 				textField.setLineCount(lineCountSpinner.getSelection());
+				setChanged();
 			}
 		});
 		return comp;
 	}
 
+	private boolean ignoreModifyEvent = false;
+
 	@Override
 	protected void setSpecialData(I18nTextStructField field) {
 		this.textField = field;
-		lineCountSpinner.setSelection(field.getLineCount());
+		ignoreModifyEvent = true;
+		try {
+			lineCountSpinner.setSelection(field.getLineCount());
+		} finally {
+			ignoreModifyEvent = false;
+		}
 	}
 }

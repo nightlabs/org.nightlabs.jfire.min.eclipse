@@ -154,6 +154,7 @@ public class StructEditor {
 						I18nTextEditor partNameEditor = currentStructPartEditor.getPartNameEditor();
 						partNameEditor.setSelection(0, partNameEditor.getEditText().length());
 						partNameEditor.setFocus();
+						// FIXME is this listener ever removed? I'm pretty sure there is one listener added after the other.
 						partNameEditor.addModifyListener(new ModifyListener() {
 							public void modifyText(ModifyEvent e) {
 								StructEditor.this.setChanged(true);

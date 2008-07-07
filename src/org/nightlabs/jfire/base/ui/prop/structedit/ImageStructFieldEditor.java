@@ -55,6 +55,7 @@ public class ImageStructFieldEditor extends AbstractStructFieldEditor<ImageStruc
 		imageField.addModifyListener(new ModifyListener() {
 			public void modifyData() {
 				updateErrorMessage();
+				setChanged();
 			}
 		});
 	}
