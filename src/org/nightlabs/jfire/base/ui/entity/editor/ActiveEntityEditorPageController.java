@@ -591,20 +591,21 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			return dirtyObjectID.getObjectVersion().equals(currentlyManagedObjectVersion);
 		}
 
-		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs,
-		// so we check if the current sessionID is in the sourceSessionIDs and not if
-		// it is the only one, see issue: https://www.jfire.org/modules/bugs/view.php?id=471
-		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
-			if (sessionID.equals(Cache.sharedInstance().getSessionID()))
-				return true;
-		}
-		return false;
-//		return true;
+//		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs,
+//		// so we check if the current sessionID is in the sourceSessionIDs and not if
+//		// it is the only one, see issue: https://www.jfire.org/modules/bugs/view.php?id=471
 //		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
-//		if (!sessionID.equals(Cache.sharedInstance().getSessionID()))
-//			return false;
-//	}
-//	return true;
+//			if (sessionID.equals(Cache.sharedInstance().getSessionID()))
+//				return true;
+//		}
+//		return false;
+//		return true;
+
+		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
+			if (!sessionID.equals(Cache.sharedInstance().getSessionID()))
+				return false;
+		}
+		return true;
 	}
 	
 	/**
