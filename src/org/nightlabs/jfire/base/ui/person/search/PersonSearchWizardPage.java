@@ -43,14 +43,23 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	private Button searchButton;
 	private Button editButton;
 	private IAction editAction;
-	
+	private boolean allowNewLegalEntityCreation;
+	private boolean allowEditLegalEntity;
+
 	public PersonSearchWizardPage(String quickSearchText) {
+		this(quickSearchText, true, false);
+	}
+	
+	public PersonSearchWizardPage(String quickSearchText, boolean allowNewLegalEntityCreation, boolean allowEditLegalEntity) {
 		super(
 			PersonSearchWizardPage.class.getName(),
 			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.title") //$NON-NLS-1$
 		);
-		setDescription(Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.description")); //$NON-NLS-1$
 		this.quickSearchText = quickSearchText;
+		this.allowNewLegalEntityCreation = allowNewLegalEntityCreation;
+		this.allowEditLegalEntity = allowEditLegalEntity;
+		
+		setDescription(Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.description")); //$NON-NLS-1$
 		new WizardHop(this);
 	}
 
@@ -63,50 +72,56 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		Composite buttonBar = searchComposite.getButtonBar();
 		GridLayout gl = new GridLayout();
 		XComposite.configureLayout(LayoutMode.LEFT_RIGHT_WRAPPER, gl);
-		gl.numColumns = 4;
-		buttonBar.setLayout(gl);
+		gl.numColumns = 2;
 		
-		Button createNewButton = new Button(buttonBar, SWT.PUSH);
-		createNewButton.setText(getCreateNewButtonText());
-		createNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
-		createNewButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (newPerson == null) {
-					newPerson = new Person(
-						SecurityReflector.getUserDescriptor().getOrganisationID(),
-						IDGenerator.nextID(PropertySet.class)
-					);
-					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-							Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
-					newPerson.inflate(structLocal);
-					editorWizardHop = new PersonEditorWizardHop();
-					editorWizardHop.initialise(newPerson);					
+		if (allowNewLegalEntityCreation) {
+			gl.numColumns++;
+			Button createNewButton = new Button(buttonBar, SWT.PUSH);
+			createNewButton.setText(getCreateNewButtonText());
+			createNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+			createNewButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (newPerson == null) {
+						newPerson = new Person(
+							SecurityReflector.getUserDescriptor().getOrganisationID(),
+							IDGenerator.nextID(PropertySet.class)
+						);
+						StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+								Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+						newPerson.inflate(structLocal);
+						editorWizardHop = new PersonEditorWizardHop();
+						editorWizardHop.initialise(newPerson);					
+					}
+					getWizardHop().addHopPage(editorWizardHop.getEntryPage());
+					personSelectionChanged();
+					getContainer().showPage(getNextPage());
 				}
-				getWizardHop().addHopPage(editorWizardHop.getEntryPage());
-				personSelectionChanged();
-				getContainer().showPage(getNextPage());
-			}
-		});
+			});
+		}
 		
-		editButton = new Button(buttonBar, SWT.PUSH);
-		editButton.setText(getEditButtonText());
-		editButton.setEnabled(false);
-		editButton.addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				editorWizardHop = new PersonEditorWizardHop();
-				Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
-				StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());				
-				selectedPerson.inflate(structLocal);
-				editorWizardHop.initialise(selectedPerson);					
-				getWizardHop().addHopPage(editorWizardHop.getEntryPage());
-				personSelectionChanged();
-				getContainer().showPage(getNextPage());
-			}
-		});
+		if (allowEditLegalEntity) {
+			gl.numColumns++;
+			editButton = new Button(buttonBar, SWT.PUSH);
+			editButton.setText(getEditButtonText());
+			editButton.setEnabled(false);
+			editButton.addSelectionListener(new SelectionAdapter(){
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					editorWizardHop = new PersonEditorWizardHop();
+					Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
+					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+							Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());				
+					selectedPerson.inflate(structLocal);
+					editorWizardHop.initialise(selectedPerson);					
+					getWizardHop().addHopPage(editorWizardHop.getEntryPage());
+					personSelectionChanged();
+					getContainer().showPage(getNextPage());
+				}
+			});
+		}
 		
+		buttonBar.setLayout(gl);
 		new XComposite(buttonBar, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
 		
 		searchButton = searchComposite.createSearchButton(buttonBar);
@@ -136,8 +151,10 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		onPersonSelectionChanged();
 	}
 	
-	protected void onPersonSelectionChanged() {
-		editButton.setEnabled(searchComposite.getResultTable().getSelectionCount() == 1);
+	protected void onPersonSelectionChanged() 
+	{
+		if (editButton != null && !editButton.isDisposed())
+			editButton.setEnabled(searchComposite.getResultTable().getSelectionCount() == 1);
 	}
 
 	@Override
@@ -172,6 +189,6 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	}
 	
 	protected String getEditButtonText() {
-		return "Edit Person";
+		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.button.editPerson.text"); //$NON-NLS-1$
 	}
 }
