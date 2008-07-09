@@ -3,6 +3,7 @@
  */
 package org.nightlabs.jfire.base.ui.person.search;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -40,6 +41,8 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	private String quickSearchText;
 	private Person newPerson;
 	private Button searchButton;
+	private Button editButton;
+	private IAction editAction;
 	
 	public PersonSearchWizardPage(String quickSearchText) {
 		super(
@@ -60,7 +63,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		Composite buttonBar = searchComposite.getButtonBar();
 		GridLayout gl = new GridLayout();
 		XComposite.configureLayout(LayoutMode.LEFT_RIGHT_WRAPPER, gl);
-		gl.numColumns = 3;
+		gl.numColumns = 4;
 		buttonBar.setLayout(gl);
 		
 		Button createNewButton = new Button(buttonBar, SWT.PUSH);
@@ -80,6 +83,24 @@ public class PersonSearchWizardPage extends WizardHopPage {
 					editorWizardHop = new PersonEditorWizardHop();
 					editorWizardHop.initialise(newPerson);					
 				}
+				getWizardHop().addHopPage(editorWizardHop.getEntryPage());
+				personSelectionChanged();
+				getContainer().showPage(getNextPage());
+			}
+		});
+		
+		editButton = new Button(buttonBar, SWT.PUSH);
+		editButton.setText(getEditButtonText());
+		editButton.setEnabled(false);
+		editButton.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				editorWizardHop = new PersonEditorWizardHop();
+				Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
+				StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());				
+				selectedPerson.inflate(structLocal);
+				editorWizardHop.initialise(selectedPerson);					
 				getWizardHop().addHopPage(editorWizardHop.getEntryPage());
 				personSelectionChanged();
 				getContainer().showPage(getNextPage());
@@ -115,7 +136,8 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		onPersonSelectionChanged();
 	}
 	
-	protected void onPersonSelectionChanged() {		
+	protected void onPersonSelectionChanged() {
+		editButton.setEnabled(searchComposite.getResultTable().getSelectionCount() == 1);
 	}
 
 	@Override
@@ -138,7 +160,10 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		if (getWizard().getContainer().getCurrentPage() == this) {
 			return searchComposite.getResultTable().getFirstSelectedElement();
 		} else {
-			return newPerson;
+			if (newPerson != null)
+				return newPerson;
+			else
+				return searchComposite.getResultTable().getFirstSelectedElement();
 		}
 	}
 	
@@ -146,4 +171,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.createNewButton.text"); //$NON-NLS-1$
 	}
 	
+	protected String getEditButtonText() {
+		return "Edit Person";
+	}
 }
