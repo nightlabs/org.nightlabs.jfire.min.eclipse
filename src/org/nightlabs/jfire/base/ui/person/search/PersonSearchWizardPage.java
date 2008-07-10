@@ -159,6 +159,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 
 	@Override
 	public void onShow() {
+		super.onShow();
 		getWizardHop().removeAllHopPages();
 		getContainer().updateButtons();
 		getShell().setDefaultButton(searchButton);
