@@ -51,9 +51,6 @@ import org.nightlabs.util.NLLocale;
  * The {@link StructFieldID}s to display have to be passed to the constructor
  * of the table.
  * </p>
- * <p>
- * To use this as a table for
- * </p>
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
@@ -78,7 +75,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 
 	private IStruct struct;
 	private StructFieldID[] structFieldIDs;
-	private StructField[] structFields;
+	private StructField<?>[] structFields;
 	
 	
 	/**
@@ -130,7 +127,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	protected void createStructFieldColumns(TableViewer tableViewer, Table table) {
 		structFields = new StructField[structFieldIDs.length];
 		for (int i = 0; i < structFieldIDs.length; i++) {
-			StructField structField = null;
+			StructField<?> structField = null;
 			try {
 				structField = struct.getStructField(structFieldIDs[i]);
 			} catch (PropertyException e) {
@@ -138,7 +135,7 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 			}
 			structFields[i] = structField;
 		}
-		for (StructField structField : structFields) {
+		for (StructField<?> structField : structFields) {
 			new TableColumn(table, SWT.LEFT).setText(structField.getName().getText());
 		}
 	}

@@ -38,8 +38,9 @@ import org.nightlabs.jfire.prop.ModifyListener;
 import org.nightlabs.jfire.prop.StructField;
 
 /**
- * Abstract base class for all  {@link DataFieldEditor} s with implementations for the listener stuff and other
+ * Abstract base class for all  {@link DataFieldEditor}s with implementations for the listener stuff and other
  * common things for all field editors.<br/>
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */

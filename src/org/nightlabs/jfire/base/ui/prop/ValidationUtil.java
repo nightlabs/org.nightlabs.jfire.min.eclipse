@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.prop;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
 public class ValidationUtil
