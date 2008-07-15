@@ -104,7 +104,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 
 				indexOfRequiredRolesBegin += requiredRolesBeginToken.length();
 
-				// now, indexOfRequiredRoles points to the first character of the first roleID
+				// now, indexOfRequiredRolesBegin points to the first character of the first roleID
 
 				String requiredRolesEndToken = "]"; //$NON-NLS-1$
 				int indexOfRequiredRolesEnd = exceptionMessage.indexOf(requiredRolesEndToken, indexOfRequiredRolesBegin);
@@ -130,7 +130,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 					}
 				}
 				else
-					requiredRoleIDStrings = new String[] { requiredRolesString };
+					requiredRoleIDStrings = new String[] { requiredRolesString.trim() };
 
 				requiredRoleIDs = new HashSet<RoleID>(requiredRoleIDStrings.length);
 				for (String roleIDString : requiredRoleIDStrings) {
