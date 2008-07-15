@@ -95,7 +95,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 					return false;
 				}
 
-				String requiredRolesBeginToken = Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.requiredRoles"); //$NON-NLS-1$
+				String requiredRolesBeginToken = "requiredRoles=["; //$NON-NLS-1$
 				int indexOfRequiredRolesBegin = exceptionMessage.indexOf(requiredRolesBeginToken);
 				if (indexOfRequiredRolesBegin < 0) {
 					logger.info("The SecurityException's message does not contain begin-token \"" + requiredRolesBeginToken + "\" => falling back to default dialog."); //$NON-NLS-1$ //$NON-NLS-2$
