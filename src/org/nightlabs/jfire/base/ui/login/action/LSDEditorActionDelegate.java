@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 
 /**
@@ -60,12 +61,6 @@ public abstract class LSDEditorActionDelegate implements IEditorActionDelegate, 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		this.activeEditor = targetEditor;
 	}
-
-	/**
-	 * Has to be implemented
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public abstract void run(IAction action);
 	
 	/**
 	 * Subclasses may override this but have to make sure
@@ -74,19 +69,27 @@ public abstract class LSDEditorActionDelegate implements IEditorActionDelegate, 
 	 * 
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
+	// TODO Do we need really to add the listener on each selection changed, IMHO it would enough to add it once in init
 		try {
 			Login.getLogin(false).addLoginStateListener(this,action);
 		} catch (LoginException e) {
 			throw new RuntimeException("Login.getLogin(false) should never throw this exception!", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
-	 * Default implementation of loginStateChanged does nothing.
+	 * Default implementation of loginStateChanged disables the action if the user is logged out,
+	 * if your implementation needs a different behavior override this method.
+	 * To keep this behavior subclasses should therefore always call super.loginStateChanged(event)
+	 * when overriding.
+	 * 
 	 * @see LoginStateListener#afterLoginStateChange(int, int, IAction)
 	 */
-	public void afterLoginStateChange(int oldLoginState, int newLoginState, IAction action) {
+	@Override
+	public void loginStateChanged(LoginStateChangeEvent event) {
+		event.getAction().setEnabled(Login.isLoggedIn());
 	}
-
+	
 }

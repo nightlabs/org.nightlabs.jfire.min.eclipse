@@ -125,7 +125,7 @@ extends LSDWorkbenchWindowActionDelegate
 	public void loginStateChanged(LoginStateChangeEvent event)
 
 	{
-		super.loginStateChanged(event);
+//		super.loginStateChanged(event);
 
 		ImageDescriptor loginIcon = null;
 		ImageDescriptor logoutIcon = null;

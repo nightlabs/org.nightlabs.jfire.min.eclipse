@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
@@ -52,6 +51,7 @@ public abstract class LSDWorkbenchWindowActionDelegate
 implements IWorkbenchWindowActionDelegate, LoginStateListener
 {
 	private static final Logger logger = Logger.getLogger(LSDWorkbenchWindowActionDelegate.class);
+	private IWorkbenchWindow window;
 	
 	/**
 	 * Default implementation of dispose removes this instance
@@ -66,7 +66,6 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 		}
 	}
 	
-	IWorkbenchWindow window;
 	/**
 	 * Returns the IWorkbenchWindow passed in {@link #init(IWorkbenchWindow)}
 	 * @return
@@ -85,6 +84,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 		this.window = window;
 		_init();
 	}
+	
 	private void _init()
 	{
 		// normally it should not happen, but it just happened to me on a windows machine :-( therefore we need these null checks. Marco.
@@ -135,21 +135,20 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		Login.sharedInstance().addLoginStateListener(this,action);
-//		if (Login.isLoggedIn()) {
-//			loginStateChanged(Login.sharedInstance().getLoginState(), action);
-//		}
+		// TODO Do we need really to add the listener on each selection changed, IMHO it would enough to add it once in init
+		Login.sharedInstance().addLoginStateListener(this, action);
 	}
 	
 	/**
-	 * Default implementation of loginStateChanged does nothing.
+	 * Default implementation of loginStateChanged disables the action if the user is logged out,
+	 * if your implementation needs a different behavior override this method.
+	 * To keep this behavior subclasses should therefore always call super.loginStateChanged(event)
+	 * when overriding.
+	 * 
 	 * @see LoginStateListener#afterLoginStateChange(int, int, IAction)
 	 */
 	public void loginStateChanged(LoginStateChangeEvent event) {
-//		logger.info("loginStateChanged to "+loginState+" for action "+action.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		event.getAction().setEnabled(Login.isLoggedIn());
 	}
-
-
-
 
 }
