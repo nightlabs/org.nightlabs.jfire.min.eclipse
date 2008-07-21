@@ -70,7 +70,12 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 				addFieldEditor(dataField, fieldEditor,true);
 				// add the field editor
 				fieldEditor.createControl(this);
-				fieldEditor.getControl().setLayoutData(translateLayoutData(fieldEditor.getLayoutData()));
+				DataFieldEditorLayoutData layoutData = fieldEditor.getLayoutData();
+				if (layoutData != null) {
+					fieldEditor.getControl().setLayoutData(DataFieldEditorLayoutData.toGridData(layoutData));
+				} else {
+					fieldEditor.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				}
 			}
 
 			DataFieldEditor fieldEditor = getFieldEditor(dataField);
@@ -83,23 +88,5 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 	@Override
 	public void doRefresh() {
 		createFieldEditors();
-	}
-	
-	public static GridData translateLayoutData(DataFieldEditorLayoutData layoutData) {
-		GridData gd = new GridData();
-		gd.exclude = layoutData.exclude;
-		gd.grabExcessHorizontalSpace = layoutData.grabExcessHorizontalSpace;
-		gd.grabExcessVerticalSpace = layoutData.grabExcessVerticalSpace;
-		gd.heightHint = layoutData.heightHint;
-		gd.horizontalAlignment = layoutData.horizontalAlignment;
-		gd.horizontalIndent = layoutData.horizontalIndent;
-		gd.horizontalSpan = layoutData.horizontalSpan;
-		gd.minimumHeight = layoutData.minimumHeight;
-		gd.minimumWidth = layoutData.minimumWidth;
-		gd.verticalAlignment = layoutData.verticalAlignment;
-		gd.verticalIndent = layoutData.verticalIndent;
-		gd.verticalSpan = layoutData.verticalSpan;
-		gd.widthHint = layoutData.widthHint;
-		return gd;
 	}
 }

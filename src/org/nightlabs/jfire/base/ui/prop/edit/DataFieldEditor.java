@@ -26,6 +26,7 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.prop.DataField;
@@ -38,7 +39,10 @@ import org.nightlabs.jfire.prop.StructField;
  * Implementations of this interface are used to edit the {@link DataField}s
  * stored in a {@link PropertySet}. For each type of data field an own
  * DataFieldEditor should be registered as extension to the point <code>org.nightlabs.jfire.base.ui.propDataFieldEditorFactory</code>.
- *
+ * <p>
+ * Note, that there exists an abstract base class that should be subclassed rather than
+ * implementing this interface directly: {@link AbstractDataFieldEditor}.
+ * </p>
  * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public interface DataFieldEditor<F extends DataField> {
@@ -74,6 +78,15 @@ public interface DataFieldEditor<F extends DataField> {
 	 */
 	Control getControl();
 	
+	/**
+	 * {@link DataFieldEditor}s might return a {@link DataFieldEditorLayoutData} here that is used
+	 * to layout their control within its container.
+	 *  <p>
+	 *  The {@link DataFieldEditorLayoutData} is similar to a SWT {@link GridData}
+	 *  and can be used like this.
+	 *  </p>
+	 * @return The layout data to layout the control of this {@link DataFieldEditor} within its container.
+	 */
 	DataFieldEditorLayoutData getLayoutData();
 	
 	/**

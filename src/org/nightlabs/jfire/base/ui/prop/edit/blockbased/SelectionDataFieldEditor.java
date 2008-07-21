@@ -54,7 +54,7 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 	 */
 	@Override
 	public Control createControl(Composite parent) {
-		composite = new SelectionDataFieldComposite(this, parent, SWT.NONE, this);
+		composite = new SelectionDataFieldComposite(this, parent, SWT.NONE, getModifyListener());
 		return composite;
 	}
 

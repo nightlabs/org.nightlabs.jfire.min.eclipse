@@ -31,10 +31,13 @@ import org.nightlabs.jfire.prop.IStruct;
 
 /**
  * {@link DataFieldEditorFactory}s are used to register specific types
- * of {@link DataFieldEditor}s to edit their corresponding {@link DataField}.
+ * of {@link DataFieldEditor}s that edit their corresponding {@link DataField}.
  * The factory is responsible for creating the field editors and should be
  * registered as extension to the point <code>org.nightlabs.jfire.base.ui.propDataFieldEditorFactory</code>
- * 
+ * <p>
+ * Note that there exists an abstract base class that should be subclassed
+ * rather than implementing this interface directly: {@link AbstractDataFieldEditorFactory}.
+ * </p>
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */

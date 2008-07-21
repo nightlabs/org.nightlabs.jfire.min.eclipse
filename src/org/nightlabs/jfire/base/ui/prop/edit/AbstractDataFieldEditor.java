@@ -30,8 +30,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.ModifyListener;
@@ -44,7 +42,7 @@ import org.nightlabs.jfire.prop.StructField;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public abstract class AbstractDataFieldEditor<F extends DataField> implements DataFieldEditor<F>, ModifyListener
+public abstract class AbstractDataFieldEditor<F extends DataField> implements DataFieldEditor<F>
 {
 	private StructField<F> structField;
 	private IStruct struct;
@@ -58,7 +56,14 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	private org.eclipse.swt.events.ModifyListener swtModifyListener = new org.eclipse.swt.events.ModifyListener() {
 		@Override
 		public void modifyText(ModifyEvent e) {
-			modifyData();
+			notifyChangeListeners();
+		}
+	};
+	
+	private ModifyListener modifyListener = new ModifyListener() {
+		@Override
+		public void modifyData() {
+			notifyChangeListeners();
 		}
 	};
 
@@ -67,12 +72,6 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		this.struct = struct;
 		setDataField(data);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public abstract Control createControl(Composite parent);
 
 	/**
 	 * Not intended to be overridden.<br/>
@@ -223,23 +222,32 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		return struct;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.prop.ModifyListener#modifyData()
-	 */
-	@Override
-	public void modifyData() {
-		notifyChangeListeners();
-	}
-
 	/**
-	 * This method returns a {@link org.eclipse.swt.events.ModifyListener} that can be used for SWT text widgets
-	 * and delegates to the method {@link #modifyData()} of the PropertyFramework {@link ModifyListener} interface.
-	 * @return a modify listener
+	 * This method returns a {@link org.eclipse.swt.events.ModifyListener} that can be used for SWT text widgets.
+	 * The listener will notify the {@link ModifyListener}s of this {@link DataFieldEditor} of the change.
+	 * @return A modify listener.
 	 */
 	protected org.eclipse.swt.events.ModifyListener getSwtModifyListener() {
 		return swtModifyListener;
 	}
 	
+	/**
+	 * This method returns a {@link ModifyListener} that can be used if {@link ModifyListener}s of this {@link DataFieldEditor}
+	 * should be notified of some other change in the data fields.
+	 * @return A {@link ModifyListener}.
+	 */
+	protected ModifyListener getModifyListener() {
+		return modifyListener;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * The default implementation returns a {@link DataFieldEditorLayoutData}
+	 * that is configured to fill horizontally.
+	 * </p>
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getLayoutData()
+	 */
 	@Override
 	public DataFieldEditorLayoutData getLayoutData() {
 		return new DataFieldEditorLayoutData(DataFieldEditorLayoutData.FILL_HORIZONTAL);

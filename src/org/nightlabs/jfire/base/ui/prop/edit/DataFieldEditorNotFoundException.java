@@ -26,36 +26,52 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit;
 
+import org.nightlabs.jfire.prop.DataField;
+
 /**
+ * This exception will be thrown when a {@link DataFieldEditor} was searched for a specific type (class)
+ * of {@link DataField} but it could not be found in the registry (it was not registered).
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class DataFieldEditorNotFoundException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 * Create a new {@link DataFieldEditorNotFoundException}. 
 	 */
 	public DataFieldEditorNotFoundException() {
 		super();
 	}
 
 	/**
-	 * @param message
+	 * Create a new {@link DataFieldEditorNotFoundException}. 
+	 * @param  message the detail message (which is saved for later retrieval
+	 *         by the {@link #getMessage()} method).
 	 */
 	public DataFieldEditorNotFoundException(String message) {
 		super(message);
 	}
 
 	/**
-	 * @param cause
+	 * Create a new {@link DataFieldEditorNotFoundException}. 
+	 * @param  cause the cause (which is saved for later retrieval by the
+	 *         {@link #getCause()} method).  (A <tt>null</tt> value is
+	 *         permitted, and indicates that the cause is nonexistent or
+	 *         unknown.)
 	 */
 	public DataFieldEditorNotFoundException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * @param message
-	 * @param cause
+	 * Create a new {@link DataFieldEditorNotFoundException}. 
+	 * @param  message the detail message (which is saved for later retrieval
+	 *         by the {@link #getMessage()} method).
+	 * @param  cause the cause (which is saved for later retrieval by the
+	 *         {@link #getCause()} method).  (A <tt>null</tt> value is
+	 *         permitted, and indicates that the cause is nonexistent or
+	 *         unknown.)
 	 */
 	public DataFieldEditorNotFoundException(String message, Throwable cause) {
 		super(message, cause);

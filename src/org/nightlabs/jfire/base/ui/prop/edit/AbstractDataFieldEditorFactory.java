@@ -40,35 +40,4 @@ public abstract class AbstractDataFieldEditorFactory<F extends DataField> implem
 	 */
 	public AbstractDataFieldEditorFactory() { }
 	
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getTargetPropDataType()
-	 */
-	public abstract Class<F> getPropDataFieldType();
-
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
-	 */
-	public abstract String[] getEditorTypes();
-	
-//	public abstract Class<? extends DataFieldEditor<F>> getDataFieldEditorClass();
-
-//	/**
-//	 * Default implementation instatiates a new instance of getEditorClass.getNewInstance()
-//	 * invokes setData(data) and returnes the new instance.
-//	 * 
-//	 */
-//	public DataFieldEditor<F> createPropDataFieldEditor(IStruct struct, F data, boolean setData) {
-//		DataFieldEditor<F> editor;
-//		try {
-//			editor = getDataFieldEditorClass().newInstance();
-//		} catch (Throwable t) {
-//			IllegalStateException ill = new IllegalStateException("Error instantiating "+getDataFieldEditorClass().getName()); //$NON-NLS-1$
-//			ill.initCause(t);
-//			throw ill;
-//		}
-//		if (setData)
-//			editor.setData(struct, data);
-//		return editor;
-//	}
-	
 }

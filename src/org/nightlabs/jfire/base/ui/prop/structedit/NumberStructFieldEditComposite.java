@@ -60,11 +60,11 @@ class NumberStructFieldEditComposite extends XComposite {
 		int oldDigits = numberField.getDigits();
 		double factor = Math.pow(10, newDigits - oldDigits);
 		if (factor > 1) {
-			numberField.setSpinnerMax((int) (numberField.getSpinnerMax() * factor));
-			numberField.setSpinnerMin((int) (numberField.getSpinnerMin() * factor));
+			numberField.setMax((int) (numberField.getMax() * factor));
+			numberField.setMin((int) (numberField.getMin() * factor));
 		} else {
-			numberField.setSpinnerMin((int) (numberField.getSpinnerMin() * factor));
-			numberField.setSpinnerMax((int) (numberField.getSpinnerMax() * factor));
+			numberField.setMin((int) (numberField.getMin() * factor));
+			numberField.setMax((int) (numberField.getMax() * factor));
 		}
 		numberField.setDigits(newDigits);
 	}
@@ -154,22 +154,11 @@ class NumberStructFieldEditComposite extends XComposite {
 					return;
 				
 				setSpinnerBounds();
-				numberField.setSpinnerMin(minSpinner.getSelection());
+				numberField.setMin(minSpinner.getSelection());
 				editor.setChanged();
 				rearrange();
 			}
 		});
-		
-//		maxSpinner.addModifyListener(new ModifyListener() {
-//			public void modifyText(ModifyEvent e) {
-//				if (ignoreModify)
-//					return;
-//
-//				setSpinnerBounds();
-//				numberField.setSpinnerMax(maxSpinner.getSelection());
-//				rearrange();
-//			}
-//		});
 		
 		maxSpinner.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {}
@@ -178,7 +167,7 @@ class NumberStructFieldEditComposite extends XComposite {
 					return;
 				
 				setSpinnerBounds();
-				numberField.setSpinnerMax(maxSpinner.getSelection());
+				numberField.setMax(maxSpinner.getSelection());
 				editor.setChanged();
 				rearrange();
 			}
@@ -205,8 +194,8 @@ class NumberStructFieldEditComposite extends XComposite {
 		minSpinner.setMinimum(0);
 		maxSpinner.setMaximum(Integer.MAX_VALUE);
 		maxSpinner.setMinimum(0);
-		minSpinner.setSelection(numberField.getSpinnerMin());
-		maxSpinner.setSelection(numberField.getSpinnerMax());
+		minSpinner.setSelection(numberField.getMin());
+		maxSpinner.setSelection(numberField.getMax());
 		
 		setSpinnerBounds();
 		

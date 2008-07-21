@@ -8,8 +8,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
 
 /**
+ * This layout data is used to layout a {@link DataFieldEditor} inside its container.
+ * The fields used in this layout data were copied from {@link GridData} and
+ * will have the equivalent results in the layout of the container.
+ * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- *
  */
 public class DataFieldEditorLayoutData {
 	/**
@@ -78,7 +81,6 @@ public class DataFieldEditorLayoutData {
 	 *
 	 * The default value is 0.
 	 * 
-	 * @since 3.1
 	 */
 	public int verticalIndent = 0;
 	
@@ -169,7 +171,6 @@ public class DataFieldEditorLayoutData {
 	 *
 	 * The default value is 0.
 	 *
-	 * @since 3.1
 	 * @see Control#computeSize(int, int, boolean)
 	 * @see GridData#widthHint
 	 */
@@ -184,7 +185,6 @@ public class DataFieldEditorLayoutData {
 	 *
 	 * The default value is 0.
 	 *
-	 * @since 3.1
 	 * @see Control#computeSize(int, int, boolean)
 	 * @see GridData#heightHint
 	 */
@@ -199,7 +199,6 @@ public class DataFieldEditorLayoutData {
 	 * 
 	 * The default value is <code>false</code>.
 	 * 
-	 * @since 3.1
 	 */
 	public boolean exclude = false;
 	
@@ -390,7 +389,6 @@ public class DataFieldEditorLayoutData {
 	 * @param grabExcessHorizontalSpace whether cell will be made wide enough to fit the remaining horizontal space
 	 * @param grabExcessVerticalSpace whether cell will be made high enough to fit the remaining vertical space
 	 * 
-	 * @since 3.0
 	 */
 	public DataFieldEditorLayoutData (int horizontalAlignment, int verticalAlignment, boolean grabExcessHorizontalSpace, boolean grabExcessVerticalSpace) {
 		this(horizontalAlignment, verticalAlignment, grabExcessHorizontalSpace, grabExcessVerticalSpace, 1, 1);
@@ -405,8 +403,6 @@ public class DataFieldEditorLayoutData {
 	 * @param grabExcessVerticalSpace whether cell will be made high enough to fit the remaining vertical space
 	 * @param horizontalSpan the number of column cells that the control will take up
 	 * @param verticalSpan the number of row cells that the control will take up
-	 * 
-	 * @since 3.0
 	 */
 	public DataFieldEditorLayoutData (int horizontalAlignment, int verticalAlignment, boolean grabExcessHorizontalSpace, boolean grabExcessVerticalSpace, int horizontalSpan, int verticalSpan) {
 		super ();
@@ -418,6 +414,12 @@ public class DataFieldEditorLayoutData {
 		this.verticalSpan = verticalSpan;
 	}
 	
+	/**
+	 * Create an appropriate {@link GridData} from the given {@link DataFieldEditorLayoutData}.
+	 * 
+	 * @param layoutData The layout data t convert.
+	 * @return A {@link GridData} created accordingly to the given {@link DataFieldEditorLayoutData}.
+	 */
 	public static GridData toGridData(DataFieldEditorLayoutData layoutData) {
 		GridData gd = new GridData();
 		gd.exclude = layoutData.exclude;

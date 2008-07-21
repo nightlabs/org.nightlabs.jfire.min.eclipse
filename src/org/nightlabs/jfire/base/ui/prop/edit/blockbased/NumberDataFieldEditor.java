@@ -195,13 +195,14 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 //		title.setText(numberStructField.getName().getText(editor.getLanguage().getLanguageID()));
 		
 		if (numberStructField.isBounded()) {
-			valueSpinner.setMaximum(numberStructField.getSpinnerMax());
-			valueSpinner.setMinimum(numberStructField.getSpinnerMin());
+			valueSpinner.setMaximum(numberStructField.getMax());
+			valueSpinner.setMinimum(numberStructField.getMin());
 		} else {
 			valueSpinner.setMaximum(Integer.MAX_VALUE);
 			valueSpinner.setMinimum(0);
 		}
 		valueSpinner.setDigits(numberStructField.getDigits());
+		
 		
 		valueSpinner.setSelection(numberDataField.getIntValue());
 	}

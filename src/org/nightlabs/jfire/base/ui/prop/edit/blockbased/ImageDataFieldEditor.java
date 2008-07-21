@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.InflaterInputStream;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -290,6 +292,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 		if (path == null || path.isEmpty()) {
 			dataField.clear();
 		} else {
+			
 			//FIXME: get content type somehow!
 			final String contentType;
 			final String lowerPath = path.toLowerCase();
