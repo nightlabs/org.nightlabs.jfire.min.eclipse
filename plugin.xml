@@ -214,7 +214,7 @@
             id="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor" name="%org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor.name"/>
         <editor
             class="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor"
-            icon="icons/editor/usergroup/UserSecurityGroupEditor.16x16.png"
+            icon="icons/editor/usersecuritygroup/UserSecurityGroupEditor.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor" name="%org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor.name"/>
         <editor
             class="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor"

@@ -37,10 +37,6 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.security.JFireSecurityManager;
-import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
-import org.nightlabs.jfire.security.id.UserID;
 
 /**
  * @author Niklas Schiffler <nick@nightlabs.de>
@@ -83,11 +79,12 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 			if("".equals(getUserGroupID()))  //$NON-NLS-1$
 				updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDMissing")); //$NON-NLS-1$
 			else {
-				JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-				if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserGroupID())))
-					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDConflict")); //$NON-NLS-1$
-				else
-					updateStatus(null);
+				// TODO: Check for already existing UserSecurityGroup as this is no subclass of user anymore
+//				JFireSecurityManager userManager = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+//				if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserGroupID())))
+//					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDConflict")); //$NON-NLS-1$
+//				else
+				updateStatus(null);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
