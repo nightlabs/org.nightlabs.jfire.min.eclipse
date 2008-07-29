@@ -25,6 +25,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DisplayNameChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DisplayNameChangedListener;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserLocal;
@@ -194,7 +195,7 @@ public class UserDataSection extends RestorableSectionPart
 					userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
 
 					personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
-						public void displayNameChanged(String displayName) {
+						public void displayNameChanged(DisplayNameChangedEvent changedEvent) {
 							refreshing = true;
 							System.out.println("UPDATING DISPLAY NAME"); //$NON-NLS-1$
 							updateDisplayName();
