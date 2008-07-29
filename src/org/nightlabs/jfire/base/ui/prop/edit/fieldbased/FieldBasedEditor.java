@@ -57,7 +57,7 @@ import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * A field based PropertySetEditor that will set its look depending
+ * A field based {@link PropertySetEditor} that will set its look depending
  * on the editorType and the PropDataFieldEditors registered
  * by the propDataField-extension-point.
  * 
@@ -275,8 +275,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 					if (!propertySet.isInflated())
 						propertySet.inflate(getPropStructure(new NullProgressMonitor()));
 					
-					for (Iterator iter = EditorStructFieldRegistry.sharedInstance().getStructFieldList(getEditorType()).iterator(); iter.hasNext();) {
-						StructFieldID structFieldID = (StructFieldID) iter.next();
+					for (StructFieldID structFieldID : EditorStructFieldRegistry.sharedInstance().getStructFieldList(getEditorType())) {
 						DataField field = null;
 						try {
 							field = propertySet.getDataField(structFieldID);

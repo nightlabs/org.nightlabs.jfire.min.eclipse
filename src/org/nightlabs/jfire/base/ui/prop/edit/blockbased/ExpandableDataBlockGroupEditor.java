@@ -44,10 +44,11 @@ import org.nightlabs.jfire.prop.IStruct;
  */
 public class ExpandableDataBlockGroupEditor
 extends ExpandableComposite
-implements DataBlockEditorChangedListener
 {
+	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	}
 
-
+	
 	private DataBlockGroupEditor blockGroupEditor;
 //	/**
 //	 * The class whose properties are to be edited.
@@ -96,10 +97,6 @@ implements DataBlockEditorChangedListener
 			}
 		});
 
-	}
-
-	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
-		blockGroupEditor.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
 	}
 
 	public void updateProp() {

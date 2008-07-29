@@ -57,10 +57,30 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractBlockBasedEditor implements PropertySetEditor { // extends ScrolledComposite {
-
+	
 	protected PropertySet propertySet;
+	/**
+	 * The registry that manages/registers {@link StructBlock}s edited in 
+	 * a domain. This will either be assigned in the constructor when a 
+	 * {@link PropertySet} is passed. Or in {@link #setEditorDomain(String, EditorStructBlockRegistry)}.
+	 */
 	protected EditorStructBlockRegistry structBlockRegistry;
-
+	/**
+	 * The struct-blocks to edit in the domain of this editor.
+	 * If this member is set, no {@link StructBlock}s that
+	 * are not registered for the editor domain will be shown.
+	 */
+	private List<StructBlockID> domainPropStructBlocks;
+	/**
+	 * The name of the editor under which StructBlocks will be registered
+	 * in the {@link EditorStructBlockRegistry}. This will be set
+	 * in {@link #setEditorDomain(String, EditorStructBlockRegistry)}.
+	 */
+	private String editorName;
+	
+	/**
+	 * Create a new {@link AbstractBlockBasedEditor}.
+	 */
 	public AbstractBlockBasedEditor() {
 		this (null, null);
 	}
@@ -133,8 +153,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * @param changeListener
 	 */
 	public abstract void refreshControl();
-
-	private String editorName;
+	
 
 	/**
 	 * Sets the editor domain for this editor and additionally
@@ -148,7 +167,6 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		this.structBlockRegistry = structBlockRegistry;
 	}
 
-	private List<StructBlockID> domainPropStructBlocks;
 
 	protected boolean shouldDisplayStructBlock(DataBlockGroup blockGroup) {
 		// default is all PropStructBlocks

@@ -128,28 +128,29 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		}
 	}
 
-	private Collection<DataFieldEditorChangeListener> changeListener = new LinkedList<DataFieldEditorChangeListener>();
+	private Collection<DataFieldEditorChangedListener> changeListener = new LinkedList<DataFieldEditorChangedListener>();
 
 	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
 	 */
 	@Override
-	public synchronized void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
+	public synchronized void addDataFieldEditorChangedListener(DataFieldEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
 	 */
 	@Override
-	public synchronized void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener) {
+	public synchronized void removeDataFieldEditorChangedListener(DataFieldEditorChangedListener listener) {
 		changeListener.remove(listener);
 	}
 
 	protected synchronized void notifyChangeListeners() {
 		// TODO: Rewrite to noitfy listener asynchronously
-		for (DataFieldEditorChangeListener listener : changeListener)
-			listener.dataFieldEditorChanged(this);
+		DataFieldEditorChangedEvent evt = new DataFieldEditorChangedEvent(this);
+		for (DataFieldEditorChangedListener listener : changeListener)
+			listener.dataFieldEditorChanged(evt);
 	}
 
 	/* (non-Javadoc)

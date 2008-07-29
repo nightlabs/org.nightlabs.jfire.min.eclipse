@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -51,6 +52,7 @@ import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentComposite;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentProvider;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.DisplayNamePart;
@@ -60,6 +62,7 @@ import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
+ * 
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
  * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor
@@ -69,13 +72,13 @@ import org.nightlabs.progress.NullProgressMonitor;
 public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 	public static final String EDITORTYPE_BLOCK_BASED = "block-based"; //$NON-NLS-1$
-
-	private GroupedContentComposite groupedContentComposite;
-	private XComposite displayNameComp;
-	private Text displayNameText;
-	private Button autogenerateNameCheckbox;
-	private boolean showDisplayNameComposite;
-
+	
+	/**
+	 * One {@link ContentProvider} will be instantiated per {@link DataBlockEditor}
+	 * in the {@link IStruct} for the edited {@link PropertySet}.
+	 * It shows the {@link DataBlock}s name as title and creates a {@link DataBlockGroupEditor}
+	 * as content.
+	 */
 	private class ContentProvider implements GroupedContentProvider {
 		private DataBlockGroupEditor groupEditor;
 		private DataBlockGroup blockGroup;
@@ -85,35 +88,118 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			this.blockGroup = blockGroup;
 			this.struct = struct;
 		}
-
+		@Override
 		public Image getGroupIcon() {
 			return null;
 		}
+		@Override
 		public String getGroupTitle() {
 			//return blockGroup.getStructBlock(getPropStructure()).getID();
 			return blockGroup.getStructBlock(struct).getName().getText();
 		}
+		@Override
 		public Composite createGroupContent(Composite parent) {
 			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultManager);
-			if (changeListenerProxy.getChangeListenerProxy() != null)
-				groupEditor.addPropDataBlockEditorChangedListener(changeListenerProxy.getChangeListenerProxy());
+			if (changeListenerProxy != null)
+				groupEditor.addPropDataBlockEditorChangedListener(changeListenerProxy);
 			return groupEditor;
 		}
+		/**
+		 * Called to refresh the underlying {@link DataBlockGroupEditor}.
+		 * 
+		 * @param blockGroup The {@link DataBlockGroup} to refresh.
+		 */
 		public void refresh(DataBlockGroup blockGroup) {
 			if (groupEditor != null) {
 				groupEditor.refresh(struct, blockGroup);
 			}
 			this.blockGroup = blockGroup;
 		}
+		/**
+		 * Called to trigger a {@link DataBlockGroupEditor#updatePropertySet()}
+		 * of the underlying {@link DataBlockGroupEditor}.
+		 */
 		public void updateProp() {
 			if (groupEditor != null) {
 				groupEditor.updatePropertySet();
 			}
 		}
 	}
-
+	
 	/**
-	 * Creates a new BlockBasedEditor.
+	 * One instance of this class is held per {@link BlockBasedEditor} and will 
+	 * be added as {@link DataBlockEditorChangedListener} to each editor created.
+	 * It will forward all notifications to the listeners that have been added
+	 * to the {@link BlockBasedEditor} by {@link BlockBasedEditor#addChangeListener(DataBlockEditorChangedListener)}.
+	 */
+	protected class ChangeListenerProxy implements DataBlockEditorChangedListener {
+		private ListenerList changeListeners = new ListenerList();
+
+		public void dataBlockEditorChanged(DataBlockEditorChangedEvent changedEvent) {
+			if (!refreshing) {
+				DataBlockEditor dataBlockEditor = changedEvent.getDataBlockEditor();
+				DataFieldEditor<? extends DataField> dataFieldEditor = changedEvent.getDataFieldEditor();
+				Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
+				StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup()); 
+				if (structBlock.getDataBlockValidators().size() > 0) {
+					// if there are validators for the block we have to update the propertySet 
+					// i.e. write the data from the editor to the property set
+					dataFieldEditor.updatePropertySet();
+					updateDisplayName();
+					refreshDisplayNameComp();
+				} else {
+					for (DisplayNamePart part : parts) {
+						if (dataFieldEditor.getStructField().equals(part.getStructField())) {
+							dataFieldEditor.updatePropertySet();
+							updateDisplayName();
+							refreshDisplayNameComp();
+							break;
+						}
+					}
+				}
+				
+				Object[] listeners = changeListeners.getListeners();
+				for (Object listener : listeners) {
+					if (listener instanceof DataBlockEditorChangedListener) {
+						((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
+					}
+				}
+			}
+		}
+
+		public void addChangeListener(DataBlockEditorChangedListener changeListener) {
+			this.changeListeners.add(changeListener);
+		}
+		public void removeChangeListener(DataBlockEditorChangedListener changeListener) {
+			this.changeListeners.remove(changeListener);
+		}
+		
+	}
+	
+	private GroupedContentComposite groupedContentComposite;
+	private XComposite displayNameComp;
+	private Text displayNameText;
+	private Button autogenerateNameCheckbox;
+	private boolean showDisplayNameComposite;
+	/**
+	 * Will be added to the {@link DataBlockEditor}s that have been created
+	 * and serves as proxy that notifies the listeners of this editor.
+	 */
+	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
+	private ListenerList displayNameChangedListeners = new ListenerList()	;
+	/**
+	 * Stores the {@link ContentProvider} with the DataBlock-key as key.
+	 */
+	private Map<String, ContentProvider> groupContentProvider = new HashMap<String, ContentProvider>();
+	/**
+	 * Used to track whether the editor is currently refreshing.
+	 */
+	private boolean refreshing = false;
+	
+	private IValidationResultManager validationResultManager;
+	
+	/**
+	 * Creates a new {@link BlockBasedEditor}.
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
 	 */
 	public BlockBasedEditor(boolean showDisplayNameComp) {
@@ -121,7 +207,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	}
 
 	/**
-	 * Creates a new BlockBasedEditor.
+	 * Creates a new {@link BlockBasedEditor}.
 	 * @param propSet The {@link PropertySet} to be managed.
 	 * @param propStruct The {@link IStruct} of the {@link PropertySet} to be managed.
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
@@ -130,11 +216,6 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		super(propSet, propStruct);
 		this.showDisplayNameComposite = showDisplayNameComp;
 	}
-
-	private Map<String, ContentProvider> groupContentProvider = new HashMap<String, ContentProvider>();
-
-
-	private boolean refreshing = false;
 	
 	/**
 	 * Refreshes the UI-Representation.
@@ -159,7 +240,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 						if (shouldDisplayStructBlock(blockGroup)) {
 							if (!groupContentProvider.containsKey(blockGroup.getStructBlockKey())) {
 								ContentProvider contentProvider = new ContentProvider(blockGroup, propertySet.getStructure());
-								groupContentProvider.put(blockGroup.getStructBlockKey(),contentProvider);
+								groupContentProvider.put(blockGroup.getStructBlockKey(), contentProvider);
 								groupedContentComposite.addGroupedContentProvider(contentProvider);
 							}
 							else {
@@ -174,72 +255,64 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			}
 		);
 	}
-
-//	private DataBlockEditorChangedListener changeListener;
-
-	public Control createControl(Composite parent, DataBlockEditorChangedListener changeListener, boolean refresh) {
-		setChangeListener(changeListener);
-		return createControl(parent, refresh);
+	/**
+	 * @return The {@link ChangeListenerProxy} of this {@link BlockBasedEditor}.
+	 */
+	protected ChangeListenerProxy getChangeListenerProxy() {
+		return changeListenerProxy;
 	}
-
-	private class ChangeListenerProxy implements DataBlockEditorChangedListener {
-		private DataBlockEditorChangedListener changeListener;
-
-		public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
-			if (!refreshing) {
-				Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
-				StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup()); 
-				if (structBlock.getDataBlockValidators().size() > 0) {
-					// if there are validators for the block we have to update the propertySet 
-					// i.e. write the data from the editor to the property set
-					dataFieldEditor.updatePropertySet();
-					updateDisplayName();
-					refreshDisplayNameComp();
-				} else {
-					for (DisplayNamePart part : parts) {
-						if (dataFieldEditor.getStructField().equals(part.getStructField())) {
-							dataFieldEditor.updatePropertySet();
-							updateDisplayName();
-							refreshDisplayNameComp();
-							break;
-						}
-					}
-				}
-
-				if (changeListener != null)
-					changeListener.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
-			}
-		}
-
-		public void setChangeListener(DataBlockEditorChangedListener changeListener) {
-			this.changeListener = changeListener;
-		}
-
-		public ChangeListenerProxy getChangeListenerProxy() {
-			return changeListenerProxy;
-		}
+	
+	/**
+	 * Add the given {@link DataBlockEditorChangedListener} to the list of listeners of this Editor.
+	 * @param changeListener The changeListener to add.
+	 */
+	public void addChangeListener(final DataBlockEditorChangedListener changeListener) {
+		changeListenerProxy.addChangeListener(changeListener);
 	}
-	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
-	private DisplayNameChangedListener displayNameChangedListener;
 
 	/**
-	 * @param changeListener The changeListener to set.
+	 * Remove the given {@link DataBlockEditorChangedListener} from the list of listeners of this Editor.
+	 * @param changeListener The changeListener to remove.
 	 */
-	public void setChangeListener(final DataBlockEditorChangedListener changeListener) {
-		changeListenerProxy.setChangeListener(changeListener);
+	public void removeChangeListener(final DataBlockEditorChangedListener changeListener) {
+		changeListenerProxy.removeChangeListener(changeListener);
 	}
-
-	public void setDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
-		this.displayNameChangedListener = displayNameChangedListener;
+	
+	/**
+	 * Add the given {@link DisplayNameChangedListener} to the list of listeners of this Editor. 
+	 * @param displayNameChangedListener The listener to add.
+	 */
+	public void addDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
+		this.displayNameChangedListeners.add(displayNameChangedListener);
 	}
-
+	/**
+	 * Remove the given {@link DisplayNameChangedListener} from the list of listeners of this Editor. 
+	 * @param displayNameChangedListener The listener to remove.
+	 */
+	public void removeDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
+		this.displayNameChangedListeners.remove(displayNameChangedListener);
+	}
+	
+	protected void fireDisplayNameChangedEvent(String oldName, String newName) {
+		DisplayNameChangedEvent evt = new DisplayNameChangedEvent(oldName, newName);
+		for (Object listener : displayNameChangedListeners.getListeners()) {
+			if (listener instanceof DisplayNameChangedListener) {
+				((DisplayNameChangedListener) listener).displayNameChanged(evt);
+			}
+		}
+	}
+	
 	protected void fireDataBlockEditorChangedEvent(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
-		changeListenerProxy.dataBlockEditorChanged(dataBlockEditor, dataFieldEditor);
-
+		changeListenerProxy.dataBlockEditorChanged(new DataBlockEditorChangedEvent(dataBlockEditor, dataFieldEditor));
 		if (!refreshing)
 			refreshControl();
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#createControl(org.eclipse.swt.widgets.Composite, boolean)
+	 */
+	@Override
 	public Control createControl(Composite parent, boolean refresh) {
 		if (groupedContentComposite == null) {
 			if (showDisplayNameComposite) {
@@ -257,9 +330,9 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					public void modifyText(ModifyEvent e) {
 						if (refreshing)
 							return;
+						String oldDisplayName = propertySet.getDisplayName();
 						propertySet.setDisplayName(displayNameText.getText());
-						if (displayNameChangedListener != null)
-							displayNameChangedListener.displayNameChanged(displayNameText.getText());
+						fireDisplayNameChangedEvent(oldDisplayName, displayNameText.getText());
 					}
 				});
 				displayNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -282,7 +355,12 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			refreshControl();
 		return groupedContentComposite;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#disposeControl()
+	 */
+	@Override
 	public void disposeControl() {
 		if (groupedContentComposite != null && !groupedContentComposite.isDisposed())
 				groupedContentComposite.dispose();
@@ -294,6 +372,11 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		displayNameComp = null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#updatePropertySet()
+	 */
+	@Override
 	public void updatePropertySet() {
 		for (ContentProvider contentProvider : groupContentProvider.values()) {
 			contentProvider.updateProp();
@@ -301,7 +384,11 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		updateDisplayName();
 	}
 
-	private void updateDisplayName() {
+	/**
+	 * Called by the {@link ChangeListenerProxy} when it gets notified of a change in the structure
+	 * and will update the display name in the {@link PropertySet} that is currently edited. 
+	 */
+	protected void updateDisplayName() {
 		if (displayNameComp != null) {
 			String displayName = autogenerateNameCheckbox.getSelection() ? null : displayNameText.getText();
 			getPropertySet().setAutoGenerateDisplayName(autogenerateNameCheckbox.getSelection());
@@ -309,7 +396,11 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 	}
 	
-	private void refreshDisplayNameComp() {
+	/**
+	 * Called by the {@link ChangeListenerProxy} when it gets notified of a change in the structure
+	 * and will update the Composite that shows the display name and its auto-creation setting. 
+	 */
+	protected void refreshDisplayNameComp() {
 		// could be called from refreshControl also.
 		boolean wasRefreshing = refreshing;
 		if (!wasRefreshing)
@@ -323,8 +414,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				displayNameText.setEnabled(!autogenerateNameCheckbox.getSelection());
 				if (!wasRefreshing) {
 					if (!displayNameText.getText().equals(oldDisplayNameText)) {
-						if (displayNameChangedListener != null)
-							displayNameChangedListener.displayNameChanged(displayNameText.getText());
+						fireDisplayNameChangedEvent(oldDisplayNameText, displayNameText.getText());
 					}
 				}
 			}
@@ -334,12 +424,22 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 	}
 
-	private IValidationResultManager validationResultManager;
-
+	/**
+	 * Set the {@link IValidationResultManager} that will be used to 
+	 * report validation results to the user.
+	 *  
+	 * @param validationResultManager The manager to set.
+	 */
 	public void setValidationResultManager(IValidationResultManager validationResultManager) {
 		this.validationResultManager = validationResultManager;
 	}
 
+	/**
+	 * Get the {@link IValidationResultManager} that is used by this
+	 * {@link BlockBasedEditor} to report validation results to the user.
+	 *  
+	 * @return The {@link IValidationResultManager} of this {@link BlockBasedEditor} or, <code>null</code> if none is set.
+	 */
 	public IValidationResultManager getValidationResultManager() {
 		return validationResultManager;
 	}

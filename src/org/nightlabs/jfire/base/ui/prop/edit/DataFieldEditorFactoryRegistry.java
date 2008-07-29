@@ -133,7 +133,8 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 * @return A new instance of the appropriate DataFieldEditor
 	 * @throws DataFieldEditorNotFoundException If no editor could be found for the type of the {@link DataField} passed.
 	 */
-	public DataFieldEditor getNewEditorInstance(
+	@SuppressWarnings("unchecked")
+	public DataFieldEditor<DataField> getNewEditorInstance(
 			IStruct struct, String editorType,
 			String context, DataField dataField
 		)

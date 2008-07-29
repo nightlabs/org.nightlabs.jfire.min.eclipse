@@ -13,8 +13,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
@@ -114,13 +112,13 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		});
 		blockBasedPersonEditorControl = blockBasedPersonEditor.createControl(container, false);
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
-		blockBasedPersonEditor.setChangeListener(new DataBlockEditorChangedListener() {
-			public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+		blockBasedPersonEditor.addChangeListener(new DataBlockEditorChangedListener() {
+			public void dataBlockEditorChanged(DataBlockEditorChangedEvent changedEvent) {
 				markDirty();
 			}
 		});
-		blockBasedPersonEditor.setDisplayNameChangedListener(new DisplayNameChangedListener() {
-			public void displayNameChanged(String displayName) {
+		blockBasedPersonEditor.addDisplayNameChangedListener(new DisplayNameChangedListener() {
+			public void displayNameChanged(DisplayNameChangedEvent changedEvent) {
 				markDirty();
 			}
 		});
@@ -145,6 +143,6 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	}
 
 	public void setDisplayNameChangedListener(DisplayNameChangedListener listener) {
-		blockBasedPersonEditor.setDisplayNameChangedListener(listener);
+		blockBasedPersonEditor.addDisplayNameChangedListener(listener);
 	}
 }

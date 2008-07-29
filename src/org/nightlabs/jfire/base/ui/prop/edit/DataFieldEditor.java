@@ -129,12 +129,12 @@ public interface DataFieldEditor<F extends DataField> {
 	 * when the user changes the field value.
 	 * @param listener The listener to add.
 	 */
-	void addDataFieldEditorChangedListener(DataFieldEditorChangeListener listener);
+	void addDataFieldEditorChangedListener(DataFieldEditorChangedListener listener);
 	/**
 	 * Remove the given listener from the list of change listeners.
 	 * @param listener The listener to remove.
 	 */
-	void removeDataFieldEditorChangedListener(DataFieldEditorChangeListener listener);
+	void removeDataFieldEditorChangedListener(DataFieldEditorChangedListener listener);
 	/**
 	 * Set the changed flag of this field editor.
 	 * @param changed The new value of the changed flag.

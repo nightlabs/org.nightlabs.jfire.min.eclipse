@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.prop.PropertySet;
 
 /**
- * A interface for common methods of all PropEditors, either
+ * A interface for common methods of all {@link PropertySet} editors, either
  * block or field based.<br/>
- * Common useage is:<br/>
+ * Common usage is:<br/>
  * <ul>
  * 	<li>Create a the Editor with parameterless constructor or one specific to the type your using.</li>
  *	<li>Link the editor to a PropertySet by using {@link #setPropertySet(PropertySet)</li>

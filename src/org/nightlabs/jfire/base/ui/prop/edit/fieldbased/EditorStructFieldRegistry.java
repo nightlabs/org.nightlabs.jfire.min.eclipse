@@ -35,7 +35,6 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
 public class EditorStructFieldRegistry {
 
@@ -45,7 +44,7 @@ public class EditorStructFieldRegistry {
 	 * value: List editorStructFieldIDs
 	 * 		value: StructFieldID editorStructFieldID
 	 */
-	private Map registry = new HashMap();
+	private Map<String, List<StructFieldID>> registry = new HashMap<String, List<StructFieldID>>();
 	
 	/**
 	 * Returns the list of PropStructFieldIDs for
@@ -54,22 +53,22 @@ public class EditorStructFieldRegistry {
 	 * @param editorType
 	 * @return
 	 */
-	public List getStructFieldList(String editorType) {
-		List list = (List)registry.get(editorType);
+	public List<StructFieldID> getStructFieldList(String editorType) {
+		List<StructFieldID> list = registry.get(editorType);
 		if (list == null) {
-			list = new ArrayList();
-			registry.put(editorType,list);
+			list = new ArrayList<StructFieldID>();
+			registry.put(editorType, list);
 		}
 		return list;
 	}
 	
 	public void addEditorStructFieldID(String editorType, StructFieldID structFieldID) {
-		List list = getStructFieldList(editorType);
+		List<StructFieldID> list = getStructFieldList(editorType);
 		list.add(structFieldID);
 	}
 	
 	public void addEditorStructFieldID(String editorType, int idx, StructFieldID structFieldID) {
-		List list = getStructFieldList(editorType);
+		List<StructFieldID> list = getStructFieldList(editorType);
 		list.add(idx, structFieldID);
 	}
 	

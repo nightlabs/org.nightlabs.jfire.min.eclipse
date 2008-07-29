@@ -12,14 +12,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.composite.LabeledText;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockWizardPage;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
-import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.progress.NullProgressMonitor;
@@ -30,7 +28,6 @@ import org.nightlabs.progress.NullProgressMonitor;
  */
 public class PersonPersonalDataWizardPage
 extends DataBlockWizardPage
-implements DataBlockEditorChangedListener
 {
 	private LabeledText displayName;
 	private Button autoCreateDisplayName;
@@ -88,7 +85,12 @@ implements DataBlockEditorChangedListener
 
 		setPropDataBlockEditorColumnHint(1);
 		createDataBlockEditors();
-		getDataBlockGroupEditor(PersonStruct.PERSONALDATA).addPropDataBlockEditorChangedListener(this);
+		getDataBlockGroupEditor(PersonStruct.PERSONALDATA).addPropDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
+			@Override
+			public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+				pageChanged();
+			}
+		});
 		pageChanged();
 		return getWrapperComp();
 	}
@@ -124,9 +126,4 @@ implements DataBlockEditorChangedListener
 		getPropertySet().setDisplayName(displayName.getTextControl().getText(), StructLocalDAO.sharedInstance().getStructLocal(
 				Person.class, Person.STRUCT_SCOPE, structLocalScope, new NullProgressMonitor()));
 	}
-
-	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
-		pageChanged();
-	}
-
 }

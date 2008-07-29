@@ -35,7 +35,8 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -69,16 +70,17 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	}
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = dataBlockEditorListeners.getListeners();
+		DataBlockEditorChangedEvent changedEvent = new DataBlockEditorChangedEvent(this, dataFieldEditor);
 		for (Object listener : listeners) {
 			if (listener instanceof DataBlockEditorChangedListener)
-				((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(this, dataFieldEditor);
+				((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
 		}
 	}
 
-	private DataFieldEditorChangeListener fieldEditorChangeListener = new DataFieldEditorChangeListener() {
+	private DataFieldEditorChangedListener fieldEditorChangeListener = new DataFieldEditorChangedListener() {
 		@Override
-		public void dataFieldEditorChanged(DataFieldEditor<? extends DataField> editor) {
-			notifyChangeListeners(editor);
+		public void dataFieldEditorChanged(DataFieldEditorChangedEvent changedEvent) {
+			notifyChangeListeners(changedEvent.getDataFieldEditor());
 			
 			validateDataBlock();
 		}

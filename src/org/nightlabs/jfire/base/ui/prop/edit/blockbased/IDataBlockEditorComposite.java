@@ -1,7 +1,7 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.events.DisposeListener;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.IStruct;
 
@@ -17,9 +17,9 @@ public interface IDataBlockEditorComposite {
 	
 	void setValidationResultManager(IValidationResultManager validationResultManager);
 
-	void addDataFieldEditorChangeListener(DataFieldEditorChangeListener listener);
+	void addDataFieldEditorChangeListener(DataFieldEditorChangedListener listener);
 	
-	void removeDataFieldEditorChangeListener(DataFieldEditorChangeListener listener);
+	void removeDataFieldEditorChangeListener(DataFieldEditorChangedListener listener);
 	
 	void addDisposeListener(DisposeListener listener);
 

@@ -38,8 +38,8 @@ import org.nightlabs.jfire.prop.IStruct;
  * Note that there exists an abstract base class that should be subclassed
  * rather than implementing this interface directly: {@link AbstractDataFieldEditorFactory}.
  * </p>
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
 public interface DataFieldEditorFactory<F extends DataField> {
 	/**

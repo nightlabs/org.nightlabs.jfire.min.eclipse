@@ -27,12 +27,20 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.prop.DataField;
+
+
 
 /**
- * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * Listener that can be added to {@link BlockBasedEditor}s 
+ * in order to be notified of a change in a {@link DataBlockEditor}.
+ * 
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public interface DataBlockEditorChangedListener {
-	
-	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor);
+	/**
+	 * Called when a {@link DataFieldEditor} is changed.
+	 * 
+	 * @param dataBlockEditorChangedEvent Contains references to the changed {@link DataBlockEditor} as well as to the changed {@link DataFieldEditor}-
+	 */
+	public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent);
 }

@@ -37,10 +37,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
-import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.exception.DataBlockRemovalException;
 import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
@@ -50,7 +48,6 @@ import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
  */
 public class DataBlockGroupEditor
 extends XComposite
-implements DataBlockEditorChangedListener
 {
 	private DataBlockGroup blockGroup;
 
@@ -134,7 +131,12 @@ implements DataBlockEditorChangedListener
 			Control blockEditorControl = blockEditor.createControl(wrapper);
 			blockEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
 			
-			blockEditor.addDataBlockEditorChangedListener(this);
+			blockEditor.addDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
+				@Override
+				public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+					notifyChangeListeners(dataBlockEditorChangedEvent);
+				}
+			});
 			blockEditor.setValidationResultManager(validationResultManager);
 			dataBlockEditors.add(blockEditor);
 
@@ -190,20 +192,14 @@ implements DataBlockEditorChangedListener
 		changeListener.add(listener);
 	}
 
-	protected synchronized void notifyChangeListeners(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
+	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent changedEvent) {
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
-			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(dataBlockEditor,dataFieldEditor);
+			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
 		}
 	}
-
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener#dataBlockEditorChanged(org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractDataBlockEditor, org.nightlabs.jfire.base.admin.ui.widgets.prop.edit.AbstractPropDataFieldEditor)
-	 */
-	public void dataBlockEditorChanged(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
-		notifyChangeListeners(dataBlockEditor,dataFieldEditor);
-	}
-
+	
+	
 	public void updatePropertySet() {
 		for (DataBlockEditor blockEditor : dataBlockEditors) {
 			blockEditor.updatePropertySet();

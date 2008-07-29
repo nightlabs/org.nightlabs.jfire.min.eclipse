@@ -36,7 +36,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangeListener;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -75,10 +76,10 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	
 	protected abstract void doRefresh();
 
-	private DataFieldEditorChangeListener fieldEditorChangeListener = new DataFieldEditorChangeListener() {
+	private DataFieldEditorChangedListener fieldEditorChangeListener = new DataFieldEditorChangedListener() {
 		@Override
-		public void dataFieldEditorChanged(DataFieldEditor<? extends DataField> editor) {
-			notifyChangeListeners(editor);
+		public void dataFieldEditorChanged(DataFieldEditorChangedEvent changedEvent) {
+			notifyChangeListeners(changedEvent.getDataFieldEditor());
 
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
 			if (getValidationResultManager() != null)
@@ -112,19 +113,20 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 
 	private ListenerList fieldEditorChangeListeners = new ListenerList();
 	
-	public void addDataFieldEditorChangeListener(DataFieldEditorChangeListener listener) {
+	public void addDataFieldEditorChangeListener(DataFieldEditorChangedListener listener) {
 		fieldEditorChangeListeners.add(listener);
 	}
 	
-	public void removeDataFieldEditorChangeListener(DataFieldEditorChangeListener listener) {
+	public void removeDataFieldEditorChangeListener(DataFieldEditorChangedListener listener) {
 		fieldEditorChangeListeners.remove(listener);
 	}
 	
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = fieldEditorChangeListeners.getListeners();
+		DataFieldEditorChangedEvent evt = new DataFieldEditorChangedEvent(dataFieldEditor);
 		for (Object listener : listeners) {
-			if (listener instanceof DataFieldEditorChangeListener)
-				((DataFieldEditorChangeListener) listener).dataFieldEditorChanged(dataFieldEditor);
+			if (listener instanceof DataFieldEditorChangedListener)
+				((DataFieldEditorChangedListener) listener).dataFieldEditorChanged(evt);
 		}
 	}
 
