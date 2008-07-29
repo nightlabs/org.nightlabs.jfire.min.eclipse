@@ -208,5 +208,8 @@
         <loginStateListener
               class="org.nightlabs.jfire.base.ui.editlock.EditLockManLoginStateListener">
         </loginStateListener>
+        <loginStateListener
+              class="org.nightlabs.jfire.base.ui.login.TimeCheckLoginStateListener">
+        </loginStateListener>
     </extension>
 </plugin>
