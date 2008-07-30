@@ -15,8 +15,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.nightlabs.base.ui.dialog.CenteredDialog;
 import org.nightlabs.base.ui.job.Job;
+import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.editlock.AcquireEditLockResult;
@@ -25,7 +25,7 @@ import org.nightlabs.jfire.editlock.dao.EditLockDAO;
 import org.nightlabs.progress.ProgressMonitor;
 
 public class EditLockCollisionWarningDialog
-extends CenteredDialog
+extends ResizableTrayDialog
 {
 	private AcquireEditLockResult acquireEditLockResult;
 
@@ -33,7 +33,7 @@ extends CenteredDialog
 
 	public EditLockCollisionWarningDialog(Shell parentShell, AcquireEditLockResult acquireEditLockResult)
 	{
-		super(parentShell);
+		super(parentShell, null);
 		this.acquireEditLockResult = acquireEditLockResult;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		setBlockOnOpen(false);
@@ -53,7 +53,7 @@ extends CenteredDialog
 	};
 
 	@Override
-	protected Point getInitialSize() {
+	protected Point getPreferredSize() {
 		return new Point(500, 300);
 	}
 	

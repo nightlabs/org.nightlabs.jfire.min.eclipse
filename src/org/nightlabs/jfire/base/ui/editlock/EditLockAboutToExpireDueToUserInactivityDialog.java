@@ -15,11 +15,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.CountdownButton;
-import org.nightlabs.base.ui.dialog.CenteredDialog;
+import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class EditLockAboutToExpireDueToUserInactivityDialog
-extends CenteredDialog
+extends ResizableTrayDialog
 {
 	private EditLockMan editLockMan;
 
@@ -30,7 +30,7 @@ extends CenteredDialog
 
 	public EditLockAboutToExpireDueToUserInactivityDialog(EditLockMan editLockMan, Shell parentShell)
 	{
-		super(parentShell);
+		super(parentShell, null);
 		this.editLockMan = editLockMan;
 	}
 
@@ -58,7 +58,7 @@ extends CenteredDialog
 	}
 
 	@Override
-	protected Point getInitialSize() {
+	protected Point getPreferredSize() {
 		return new Point(500, 300);
 	}
 	

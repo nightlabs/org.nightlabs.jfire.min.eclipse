@@ -12,19 +12,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
-import org.nightlabs.base.ui.dialog.CenteredDialog;
+import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class BlockingDueToInactivityDialog extends CenteredDialog {
+public class BlockingDueToInactivityDialog extends ResizableTrayDialog {
 	private ProcessEditLockTable editLockTable;
 	private EditLockMan editLockMan;
 	private Set<EditLockCarrier> editLockCarriers = new HashSet<EditLockCarrier>();
 	
 	public BlockingDueToInactivityDialog(EditLockMan editLockMan, Shell parentShell) {
-		super(parentShell);
+		super(parentShell, null);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.editLockMan = editLockMan;
 	}
@@ -53,7 +53,7 @@ public class BlockingDueToInactivityDialog extends CenteredDialog {
 	}
 	
 	@Override
-	protected Point getInitialSize() {
+	protected Point getPreferredSize() {
 		return new Point(600, 400);
 	}
 	
