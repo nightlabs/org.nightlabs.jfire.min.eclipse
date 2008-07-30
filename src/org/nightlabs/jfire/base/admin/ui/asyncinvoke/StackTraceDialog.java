@@ -8,28 +8,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.nightlabs.base.ui.dialog.CenteredDialog;
+import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
 import org.nightlabs.jfire.asyncinvoke.AsyncInvokeProblem;
 
 public class StackTraceDialog
-		extends CenteredDialog
+		extends ResizableTrayDialog
 {
 	private AsyncInvokeProblem asyncInvokeProblem;
 
 	public StackTraceDialog(Shell parentShell, AsyncInvokeProblem asyncInvokeProblem)
 	{
-		super(parentShell);
+		super(parentShell, null);
 		this.asyncInvokeProblem = asyncInvokeProblem;
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
 	@Override
-	protected int getShellStyle()
-	{
-		return super.getShellStyle() | SWT.RESIZE;
-	}
-
-	@Override
-	protected Point getInitialSize()
+	protected Point getPreferredSize()
 	{
 		return new Point(640, 480);
 	}
