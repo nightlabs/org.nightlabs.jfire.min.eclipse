@@ -189,7 +189,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 
 				userModel.setUserSecurityGroups(includedUserSecurityGroups);
 				userModel.setAvailableUserSecurityGroups(availableUserSecurityGroups);
-				UserLocalID userLocalID = UserLocalID.create(userID.organisationID, userID.userID);
+				UserLocalID userLocalID = UserLocalID.create(userID.organisationID, userID.userID, userID.organisationID);
 
 				// load role groups
 				RoleGroupSetCarrier roleGroupSetCarrier = RoleGroupDAO.sharedInstance().getRoleGroupSetCarrier(

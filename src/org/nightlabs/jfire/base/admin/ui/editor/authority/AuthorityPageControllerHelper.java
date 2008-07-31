@@ -107,7 +107,7 @@ public class AuthorityPageControllerHelper
 	/**
 	 * Load the data.
 	 *
-	 * @param authorityTypeID the id of the {@link AuthorityType} or <code>null</code> to clear all data. 
+	 * @param authorityTypeID the id of the {@link AuthorityType} or <code>null</code> to clear all data.
 	 * @param authorityID the id of the {@link Authority}. Can be <code>null</code> if <code>newAuthority</code>
 	 *		is passed instead or to indicate that there
 	 *		is no authority assigned to the object which is currently edited.
@@ -498,7 +498,7 @@ public class AuthorityPageControllerHelper
 						if (!resolveAuthorizedObjectHasUserSecurityGroupInAuthority(member)) {
 							if (!(member instanceof UserSecurityGroup)) { // user-groups are not controlled by the other-user
 								m.setControlledByOtherUser(true);
-								AuthorizedObject otherUser = authorizedObjectID2authorizedObjectMap.get(UserLocalID.create(authority.getOrganisationID(), User.USERID_OTHER));
+								AuthorizedObject otherUser = authorizedObjectID2authorizedObjectMap.get(UserLocalID.create(authority.getOrganisationID(), User.USERID_OTHER, authority.getOrganisationID()));
 								RoleGroupSecurityPreferencesModel otherModel = authorizedObject2RoleGroupSecurityPreferencesModel.get(otherUser);
 								Set<RoleGroup> roleGroupsAssignedToOtherUser = new HashSet<RoleGroup>(otherModel.getRoleGroupsAssignedDirectly().size() + otherModel.getRoleGroupsAssignedToUserGroups().size());
 								roleGroupsAssignedToOtherUser.addAll(otherModel.getRoleGroupsAssignedDirectly());
@@ -668,7 +668,7 @@ public class AuthorityPageControllerHelper
 	 * {@link IEntityEditorPageController} (preferably a subclass of {@link ActiveEntityEditorPageController}) used to manage the
 	 * {@link SecuredObject} shall assign the {@link Authority} by a call to
 	 * {@link AuthorityDAO#assignSecuringAuthority(Object, AuthorityID, boolean, org.nightlabs.progress.ProgressMonitor)}. Note,
-	 * that this method should be called after 
+	 * that this method should be called after
 	 */
 	private boolean assignSecuringAuthorityRequested;
 
@@ -729,7 +729,7 @@ public class AuthorityPageControllerHelper
 	public static final String PROPERTY_NAME_ROLE_GROUP_SECURITY_PREFERENCES_MODEL_CHANGED = "roleGroupSecurityPreferencesModelChanged"; //$NON-NLS-1$
 
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
