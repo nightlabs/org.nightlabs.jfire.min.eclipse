@@ -14,11 +14,8 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
-import org.nightlabs.jfire.jdo.notification.SimpleLifecycleListenerFilter;
-import org.nightlabs.jfire.security.AuthorizedObjectRef;
 import org.nightlabs.jfire.security.AuthorizedObjectRefLifecycleListenerFilter;
 import org.nightlabs.jfire.security.JFireSecurityManager;
 import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
@@ -106,7 +103,7 @@ extends SecurityReflector
 		public AuthorizedObjectRefLifecycleListener() {
 			UserDescriptor userDescriptor = _getUserDescriptor();
 			filter = new AuthorizedObjectRefLifecycleListenerFilter(
-					UserLocalID.create(userDescriptor.getOrganisationID(), userDescriptor.getUserID()),
+					UserLocalID.create(userDescriptor.getOrganisationID(), userDescriptor.getUserID(), userDescriptor.getOrganisationID()),
 					JDOLifecycleState.DIRTY, JDOLifecycleState.DELETED
 			);
 		}
