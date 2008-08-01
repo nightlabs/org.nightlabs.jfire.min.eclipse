@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.admin.ui.asyncinvoke;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -10,6 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
 import org.nightlabs.jfire.asyncinvoke.AsyncInvokeProblem;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 public class StackTraceDialog
 		extends ResizableTrayDialog
@@ -18,15 +18,9 @@ public class StackTraceDialog
 
 	public StackTraceDialog(Shell parentShell, AsyncInvokeProblem asyncInvokeProblem)
 	{
-		super(parentShell, null);
+		super(parentShell, Messages.RESOURCE_BUNDLE);
 		this.asyncInvokeProblem = asyncInvokeProblem;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
-
-	@Override
-	protected Point getPreferredSize()
-	{
-		return new Point(640, 480);
 	}
 
 	@Override

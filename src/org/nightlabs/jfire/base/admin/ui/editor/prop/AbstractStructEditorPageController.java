@@ -19,7 +19,6 @@ public abstract class AbstractStructEditorPageController<EntityType extends IStr
 	 */
 	public AbstractStructEditorPageController(EntityEditor editor) {
 		super(editor);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -29,7 +28,6 @@ public abstract class AbstractStructEditorPageController<EntityType extends IStr
 	public AbstractStructEditorPageController(EntityEditor editor,
 			boolean startBackgroundLoading) {
 		super(editor, startBackgroundLoading);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void setStruct(IStruct struct) {
