@@ -37,6 +37,7 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.dao.AuthorityDAO;
 import org.nightlabs.jfire.security.dao.AuthorityTypeDAO;
 import org.nightlabs.jfire.security.id.AuthorityID;
@@ -74,7 +75,7 @@ public class SelectAuthorityPage extends WizardHopPage
 	private Authority newAuthority = null;
 
 	/**
-	 * Create the wizard page for selection/creation of an Authority. 
+	 * Create the wizard page for selection/creation of an Authority.
 	 *
 	 * @param authorityTypeID the ID of the {@link AuthorityType}. This must not be <code>null</code>, because it is required for creation of an authority!
 	 * @param inheritedAuthorityResolver Used to find out the inherited {@link Authority}. This can be <code>null</code>, if there is no inheritance in the current use case. If it is <code>null</code>, the "inherit" option will be hidden.
@@ -209,10 +210,10 @@ public class SelectAuthorityPage extends WizardHopPage
 						new SubProgressMonitor(monitor, 20));
 
 				final List<Authority> authorities = AuthorityDAO.sharedInstance().getAuthorities(
+						SecurityReflector.getUserDescriptor().getOrganisationID(),
 						authorityTypeID,
 						new String[] { FetchPlan.DEFAULT, Authority.FETCH_GROUP_NAME },
-						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-						new SubProgressMonitor(monitor, 60));
+						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 60));
 
 				Collections.sort(authorities, new Comparator<Authority>() {
 						@Override
@@ -315,7 +316,7 @@ public class SelectAuthorityPage extends WizardHopPage
 			case create:
 			case none:
 				return null;
-			
+
 			case select:
 				return selectedAuthorityID;
 

@@ -19,6 +19,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.dao.AuthorityDAO;
 import org.nightlabs.jfire.security.id.AuthorityTypeID;
 import org.nightlabs.progress.ProgressMonitor;
@@ -40,6 +41,9 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 			}
 		}
 	}
+
+	private String authorityOrganisationID = SecurityReflector.getUserDescriptor().getOrganisationID();
+//	private String authorityOrganisationID = null;
 
 	private AuthorityTypeID authorityTypeID;
 	private Collection<Authority> authorities = new ArrayList<Authority>();
@@ -65,14 +69,14 @@ public class AuthorityTable extends AbstractTableComposite<Authority>
 				protected IStatus run(ProgressMonitor monitor) throws Exception
 				{
 					final Collection<Authority> newAuthorities = AuthorityDAO.sharedInstance().getAuthorities(
+							authorityOrganisationID,
 							authorityTypeID,
 							new String[] {
 									javax.jdo.FetchPlan.DEFAULT,
 									Authority.FETCH_GROUP_NAME,
 									Authority.FETCH_GROUP_DESCRIPTION
 							},
-							NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-							monitor
+							NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor
 					);
 
 					final Job thisJob = this;
