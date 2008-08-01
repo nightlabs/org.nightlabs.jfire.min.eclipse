@@ -94,7 +94,7 @@ import org.nightlabs.progress.ProgressMonitor;
  *   Login.getLogin(false).setForceLogin(true);
  *   Login.getLogin();
  * </pre>
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class Login
@@ -113,17 +113,17 @@ extends AbstractEPProcessor
 
 	/**
 	 * Loginstate: Logged in
-	 * 
+	 *
 	 * Loginstate: Logged out
 
 	 * Loginstate: Working OFFLINE indicating also that the user wants
 	 * to stay OFFLINE and causing the Login to fail for a certain time
 	 * when not forced.
 	 * @see LoginStateListener
-	 */	
-	
+	 */
+
 	//public enum LoginState { LOGINSTATE_LOGGED_IN, LOGINSTATE_LOGGED_OUT, LOGINSTATE_OFFLINE }
-	
+
 
 	private static Login sharedInstanceLogin = null;
 
@@ -451,11 +451,11 @@ extends AbstractEPProcessor
 	 * Actually performs the login procedure.<br/>
 	 * This method calls {@link #doLogin(boolean)} with parameter forceLogoutFirst
 	 * set to false, so nothing will happen if already logged in.
-	 * 
+	 *
 	 * @throws LoginException Exception is thrown whenever some error occurs during login.
 	 * But not that the user might be presented the possibility to work OFFLINE.
 	 * In this case a LoginException is thrown as well with a {@link LoginAbortedException} as cause.
-	 * 
+	 *
 	 * @see ILoginHandler
 	 * @see Login#setLoginHandler(ILoginHandler)
 	 * @see #doLogin(boolean)
@@ -480,13 +480,13 @@ extends AbstractEPProcessor
 	 * Actually performs the login procedure.
 	 * To do so it calls {@link ILoginHandler#handleLogin(LoginData, LoginConfigModule, Login.AsyncLoginResult)}
 	 * of the LoginHandler defined with {@link #setLoginHandler(ILoginHandler)}.
-	 * 
+	 *
 	 * @param forceLogoutFirst Defines weather to logout first
-	 * 
+	 *
 	 * @throws LoginException Exception is thrown whenever some error occurs during login.
 	 * But not that the user might be presented the possibility to work OFFLINE.
 	 * In this case a LoginException is thrown as well with a {@link LoginAbortedException} as cause.
-	 * 
+	 *
 	 * @see ILoginHandler
 	 * @see Login#setLoginHandler(ILoginHandler)
 	 */
@@ -602,7 +602,7 @@ extends AbstractEPProcessor
 	/**
 	 * Sets whether to force login on next attempt even if login state is
 	 * {@link #LOGINSTATE_OFFLINE}.
-	 * 
+	 *
 	 * @param forceLogin Whether to force Login on the next attempt.
 	 */
 	public void setForceLogin(boolean forceLogin) {
@@ -713,7 +713,7 @@ extends AbstractEPProcessor
 
 	/**
 	 * Creates a new Login.
-	 * 
+	 *
 	 * @throws NamingException
 	 */
 	protected Login() {}
@@ -741,7 +741,8 @@ extends AbstractEPProcessor
 		if (loginData == null)
 			return null;
 
-		return loginData.getPrincipalName();
+//		return loginData.getPrincipalName();
+		return loginData.getUserID() + LoginData.USER_ORGANISATION_SEPARATOR + loginData.getOrganisationID();
 	}
 
 	/**
@@ -751,10 +752,10 @@ extends AbstractEPProcessor
 	public UserID getUserObjectID() {
 		if (loginData == null)
 			return null;
-		
+
 		return UserID.create(getOrganisationID(), getUserID());
 	}
-	
+
 	/**
 	 * @return Returns the password.
 	 */
@@ -839,7 +840,7 @@ extends AbstractEPProcessor
 	/**
 	 * Returns the runtime (not the persitent) LoginConfigModule. The persistent
 	 * one can be obtained via {@link Config}.
-	 * 
+	 *
 	 * @return The runtime (not the persitent) LoginConfigModule.
 	 */
 	public LoginConfigModule getLoginConfigModule() {
@@ -906,11 +907,11 @@ extends AbstractEPProcessor
 			loginStateListenerRegistry.add(regItem);
 			// we cannot trigger the beforeLoginStateChange here - that doesn't make much sense... or should we? marco.
 			// and we pass the same value as old and new value since don't really know the old value. does this make sense? marco.
-		
+
 			LoginStateChangeEvent event = new LoginStateChangeEvent(this,
-					getLoginState(), getLoginState(), 
+					getLoginState(), getLoginState(),
 					action);
-			
+
 			loginStateListener.loginStateChanged(event);
 		}
 	}
@@ -972,14 +973,14 @@ extends AbstractEPProcessor
 //
 //				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
 //					try {
-//						
+//
 //						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
-//								getLoginState(), newLoginState, 
+//								getLoginState(), newLoginState,
 //								item.getAction());
-//						
+//
 //						item.getLoginStateListener().beforeLoginStateChange(event);
-//						
-//						
+//
+//
 //					} catch (Throwable t) {
 //						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
 //					}
@@ -1051,7 +1052,7 @@ extends AbstractEPProcessor
 				for (LoginStateListenerRegistryItem item : loginStateListenerRegistryItems) {
 					try {
 						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
-								oldLoginState, newLoginState, 
+								oldLoginState, newLoginState,
 								item.getAction());
 
 						item.getLoginStateListener().loginStateChanged(event);
