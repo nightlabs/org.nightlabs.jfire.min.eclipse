@@ -7,7 +7,6 @@ import javax.jdo.FetchPlan;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -52,11 +51,6 @@ extends ResizableTrayDialog
 		FetchPlan.DEFAULT, EditLock.FETCH_GROUP_LOCK_OWNER_USER
 	};
 
-	@Override
-	protected Point getPreferredSize() {
-		return new Point(500, 300);
-	}
-	
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -50,11 +49,6 @@ public class BlockingDueToInactivityDialog extends ResizableTrayDialog {
 		if (editLockCarriers.add(editLockCarrier)) {
 			editLockTable.refresh();
 		}
-	}
-	
-	@Override
-	protected Point getPreferredSize() {
-		return new Point(600, 400);
 	}
 	
 	@Override

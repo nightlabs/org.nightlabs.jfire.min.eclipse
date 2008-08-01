@@ -6,7 +6,6 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -30,7 +29,7 @@ extends ResizableTrayDialog
 
 	public EditLockAboutToExpireDueToUserInactivityDialog(EditLockMan editLockMan, Shell parentShell)
 	{
-		super(parentShell, null);
+		super(parentShell, Messages.RESOURCE_BUNDLE);
 		this.editLockMan = editLockMan;
 	}
 
@@ -55,11 +54,6 @@ extends ResizableTrayDialog
 			}
 		});
 		return null;
-	}
-
-	@Override
-	protected Point getPreferredSize() {
-		return new Point(500, 300);
 	}
 	
 	@Override

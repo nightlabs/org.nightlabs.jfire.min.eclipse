@@ -8,7 +8,6 @@ import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,7 +28,7 @@ extends ResizableTrayDialog
 	 * @param searchText
 	 */
 	public UserSearchDialog(Shell parentShell, String searchText) {
-		super(parentShell, null);
+		super(parentShell, Messages.RESOURCE_BUNDLE);
 		this.searchText = searchText;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -48,11 +47,6 @@ extends ResizableTrayDialog
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchDialog.SearchUser")); //$NON-NLS-1$
-	}
-
-	@Override
-	protected Point getPreferredSize() {
-		return new Point(500, 350);
 	}
 
 	@Override
