@@ -1,16 +1,32 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.jfire.prop.StructBlock;
 
-public class StructBlockEditor implements StructPartEditor<StructBlock> {
+public class StructBlockEditor extends AbstractStructPartEditor<StructBlock> {
 
 	private StructBlockEditorComposite structBlockEditorComposite;
 	
 	public Composite createComposite(Composite parent, int style, StructEditor structEditor, LanguageChooser languageChooser) {
 		structBlockEditorComposite = new StructBlockEditorComposite(parent, style, languageChooser);
+		structBlockEditorComposite.getBlockNameEditor().addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				notifyModifyListeners();
+			}
+		});
+		structBlockEditorComposite.getUniqueButton().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				notifyModifyListeners();
+			}
+		});
 		return structBlockEditorComposite;
 	}
 
@@ -36,5 +52,12 @@ public class StructBlockEditor implements StructPartEditor<StructBlock> {
 
 	public I18nTextEditor getPartNameEditor() {
 		return structBlockEditorComposite.getBlockNameEditor();
+	}
+	
+	@Override
+	public void setFocus() {
+		if (!getPartNameEditor().isDisposed()) {
+			getPartNameEditor().setFocus();
+		}
 	}
 }

@@ -18,7 +18,9 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
 
-public abstract class AbstractStructFieldEditor<F extends StructField> implements StructFieldEditor<F> {
+public abstract class AbstractStructFieldEditor<F extends StructField> 
+extends AbstractStructPartEditor<F> 
+implements StructFieldEditor<F> {
 	
 	private Composite specialComposite;
 	private I18nTextEditor fieldNameEditor;
@@ -30,7 +32,8 @@ public abstract class AbstractStructFieldEditor<F extends StructField> implement
 	private Group editorGroup;
 	
 	public void setChanged() {
-		getStructEditor().setChanged(true);
+//		getStructEditor().setChanged(true);
+		notifyModifyListeners();
 	}
 	
 	public Composite createComposite(Composite parent, int style, StructEditor structEditor, LanguageChooser languageChooser) {
@@ -106,12 +109,10 @@ public abstract class AbstractStructFieldEditor<F extends StructField> implement
 	
 	protected abstract void setSpecialData(F field);
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.structedit.StructPartEditor#getPartNameEditor()
-	 */
-	public I18nTextEditor getPartNameEditor() {
-		return fieldNameEditor;
+	@Override
+	public void setFocus() {
+		if (!getFieldNameEditor().isDisposed())
+			getFieldNameEditor().setFocus();
 	}
 	
 	/**

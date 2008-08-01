@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -99,6 +100,12 @@ class ImageStructFieldEditorComposite extends XComposite implements Serializable
 		new Label(this, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldEditor.maximumSizeLabel.text")); //$NON-NLS-1$
 		sizeSpinner = new Spinner(this, getBorderStyle());
 		sizeSpinner.setMaximum(Integer.MAX_VALUE);
+		sizeSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				editor.setChanged();
+			}
+		});
 		
 		new Label(this, SWT.NONE); new Label(this, SWT.NONE); // Spacers
 		

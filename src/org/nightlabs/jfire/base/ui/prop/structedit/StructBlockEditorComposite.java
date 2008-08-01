@@ -14,7 +14,7 @@ import org.nightlabs.jfire.prop.StructBlock;
 
 public class StructBlockEditorComposite extends XComposite {
 	private I18nTextEditor blockNameEditor;
-	Button checkComp;
+	Button uniqueButton;
 	private StructBlock block;
 
 	public StructBlockEditorComposite(Composite parent, int style, LanguageChooser languageChooser) {
@@ -26,19 +26,23 @@ public class StructBlockEditorComposite extends XComposite {
 		
 		new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		checkComp = new Button(this, SWT.CHECK);
-		checkComp.setLayoutData((new GridData(GridData.HORIZONTAL_ALIGN_CENTER)));
-		checkComp.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.unique.text")); //$NON-NLS-1$
+		uniqueButton = new Button(this, SWT.CHECK);
+		uniqueButton.setLayoutData((new GridData(GridData.HORIZONTAL_ALIGN_CENTER)));
+		uniqueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.unique.text")); //$NON-NLS-1$
 	}
 
 	public void setStructBlock(StructBlock psb) {
 		block = psb;
 		blockNameEditor.setI18nText(psb.getName(), EditMode.DIRECT);
-		checkComp.setSelection(block.isUnique());
+		uniqueButton.setSelection(block.isUnique());
 		this.setVisible(true);
 	}
 
 	public I18nTextEditor getBlockNameEditor() {
 		return blockNameEditor;
+	}
+	
+	public Button getUniqueButton() {
+		return uniqueButton;
 	}
 }

@@ -80,6 +80,7 @@ class RegexStructFieldEditComposite extends XComposite {
 				if (regexField.validateRegex(regexTextField.getText()))
 					regexField.setRegex(regexTextField.getText());
 				updateErrorLabel();
+				RegexStructFieldEditComposite.this.editor.setChanged();
 			}
 		});
 	}

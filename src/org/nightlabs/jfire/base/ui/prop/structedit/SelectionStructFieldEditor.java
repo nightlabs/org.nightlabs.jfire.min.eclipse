@@ -50,7 +50,7 @@ public class SelectionStructFieldEditor extends AbstractStructFieldEditor<Select
 	ModifyListener modifyListener = new ModifyListener() {
 		@Override
 		public void modifyData() {
-			getStructEditor().setChanged(true);
+			setChanged();
 		}
 	};
 
@@ -163,7 +163,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 				StructFieldValue oldDefault = selectionField.getDefaultValue();
 				selectionField.setDefaultValue(null);
 				structFieldValueTable.getTableViewer().refresh(oldDefault, true);
-				editor.getStructEditor().setChanged(true);
+				editor.setChanged();
 			}
 		});
 
@@ -194,7 +194,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		structFieldValueTable.refresh();
 		structFieldValueTable.setSelectedElements(Collections.singletonList(value));
 		structFieldValueTable.activateCellEditor(value);
-		editor.getStructEditor().setChanged(true);
+		editor.setChanged();
 	}
 
 	/**
@@ -212,7 +212,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		if (structFieldValueTable.getItemCount() != 0)
 			structFieldValueTable.select(Math.min(index, structFieldValueTable.getItemCount()-1));
 
-		editor.getStructEditor().setChanged(true);
+		editor.setChanged();
 	}
 
 	/**
@@ -226,7 +226,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		StructFieldValue toMove = structFieldValueTable.getFirstSelectedElement();
 		selectionField.moveStructFieldValue(toMove, moveDirection);
 		structFieldValueTable.refresh();
-		editor.getStructEditor().setChanged(true);
+		editor.setChanged();
 	}
 	
 	/**

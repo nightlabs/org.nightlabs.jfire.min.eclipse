@@ -23,46 +23,6 @@ public class StructEditorComposite extends XComposite {
 	private Composite partEditorComposite;
 	private LanguageChooserCombo languageChooser;
 	
-//	private static class StructLocalIDLabelProvider extends org.eclipse.jface.viewers.LabelProvider {
-//		@Override
-//		public String getText(Object element) {
-//			if (element instanceof StructID) {
-//				StructID structID = (StructID) element;
-//				return structID.organisationID + "#" + structID.linkClass; //$NON-NLS-1$
-//			}
-//			if (element instanceof StructLocalID) {
-//				StructLocalID structLocalID = (StructLocalID) element;
-//				return structLocalID.organisationID + '#' + structLocalID.linkClass;
-//			}
-//			return super.getText(element);
-//		}
-//	}
-//
-//	private class StructIDComboSelectionListener implements SelectionListener {
-//		public void widgetDefaultSelected(SelectionEvent e) {
-//		}
-//
-//		public void widgetSelected(SelectionEvent e) {
-//			if (structEditor.isChanged()) {
-//				MessageBox mb = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-//				mb.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditorComposite.messageBoxStructModifiedSaveConfirmation.text")); //$NON-NLS-1$
-//				mb.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditorComposite.messageBoxStructModifiedSaveConfirmation.message")); //$NON-NLS-1$
-//				switch (mb.open())
-//				{
-//				case SWT.YES:
-//					structEditor.storeStructure();
-//					break;
-//				case SWT.NO:
-//					structEditor.setChanged(false);
-//					break;
-//				case SWT.CANCEL:
-//					return;
-//				}
-//			}
-//			structEditor.setCurrentStructLocalID(structIDComposite.getSelectedElement());
-//		}
-//	}
-
 	public StructEditorComposite(
 			Composite parent, int style,
 			final StructEditor structEditor, StructTree structTree
@@ -75,23 +35,12 @@ public class StructEditorComposite extends XComposite {
 		gd.horizontalSpan = 2;
 		gd.horizontalAlignment = SWT.CENTER;
 
-//		if (createStructIDCombo) {
-//			structIDComposite = new XComboComposite<StructLocalID>(this,
-//					AbstractListComposite.getDefaultWidgetStyle(this), (String) null, new StructLocalIDLabelProvider());
-//			structIDComposite.setLayoutData(gd);
-//			structIDComposite.addSelectionListener(new StructIDComboSelectionListener());
-//
-//			gd = new GridData(GridData.FILL_HORIZONTAL);
-//			gd.horizontalSpan = 2;
-//			new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(gd);
-//		}
 		XComposite topLine = new XComposite(this, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 		topLine.getGridLayout().numColumns = 2;
 		topLine.getGridData().horizontalSpan = 2;
 		XComposite nameWrapper = new XComposite(topLine, SWT.NONE, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 
 		gd = new GridData();
-//		gd.horizontalSpan = 2;
 		gd.horizontalAlignment = SWT.RIGHT;
 
 		languageChooser = new LanguageChooserCombo(topLine, Mode.iconAndText);
@@ -111,14 +60,6 @@ public class StructEditorComposite extends XComposite {
 		gd.widthHint = 200;
 		structTree.getComposite().setLayoutData(gd);
 
-//		if (createStructIDCombo) {
-//			try {
-//				structIDComposite.setInput(new LinkedList<StructLocalID>(StructEditorUtil.getAvailableStructLocalIDs()));
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				throw new RuntimeException(e);
-//			}
-//		}
 		partEditorComposite = new XComposite(this, SWT.NONE);
 	}
 

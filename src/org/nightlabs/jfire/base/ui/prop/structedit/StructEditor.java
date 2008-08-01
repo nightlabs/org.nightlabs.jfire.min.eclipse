@@ -11,13 +11,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.nightlabs.base.ui.job.Job;
-import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
@@ -82,13 +79,7 @@ public class StructEditor {
 			structTree = new StructTree(this);
 			structEditorComposite = new StructEditorComposite(parent, style, this, structTree);
 			languageChooser = structEditorComposite.getLanguageChooser();
-//			JDOLifecycleManager.sharedInstance().addNotificationListener(StructLocal.class, changeListener);
-//			structEditorComposite.addDisposeListener(new DisposeListener() {
-//				public void widgetDisposed(DisposeEvent e) {
-//					JDOLifecycleManager.sharedInstance().removeNotificationListener(StructLocal.class, changeListener);
-//				}
-//			});
-
+			
 			structTree.addSelectionChangedListener(new ISelectionChangedListener() {
 				@SuppressWarnings("unchecked") //$NON-NLS-1$
 				public void selectionChanged(SelectionChangedEvent event) {
@@ -114,60 +105,39 @@ public class StructEditor {
 					TreeNode selected = (TreeNode) selection.getFirstElement();
 					StructFieldFactoryRegistry structFieldFactoryRegistry = StructFieldFactoryRegistry.sharedInstance();
 
+					boolean enabled = true;
+					
 					if (selected instanceof StructFieldNode) {
 						StructField field = ((StructFieldNode) selected).getField();
-//						try {
-//							StructFieldEditor editor = structFieldFactoryRegistry.getEditorSingleton(field);
-							StructFieldEditor editor = structField2structFieldEditorMap.get(field);
-							if (editor == null) {
-								editor = structFieldFactoryRegistry.getStructFieldEditorFactory(field.getClass()).createStructFieldEditor();
-								structField2structFieldEditorMap.put(field, editor);
-							}
+						StructFieldEditor editor = structField2structFieldEditorMap.get(field);
+						if (editor == null) {
+							editor = structFieldFactoryRegistry.getStructFieldEditorFactory(field.getClass()).createStructFieldEditor();
+							structField2structFieldEditorMap.put(field, editor);
+						}
 
-							structEditorComposite.setPartEditor(editor);
-							editor.setData(field);
-//							if (field.getStructBlock().isLocal()) {
-//								editor.setEnabled(true);
-//							} else {
-//								editor.setEnabled(false);
-//							}
-							currentStructPartEditor = editor;
-							// save the data of the editor to make it able to be restored later
-							editor.saveData();
-//						} catch (PropertyException e) {
-//							e.printStackTrace();
-//							throw new RuntimeException(e);
-//						}
+						structEditorComposite.setPartEditor(editor);
+						editor.setData(field);
+						currentStructPartEditor = editor;
+						enabled = field.getStructBlock().isLocal(); 
+						// save the data of the editor to make it able to be restored later
+						editor.saveData();
 					} else if (selected instanceof StructBlockNode) {
 						StructBlock block = ((StructBlockNode) selected).getBlock();
 						structEditorComposite.setPartEditor(structBlockEditor);
 						structBlockEditor.setData(block);
-//						if (block.isLocal()) {
-//							structBlockEditor.setEnabled(true);
-//						} else {
-//							structBlockEditor.setEnabled(false);
-//						}
 						currentStructPartEditor = structBlockEditor;
+						enabled = block.isLocal();
 					}
 
-					if (currentStructPartEditor != null && !currentStructPartEditor.getPartNameEditor().isDisposed()) {
-						I18nTextEditor partNameEditor = currentStructPartEditor.getPartNameEditor();
-						partNameEditor.setSelection(0, partNameEditor.getEditText().length());
-						partNameEditor.setFocus();
-						// FIXME is this listener ever removed? I'm pretty sure there is one listener added after the other.
-						partNameEditor.addModifyListener(new ModifyListener() {
-							public void modifyText(ModifyEvent e) {
-								StructEditor.this.setChanged(true);
-								structTree.refreshSelected();
-							}
-						});
+					if (currentStructPartEditor != null) {
+						currentStructPartEditor.addModifyListener(partEditorModifyListener);
+						currentStructPartEditor.setEnabled(enabled);
+						if (enabled)
+							currentStructPartEditor.setFocus();
 					}
 				}
 			});
 		}
-
-		// TODO load person struct on start up, makes testing easier...
-		// setCurrentStructLocalID(StructEditorUtil.getAvailableStructLocalIDs().toArray(new StructLocalID[1])[0]);
 
 		return structEditorComposite;
 	}
@@ -299,32 +269,14 @@ public class StructEditor {
 		return propertyManager;
 	}
 
-//	Not needed any more
-//	public void storeStructure() {
-//		try {
-//			ReflectUtil.findContainedObjectsByClass(
-//					currentStruct, Serializable.class, false, true,
-//					new ReflectUtil.IObjectFoundHandler() {
-//						public void objectFound(String path, Object object) {
-//							System.out.println("found not Serializable: "+path+"="+object.getClass()); //$NON-NLS-1$ //$NON-NLS-2$
-//						}
-//					}
-//				);
-//			getPropertyManager().storeStruct(currentStruct);
-////			currentStruct = getPropertyManager().storeStruct(currentStruct);
-////			Display.getDefault().asyncExec(new Runnable() {
-////				@Override
-////				public void run() {
-////					setStruct(currentStruct, true);
-////				}
-////			});
-//			setChanged(false);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			throw new RuntimeException(e);
-//		}
-//	}
-
+	private org.nightlabs.jfire.prop.ModifyListener partEditorModifyListener = new org.nightlabs.jfire.prop.ModifyListener() {
+		@Override
+		public void modifyData() {
+			StructEditor.this.setChanged(true);
+			structTree.refreshSelected();
+		}
+	};
+	
 	public void setChanged(boolean changed) {
 		this.changed = changed;
 		if (changed)

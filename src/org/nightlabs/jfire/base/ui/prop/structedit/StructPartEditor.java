@@ -1,8 +1,8 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
+import org.nightlabs.jfire.prop.ModifyListener;
 
 public interface StructPartEditor<P> {
 	/**
@@ -31,8 +31,12 @@ public interface StructPartEditor<P> {
 	 * @param data The data to be set.
 	 */
 	public void setData(P data);
+	
+	public void setFocus();
 
 	public void setEnabled(boolean enabled);
 	
-	public I18nTextEditor getPartNameEditor();
+	public void addModifyListener(ModifyListener modifyListener);
+	
+	public void removeModifyListener(ModifyListener modifyListener);
 }
