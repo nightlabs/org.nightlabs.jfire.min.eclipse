@@ -2,6 +2,8 @@ package org.nightlabs.jfire.base.ui.search;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -12,12 +14,12 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.QueryEvent;
 import org.nightlabs.jdo.query.QueryProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jdo.query.AbstractSearchQuery.FieldChangeCarrier;
 
 /**
  * Abstract base class for a Composite that uses the given {@link QueryProvider} to retrieve the
  * kind of query needed and set / modify a certain aspect of that query.
- * 
+ *
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
@@ -26,22 +28,15 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	implements QueryFilter<Q>
 {
 	/**
-	 * The active state manager that will handle the presentation of my active state. 
+	 * The active state manager that will handle the presentation of my active state.
 	 */
 	private ActiveStateManager sectionButtonActiveStateManager;
 
 	/**
-	 * Flag indicating that a <code>null</code> value is being set to the query.
-	 * This needs to be done so the {@link #updateUI(QueryEvent)} method can distinguish an 
-	 * intentionally set <code>null</code> value from deactivation (also nulling) of a query field.
-	 */
-	private boolean valueIntentionallySet;
-
-	/**
 	 * Creates a new {@link AbstractQueryFilterComposite}.
-	 * <p><b>Note</b>: The caller has to call {@link #createComposite(Composite)} to create the UI! <br />
+	 * <p><b>Note</b>: The caller has to call {@link #createComposite()} to create the UI! <br />
 	 * 	This is not done in this constructor to omit problems with fields that are not only declared,
-	 * 	but also initialised. If these fields are used inside {@link #createComposite(Composite)}
+	 * 	but also initialised. If these fields are used inside {@link #createComposite()}
 	 * 	or new values are assigned to them, one of the following two things may happen:
 	 *  <ul>
 	 *  	<li>The value assigned to that field is overridden by the initialisation value that is
@@ -89,7 +84,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 * Creates a new {@link AbstractQueryFilterComposite} with default layout mode and layout data
 	 * mode. Delegate to
 	 * {@link AbstractQueryFilterComposite#AbstractQueryFilterComposite(Composite, int, LayoutMode, LayoutDataMode, QueryProvider)}.
-	 * 
+	 *
 	 * @param parent
 	 *          The parent to instantiate this filter into.
 	 * @param style
@@ -120,7 +115,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	{
 		if (button.getSelection() == active)
 			return;
-		
+
 		button.setSelection(active);
 		getSectionButtonActiveStateManager().setActive(active);
 	}
@@ -133,9 +128,9 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 * representing the active state of some UI element.
 	 * <p><b>Important:</b> You have to make sure that you only call this if the state of the UI
 	 * 	element differs from you're computed one. <br />
-	 * 	AbstractArticleContainerFilterComposite#updateUI is a nice example. 
+	 * 	AbstractArticleContainerFilterComposite#updateUI is a nice example.
 	 * </p>
-	 * 
+	 *
 	 * @param active
 	 * 					Whether the state of some UI element changed to <code>active</code>.
 	 */
@@ -143,7 +138,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	{
 		getSectionButtonActiveStateManager().setActive(active);
 	}
-	
+
 	protected void resetSearchSectionActiveState()
 	{
 		while (sectionButtonActiveStateManager.isActive())
@@ -151,72 +146,49 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 			sectionButtonActiveStateManager.setActive(false);
 		}
 	}
-	
+
 	/**
 	 * This is has to be called by the constructor of the subclass.
-	 * 
-	 * @param parent
-	 *          The parent to use.
 	 */
-	protected abstract void createComposite(Composite parent);
+	protected abstract void createComposite();
 
 	@Override
 	public void setActive(boolean active)
 	{
 		if (active)
-		{
-			resetSearchQueryValues(getQuery());
+		{ // user clicked on the active checkbox of the section -> reset to previously stored configuration
+			getQuery().restoreBackupOfGroup(getGroupID());
 		}
 		else
-		{
-			unsetSearchQueryValues(getQuery());
+		{ // user deactivated the "active" checkbox of the section -> create backup of config & set all
+			// active states of the properties displayed to false.
+			getQuery().storeBackupOfGroupFieldsEnabledState(getGroupID(), getFieldNames());
+			for (String fieldName : getFieldNames())
+			{
+				getQuery().setFieldEnabled(fieldName, Boolean.FALSE);
+			}
 		}
 	}
 
+	protected abstract String getGroupID();
+	protected abstract Set<String> getFieldNames();
+
 	/**
-	 * You can mark the coming query changes as done intentionally (like setting field values to
-	 * <code>null</code>) until you call this method with the parameter set to <code>false</code>.
-	 * See {@link #valueIntentionallySet}.
-	 * 
-	 * @param valueIntentionallySet
-	 * 					<code>true</code> if a query field will be set to <code>null</code>	intentionally,
-	 * 					<code>false</code> otherwise.
+	 * Convenience method to get the name of the field storing the enable state of the given
+	 * <code>originalFieldName</code>.
+	 *
+	 * @param originalFieldName The name of the field for which to return the name of the corresponding
+	 * 	enable field.
+	 * @return The name of the field storing the enable state of the given <code>originalFieldName</code>.
 	 */
-	protected void setValueIntentionally(boolean valueIntentionallySet)
+	protected String getEnableFieldName(String originalFieldName)
 	{
-		this.valueIntentionallySet = valueIntentionallySet;
+		return AbstractSearchQuery.getEnabledFieldName(originalFieldName);
 	}
-
-	/**
-	 * Returns whether the given there was an UI action that set a <code>null</code> value for some
-	 * field of the query intentionally. See {@link #valueIntentionallySet}.
-	 * 
-	 * @return <code>true</code> if a query field was set to <code>null</code> intentionally,
-	 * 				 <code>false</code> otherwise.
-	 */
-	protected boolean isValueIntentionallySet()
-	{
-		return valueIntentionallySet;
-	}
-
-	/**
-	 * Implementors have to unset all Query values that are set by any of its UI elements.
-	 * 
-	 * @param query the query on which the represented query aspects have to be unset. 
-	 */
-	protected abstract void unsetSearchQueryValues(Q query);
-
-	/**
-	 * Implementors have to reset all Query values that have previously been unset via
-	 * {@link #unsetSearchQueryValues(AbstractSearchQuery)}.
-	 * 
-	 * @param query the query on which the represented query aspects have to be reset. 
-	 */
-	protected abstract void resetSearchQueryValues(Q query);
 
 	/**
 	 * Returns the {@link Class} of the type of object which should queried.
-	 * 
+	 *
 	 * @return the {@link Class} of the type of object which should queried.
 	 */
 	public abstract Class<Q> getQueryClass();
@@ -227,17 +199,29 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			updateUI((QueryEvent) evt);
+			final QueryEvent event = (QueryEvent) evt;
+
+			List<FieldChangeCarrier> changedFields;
+			if (event.getChangedQuery() == null)
+			{
+				changedFields = getQuery().getChangedFields(AbstractSearchQuery.PROPERTY_WHOLE_QUERY);
+			}
+			else
+			{ // there is a new Query -> the changedFieldList is not null!
+				changedFields = event.getChangedFields();
+			}
+
+			updateUI((QueryEvent) event, changedFields);
 		}
 	};
 
 	/**
-	 * This is the main method that nearly all UI changes are done in. There are several occasions 
-	 * resulting in a call of this method. 
+	 * This is the main method that nearly all UI changes are done in. There are several occasions
+	 * resulting in a call of this method.
 	 * <ul>
 	 * 	<li> By changing the UI, the UI should change the query -> the QueryProvider will get notified
 	 * 			 and thus a listener in the QueryProvider will trigger this method.</li>
-	 *  <li> If the other UI triggers a call of {@link #setActive(boolean)} the implementor should 
+	 *  <li> If some other UI triggers a call of {@link #setActive(boolean)}, then we
 	 *  		 un/re-set the query's field values and hence trigger an update.</li>
 	 *  <li> The assigned QueryProvider loads a set of other queries
 	 *  		 {@link QueryProvider#loadQueries(org.nightlabs.jdo.query.QueryCollection)}, hence we'll
@@ -246,22 +230,18 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 *
 	 * <p><b>Notes for implementors:</b>
 	 * 	<ul>
-	 * 		<li>When implementing this method, you should use {@link QueryEvent#getChangedQuery()} to
-	 * 				check if there is a new Query. In case there isn't you have to reset the UI to the
-	 * 				neutral state.</li>
 	 * 		<li>When iterating over all {@link QueryEvent#getChangedFields()} you have to consider that
-	 * 				setting one field to <code>null</code> can have to meanings depending on the
-	 * 				{@link #isValueIntentionallySet()}: If the returned value is <code>true</code>, then
-	 * 				<code>null</code> was set intentionally and corresponding UI element is <b>NOT</b>
-	 * 				supposed to be deactivated!
-	 * 				</li>
+	 * 				you have to also check all combinations of
+	 * 				{@link AbstractSearchQuery#getEnabledFieldName(String)} with the known FieldNames of the
+	 * 				type of query you are dealing with.</li>
 	 * 		<li>Please look at AbstractArticleContainerFilterComposite to see an example.</li>
 	 *  </ul>
 	 * </p>
-	 * 
-	 * @param event
+	 *
+	 * @param event The event containing the old and the new value of the changed property.
+	 * @param changedFields The already fetched list of changes.
 	 */
-	protected abstract void updateUI(QueryEvent event);
+	protected abstract void updateUI(QueryEvent event, List<FieldChangeCarrier> changedFields);
 
 	/**
 	 * @return the Query needed by this query filter and hence all JDOQueryComposites as well.
@@ -290,7 +270,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 
 	/**
 	 * Returns the query provider
-	 * 
+	 *
 	 * @return the query provider
 	 */
 	public QueryProvider<? super Q> getQueryProvider()
@@ -315,14 +295,14 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 		assert sectionButtonActiveStateManager != null;
 		this.sectionButtonActiveStateManager = sectionButtonActiveStateManager;
 	}
-	
+
 	/**
 	 * Helper class that tries to set the ActiveStateManager if it wasn't available at creation time.
-	 * Needed since my ActiveStateManager will be set after the UI has been constructed. 
-	 * 
+	 * Needed since my ActiveStateManager will be set after the UI has been constructed.
+	 *
 	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
 	 */
-	protected abstract class ButtonSelectionListener 
+	protected abstract class ButtonSelectionListener
 		extends ButtonSelectionStateAdapter
 	{
 		public ButtonSelectionListener()
@@ -335,9 +315,9 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 		{
 			if (activeStateManager == null)
 			{
-				activeStateManager = getSectionButtonActiveStateManager();				
+				activeStateManager = getSectionButtonActiveStateManager();
 			}
-			
+
 			super.widgetSelected(e);
 		}
 	}

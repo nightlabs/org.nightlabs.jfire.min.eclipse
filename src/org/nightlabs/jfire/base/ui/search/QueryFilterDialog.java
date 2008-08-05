@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.search;
 
 import java.util.SortedSet;
@@ -25,19 +22,19 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  *
  */
-public class QueryFilterDialog 
-extends ResizableTitleAreaDialog 
+public class QueryFilterDialog
+extends ResizableTitleAreaDialog
 {
 	private String scope;
 	private QueryCollection<? extends AbstractSearchQuery> queryCollection;
 	private QueryProvider queryProvider = null;
 	private Class<?> targetType = null;
-	
+
 	/**
 	 * @param parentShell
 	 */
-	public QueryFilterDialog(Shell parentShell, String scope, 
-			QueryCollection<? extends AbstractSearchQuery> queryCollection) 
+	public QueryFilterDialog(Shell parentShell, String scope,
+			QueryCollection<? extends AbstractSearchQuery> queryCollection)
 	{
 		super(parentShell, null);
 		if (scope == null)
@@ -45,28 +42,28 @@ extends ResizableTitleAreaDialog
 
 		if (queryCollection == null)
 			throw new IllegalArgumentException("queryCollection must not be null!"); //$NON-NLS-1$
-		
+
 		this.scope = scope;
 		this.queryCollection = queryCollection;
 		this.targetType = queryCollection.getResultClass();
 		this.queryProvider = new DefaultQueryProvider(targetType);
+		queryProvider.loadQueries(queryCollection);
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent) 
+	protected Control createDialogArea(Composite parent)
 	{
 		Composite wrapper = new XComposite(parent, SWT.NONE);
 		SortedSet<QueryFilterFactory> factories = QueryFilterFactoryRegistry.sharedInstance().getQueryFilterCompositesFor(
 				scope, targetType);
 		if (factories != null) {
 			for (QueryFilterFactory factory : factories) {
-				AbstractQueryFilterComposite filterComp = factory.createQueryFilter(wrapper, SWT.NONE, 
-						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, queryProvider);				
+				AbstractQueryFilterComposite filterComp = factory.createQueryFilter(wrapper, SWT.NONE,
+						LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA, queryProvider);
 //				filterComp.getQueryProvider().loadQueries(queryCollection);
-				filterComp.setQueryProvider(queryProvider);
-				filterComp.getQueryProvider().loadQueries(queryCollection);
+//				filterComp.setQueryProvider(queryProvider);
+//				filterComp.getQueryProvider().loadQueries(queryCollection);
 			}
-//			queryProvider.loadQueries(queryCollection);
 		}
 		return wrapper;
 	}

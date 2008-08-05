@@ -43,6 +43,8 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jdo.query.AbstractSearchQuery;
+import org.nightlabs.jdo.query.QueryCollection;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
 import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite;
@@ -52,25 +54,27 @@ import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
+import org.nightlabs.util.Util;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * This is the composite that is embedded in an {@link QueryStoreCapableCategory} and consists of a
  * {@link DefaultCategoryComposite} and a stack of tables (one for each entry that supports the
- * following prerequisites) separated by a sash. The tables are active ones so every change to 
+ * following prerequisites) separated by a sash. The tables are active ones so every change to
  * a listed QueryStores or newly persisted ones automatically show up in the tables. Additionally
  * the sash weights are stored per workspace so the user only needs to put the sash in place for one
  * time.
- * 
+ *
  * <p>For this Composite and hence the QueryStoreCapableCategory to work properly two prerequisites
  * 		have to be met:
  * 	<ul>
- * 		<li>The {@link EntryViewer} created by the Entry should be a {@link SearchEntryViewer}, 
+ * 		<li>The {@link EntryViewer} created by the Entry should be a {@link SearchEntryViewer},
  * 				otherwise no Table with stored QuerieStores will be created.</li>
  * 		<li>In order for the loading of the stored QueryStores to work, the IWorkbenchPart opened by
  * 				calling {@link Entry#handleActivation()} has to be an {@link OverviewEntryEditor}.</li>
  * 	</ul>
  * </p>
- * 
+ *
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 public class QueryStoreCapableCategoryComposite
@@ -82,14 +86,14 @@ public class QueryStoreCapableCategoryComposite
 	private Composite tableStack;
 	private StackLayout tableStackLayout;
 	protected Category category;
-	
+
 	protected LoadQueryStoreAction loadQueryStoreAction;
 	protected EditQueryStoreAction editQueryStoreAction;
 	protected DeleteQueryStoreAction deleteQueryStoreAction;
 
 	private Map<Entry, FilteredQueryStoreComposite> entry2TableMap =
 		new HashMap<Entry, FilteredQueryStoreComposite>();
-	
+
 	/**
 	 * Listener that puts the corresponding {@link BaseQueryStoreActiveTableComposite} to the selected Entry
 	 * on top and controls the visibility state of the section containing this table.
@@ -104,14 +108,14 @@ public class QueryStoreCapableCategoryComposite
 			final ISelection selection = event.getSelection();
 			if (selection.isEmpty())
 				return;
-			
+
 			if (! (selection instanceof IStructuredSelection))
 			{
 				logger.warn("The entry changed listener expects IStructuredSelections not: " + //$NON-NLS-1$
 					selection.getClass().getName());
 				return;
 			}
-			
+
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			if (! (structuredSelection.getFirstElement() instanceof Entry))
 			{
@@ -119,13 +123,13 @@ public class QueryStoreCapableCategoryComposite
 					structuredSelection.getFirstElement().getClass().getName());
 				return;
 			}
-			
+
 			final Entry selectedEntry = (Entry) structuredSelection.getFirstElement();
-			
+
 			// bring corresponding table to the top
 			FilteredQueryStoreComposite filteredTableComp = entry2TableMap.get(selectedEntry);
 			if (filteredTableComp == null)
-			{ 
+			{
 				// if there is no SearchEntryViewer created by this entry -> we don't have table
 				//  => disable the section.
 				queryStoreSection.getSection().setVisible(false);
@@ -134,33 +138,33 @@ public class QueryStoreCapableCategoryComposite
 			else
 			{
 				final BaseQueryStoreActiveTableComposite table = filteredTableComp.getTable();
-				
+
 				// set the corresponding table to the top
 				bringTableToTop( filteredTableComp );
-				
+
 				// trigger the BaseQueryStoreActiveController to fetch the input data if not already done.
 				if (! filteredTableComp.isInitialised())
-				{ 
+				{
 					// only set input if not already initialised, afterwards the controller notifies and sets the table input itself
 					table.load();
 					filteredTableComp.setInitialised(true);
 				}
-				
+
 				// set new table to actions
 				if (loadQueryStoreAction != null)
 				{
 					loadQueryStoreAction.setQueryTable(filteredTableComp);
 				}
 				if (editQueryStoreAction != null)
-				{					
+				{
 					editQueryStoreAction.setQueryTable( table );
 				}
 				if (deleteQueryStoreAction != null)
 				{
-					deleteQueryStoreAction.setQueryTable( table );					
+					deleteQueryStoreAction.setQueryTable( table );
 				}
-				
-				// make the section visible again if was invisible before 
+
+				// make the section visible again if was invisible before
 				if (! queryStoreSection.getSection().isVisible())
 				{
 					queryStoreSection.getSection().setVisible(true);
@@ -169,15 +173,15 @@ public class QueryStoreCapableCategoryComposite
 			}
 		}
 	};
-	
+
 	/**
 	 * The logger used in this class.
 	 */
 	private static final Logger logger = Logger.getLogger(QueryStoreCapableCategoryComposite.class);
-	
+
 	private static final String SASH_QUERYSTORE_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.queryStoreTable.weight"; //$NON-NLS-1$
 	private static final String SASH_ENTRIES_WEIGHT_KEY = "QueryStoreCapableCategoryComposite.entries.weight"; //$NON-NLS-1$
-	
+
 	/**
 	 * @param parent
 	 * @param style
@@ -186,13 +190,13 @@ public class QueryStoreCapableCategoryComposite
 	{
 		this(parent, style, category, LayoutDataMode.NONE);
 	}
-	
+
 	/**
 	 * @param parent
 	 * @param style
 	 * @param layoutDataMode
 	 */
-	public QueryStoreCapableCategoryComposite(Composite parent, int style, Category category, 
+	public QueryStoreCapableCategoryComposite(Composite parent, int style, Category category,
 		LayoutDataMode layoutDataMode)
 	{
 		super(parent, style, layoutDataMode);
@@ -201,8 +205,8 @@ public class QueryStoreCapableCategoryComposite
 		setLayout( getLayout(LayoutMode.TOTAL_WRAPPER) );
 		getToolkit(true); // ensures that an IToolkit is set and we're looking like a form.
 		createUI(this);
-		
-		// add Listener that stores the weights of the sash on disposal. 
+
+		// add Listener that stores the weights of the sash on disposal.
 		addDisposeListener(new DisposeListener()
 		{
 			@Override
@@ -214,10 +218,20 @@ public class QueryStoreCapableCategoryComposite
 				final int[] weights = sashForm.getWeights();
 				sashPrefs.putInt(SASH_ENTRIES_WEIGHT_KEY, weights[0]);
 				sashPrefs.putInt(SASH_QUERYSTORE_WEIGHT_KEY, weights[1]);
+				try
+				{ // Seems like we need to flush the preference store otherwise the data is not persisted. (marius)
+					sashPrefs.flush();
+				}
+				catch (BackingStoreException e1)
+				{
+					logger.warn("Couldn't flush the Eclipse Preference Store for saving the sash weights " +
+							"of the overview category: "+getCategory().getCategoryFactory().getCategoryID(),
+							new Exception());
+				}
 			}
 		});
 	}
-	
+
 	protected void createUI(XComposite parent)
 	{
 		sashForm = new SashForm(parent, SWT.VERTICAL);
@@ -225,7 +239,7 @@ public class QueryStoreCapableCategoryComposite
 		elementListing = new DefaultCategoryComposite(sashForm, SWT.NONE, category,
 			AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		elementListing.getTableViewer().addSelectionChangedListener(entrySelectionChangedListener);
-		
+
 		IToolkit toolkit = getToolkit();
 		final int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED;
 		final String sectionTitle = Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.sectionTitle"); //$NON-NLS-1$
@@ -247,16 +261,16 @@ public class QueryStoreCapableCategoryComposite
 				}
 			});
 		}
-		
+
 		tableStack = new Composite(queryStoreSection.getSection(), SWT.NONE);
 		tableStackLayout = new StackLayout();
 		tableStack.setLayout(tableStackLayout);
-		
+
 		queryStoreSection.getSection().setClient(tableStack);
-		
+
 		createTableStack(tableStack, getCategory().getEntries());
 		bringTableToTop( entry2TableMap.get(getCategory().getEntries().get(0)) );
-		
+
 		loadQueryStoreAction = new LoadQueryStoreAction();
 		editQueryStoreAction = new EditQueryStoreAction();
 		deleteQueryStoreAction = new DeleteQueryStoreAction();
@@ -264,12 +278,12 @@ public class QueryStoreCapableCategoryComposite
 		queryStoreSection.getToolBarManager().add(editQueryStoreAction);
 		queryStoreSection.getToolBarManager().add(deleteQueryStoreAction);
 		queryStoreSection.updateToolBarManager();
-		
+
 		if (toolkit != null)
 		{
 			adaptToToolkit();
 		}
-		
+
 		// set weights from PreferenceStore if available.
 		final IEclipsePreferences sashPrefs =
 			new InstanceScope().getNode(getCategory().getCategoryFactory().getCategoryID());
@@ -281,25 +295,25 @@ public class QueryStoreCapableCategoryComposite
 			sashForm.setWeights(new int[] { entriesWeight, queryStoreTableWeight });
 		}
 	}
-	
+
 	/**
 	 * Creates a table for each given entry that creates a SearchEntryViewer.
-	 * 
+	 *
 	 * @param tableStackWrapper the composite to create the Tables into.
-	 * @param entries the list of entries to create tables for.  
+	 * @param entries the list of entries to create tables for.
 	 */
 	protected void createTableStack(Composite tableStackWrapper, List<Entry> entries)
 	{
 		entry2TableMap.clear();
-		
+
 		if (entries == null)
 		{
 			logger.warn("No registered Entries found for this category! Category: " + //$NON-NLS-1$
 				getCategory().getCategoryFactory().getName());
-			
+
 			return;
 		}
-		
+
 		for (Entry entry : entries)
 		{
 			// if the entry doesn't use a SearchEntryViewer -> we cannot get to the resultTypeClass
@@ -312,44 +326,44 @@ public class QueryStoreCapableCategoryComposite
 				entry2TableMap.put(entry, null);
 				continue;
 			}
-			
+
 			final SearchEntryViewer<?, ?> searchEntryViewer = (SearchEntryViewer<?, ?>) viewer;
-			
+
 			// create the table
 			FilteredQueryStoreComposite table =	new FilteredQueryStoreComposite(tableStackWrapper, entry,
 				searchEntryViewer.getTargetType());
-			
+
 			// update mapping
 			entry2TableMap.put(entry, table);
 		}
 	}
-	
+
 	/**
 	 * Refreshes the DefaultCategory showing the entries and disposes and recreates the
 	 * BaseQueryStoreTables.
-	 * 
+	 *
 	 * @param entries the list of entries to display
 	 */
 	public void setInput(List<Entry> entries)
 	{
 		// set new input to the table showing the entries
 		elementListing.setInput(entries);
-		
+
 		// dispose all old tables;
 		for (Control child : tableStack.getChildren())
 		{
 			child.dispose();
 		}
-		
+
 		// create new ones
 		createTableStack(tableStack, entries);
 	}
-	
+
 	protected void bringTableToTop(FilteredQueryStoreComposite table)
 	{
 		if (table == null)
 			return;
-		
+
 		tableStackLayout.topControl = table;
 		tableStack.layout();
 	}
@@ -366,9 +380,9 @@ public class QueryStoreCapableCategoryComposite
 /**
  * Small wrapper that contains a button in checkbox-style for selecting whether only the user's
  * queries shall be shown and a {@link BaseQueryStoreActiveTableComposite}. <br />
- * Additionally it registers a double click listener to open the SearchEntryViewer and set the 
+ * Additionally it registers a double click listener to open the SearchEntryViewer and set the
  * QueryCollection of the Store double-clicked on.
- * 
+ *
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 class FilteredQueryStoreComposite
@@ -378,18 +392,18 @@ class FilteredQueryStoreComposite
 	 * The logger used in this class.
 	 */
 	private static final Logger logger = Logger.getLogger(FilteredQueryStoreComposite.class);
-	
+
 	private Button showPublicQueries;
 	private BaseQueryStoreActiveTableComposite table;
 	private final Entry entry;
-	
+
 	private boolean initialised = false;
 	private Class<?> resultType;
-	
+
 	/**
 	 * Simple Filter filters out all QueryStores not owned by the current user.
 	 */
-	private static ViewerFilter onlyMyQueriesFilter = new ViewerFilter() 
+	private static ViewerFilter onlyMyQueriesFilter = new ViewerFilter()
 	{
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element)
@@ -404,7 +418,7 @@ class FilteredQueryStoreComposite
 			return true;
 		}
 	};
-	
+
 	/**
 	 * Selection listener that uses the Entry's handleActivation to open or activate the corresponding
 	 * OverviewEntryEditor. Then it gets the SearchEntryViewer and loads the QueryCollection clicked
@@ -412,34 +426,42 @@ class FilteredQueryStoreComposite
 	 */
 	private SelectionListener doubleClickListener = new SelectionAdapter()
 	{
+		@SuppressWarnings("unchecked")
 		@Override
 		public void widgetDefaultSelected(SelectionEvent e)
 		{
 			if (table.getFirstSelectedElement() == null)
 				return;
-			
+
 			final IWorkbenchPart part = entry.handleActivation();
 			if (part == null)
 				return;
-			
+
 			if (! (part instanceof OverviewEntryEditor))
 			{
 				logger.warn("The activated part of the Entry being clicked on is not an " + //$NON-NLS-1$
 						"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !"); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
-			
+
 			final OverviewEntryEditor editor = (OverviewEntryEditor) part;
 			// These tables are only created for Entries with a SearchEntryViewer assigned!!
 			//  see #createTableStack(Composite, List)
 			final SearchEntryViewer<?, ?> searchEntryViewer =
 				(SearchEntryViewer<?, ?>) editor.getEntryViewer();
-			
+
 			final BaseQueryStore store = table.getFirstSelectedElement();
-			searchEntryViewer.getQueryProvider().loadQueries(store.getQueryCollection());
+
+			// clone the QueryCollection and its entries in order to prohib the corruption of the
+			// cached QueryStore.
+			QueryCollection storedQueries = new QueryCollection(store.getResultClassName());
+			for (AbstractSearchQuery query : store.getQueryCollection()) {
+				storedQueries.add(Util.cloneSerializable(query));
+			}
+			searchEntryViewer.getQueryProvider().loadQueries(storedQueries);
 		}
 	};
-	
+
 	public FilteredQueryStoreComposite(Composite parent, Entry entry, Class<?> resultType)
 	{
 		super(parent, SWT.NONE);
@@ -452,7 +474,7 @@ class FilteredQueryStoreComposite
 		setLayout( layout );
 		createUI(this);
 	}
-	
+
 	private void createUI(Composite parent)
 	{
 		showPublicQueries = new Button(parent, SWT.CHECK);
@@ -460,7 +482,7 @@ class FilteredQueryStoreComposite
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.RIGHT;
 		showPublicQueries.setLayoutData(gd);
-		
+
 		// modified table to only show the name and the owner + description in the tooltip.
 		table = new BaseQueryStoreActiveTableComposite(parent,
 			AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER, resultType)
@@ -471,17 +493,17 @@ class FilteredQueryStoreComposite
 				createNameColumn(tableViewer);
 				createOwnerColumn(tableViewer);
 			}
-			
+
 			@Override
 			protected void setTableLayout(TableViewer tableViewer)
 			{
-				tableViewer.getTable().setLayout( new WeightedTableLayout(new int[] { 3, 1 }) );		
+				tableViewer.getTable().setLayout( new WeightedTableLayout(new int[] { 3, 1 }) );
 			}
 		};
 		table.getTableViewer().getTable().addSelectionListener(doubleClickListener);
 		gd = new GridData(GridData.FILL_BOTH);
 		table.setLayoutData(gd);
-		
+
 		showPublicQueries.setSelection(true);
 		showPublicQueries.addSelectionListener(new SelectionAdapter()
 		{
@@ -497,7 +519,7 @@ class FilteredQueryStoreComposite
 					table.getTableViewer().setFilters( new ViewerFilter[] { onlyMyQueriesFilter } );
 				}
 			}
-		});		
+		});
 	}
 
 	/**
@@ -507,7 +529,7 @@ class FilteredQueryStoreComposite
 	{
 		return table;
 	}
-	
+
 	/**
 	 * @return the entry
 	 */
@@ -533,11 +555,11 @@ class FilteredQueryStoreComposite
 	}
 }
 
-class EditQueryStoreAction 
-	extends Action 
+class EditQueryStoreAction
+	extends Action
 {
 	private BaseQueryStoreActiveTableComposite queryTable;
-	
+
 	public EditQueryStoreAction()
 	{
 		setId(EditQueryStoreAction.class.getName());
@@ -545,33 +567,33 @@ class EditQueryStoreAction
 		setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.editQueryStoreActionToolTip")); //$NON-NLS-1$
 		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.editQueryStoreActionText")); //$NON-NLS-1$
 	}
-	
+
 	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
-	public void run() 
+	public void run()
 	{
 		if (queryTable == null || queryTable.isDisposed())
 			return;
-		
+
 		BaseQueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
-		
+
 		QueryStoreEditDialog dialog = new QueryStoreEditDialog(queryTable.getShell(), store);
-		
+
 		if (dialog.open() != Window.OK)
 			return;
-		
-		Collection<BaseQueryStore> input = 
+
+		Collection<BaseQueryStore> input =
 			(Collection<BaseQueryStore>) queryTable.getTableViewer().getInput();
-		
+
 		input.remove(store);
-		
-		store = QueryStoreDAO.sharedInstance().storeQueryStore(store, 
+
+		store = QueryStoreDAO.sharedInstance().storeQueryStore(store,
 			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE,
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, true, new NullProgressMonitor()
 		);
-		
+
 		input.add(store);
 		queryTable.setInput(input);
 	}
@@ -585,11 +607,11 @@ class EditQueryStoreAction
 	}
 }
 
-class DeleteQueryStoreAction 
-	extends Action 
+class DeleteQueryStoreAction
+	extends Action
 {
 	private BaseQueryStoreActiveTableComposite queryTable;
-	
+
 	public DeleteQueryStoreAction()
 	{
 		setId(EditQueryStoreAction.class.getName());
@@ -597,31 +619,31 @@ class DeleteQueryStoreAction
 		setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.deleteQueryStoreActionToolTip")); //$NON-NLS-1$
 		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.QueryStoreCapableCategoryComposite.deleteQueryStoreActionText")); //$NON-NLS-1$
 	}
-	
+
 	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void run()
 	{
 		if (queryTable == null || queryTable.isDisposed())
 			return;
-		
+
 		BaseQueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
-		
+
 		boolean removed = QueryStoreDAO.sharedInstance().removeQueryStore(
 			store, new NullProgressMonitor());
-		
+
 		if (removed)
 		{
-			Collection<BaseQueryStore> input = 
+			Collection<BaseQueryStore> input =
 				(Collection<BaseQueryStore>) queryTable.getTableViewer().getInput();
-			
+
 			input.remove(store);
 			queryTable.setInput(input);
 		}
 	}
-	
+
 	/**
 	 * @param queryTable the queryTable to set
 	 */
@@ -631,7 +653,7 @@ class DeleteQueryStoreAction
 	}
 }
 
-class LoadQueryStoreAction 
+class LoadQueryStoreAction
 	extends Action
 {
 	private FilteredQueryStoreComposite filteredQueryComp;
@@ -641,7 +663,7 @@ class LoadQueryStoreAction
 	private static final Logger logger = Logger.getLogger(LoadQueryStoreAction.class);
 
 	private static final String imagePath = "icons/overview/Overview-Load.16x16.png"; //$NON-NLS-1$
-	
+
 	public LoadQueryStoreAction()
 	{
 		setId(EditQueryStoreAction.class.getName());
@@ -665,21 +687,28 @@ class LoadQueryStoreAction
 		final IWorkbenchPart part = filteredQueryComp.getEntry().handleActivation();
 		if (part == null)
 			return;
-		
+
 		if (! (part instanceof OverviewEntryEditor))
 		{
 			logger.warn("The activated part of the Entry being clicked on is not an " + //$NON-NLS-1$
 					"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !"); //$NON-NLS-1$ //$NON-NLS-2$
 			return;
 		}
-		
+
 		final OverviewEntryEditor editor = (OverviewEntryEditor) part;
 		// These tables are only created for Entries with a SearchEntryViewer assigned!!
 		//  see #createTableStack(Composite, List)
 		final SearchEntryViewer<?, ?> searchEntryViewer =
 			(SearchEntryViewer<?, ?>) editor.getEntryViewer();
-		
-		searchEntryViewer.getQueryProvider().loadQueries(store.getQueryCollection());
+
+		// clone the QueryCollection and its entries in order to prohib the corruption of the
+		// cached QueryStore.
+		QueryCollection storedQueries = new QueryCollection(store.getResultClassName());
+		for (AbstractSearchQuery query : store.getQueryCollection()) {
+			AbstractSearchQuery copy = Util.cloneSerializable(query);
+			storedQueries.add(copy);
+		}
+		searchEntryViewer.getQueryProvider().loadQueries(storedQueries);
 	}
 
 	/**

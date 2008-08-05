@@ -79,7 +79,7 @@ public abstract class AbstractCategory implements Category {
 	
 	/**
 	 * Override this method to update the GUI
-	 * created with {@link Category#createComposite(Composite)}.
+	 * created with {@link Category#createComposite()}.
 	 * <p>
 	 * Note that this method should only do something, if the
 	 * Composite was already created!

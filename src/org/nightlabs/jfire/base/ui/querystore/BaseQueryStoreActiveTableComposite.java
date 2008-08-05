@@ -32,7 +32,7 @@ import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * 
+ *
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 @SuppressWarnings("unchecked") //$NON-NLS-1$
@@ -55,15 +55,15 @@ public class BaseQueryStoreActiveTableComposite
 	public static final String[] FETCH_GROUP_BASE_QUERY_STORE = new String[] {
 		FetchPlan.DEFAULT, BaseQueryStore.FETCH_GROUP_OWNER
 	};
-	
+
 	@Override
 	protected void initTable()
 	{
 		super.initTable();
 		ColumnViewerToolTipSupport.enableFor(getTableViewer());
-		setTableLayout(getTableViewer());		
+		setTableLayout(getTableViewer());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.table.AbstractTableComposite#createTableColumns(org.eclipse.jface.viewers.TableViewer, org.eclipse.swt.widgets.Table)
 	 */
@@ -74,13 +74,13 @@ public class BaseQueryStoreActiveTableComposite
 		createPublicAvailableColumn(tableViewer);
 		createOwnerColumn(tableViewer);
 	}
-	
+
 	protected void setTableLayout(TableViewer tableViewer)
 	{
-		final int checkImageWidth = JFaceUtil.getCheckBoxImage(tableViewer, true).getBounds().width;
+		final int checkImageWidth = JFaceUtil.getCheckBoxImage(tableViewer, true, true).getBounds().width;
 		tableViewer.getTable().setLayout(new WeightedTableLayout(
 			new int[] { 4, -1, 3 }, new int[] {-1, checkImageWidth, -1})
-		);		
+		);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class BaseQueryStoreActiveTableComposite
 				return store.getOwner().getName();
 			}
 		});
-		
+
 		return viewerColumn;
 	}
 
@@ -117,13 +117,13 @@ public class BaseQueryStoreActiveTableComposite
 			@Override
 			public Image getImage(Object element)
 			{
-				if (! (element instanceof BaseQueryStore))	
+				if (! (element instanceof BaseQueryStore))
 					return super.getImage(element);
 
 				final BaseQueryStore store = (BaseQueryStore) element;
-				return JFaceUtil.getCheckBoxImage(tableViewer, store.isPubliclyAvailable()); 
+				return JFaceUtil.getCheckBoxImage(tableViewer, store.isPubliclyAvailable(), true);
 			}
-			
+
 			@Override
 			public String getToolTipText(Object element)
 			{
@@ -172,7 +172,7 @@ public class BaseQueryStoreActiveTableComposite
 	/**
 	 * Base class of all ColumnLabelProviders showing the description of the given BaseQueryStore
 	 * as tooltip and calling doGetText with the correctly cast BaseQueryStore.
-	 * 
+	 *
 	 * @author Marius Heinzmann - marius[at]nightlabs[dot]com
 	 */
 	public abstract static class BaseQueryStoreColumnLabelProvider
@@ -183,36 +183,36 @@ public class BaseQueryStoreActiveTableComposite
 		{
 			if (! (element instanceof BaseQueryStore))
 				return super.getText(element);
-			
+
 			final BaseQueryStore store = (BaseQueryStore) element;
 			return doGetText(store);
 		}
-		
+
 		public abstract String doGetText(BaseQueryStore store);
-		
+
 		@Override
 		public String getToolTipText(Object element)
 		{
 			if (! (element instanceof BaseQueryStore))
 				return super.getText(element);
-			
+
 			final BaseQueryStore store = (BaseQueryStore) element;
 			return store.getDescription().getText();
 		}
-		
+
 		@Override
 		public int getToolTipTimeDisplayed(Object object)
 		{
 			return 4000;
 		}
 	}
-	
+
 }
 
 /**
  * Migrated to use ActiveJDOObjectController that are used for each table and filter only for
- * QueryStores with the correct result type. 
- * 
+ * QueryStores with the correct result type.
+ *
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 @SuppressWarnings("unchecked") //$NON-NLS-1$
@@ -226,7 +226,7 @@ class BaseQueryStoreActiveController
 		assert resultType != null;
 		this.resultType = resultType;
 	}
-	
+
 	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	protected Class<? extends BaseQueryStore> getJDOObjectClass()
@@ -242,8 +242,8 @@ class BaseQueryStoreActiveController
 	{
 //	damn sun java compiler in version 1.6.0 inverse problem to the one in  getJDOObjectClass()
 //		this time the compiler disallows the cast of Test<?> to Test.
-		Object result = QueryStoreDAO.sharedInstance().getQueryStores(objectIDs, 
-			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
+		Object result = QueryStoreDAO.sharedInstance().getQueryStores(objectIDs,
+			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE,
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 		return (Collection<BaseQueryStore>) result;
 	}
@@ -253,8 +253,8 @@ class BaseQueryStoreActiveController
 	{
 //	damn sun java compiler in version 1.6.0 inverse problem to the one in  getJDOObjectClass()
 //	this time the compiler disallows the cast of Test<?> to Test.
-		Object result = QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true, 
-			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE, 
+		Object result = QueryStoreDAO.sharedInstance().getQueryStoresByReturnType(resultType, true,
+			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE,
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 		return (Collection<BaseQueryStore>) result;
 	}
@@ -266,12 +266,12 @@ class BaseQueryStoreActiveController
 			SecurityReflector.getUserDescriptor().getUserObjectID(), resultType, true,
 			new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
-	
+
 	@Override
 	protected void sortJDOObjects(List<BaseQueryStore> objects)
 	{
 	}
-	
+
 	@Override
 	protected void onJDOObjectsChanged(
 		JDOObjectsChangedEvent<QueryStoreID, BaseQueryStore> event)

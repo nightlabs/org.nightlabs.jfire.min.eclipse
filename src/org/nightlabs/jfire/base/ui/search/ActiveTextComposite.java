@@ -1,9 +1,7 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.search;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -19,24 +17,24 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * @author Daniel Mazurek - daniel [at] nightlabs [dot] de
  *
  */
-public class ActiveTextComposite 
-extends XComposite 
-implements ActiveStateManager 
+public class ActiveTextComposite
+extends XComposite
+implements ActiveStateManager
 {
 	private Group group;
 	private Button activeButton;
 	private Text text;
 	private Button browseButton;
-	
+
 	public ActiveTextComposite(Composite parent, String groupTitle,
 			SelectionListener activeSelectionListener, SelectionListener browseSelectionListener)
 	{
 		super(parent, SWT.NONE);
 		createComposite(this, groupTitle, activeSelectionListener, browseSelectionListener);
-	}	
-	
+	}
+
 	protected void createComposite(Composite parent, String groupTitle,
-			SelectionListener activeSelectionListener, SelectionListener browseSelectionListener) 
+			SelectionListener activeSelectionListener, SelectionListener browseSelectionListener)
 	{
 		setLayout(new GridLayout());
 		setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -58,36 +56,36 @@ implements ActiveStateManager
 		browseButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.search.ActiveTextComposite.button.browse")); //$NON-NLS-1$
 		browseButton.addSelectionListener(browseSelectionListener);
 		browseButton.setEnabled(false);
-		
-		activeButton.addSelectionListener(new SelectionListener(){
-			public void widgetSelected(SelectionEvent e) {
+
+		activeButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
 				text.setEnabled(((Button)e.getSource()).getSelection());
 				browseButton.setEnabled(((Button)e.getSource()).getSelection());
 			}
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});			
+		});
 	}
-	
+
 	public boolean isActive() {
 		return activeButton.getSelection();
 	}
-	
+
 	public void setActive(boolean active) {
 		text.setEnabled(active);
 		browseButton.setEnabled(active);
 		activeButton.setSelection(active);
 	}
-	
+
 	public void clear() {
 		text.setText(""); //$NON-NLS-1$
 	}
-	
+
 	public Button getActiveButton() {
 		return activeButton;
 	}
-	
+
 	public void setText(String text) {
 		this.text.setText(text);
 	}
