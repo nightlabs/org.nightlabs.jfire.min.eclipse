@@ -23,6 +23,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
+import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -36,7 +37,7 @@ import org.nightlabs.util.NLLocale;
  */
 public class SaveQueryStoreDialog extends TitleAreaDialog
 {
-	private BaseQueryStore selectedQueryConfiguration;
+	private QueryStore selectedQueryConfiguration;
 	private BaseQueryStoreInActiveTableComposite storeTable; 
 	private Collection<BaseQueryStore> existingQueries;
 	private boolean errorMsgSet = false;
@@ -80,12 +81,12 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		});
 		storeTable.addSelectionChangedListener(new ISelectionChangedListener()
 		{
-			private BaseQueryStore currentlySelectedElement;
+			private QueryStore currentlySelectedElement;
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				final BaseQueryStore newSelection = storeTable.getFirstSelectedElement();
+				final QueryStore newSelection = storeTable.getFirstSelectedElement();
 				
 				// set okButton status
 				okButton.setEnabled(newSelection != null);
@@ -128,7 +129,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		super.buttonPressed(buttonId);
 		if (CREATE_NEW_QUERY == buttonId)
 		{
-			BaseQueryStore createdStore = createNewQueryStore();
+			QueryStore createdStore = createNewQueryStore();
 			if (createdStore == null)
 				return;
 			
@@ -136,7 +137,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		}
 	}
 	
-	private BaseQueryStore createNewQueryStore()
+	private QueryStore createNewQueryStore()
 	{
 		final User owner = UserDAO.sharedInstance().getUser(
 			SecurityReflector.getUserDescriptor().getUserObjectID(),
@@ -155,7 +156,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		return queryStore;
 	}
 
-	private boolean checkForRights(BaseQueryStore selectedStore)
+	private boolean checkForRights(QueryStore selectedStore)
 	{
 		if (! selectedStore.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()) )
 		{
@@ -166,7 +167,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		return true;
 	}
 	
-	private boolean changeName(BaseQueryStore selectedStore)
+	private boolean changeName(QueryStore selectedStore)
 	{
 		final QueryStoreEditDialog inputDialog = new QueryStoreEditDialog(
 			getShell(), selectedStore);
@@ -191,7 +192,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		super.okPressed();
 	}
 	
-	public BaseQueryStore getSelectedQueryStore()
+	public QueryStore getSelectedQueryStore()
 	{
 		return selectedQueryConfiguration;
 	}

@@ -51,6 +51,7 @@ import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite
 import org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
+import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
@@ -408,10 +409,10 @@ class FilteredQueryStoreComposite
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element)
 		{
-			if (! (element instanceof BaseQueryStore))
+			if (! (element instanceof QueryStore))
 				return false;
 
-			final BaseQueryStore store = (BaseQueryStore) element;
+			final QueryStore store = (QueryStore) element;
 			if (! store.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()))
 				return false;
 
@@ -450,7 +451,7 @@ class FilteredQueryStoreComposite
 			final SearchEntryViewer<?, ?> searchEntryViewer =
 				(SearchEntryViewer<?, ?>) editor.getEntryViewer();
 
-			final BaseQueryStore store = table.getFirstSelectedElement();
+			final QueryStore store = table.getFirstSelectedElement();
 
 			// clone the QueryCollection and its entries in order to prohib the corruption of the
 			// cached QueryStore.
@@ -575,7 +576,7 @@ class EditQueryStoreAction
 		if (queryTable == null || queryTable.isDisposed())
 			return;
 
-		BaseQueryStore store = queryTable.getFirstSelectedElement();
+		QueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
 
@@ -584,8 +585,7 @@ class EditQueryStoreAction
 		if (dialog.open() != Window.OK)
 			return;
 
-		Collection<BaseQueryStore> input =
-			(Collection<BaseQueryStore>) queryTable.getTableViewer().getInput();
+		Collection<QueryStore> input = (Collection<QueryStore>) queryTable.getTableViewer().getInput();
 
 		input.remove(store);
 
@@ -627,7 +627,7 @@ class DeleteQueryStoreAction
 		if (queryTable == null || queryTable.isDisposed())
 			return;
 
-		BaseQueryStore store = queryTable.getFirstSelectedElement();
+		QueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
 
@@ -680,7 +680,7 @@ class LoadQueryStoreAction
 		if (filteredQueryComp == null || filteredQueryComp.isDisposed())
 			return;
 
-		BaseQueryStore store = filteredQueryComp.getTable().getFirstSelectedElement();
+		QueryStore store = filteredQueryComp.getTable().getFirstSelectedElement();
 		if (store == null)
 			return;
 

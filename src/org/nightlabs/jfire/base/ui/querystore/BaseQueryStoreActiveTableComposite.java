@@ -25,6 +25,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
+import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.query.store.id.QueryStoreID;
 import org.nightlabs.jfire.query.store.jdo.filter.BaseQueryStoreLifecycleFilter;
@@ -94,7 +95,7 @@ public class BaseQueryStoreActiveTableComposite
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore store)
+			public String doGetText(QueryStore store)
 			{
 				return store.getOwner().getName();
 			}
@@ -117,10 +118,10 @@ public class BaseQueryStoreActiveTableComposite
 			@Override
 			public Image getImage(Object element)
 			{
-				if (! (element instanceof BaseQueryStore))
+				if (! (element instanceof QueryStore))
 					return super.getImage(element);
 
-				final BaseQueryStore store = (BaseQueryStore) element;
+				final QueryStore store = (QueryStore) element;
 				return JFaceUtil.getCheckBoxImage(tableViewer, store.isPubliclyAvailable(), true);
 			}
 
@@ -131,7 +132,7 @@ public class BaseQueryStoreActiveTableComposite
 			}
 
 			@Override
-			public String doGetText(BaseQueryStore store)
+			public String doGetText(QueryStore store)
 			{
 				return ""; //$NON-NLS-1$
 			}
@@ -149,7 +150,7 @@ public class BaseQueryStoreActiveTableComposite
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore store)
+			public String doGetText(QueryStore store)
 			{
 				return store.getName().getText();
 			}
@@ -181,22 +182,22 @@ public class BaseQueryStoreActiveTableComposite
 		@Override
 		public String getText(Object element)
 		{
-			if (! (element instanceof BaseQueryStore))
+			if (! (element instanceof QueryStore))
 				return super.getText(element);
 
-			final BaseQueryStore store = (BaseQueryStore) element;
+			final QueryStore store = (QueryStore) element;
 			return doGetText(store);
 		}
 
-		public abstract String doGetText(BaseQueryStore store);
+		public abstract String doGetText(QueryStore store);
 
 		@Override
 		public String getToolTipText(Object element)
 		{
-			if (! (element instanceof BaseQueryStore))
+			if (! (element instanceof QueryStore))
 				return super.getText(element);
 
-			final BaseQueryStore store = (BaseQueryStore) element;
+			final QueryStore store = (QueryStore) element;
 			return store.getDescription().getText();
 		}
 

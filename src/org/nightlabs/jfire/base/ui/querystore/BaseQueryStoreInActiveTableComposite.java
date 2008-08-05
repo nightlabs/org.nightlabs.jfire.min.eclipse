@@ -14,6 +14,7 @@ import org.nightlabs.base.ui.util.JFaceUtil;
 import org.nightlabs.jfire.base.ui.querystore.BaseQueryStoreActiveTableComposite.BaseQueryStoreColumnLabelProvider;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
+import org.nightlabs.jfire.query.store.QueryStore;
 
 /**
  * Simple Table for BaseQueryStores with 3 columns (name, public, owner). This table does not update
@@ -66,7 +67,7 @@ public class BaseQueryStoreInActiveTableComposite
 		viewerColumn.setLabelProvider(new BaseQueryStoreActiveTableComposite.BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore store)
+			public String doGetText(QueryStore store)
 			{
 				return store.getName().getText();
 			}
@@ -79,10 +80,10 @@ public class BaseQueryStoreInActiveTableComposite
 			@Override
 			public Image getImage(Object element)
 			{
-				if (! (element instanceof BaseQueryStore))	
+				if (! (element instanceof QueryStore))	
 					return super.getImage(element);
 
-				final BaseQueryStore store = (BaseQueryStore) element;
+				final QueryStore store = (QueryStore) element;
 				return JFaceUtil.getCheckBoxImage(tableViewer, store.isPubliclyAvailable()); 
 			}
 			
@@ -93,7 +94,7 @@ public class BaseQueryStoreInActiveTableComposite
 			}
 
 			@Override
-			public String doGetText(BaseQueryStore store)
+			public String doGetText(QueryStore store)
 			{
 				return ""; //$NON-NLS-1$
 			}
@@ -104,7 +105,7 @@ public class BaseQueryStoreInActiveTableComposite
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
-			public String doGetText(BaseQueryStore store)
+			public String doGetText(QueryStore store)
 			{
 				return store.getOwner().getName();
 			}

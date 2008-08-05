@@ -19,6 +19,7 @@ import org.nightlabs.base.ui.language.LanguageChooserCombo.Mode;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
+import org.nightlabs.jfire.query.store.QueryStore;
 
 /**
  * Edits the given {@link BaseQueryStore} - its name, description and the public availabiltiy flag.
@@ -33,9 +34,9 @@ public class QueryStoreEditDialog extends TitleAreaDialog
 	private I18nTextEditor nameEditor;
 	private I18nTextEditorMultiLine descriptionEditor;
 	
-	private BaseQueryStore editedStore;
+	private QueryStore editedStore;
 	
-	public QueryStoreEditDialog(Shell parentShell, BaseQueryStore store)
+	public QueryStoreEditDialog(Shell parentShell, QueryStore store)
 	{
 		super(parentShell);
 		assert store != null;

@@ -16,6 +16,7 @@ import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
+import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -115,7 +116,7 @@ public class SaveQueryCollectionAction
 		if (dialog.open() != Window.OK)
 			return;
 		
-		final BaseQueryStore queryToSave = dialog.getSelectedQueryStore();
+		final QueryStore queryToSave = dialog.getSelectedQueryStore();
 		queryToSave.setQueryCollection(viewer.getManagedQueries());
 		
 		Job saveQueryJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryCollectionAction.jobTitleSavingQueryStore") + queryToSave.getName().getText()) //$NON-NLS-1$
