@@ -240,16 +240,38 @@
             default="false" icon="icons/keys.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
             name="%org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor.name"/>
+        <editor
+              class="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationEditor"
+              icon="icons/editor/localorganisation/LocalOrganisationEditor.16x16.png"
+              id="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
+              name="%org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor.name">
+        </editor>
     </extension>
     <extension
           point="org.nightlabs.base.ui.entityEditor">
+       <category
+             class="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.EntityTreeCategoryLocalOrganisation"
+             icon="icons/editor/localorganisation/EntityTreeCategoryLocalOrganisation.16x16.png"
+             id="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.EntityTreeCategoryLocalOrganisation"
+             name="%entityEditor.category.localorganisation">
+          <viewBinding
+                editorID="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
+                indexHint="1"
+                viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView">
+          </viewBinding>
+       </category>
+       <pageFactory
+             class="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationPropertiesPage$Factory"
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
+             indexHint="10">
+       </pageFactory>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.user.EntityTreeCategoryUser"
             icon="icons/editor/user/EntityTreeCategoryUser.16x16.png"
             id="org.nightlabs.jfire.base.admin.ui.editor.user.EntityTreeCategoryUser" name="%entityEditor.category.user">
             <viewBinding
                 editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor"
-                indexHint="0" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
+                indexHint="5" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.user.UserPersonPreferencePage$Factory"
@@ -280,7 +302,7 @@
             id="org.nightlabs.jfire.base.admin.ui.editor.organisationuser.EntityTreeCategoryOrganisationUser" name="%entityEditor.category.organisationUsers">
             <viewBinding
                 editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor"
-                indexHint="2" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
+                indexHint="3" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.workstation.EntityTreeCategoryWorkstation"
