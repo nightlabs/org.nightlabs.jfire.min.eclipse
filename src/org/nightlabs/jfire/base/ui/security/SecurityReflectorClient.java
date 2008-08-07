@@ -45,7 +45,7 @@ extends SecurityReflector
 		} catch (Exception e) {
 			throw new NoUserException(e);
 		}
-		return new UserDescriptor(l.getOrganisationID(), l.getUserID(), l.getSessionID());
+		return new UserDescriptor(l.getOrganisationID(), l.getUserID(), l.getWorkstationID(), l.getSessionID());
 	}
 
 	@Override

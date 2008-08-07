@@ -129,7 +129,7 @@ extends AbstractEPProcessor
 
 	private boolean forceLogin = false;
 
-	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
+//	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
 	private volatile LoginState  currentLoginState = LoginState.LOGGED_OUT;
 

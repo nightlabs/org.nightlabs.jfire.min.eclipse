@@ -69,6 +69,7 @@ import org.nightlabs.config.ConfigException;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.util.Util;
 
 /**
  * The JFire login dialog.
@@ -129,6 +130,7 @@ public class LoginDialog extends TitleAreaDialog
 				recentLoginConfigs.setSelection(-1);
 				deleteButton.setEnabled(false);
 			}
+			checkUserInput();
 		}
 	};
 
@@ -249,6 +251,7 @@ public class LoginDialog extends TitleAreaDialog
 
 		textPassword = new Text(mainArea, SWT.BORDER | SWT.PASSWORD);
 		textPassword.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		textPassword.addModifyListener(loginDataModifyListener);
 
 		return mainArea;
 	}
@@ -272,7 +275,6 @@ public class LoginDialog extends TitleAreaDialog
 				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName()); //$NON-NLS-1$
 				deleteButton.setEnabled(false);
 			}
-
 		} finally {
 			internallyModifying_suppressModifyEvents = false;
 		}
@@ -447,13 +449,20 @@ public class LoginDialog extends TitleAreaDialog
 
 	private void setSmartFocus()
 	{
+		if (!getShell().isVisible()) {
+			// Initially, we always want the focus in one of the first 2 fields - not the one selected by setSmartFocus (this
+			// might focus the workstation, if it's empty and we don't want this.
+			if ("".equals(textUserID.getText())) //$NON-NLS-1$
+				textUserID.setFocus();
+			else
+				textPassword.setFocus();
+
+			return;
+		}
+
 		textPassword.setFocus();
 		if(EMPTY_STRING.equals(textUserID.getText())) {
 			textUserID.setFocus();
-		}
-		else if(EMPTY_STRING.equals(textWorkstationID.getText())) {
-			showDetails(true);
-			textWorkstationID.setFocus();
 		}
 		else if(EMPTY_STRING.equals(textOrganisationID.getText())) {
 			showDetails(true);
@@ -466,6 +475,10 @@ public class LoginDialog extends TitleAreaDialog
 		else if(EMPTY_STRING.equals(textInitialContextFactory.getText())) {
 			showDetails(true);
 			textInitialContextFactory.setFocus();
+		}
+		else if(EMPTY_STRING.equals(textWorkstationID.getText())) {
+			showDetails(true);
+			textWorkstationID.setFocus();
 		}
 	}
 
@@ -585,30 +598,61 @@ public class LoginDialog extends TitleAreaDialog
 		String errorMessage = null;
 		if (textUserID.getText().equals(EMPTY_STRING))
 			errorMessage = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errormissingUserID"); //$NON-NLS-1$
-		else if (textWorkstationID.getText().equals(EMPTY_STRING))
-			errorMessage = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errormissingWorkstationID"); //$NON-NLS-1$
 		else if (textOrganisationID.getText().equals(EMPTY_STRING))
 			errorMessage = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errormissingOrganisationID"); //$NON-NLS-1$
 		else if (textInitialContextFactory.getText().equals(EMPTY_STRING))
 			errorMessage = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errormissingContextFactory"); //$NON-NLS-1$
 		else if (textServerURL.getText().equals(EMPTY_STRING))
 			errorMessage = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errormissingServerURL"); //$NON-NLS-1$
+
+		setErrorMessage(errorMessage);
 		if(errorMessage != null) {
-			setErrorMessage(errorMessage);
+			setWarningMessage(null);
 			setSmartFocus();
 			return false;
 		}
+
+		String warnMessage = null;
+		if (textWorkstationID.getText().equals(EMPTY_STRING))
+			warnMessage = Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.warningmissingWorkstationID"); //$NON-NLS-1$
+
+		setWarningMessage(warnMessage);
+
 		return true;
+	}
+
+	private String infoMessage = null;
+	private String warningMessage = null;
+	private String errorMessage = null;
+
+	@Override
+	public void setErrorMessage(String newErrorMessage) {
+		boolean relayout = !Util.equals(newErrorMessage, this.errorMessage);
+		this.errorMessage = newErrorMessage;
+		super.setErrorMessage(newErrorMessage);
+		// Without the following relayout, the icons are not visible in Linux. Marco.
+		if (relayout)
+			getShell().layout(true, true);
 	}
 
 	/**
 	 * Helper methods that make the use of JFace message methods consistent.
 	 */
 	private void setWarningMessage(String message) {
+		boolean relayout = !Util.equals(message, this.warningMessage);
+		this.warningMessage = message;
 		setMessage(message, IMessageProvider.WARNING);
+		// Without the following relayout, the icons are not visible in Linux. Marco.
+		if (relayout)
+			getShell().layout(true, true);
 	}
 	private void setInfoMessage(String message) {
+		boolean relayout = !Util.equals(message, this.infoMessage);
+		this.infoMessage = message;
 		setMessage(message, IMessageProvider.INFORMATION);
+		// Without the following relayout, the icons are not visible in Linux. Marco.
+		if (relayout)
+			getShell().layout(true, true);
 	}
 
 	/**
@@ -639,14 +683,26 @@ public class LoginDialog extends TitleAreaDialog
 					setErrorMessage("Server is shutting down. Try again later (after it restarted).");
 				else if (error != null && findCause(error, LoginException.class, "org.jfire.serverNotYetUpAndRunning") != null)
 					setErrorMessage("Server is not yet up and running. Please try again later (when the boot process completed).");
-				else
+				else if (error != null && findCause(error, LoginException.class, "org.jfire.workstationUnknown") != null) { //$NON-NLS-1$
+					setErrorMessage("There is no workstation with this identifier!");
+					// We cannot use setSmartFocus, because it should not focus an empty workstationID field,
+					// if login failed for another reason.
+					showDetails(true);
+					textWorkstationID.setFocus();
+				}
+				else if (error != null && findCause(error, LoginException.class, "org.jfire.workstationIllegal") != null) { //$NON-NLS-1$
+					setErrorMessage("Nobody is allowed to login with this internal workstation identifier!");
+					showDetails(true);
+					textWorkstationID.setFocus();
+				}
+				else if (error != null && findCause(error, LoginException.class, "org.jfire.workstationRequired") != null) { //$NON-NLS-1$
+					setErrorMessage("You are not allowed to login without a workstation! Please specify one.");
+					showDetails(true);
+					textWorkstationID.setFocus();
+				}
+				else {
 					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorauthenticationFailed")); //$NON-NLS-1$
-
-				// Pause for a while to prevent users from trying out passwords
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// ok
+					textPassword.setFocus();
 				}
 			}
 			else if (loginResult.isWasCommunicationErr()) {
@@ -663,7 +719,6 @@ public class LoginDialog extends TitleAreaDialog
 					loginResult.getException().printStackTrace();
 				}
 				setErrorMessage(message);
-
 			}
 			// show a message to the user
 		}
