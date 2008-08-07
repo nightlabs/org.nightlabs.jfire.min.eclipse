@@ -37,9 +37,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.exception.DataBlockRemovalException;
 import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
 
@@ -184,15 +187,32 @@ extends XComposite
 	}
 	
 	private ListenerList changeListener = new ListenerList();
-	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
+	public synchronized void addDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
 
-	public synchronized void removePropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
+	public synchronized void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
 
 	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent changedEvent) {
+		DataBlockEditor dataBlockEditor = changedEvent.getDataBlockEditor();
+		DataFieldEditor<? extends DataField> dataFieldEditor = changedEvent.getDataFieldEditor();
+//		Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
+		StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup());
+		if (structBlock.getDataBlockValidators().size() > 0) {
+			// if there are validators for the block we have to update the propertySet
+			// i.e. write the data from the editor to the property set
+			dataFieldEditor.updatePropertySet();
+		}
+//		else {
+//			for (DisplayNamePart part : parts) {
+//				if (dataFieldEditor.getStructField().equals(part.getStructField())) {
+//					dataFieldEditor.updatePropertySet();
+//					break;
+//				}
+//			}
+				
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
 			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);

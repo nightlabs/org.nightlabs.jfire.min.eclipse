@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -37,7 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.id.StructBlockID;
@@ -105,6 +105,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 			BlockBasedEditor blockBasedEditor = new BlockBasedEditor(true);
 			blockBasedEditor.setValidationResultManager(validationResultManager);
 			propEditors.add(blockBasedEditor);
+			blockBasedEditor.addChangeListener(listenerProxy);
 		}
 	}
 
@@ -128,6 +129,26 @@ public class FullDataBlockCoverageComposite extends Composite {
 			editor.setPropertySet(propertySet, true);
 		}
 	}
-
-
+	
+	private ListenerList listenerList = new ListenerList();
+	
+	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {
+		@Override
+		public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+			notifyChangeListeners(dataBlockEditorChangedEvent);
+		}
+	};
+	
+	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent event) {
+		for (Object obj :  listenerList.getListeners())
+			((DataBlockEditorChangedListener) obj).dataBlockEditorChanged(event);
+	}
+	
+	public void addChangeListener(DataBlockEditorChangedListener listener) {
+		listenerList.add(listener);
+	}
+	
+	public void removeChangeListener(DataBlockEditorChangedListener listener) {
+		listenerList.remove(listener);
+	}
 }

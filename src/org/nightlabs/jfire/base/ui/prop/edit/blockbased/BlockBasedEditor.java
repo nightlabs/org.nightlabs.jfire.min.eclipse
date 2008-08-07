@@ -101,7 +101,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		public Composite createGroupContent(Composite parent) {
 			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultManager);
 			if (changeListenerProxy != null)
-				groupEditor.addPropDataBlockEditorChangedListener(changeListenerProxy);
+				groupEditor.addDataBlockEditorChangedListener(changeListenerProxy);
 			return groupEditor;
 		}
 		/**

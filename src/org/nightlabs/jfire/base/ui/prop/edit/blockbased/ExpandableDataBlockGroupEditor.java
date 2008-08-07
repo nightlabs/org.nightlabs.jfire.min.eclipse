@@ -104,10 +104,10 @@ extends ExpandableComposite
 	}
 
 	public synchronized void addPropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
-		blockGroupEditor.addPropDataBlockEditorChangedListener(listener);
+		blockGroupEditor.addDataBlockEditorChangedListener(listener);
 	}
 	public synchronized void removePropDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
-		blockGroupEditor.removePropDataBlockEditorChangedListener(listener);
+		blockGroupEditor.removeDataBlockEditorChangedListener(listener);
 	}
 
 	public void refresh(DataBlockGroup blockGroup) {

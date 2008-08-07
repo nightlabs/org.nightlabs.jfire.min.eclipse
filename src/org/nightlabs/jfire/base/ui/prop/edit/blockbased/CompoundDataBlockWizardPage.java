@@ -29,6 +29,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -59,6 +60,12 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	private IValidationResultManager validationResultManager;
 
 	XComposite wrapperComp;
+	private ValidationResult lastValidationResult = null;
+	
+	/**
+	 * This variable is used to retain a possible validation error message until the first input by the user was made.
+	 */
+	protected boolean pristine = false;
 
 //	public CompoundDataBlockWizardPage (
 //			String pageName,
@@ -99,12 +106,29 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		validationResultManager = new ValidationResultManager() {
 			@Override
 			public void setValidationResult(ValidationResult validationResult) {
+				if (pristine)
+					return;
+				
+				lastValidationResult = validationResult;
 				if (validationResult == null)
 					setMessage(null);
 				else
 					setMessage(validationResult.getMessage(), ValidationUtil.getIMessageProviderType(validationResult.getType()));
+				if (getContainer().getCurrentPage() != null)
+					getContainer().updateButtons();
 			}
 		};
+		
+		// Register a listener, that sets pristine to false and then immediately deregisteres itself again
+		final DataBlockEditorChangedListener[] listener = new DataBlockEditorChangedListener[1];
+		listener[0] = new DataBlockEditorChangedListener() {
+			@Override
+			public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+				pristine = false;
+				removeChangeListener(listener[0]);
+			}
+		};
+		addChangeListener(listener[0]);
 	}
 
 	/**
@@ -128,6 +152,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		for (int i = 0; i < structBlockIDs.length; i++) {
 			DataBlockGroup dataBlockGroup = dataBlockGroups.get(structBlockIDs[i]);
 			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp, validationResultManager);
+			editor.addDataBlockEditorChangedListener(listenerProxy);
 			editor.refresh(propSet.getStructure(), dataBlockGroup);
 			dataBlockGroupEditors.put(
 					structBlockIDs[i],
@@ -244,5 +269,36 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 
 	public IValidationResultManager getValidationResultManager() {
 		return validationResultManager;
+	}
+	
+	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {
+		@Override
+		public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+			notifyChangeListeners(dataBlockEditorChangedEvent);
+		}
+	};
+	
+	private ListenerList listenerList = new ListenerList();
+	
+	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent event) {
+		for (Object obj :  listenerList.getListeners())
+			((DataBlockEditorChangedListener) obj).dataBlockEditorChanged(event);
+	}
+	
+	public void addChangeListener(DataBlockEditorChangedListener listener) {
+		listenerList.add(listener);
+	}
+
+	public void removeChangeListener(DataBlockEditorChangedListener listener) {
+		listenerList.remove(listener);
+	}
+	
+	@Override
+	public boolean isPageComplete() {
+		return !pristine && lastValidationResult == null;
+	}
+	
+	public void markPristine() {
+		pristine = true;
 	}
 }

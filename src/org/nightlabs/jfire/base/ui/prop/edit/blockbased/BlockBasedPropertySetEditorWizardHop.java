@@ -3,6 +3,7 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.nightlabs.base.ui.wizard.IWizardHopPage;
 import org.nightlabs.base.ui.wizard.WizardHop;
@@ -58,12 +59,20 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 		WizardHopPage page = null;
 		if (structBlockIDs == null || structBlockIDs.length == 0) {
 			page = new FullDataBlockCoverageWizardPage(name, title, propertySet, editorStructBlockRegistry);
+			
+			if (getEntryPage() == null)
+				((FullDataBlockCoverageWizardPage) page).markPristine();
+			
 		} else {
 			page = new CompoundDataBlockWizardPage(
 				name, title, propertySet, structBlockIDs
 			);
 			editorStructBlockRegistry.addEditorStructBlocks(getEditorScope(), structBlockIDs);
+			
+			if (getEntryPage() == null)
+				((CompoundDataBlockWizardPage) page).markPristine();
 		}
+		
 		if (image != null)
 			page.setImageDescriptor(image);
 		if (message != null)
@@ -72,6 +81,7 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 			setEntryPage(page);
 		else
 			addHopPage(page);
+		
 		return page;
 	}
 	
@@ -122,5 +132,27 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 			editorScope = this.getClass().getName() + "#" + System.identityHashCode(this); //$NON-NLS-1$
 		}
 		return editorScope;
+	}
+	
+	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {
+		@Override
+		public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+			notifyChangeListeners(dataBlockEditorChangedEvent);
+		}
+	};
+	
+	private ListenerList listenerList = new ListenerList();
+	
+	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent event) {
+		for (Object obj :  listenerList.getListeners())
+			((DataBlockEditorChangedListener) obj).dataBlockEditorChanged(event);
+	}
+	
+	public void addChangeListener(DataBlockEditorChangedListener listener) {
+		listenerList.add(listener);
+	}
+
+	public void removeChangeListener(DataBlockEditorChangedListener listener) {
+		listenerList.remove(listener);
 	}
 }

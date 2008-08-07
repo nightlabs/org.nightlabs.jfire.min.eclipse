@@ -85,7 +85,7 @@ extends DataBlockWizardPage
 
 		setPropDataBlockEditorColumnHint(1);
 		createDataBlockEditors();
-		getDataBlockGroupEditor(PersonStruct.PERSONALDATA).addPropDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
+		getDataBlockGroupEditor(PersonStruct.PERSONALDATA).addDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
 			@Override
 			public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
 				pageChanged();
