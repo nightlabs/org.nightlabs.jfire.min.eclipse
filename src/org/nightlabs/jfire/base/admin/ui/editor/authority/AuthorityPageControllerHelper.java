@@ -180,7 +180,7 @@ public class AuthorityPageControllerHelper
 				authorizedObjectID2authorizedObjectMap = new HashMap<AuthorizedObjectID, AuthorizedObject>(c.size());
 				for (AuthorizedObject ao : c) {
 					// ignore the system user - it always has all access rights anyway and cannot be configured
-					if (ao instanceof UserLocal && User.USERID_SYSTEM.equals(((UserLocal)ao).getUserID()))
+					if (ao instanceof UserLocal && User.USER_ID_SYSTEM.equals(((UserLocal)ao).getUserID()))
 						continue;
 
 					AuthorizedObjectID aoid = (AuthorizedObjectID) JDOHelper.getObjectId(ao);
@@ -222,7 +222,7 @@ public class AuthorityPageControllerHelper
 			for (RoleGroupSetCarrier roleGroupSetCarrier : roleGroupSetCarriers) {
 				// ignore the system authorizedObject - it always has all access rights anyway and cannot be configured
 				AuthorizedObject ao = roleGroupSetCarrier.getAuthorizedObject();
-				if (ao instanceof UserLocal && User.USERID_SYSTEM.equals(((UserLocal)ao).getUserID()))
+				if (ao instanceof UserLocal && User.USER_ID_SYSTEM.equals(((UserLocal)ao).getUserID()))
 					continue;
 
 				AuthorizedObjectID aoid = (AuthorizedObjectID) JDOHelper.getObjectId(ao);
@@ -274,7 +274,7 @@ public class AuthorityPageControllerHelper
 				for (AuthorizedObject ao : group.getMembers())
 					recalculateAuthorizedObject_RoleGroupsAssignedToUserSecurityGroups(ao);
 			}
-			else if (authorizedObject instanceof UserLocal && User.USERID_OTHER.equals(((UserLocal)authorizedObject).getUserID())) {
+			else if (authorizedObject instanceof UserLocal && User.USER_ID_OTHER.equals(((UserLocal)authorizedObject).getUserID())) {
 				Set<RoleGroup> rightsOfOtherAuthorizedObject = new HashSet<RoleGroup>();
 				if (roleGroupSecurityPreferencesModel.isInAuthority()) {
 					rightsOfOtherAuthorizedObject.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly());
@@ -434,7 +434,7 @@ public class AuthorityPageControllerHelper
 					recalculateAuthorizedObject_RoleGroupsAssignedToUserSecurityGroups(member);
 				}
 			}
-			else if (authorizedObject instanceof UserLocal && User.USERID_OTHER.equals(((UserLocal)authorizedObject).getUserID())) {
+			else if (authorizedObject instanceof UserLocal && User.USER_ID_OTHER.equals(((UserLocal)authorizedObject).getUserID())) {
 				// authorizedObject is the special user "_Other_" => recalculate rights of users which are not in authority
 				Set<RoleGroup> rightsOfOtherAuthorizedObject = new HashSet<RoleGroup>();
 				rightsOfOtherAuthorizedObject.addAll(roleGroupSecurityPreferencesModel.getRoleGroupsAssignedDirectly());
@@ -498,7 +498,7 @@ public class AuthorityPageControllerHelper
 						if (!resolveAuthorizedObjectHasUserSecurityGroupInAuthority(member)) {
 							if (!(member instanceof UserSecurityGroup)) { // user-groups are not controlled by the other-user
 								m.setControlledByOtherUser(true);
-								AuthorizedObject otherUser = authorizedObjectID2authorizedObjectMap.get(UserLocalID.create(authority.getOrganisationID(), User.USERID_OTHER, authority.getOrganisationID()));
+								AuthorizedObject otherUser = authorizedObjectID2authorizedObjectMap.get(UserLocalID.create(authority.getOrganisationID(), User.USER_ID_OTHER, authority.getOrganisationID()));
 								RoleGroupSecurityPreferencesModel otherModel = authorizedObject2RoleGroupSecurityPreferencesModel.get(otherUser);
 								Set<RoleGroup> roleGroupsAssignedToOtherUser = new HashSet<RoleGroup>(otherModel.getRoleGroupsAssignedDirectly().size() + otherModel.getRoleGroupsAssignedToUserGroups().size());
 								roleGroupsAssignedToOtherUser.addAll(otherModel.getRoleGroupsAssignedDirectly());
@@ -511,7 +511,7 @@ public class AuthorityPageControllerHelper
 					recalculateAuthorizedObject_RoleGroupsAssignedToUserSecurityGroups(member);
 				}
 			}
-			else if (authorizedObject instanceof UserLocal && User.USERID_OTHER.equals(((UserLocal)authorizedObject).getUserID())) {
+			else if (authorizedObject instanceof UserLocal && User.USER_ID_OTHER.equals(((UserLocal)authorizedObject).getUserID())) {
 				Set<RoleGroup> emptySet = Collections.emptySet();
 				for (RoleGroupSecurityPreferencesModel m : authorizedObject2RoleGroupSecurityPreferencesModel.values())
 					m.setRoleGroupsAssignedToOtherUser(emptySet);

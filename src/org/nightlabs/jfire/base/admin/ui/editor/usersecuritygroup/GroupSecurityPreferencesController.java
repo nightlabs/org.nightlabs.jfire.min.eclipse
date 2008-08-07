@@ -163,7 +163,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 				// load users
 				Collection<User> users = UserDAO.sharedInstance().getUsers(
 						IDGenerator.getOrganisationID(),
-//						new String[] { User.USERTYPE_ORGANISATION, User.USERTYPE_USER },
+//						new String[] { User.USER_TYPE_ORGANISATION, User.USER_TYPE_USER },
 						(String[]) null, // all types - groups are separate objects now
 						new String[] {
 							User.FETCH_GROUP_NAME,

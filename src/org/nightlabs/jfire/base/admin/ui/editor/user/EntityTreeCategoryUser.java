@@ -100,7 +100,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
 	{
 		return new UserLifecycleListenerFilter(
-				User.USERTYPE_USER, new JDOLifecycleState[] { JDOLifecycleState.NEW });
+				User.USER_TYPE_USER, new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
 
 	public static final String[] FETCH_GROUPS_USER = {
@@ -122,7 +122,7 @@ extends ActiveJDOEntityTreeCategory<UserID, User>
 	{
 		Collection<User> users = UserDAO.sharedInstance().getUsers(
 				IDGenerator.getOrganisationID(),
-				Collections.singleton(User.USERTYPE_USER),
+				Collections.singleton(User.USER_TYPE_USER),
 				FETCH_GROUPS_USER,
 				1,
 				monitor

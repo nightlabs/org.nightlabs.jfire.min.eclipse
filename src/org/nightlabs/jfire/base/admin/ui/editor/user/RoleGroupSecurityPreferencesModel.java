@@ -114,7 +114,7 @@ public class RoleGroupSecurityPreferencesModel extends BaseModel
 
 	/**
 	 * Find out whether the user is himself in the <code>Authority</code>. A user who is not in an authority directly, can still be managed 
-	 * in the authority indirectly via its user-groups. If no {@link UserGroup} containing the user is in the Authority, the "other" user {@link User#USERID_OTHER}
+	 * in the authority indirectly via its user-groups. If no {@link UserGroup} containing the user is in the Authority, the "other" user {@link User#USER_ID_OTHER}
 	 * defines the rights.
 	 *
 	 * @return <code>true</code> if the user is directly in the <code>Authority</code> (and thus can have individual rights assigned).

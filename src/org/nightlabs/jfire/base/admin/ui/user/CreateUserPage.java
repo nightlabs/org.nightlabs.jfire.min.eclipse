@@ -103,8 +103,8 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
     {
       if(getUserID().length() == 0)
         updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDMissing")); //$NON-NLS-1$
-      else if (getUserID().startsWith(User.USERID_PREFIX_TYPE_ORGANISATION))
-      	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USERID_PREFIX_TYPE_ORGANISATION); //$NON-NLS-1$
+      else if (getUserID().startsWith(User.USER_ID_PREFIX_TYPE_ORGANISATION))
+      	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USER_ID_PREFIX_TYPE_ORGANISATION); //$NON-NLS-1$
 //      else if (getUserID().startsWith(User.USERID_PREFIX_TYPE_USERGROUP))
 //      	updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDBeginsWithIllegalCharacter") + User.USERID_PREFIX_TYPE_USERGROUP); //$NON-NLS-1$
       else {
