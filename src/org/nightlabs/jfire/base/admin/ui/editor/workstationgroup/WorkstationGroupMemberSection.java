@@ -33,10 +33,7 @@ extends RestorableSectionPart
 		((GridLayout)container.getLayout()).numColumns = 1;
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		configGroupMembersEditComposite = new ConfigGroupMembersEditComposite(container,
-				SWT.NONE, true, this,
-				Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupMemberSection.configGroupMembersEditComposite.available"),  //$NON-NLS-1$
-				Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupMemberSection.configGroupMembersEditComposite.selected"));		 //$NON-NLS-1$
+		configGroupMembersEditComposite = new ConfigGroupMembersEditComposite(container, SWT.NONE, true, this, "Workstations");
 	}
 	
 	private ConfigGroupMembersEditComposite configGroupMembersEditComposite;

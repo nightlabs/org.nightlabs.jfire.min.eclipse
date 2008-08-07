@@ -31,8 +31,10 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.person.Person;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -55,7 +57,14 @@ public class PersonPreferencesController extends EntityEditorPageController
 		FetchPlan.DEFAULT,
 		User.FETCH_GROUP_USER_LOCAL,
 		User.FETCH_GROUP_PERSON,
-		PropertySet.FETCH_GROUP_FULL_DATA
+		PropertySet.FETCH_GROUP_FULL_DATA,
+		IExpression.FETCH_GROUP_IEXPRESSION_FULL_DATA
+	};
+	
+	private static final String[] STRUCT_LOCAL_FETCH_GROUPS = new String[] {
+		FetchPlan.DEFAULT,
+		IStruct.FETCH_GROUP_ISTRUCT_FULL_DATA,
+		IExpression.FETCH_GROUP_IEXPRESSION_FULL_DATA
 	};
 
 	private static final long serialVersionUID = -1651161683093714800L;
@@ -114,8 +123,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 						monitor
 				);
 				monitor.worked(1);
-				structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, monitor);
+				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, STRUCT_LOCAL_FETCH_GROUPS, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, monitor);
 				this.user = Util.cloneSerializable(user);
 				logger.info("Loading user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.info("Loading user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -152,7 +160,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 			user = UserDAO.sharedInstance().storeUser(
 					user, (String)null, true, FETCH_GROUPS,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 5)
-			);			
+			);
 			user = Util.cloneSerializable(user);
 			if (
 				oldUser.getUserID().equals(Login.getLogin().getUserID()) &&

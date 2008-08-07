@@ -27,31 +27,17 @@
 package org.nightlabs.jfire.base.admin.ui.configgroup;
 
 import java.rmi.RemoteException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
 
 import javax.security.auth.login.LoginException;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.ModuleException;
 import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.admin.ui.rolegroup.RoleGroupContainer;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.config.ConfigManager;
@@ -69,40 +55,45 @@ import org.nightlabs.progress.NullProgressMonitor;
 public class ConfigGroupMembersEditComposite
 extends XComposite
 {
-	private XComposite wrapperComposite;
+//	private XComposite wrapperComposite;
 
-	private TableViewer negativeViewer;
-	private TableViewer positiveViewer;
-	private ConfigListContentProvider contentProvider;
-	private ConfigListLabelProvider labelProvider;
-
-	private Label groupMembersTitle;
-	private Label availConfigsTitle;
+//	private TableViewer negativeViewer;
+//	private TableViewer positiveViewer;
+//	private ConfigListContentProvider contentProvider;
+//	private ConfigListLabelProvider labelProvider;
+//
+//	private Label groupMembersTitle;
+//	private Label availConfigsTitle;
 
 //	private Button removeFromGroupButton;
 //	private Button addToGroupButton;
 
 	private ConfigSetup configSetup;
-	private ConfigID currentConfigGroupID = null;
+//	private ConfigID currentConfigGroupID = null;
 
-	private List<Config> assignedConfigs;
-	private List<Config> excludedConfigs;
+//	private List<Config> assignedConfigs;
+//	private List<Config> excludedConfigs;
 
 	private IDirtyStateManager dirtyStateManager;
-	private String availableMessage;
-	private String selectedMessage;
+//	private String availableMessage;
+//	private String selectedMessage;
+	private String memberName;
+
+	private ConfigGroupMembersTable memberTable;
+private ConfigGroupModel model;
 
 //	public ConfigGroupMembersEditComposite(Composite parent, int style, boolean setLayoutData) {
 //	this(parent, style, setLayoutData, null);
 //	}
 
 	public ConfigGroupMembersEditComposite(Composite parent, int style, boolean setLayoutData,
-			IDirtyStateManager dirtyStateManager, String availableMessage, String selectedMessage)
+			IDirtyStateManager dirtyStateManager, String memberName)
 	{
 		super(parent, style, LayoutMode.ORDINARY_WRAPPER, setLayoutData ? LayoutDataMode.GRID_DATA : null);
 		this.dirtyStateManager = dirtyStateManager;
-		this.availableMessage = availableMessage;
-		this.selectedMessage = selectedMessage;
+//		this.availableMessage = availableMessage;
+//		this.selectedMessage = selectedMessage;
+		this.memberName = memberName;
 
 		createContents(this);
 		try {
@@ -118,83 +109,85 @@ extends XComposite
 	 */
 	protected Control createContents(Composite parent)
 	{
-		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
-		wrapperComposite.getGridLayout().numColumns = 3;
-
-		availConfigsTitle = new Label(wrapperComposite, SWT.WRAP);
-//		availConfigsTitle.setText("Users available\n(and in other groups)");
-		availConfigsTitle.setText(availableMessage);
-		availConfigsTitle.setLayoutData(new GridData());
-
-		Composite buttonComp = new Composite(wrapperComposite, SWT.NONE);
-		GridData gd = new GridData(GridData.VERTICAL_ALIGN_CENTER);
-		gd.verticalSpan = 2;
-		buttonComp.setLayoutData(gd);
-		RowLayout rl = new RowLayout(SWT.VERTICAL);
-		buttonComp.setLayout(rl);
-
-		Button buttonAssign = new Button(buttonComp, SWT.PUSH);
-		buttonAssign.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.ConfigGroupMembersEditComposite.buttonAssign.text")); //$NON-NLS-1$
-		buttonAssign.addSelectionListener(
-				new SelectionListener()
-				{
-					public void widgetSelected(SelectionEvent event)
-					{
-						assignConfigs();
-					}
-					public void widgetDefaultSelected(SelectionEvent event)
-					{
-						assignConfigs();
-					}
-				}
-		);
-
-		Button buttonRemove = new Button(buttonComp, SWT.PUSH);
-		buttonRemove.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.ConfigGroupMembersEditComposite.buttonRemove.text")); //$NON-NLS-1$
-		buttonRemove.addSelectionListener(
-				new SelectionListener()
-				{
-					public void widgetSelected(SelectionEvent event)
-					{
-						removeConfigs();
-					}
-					public void widgetDefaultSelected(SelectionEvent event)
-					{
-						removeConfigs();
-					}
-				}
-		);
-
-		groupMembersTitle = new Label(wrapperComposite, SWT.WRAP);
-//		groupMembersTitle.setText("Users in the \nselected group");
-		groupMembersTitle.setText(selectedMessage);
-		groupMembersTitle.setLayoutData(new GridData());
-
-		contentProvider = new ConfigListContentProvider();
-		labelProvider = new ConfigListLabelProvider();
-		labelProvider.setConfigGroupID(this.currentConfigGroupID);
-
-		negativeViewer = new TableViewer(wrapperComposite, SWT.BORDER | SWT.MULTI);
-		negativeViewer.setContentProvider(contentProvider);
-		negativeViewer.setLabelProvider(labelProvider);
-		Table t = negativeViewer.getTable();
-		t.setLinesVisible(true);
-		new TableColumn(t, SWT.LEFT, 0).setText("Label from ConfigSetupVisualiser"); //$NON-NLS-1$ // TODO obtain the correct label!
-		GridData tgd = new GridData(GridData.FILL_BOTH);
-		t.setLayoutData(tgd);
-		t.setLayout(new WeightedTableLayout(new int[] {1}));
-
-		positiveViewer = new TableViewer(wrapperComposite, SWT.BORDER | SWT.MULTI);
-		positiveViewer.setContentProvider(contentProvider);
-		positiveViewer.setLabelProvider(labelProvider);
-		t = positiveViewer.getTable();
-		t.setLinesVisible(true);
-		new TableColumn(t, SWT.LEFT, 0).setText("Label from ConfigSetupVisualiser"); //$NON-NLS-1$ // TODO obtain the correct label!
-		tgd = new GridData(GridData.FILL_BOTH);
-		t.setLayoutData(tgd);
-		t.setLayout(new WeightedTableLayout(new int[] {1}));
-
-		return wrapperComposite;
+		memberTable = new ConfigGroupMembersTable(parent, SWT.NONE, dirtyStateManager, memberName);
+		return memberTable;
+//		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+//		wrapperComposite.getGridLayout().numColumns = 3;
+//
+//		availConfigsTitle = new Label(wrapperComposite, SWT.WRAP);
+////		availConfigsTitle.setText("Users available\n(and in other groups)");
+//		availConfigsTitle.setText(availableMessage);
+//		availConfigsTitle.setLayoutData(new GridData());
+//
+//		Composite buttonComp = new Composite(wrapperComposite, SWT.NONE);
+//		GridData gd = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+//		gd.verticalSpan = 2;
+//		buttonComp.setLayoutData(gd);
+//		RowLayout rl = new RowLayout(SWT.VERTICAL);
+//		buttonComp.setLayout(rl);
+//
+//		Button buttonAssign = new Button(buttonComp, SWT.PUSH);
+//		buttonAssign.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.ConfigGroupMembersEditComposite.buttonAssign.text")); //$NON-NLS-1$
+//		buttonAssign.addSelectionListener(
+//				new SelectionListener()
+//				{
+//					public void widgetSelected(SelectionEvent event)
+//					{
+//						assignConfigs();
+//					}
+//					public void widgetDefaultSelected(SelectionEvent event)
+//					{
+//						assignConfigs();
+//					}
+//				}
+//		);
+//
+//		Button buttonRemove = new Button(buttonComp, SWT.PUSH);
+//		buttonRemove.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.ConfigGroupMembersEditComposite.buttonRemove.text")); //$NON-NLS-1$
+//		buttonRemove.addSelectionListener(
+//				new SelectionListener()
+//				{
+//					public void widgetSelected(SelectionEvent event)
+//					{
+//						removeConfigs();
+//					}
+//					public void widgetDefaultSelected(SelectionEvent event)
+//					{
+//						removeConfigs();
+//					}
+//				}
+//		);
+//
+//		groupMembersTitle = new Label(wrapperComposite, SWT.WRAP);
+////		groupMembersTitle.setText("Users in the \nselected group");
+//		groupMembersTitle.setText(selectedMessage);
+//		groupMembersTitle.setLayoutData(new GridData());
+//
+//		contentProvider = new ConfigListContentProvider();
+//		labelProvider = new ConfigListLabelProvider();
+//		labelProvider.setConfigGroupID(this.currentConfigGroupID);
+//
+//		negativeViewer = new TableViewer(wrapperComposite, SWT.BORDER | SWT.MULTI);
+//		negativeViewer.setContentProvider(contentProvider);
+//		negativeViewer.setLabelProvider(labelProvider);
+//		Table t = negativeViewer.getTable();
+//		t.setLinesVisible(true);
+//		new TableColumn(t, SWT.LEFT, 0).setText("Label from ConfigSetupVisualiser"); //$NON-NLS-1$ // TODO obtain the correct label!
+//		GridData tgd = new GridData(GridData.FILL_BOTH);
+//		t.setLayoutData(tgd);
+//		t.setLayout(new WeightedTableLayout(new int[] {1}));
+//
+//		positiveViewer = new TableViewer(wrapperComposite, SWT.BORDER | SWT.MULTI);
+//		positiveViewer.setContentProvider(contentProvider);
+//		positiveViewer.setLabelProvider(labelProvider);
+//		t = positiveViewer.getTable();
+//		t.setLinesVisible(true);
+//		new TableColumn(t, SWT.LEFT, 0).setText("Label from ConfigSetupVisualiser"); //$NON-NLS-1$ // TODO obtain the correct label!
+//		tgd = new GridData(GridData.FILL_BOTH);
+//		t.setLayoutData(tgd);
+//		t.setLayout(new WeightedTableLayout(new int[] {1}));
+//
+//		return wrapperComposite;
 	}
 
 	public void setEntity(Object entity) {
@@ -204,24 +197,25 @@ extends XComposite
 
 	public void setConfigGroupID(final ConfigID configGroupID)
 	{
-		if (currentConfigGroupID != null && currentConfigGroupID.equals(configGroupID))
+		if (model != null && model.configGroupID.equals(configGroupID))
 			return;
-		this.currentConfigGroupID = configGroupID;
+		
 		configSetup = null;
+		
+		model = new ConfigGroupModel();
+		model.configGroupID = configGroupID;
+		model.assignedConfigs = new HashSet<Config>(getConfigSetup().getConfigsForGroup(configGroupID.configKey));
+		model.notAssignedConfigs = new HashSet<Config>(getConfigSetup().getConfigsNotInGroup(configGroupID.configKey));
 
 		Display.getDefault().syncExec(
 				new Runnable()
 				{
 					public void run()
 					{
-						if (currentConfigGroupID != null)
+						if (model != null)
 						{
-							excludedConfigs = contentProvider.getExcludedItems(currentConfigGroupID);
-							assignedConfigs = contentProvider.getIncludedItems(currentConfigGroupID);
-
-							labelProvider.setConfigGroupID(currentConfigGroupID);
-							positiveViewer.setInput(assignedConfigs);
-							negativeViewer.setInput(excludedConfigs);
+							memberTable.setModel(model);
+							dirtyStateManager.markUndirty();
 						}
 					}
 				}
@@ -231,70 +225,85 @@ extends XComposite
 
 	public void refresh()
 	{
-		positiveViewer.refresh();
-		negativeViewer.refresh();
+		memberTable.refresh();
 	}
 
-	private void assignConfigs()
-	{
-		if(negativeViewer.getSelection() != null)
-		{
-			if(negativeViewer.getSelection() instanceof Config)
-				assignConfig((Config)negativeViewer.getSelection());
-			else
-			{
-				Iterator<Config> i = ((IStructuredSelection)negativeViewer.getSelection()).iterator();
-				while(i.hasNext())
-					assignConfig(i.next());
-			}
-			refresh();
+//	private void assignConfigs()
+//	{
+//		if(negativeViewer.getSelection() != null)
+//		{
+//			if(negativeViewer.getSelection() instanceof Config)
+//				assignConfig((Config)negativeViewer.getSelection());
+//			else
+//			{
+//				Iterator<Config> i = ((IStructuredSelection)negativeViewer.getSelection()).iterator();
+//				while(i.hasNext())
+//					assignConfig(i.next());
+//			}
+//			refresh();
+//
+//			if (dirtyStateManager != null)
+//				dirtyStateManager.markDirty();
+//		}
+//	}
+//
+//	private void assignConfig(Config conf)
+//	{
+//		excludedConfigs.remove(conf);
+//		assignedConfigs.add(conf);
+//		getConfigSetup().moveConfigToGroup(conf, currentConfigGroupID.configKey);
+//	}
+//
+//	private void removeConfigs()
+//	{
+//		if(positiveViewer.getSelection() != null)
+//		{
+//			if(positiveViewer.getSelection() instanceof RoleGroupContainer)
+//				removeConfig((Config)positiveViewer.getSelection());
+//			else
+//			{
+//				Iterator<Config> i = ((IStructuredSelection)positiveViewer.getSelection()).iterator();
+//				while(i.hasNext())
+//					removeConfig(i.next());
+//			}
+//			refresh();
+//
+//			if (dirtyStateManager != null)
+//				dirtyStateManager.markDirty();
+//		}
+//	}
 
-			if (dirtyStateManager != null)
-				dirtyStateManager.markDirty();
-		}
-	}
-
-	private void assignConfig(Config conf)
-	{
-		excludedConfigs.remove(conf);
-		assignedConfigs.add(conf);
-		getConfigSetup().moveConfigToGroup(conf, currentConfigGroupID.configKey);
-	}
-
-	private void removeConfigs()
-	{
-		if(positiveViewer.getSelection() != null)
-		{
-			if(positiveViewer.getSelection() instanceof RoleGroupContainer)
-				removeConfig((Config)positiveViewer.getSelection());
-			else
-			{
-				Iterator<Config> i = ((IStructuredSelection)positiveViewer.getSelection()).iterator();
-				while(i.hasNext())
-					removeConfig(i.next());
-			}
-			refresh();
-
-			if (dirtyStateManager != null)
-				dirtyStateManager.markDirty();
-		}
-	}
-
-	private void removeConfig(Config conf)
-	{
-		assignedConfigs.remove(conf);
-		excludedConfigs.add(conf);
-		getConfigSetup().moveConfigToGroup(conf, null);
-	}
+//	private void removeConfig(Config conf)
+//	{
+//		assignedConfigs.remove(conf);
+//		excludedConfigs.add(conf);
+//		getConfigSetup().moveConfigToGroup(conf, null);
+//	}
 
 
 
 	public void save() throws ModuleException, RemoteException {
 		try {
 			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			for (Config config : model.addedConfigs) {
+				getConfigSetup().moveConfigToGroup(config, model.configGroupID.configKey);
+			}
+			
+			for (Config config : model.removedConfigs) {
+				getConfigSetup().moveConfigToGroup(config, null);
+			}
+			
+			model.assignedConfigs.addAll(model.addedConfigs);
+			model.notAssignedConfigs.addAll(model.removedConfigs);
+			model.assignedConfigs.removeAll(model.removedConfigs);
+			model.notAssignedConfigs.removeAll(model.addedConfigs);
+			model.addedConfigs.clear();
+			model.removedConfigs.clear();
+			
 			configManager.storeConfigSetup(getConfigSetup().getModifiedConfigs());
 			getConfigSetup().clearModifiedConfigs();
 			configSetup = null;
+			
 			// TODO: Now get all modified and restore
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
@@ -303,9 +312,9 @@ extends XComposite
 
 	protected void refreshConfigSetup()
 	{
-		if (currentConfigGroupID == null)
+		if (model == null)
 			throw new IllegalStateException("Can not retrieve ConfigSetup as no ConfigGroup is selected"); //$NON-NLS-1$
-		configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(currentConfigGroupID, new NullProgressMonitor());
+		configSetup = ConfigSetupDAO.sharedInstance().getConfigSetupForGroup(model.configGroupID, new NullProgressMonitor());
 	}
 
 	protected ConfigSetup getConfigSetup()

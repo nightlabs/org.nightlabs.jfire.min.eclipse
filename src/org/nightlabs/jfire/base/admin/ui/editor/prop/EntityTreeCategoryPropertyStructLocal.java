@@ -37,6 +37,7 @@ import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditorUtil;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
@@ -103,7 +104,8 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 
 	public static final String[] FETCH_GROUPS_STRUCT_LOCAL = {
 		FetchPlan.DEFAULT,
-		IStruct.FETCH_GROUP_ISTRUCT_FULL_DATA
+		IStruct.FETCH_GROUP_ISTRUCT_FULL_DATA,
+		IExpression.FETCH_GROUP_IEXPRESSION_FULL_DATA
 	};
 
 	@Override
@@ -111,7 +113,7 @@ extends ActiveJDOEntityTreeCategory<StructLocalID, StructLocal>
 	{
 		List<StructLocal> structLocals = new ArrayList<StructLocal>(structLocalIDs.size());
 		for (StructLocalID structLocalID : structLocalIDs) {
-			structLocals.add(StructLocalDAO.sharedInstance().getStructLocal(structLocalID, monitor));
+			structLocals.add(StructLocalDAO.sharedInstance().getStructLocal(structLocalID, FETCH_GROUPS_STRUCT_LOCAL, monitor));
 		}
 		return structLocals;
 	}
