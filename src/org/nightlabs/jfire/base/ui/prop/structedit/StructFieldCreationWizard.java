@@ -19,7 +19,7 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class StructFieldCreationWizard extends DynamicPathWizard {
-	private static class StructFieldTypePage extends DynamicPathWizardPage {
+	private class StructFieldTypePage extends DynamicPathWizardPage {
 		private ListComposite<StructFieldMetaData> fieldList;
 		private Map<StructFieldMetaData, DynamicPathWizardPage> fieldCreationWizardPages;
 		private Label description;
@@ -47,6 +47,9 @@ public class StructFieldCreationWizard extends DynamicPathWizard {
 
 			fieldList.getList().addSelectionListener(new SelectionListener() {
 				public void widgetDefaultSelected(SelectionEvent e) {
+					widgetSelected(e);
+					if (canFinish())
+						finish();
 				}
 
 				public void widgetSelected(SelectionEvent e) {

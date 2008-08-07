@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.nightlabs.base.ui.composite.ChildStatusController;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.I18nTextEditor;
@@ -20,8 +21,8 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
 
-public abstract class AbstractStructFieldEditor<F extends StructField> 
-extends AbstractStructPartEditor<F> 
+public abstract class AbstractStructFieldEditor<F extends StructField>
+extends AbstractStructPartEditor<F>
 implements StructFieldEditor<F> {
 	
 	private Composite specialComposite;
@@ -32,6 +33,7 @@ implements StructFieldEditor<F> {
 	private ErrorComposite errorComp;
 	private String errorMessage;
 	private Group editorGroup;
+	private ChildStatusController childStatusController;
 	
 	public void setChanged() {
 //		getStructEditor().setChanged(true);
@@ -39,6 +41,7 @@ implements StructFieldEditor<F> {
 	}
 	
 	public Composite createComposite(Composite parent, int style, StructEditor structEditor, LanguageChooser languageChooser) {
+		this.childStatusController = new ChildStatusController();
 		this.languageChooser = languageChooser;
 		this.structEditor = structEditor;
 		editorGroup = new Group(parent, SWT.NONE);
@@ -91,13 +94,15 @@ implements StructFieldEditor<F> {
 		if (field == null)
 		{
 			fieldNameEditor.reset();
-			fieldNameEditor.setEnabled(false);
+//			fieldNameEditor.setEnabled(false);
+			setEnabled(false);
 			if (specialComposite != null)
 				specialComposite.dispose();
 			return;
 		}
 		
-		fieldNameEditor.setEnabled(true);
+//		fieldNameEditor.setEnabled(true);
+		setEnabled(true);
 		fieldNameEditor.setI18nText(field.getName(), EditMode.DIRECT);
 		StructFieldMetaData sfmd = StructFieldFactoryRegistry.sharedInstance().getFieldMetaDataMap().get(field.getClass().getName());
 		if (sfmd != null) {
@@ -170,8 +175,12 @@ implements StructFieldEditor<F> {
 	}
 		
 	public void setEnabled(boolean enabled) {
-		if (editorGroup != null)
-			editorGroup.setEnabled(enabled);
+		if (editorGroup != null) {
+			if (editorGroup.isEnabled() != enabled) {
+				childStatusController.setEnabled(editorGroup, enabled);
+				editorGroup.setEnabled(enabled);
+			}
+		}
 	}
 }
 

@@ -78,6 +78,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 	private Button moveDownButton;
 	private Button setDefaultButton;
 	private Button removeDefaultButton;
+	private Button emptySelectionCheckbox;
 
 	public SelectionStructFieldEditComposite(Composite parent, int style, final SelectionStructFieldEditor editor,
 			LanguageChooser langChooser) {
@@ -181,6 +182,16 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 			gd.widthHint = maxWidth;
 			button.setLayoutData(gd);
 		}
+		
+		emptySelectionCheckbox = new Button(wrapper, SWT.CHECK);
+		emptySelectionCheckbox.setText("Allow empty selection");
+		emptySelectionCheckbox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectionField.setAllowsEmptySelection(emptySelectionCheckbox.getSelection());
+				editor.setChanged();
+			}
+		});
 	}
 
 	/**
@@ -242,6 +253,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 			return;
 
 		structFieldValueTable.setSelectionField(selectionField);
+		emptySelectionCheckbox.setSelection(selectionField.allowsEmptySelection());
 	}
 
 	/**
