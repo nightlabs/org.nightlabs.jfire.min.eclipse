@@ -11,9 +11,10 @@ import javax.jdo.JDOHelper;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ListenerList;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.config.Config;
 import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.ConfigModule;
+import org.nightlabs.jfire.config.dao.ConfigDAO;
 import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.progress.NullProgressMonitor;
@@ -97,7 +98,13 @@ implements IConfigModuleController
 	 * Checks if the configModule is member of a configGroup
 	 */
 	public boolean checkIfIsGroupMember(ConfigModule module) {
-		return getGroupConfigModule(module) != null;
+		Config config = ConfigDAO.sharedInstance().getConfig(
+				configID, new String[] {
+					FetchPlan.DEFAULT,
+					Config.FETCH_GROUP_CONFIG_GROUP
+				}, 
+				NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor());
+		return config.getConfigGroup() != null;
 	}
 	
 	/*
@@ -109,7 +116,7 @@ implements IConfigModuleController
 				configID, getConfigModuleClass(), configModuleID,
 				getConfigModuleFetchGroups().toArray(new String[0]),
 				getConfigModuleMaxFetchDepth(), new NullProgressMonitor()
-				);
+			);
 	}
 	
 	/**

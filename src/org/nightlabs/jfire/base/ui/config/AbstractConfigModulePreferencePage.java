@@ -357,15 +357,10 @@ extends LSDPreferencePage
 	 * @param configChanged The changed flag for the Config.
 	 */
 	protected void setConfigChanged(boolean configChanged) {
-		if (! currentConfigModuleIsEditable)
+		if (!currentConfigModuleIsEditable)
 			return;
 		
 		this.configChanged = configChanged;
-		if (inheritMemberConfigModule != null && inheritMemberConfigModule.getSelection()) {
-			inheritMemberConfigModule.setSelection(false);
-			getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).setValueInherited(false);
-		}
-		
 		if (configChanged) {
 			recentlySaved = false;
 			notifyConfigChangedListeners();
@@ -587,6 +582,7 @@ extends LSDPreferencePage
 //				FIXME: The first time inheritance is triggered, the valueInherited value is here set to true (look deeper)
 				if (selected) {
 					fadableWrapper.setFaded(true);
+					inheritMemberConfigModule.setEnabled(false);
 					Job fetchJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.fetchJobName")) { //$NON-NLS-1$
 						@Override
 						protected IStatus run(ProgressMonitor monitor) {
@@ -612,7 +608,9 @@ extends LSDPreferencePage
 								public void run() {
 									updatePreferencePage();
 									fadableWrapper.setFaded(false);
+									inheritMemberConfigModule.setEnabled(true);
 									inheritMemberConfigModule.setSelection(true);
+									setConfigChanged(true);
 								}
 							});
 							return Status.OK_STATUS;
@@ -621,9 +619,9 @@ extends LSDPreferencePage
 					fetchJob.setPriority(org.eclipse.core.runtime.jobs.Job.SHORT);
 					fetchJob.schedule();
 				}	else {
-					setConfigChanged(true); // <-- causes the ToggleButton to be reset.
+					getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).setValueInherited(false);
+					setConfigChanged(true);
 				}
-//				inheritMemberConfigModule.setSelection(selected); // needed, since updatePrefPage may trigger setConfigChanged(true)
 			}
 		});
 	}
