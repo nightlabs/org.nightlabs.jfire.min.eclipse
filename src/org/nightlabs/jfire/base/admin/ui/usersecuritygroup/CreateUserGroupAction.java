@@ -27,11 +27,16 @@
 package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.window.Window;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor;
+import org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditorInput;
 
 /**
  * An action that opens a {@link CreateUserGroupWizard}.
+ * 
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
@@ -43,15 +48,11 @@ public class CreateUserGroupAction extends WorkbenchWindowAndViewActionDelegate
 	public void run(IAction action)
 	{
 		try {
-			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(new CreateUserGroupWizard());
-//			{
-//				@Override
-//				protected void configureShell(Shell newShell) {
-//					newShell.setSize(500,300);
-//					super.configureShell(newShell);
-//				}
-//			};
-			dynamicPathWizardDialog.open();
+			CreateUserGroupWizard wiz = new CreateUserGroupWizard();
+			DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(wiz);
+			if (wzd.open() == Window.OK) {
+				RCPUtil.openEditor(new UserSecurityGroupEditorInput(wiz.getCreatedUserSecurityGroupID()), UserSecurityGroupEditor.EDITOR_ID);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

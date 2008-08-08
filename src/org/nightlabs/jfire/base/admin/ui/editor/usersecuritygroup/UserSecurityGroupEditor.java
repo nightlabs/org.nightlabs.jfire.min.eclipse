@@ -24,6 +24,8 @@ public class UserSecurityGroupEditor
 extends EntityEditor
 implements ICloseOnLogoutEditorPart
 {
+	public static final String EDITOR_ID = UserSecurityGroupEditor.class.getName();
+	
 	private volatile String title = null;
 
 	@Override

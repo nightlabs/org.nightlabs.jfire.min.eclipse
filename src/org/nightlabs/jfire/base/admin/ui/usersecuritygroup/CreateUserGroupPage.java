@@ -35,16 +35,18 @@ import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
+import org.nightlabs.jdo.ObjectIDUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public class CreateUserGroupPage extends DynamicPathWizardPage implements FormularChangeListener
 {
-	private Text userGroupID;
+//	private Text userGroupID;
 	private Text description;
 	private Text name;
 
@@ -63,7 +65,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	public Control createPageContents(Composite parent)
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
-		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$
+//		userGroupID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.userGroupID.labelText"), null); //$NON-NLS-1$
 		name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.name.labelText"), null); //$NON-NLS-1$
 		description = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.description.labelText"), null); //$NON-NLS-1$
 
@@ -96,7 +98,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 	 */
 	public String getUserGroupID()
 	{
-		return userGroupID.getText();
+		return ObjectIDUtil.makeValidIDString(name.getText(), true);
 	}
 
 	/**

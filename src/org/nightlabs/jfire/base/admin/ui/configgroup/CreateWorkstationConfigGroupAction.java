@@ -27,8 +27,12 @@
 package org.nightlabs.jfire.base.admin.ui.configgroup;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.window.Window;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor;
+import org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditorInput;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;
 
@@ -42,12 +46,18 @@ public class CreateWorkstationConfigGroupAction extends WorkbenchWindowAndViewAc
 {
 	public void run(IAction action)
 	{
-  	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(
-				new CreateConfigGroupWizard(
-						WorkstationConfigSetup.CONFIG_GROUP_CONFIG_TYPE_WORKSTATION_CONFIG,
-						Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.wizardTitle"), //$NON-NLS-1$
-						Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.pageTitle")) //$NON-NLS-1$
-			);
-    wzd.open();
+		CreateConfigGroupWizard wiz = new CreateConfigGroupWizard(
+				WorkstationConfigSetup.CONFIG_GROUP_CONFIG_TYPE_WORKSTATION_CONFIG,
+				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.wizardTitle"), //$NON-NLS-1$
+				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.pageTitle")); //$NON-NLS-1$
+		
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(wiz);
+		if (wzd.open() == Window.OK) {
+			try {
+				RCPUtil.openEditor(new WorkstationGroupEditorInput(wiz.getCreatedConfigID()), WorkstationGroupEditor.EDITOR_ID);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

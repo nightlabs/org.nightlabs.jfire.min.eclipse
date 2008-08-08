@@ -34,14 +34,15 @@ import javax.security.auth.login.LoginException;
 
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
+import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -51,6 +52,7 @@ import org.nightlabs.progress.NullProgressMonitor;
 public class CreateUserGroupWizard extends DynamicPathWizard
 {
 	private CreateUserGroupPage cugPage;
+	private UserSecurityGroupID createdUserSecurityGroupID;
 //	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
 
 	public CreateUserGroupWizard()
@@ -83,10 +85,11 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 	public boolean performFinish()
 	{
 		try {
+			UserSecurityGroupID groupID = UserSecurityGroupID.create(
+					SecurityReflector.getUserDescriptor().getOrganisationID(),
+					cugPage.getUserGroupID());
 			UserSecurityGroup newGroup = new UserSecurityGroup(
-					Login.getLogin().getOrganisationID(),
-					cugPage.getUserGroupID()
-			);
+					groupID.organisationID, groupID.userSecurityGroupID);
 			newGroup.setName(cugPage.getUserName());
 			newGroup.setDescription(cugPage.getUserGroupDescription());
 			
@@ -102,12 +105,17 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 					(String[]) null,
 					1,
 					new NullProgressMonitor()); // TODO do this asynchronously in a job!
-
+			
+			createdUserSecurityGroupID = groupID;
 			return true;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public UserSecurityGroupID getCreatedUserSecurityGroupID() {
+		return createdUserSecurityGroupID;
 	}
 }

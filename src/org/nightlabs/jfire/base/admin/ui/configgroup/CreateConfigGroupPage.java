@@ -71,6 +71,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 		configGroupKey = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.configGroupKey.labelText"), null); //$NON-NLS-1$
 		configGroupKey.setEditable(false);
 		configGroupKey.setEnabled(false);
+		configGroupKey.setVisible(false);
 		return f;
 	}
 	

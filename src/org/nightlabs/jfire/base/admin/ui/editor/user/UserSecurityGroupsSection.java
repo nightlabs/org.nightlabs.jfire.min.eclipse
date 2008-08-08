@@ -66,7 +66,8 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				userSecurityGroupTableViewer.setModel(model);
+				if (userSecurityGroupTableViewer != null && !userSecurityGroupTableViewer.getTable().isDisposed())
+					userSecurityGroupTableViewer.setModel(model);
 			}
 		});
 	}

@@ -27,8 +27,12 @@
 package org.nightlabs.jfire.base.admin.ui.workstation;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.window.Window;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor;
+import org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditorInput;
 
 /**
  * Action to create a new Workstation using a {@link CreateWorkstationWizard}.
@@ -43,7 +47,14 @@ public class CreateWorkstationAction extends WorkbenchWindowAndViewActionDelegat
 	 */
 	public void run(IAction action)
 	{
-  	DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(new CreateWorkstationWizard());
-    wzd.open();
+		CreateWorkstationWizard wiz = new CreateWorkstationWizard();
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(wiz);
+		if (wzd.open() == Window.OK) {
+			try {
+				RCPUtil.openEditor(new WorkstationEditorInput(wiz.getCreatedWorkstationID()), WorkstationEditor.EDITOR_ID);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

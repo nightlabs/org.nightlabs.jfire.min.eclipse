@@ -28,15 +28,16 @@ package org.nightlabs.jfire.base.admin.ui.user;
 
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedPropertySetEditorWizardHop;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
+import org.nightlabs.jfire.security.id.UserID;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -49,6 +50,8 @@ public class CreateUserWizard extends DynamicPathWizard
 	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
 	private boolean canFinish = false;
 
+	private UserID createdUserID;
+	
 	public CreateUserWizard()
 	{
 		setNeedsProgressMonitor(true);
@@ -81,7 +84,8 @@ public class CreateUserWizard extends DynamicPathWizard
 	public boolean performFinish()
 	{
 		try {
-			User newUser = new User(Login.getLogin().getOrganisationID(), cuPage.getUserID());
+			UserID userID = UserID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), cuPage.getUserID());
+			User newUser = new User(userID.organisationID, userID.userID);
 			newUser.setName(cuPage.getUserName());
 			newUser.setDescription(cuPage.getUserDescription());
 			newUser.setAutogenerateName(cuPage.isAutogenerateName());
@@ -93,6 +97,7 @@ public class CreateUserWizard extends DynamicPathWizard
 ////			userManager.saveUser(newUser, cuPage.getPassword1());
 //			userManager.storeUser(newUser, cuPage.getPassword1(), false, null, 1);
 			UserDAO.sharedInstance().storeUser(newUser, cuPage.getPassword1(), false, null, 1, new NullProgressMonitor()); // TODO do this asynchronously in a job!
+			createdUserID = userID;
 			return true;
 		}
 		catch (RuntimeException e)
@@ -109,4 +114,9 @@ public class CreateUserWizard extends DynamicPathWizard
 	public boolean canFinish() {
 		return canFinish && super.canFinish();
 	}
+	
+	public UserID getCreatedUserID() {
+		return createdUserID;
+	}
+	
 }

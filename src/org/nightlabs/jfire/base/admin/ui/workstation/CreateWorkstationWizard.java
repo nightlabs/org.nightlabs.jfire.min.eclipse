@@ -29,9 +29,11 @@ package org.nightlabs.jfire.base.admin.ui.workstation;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.workstation.Workstation;
 import org.nightlabs.jfire.workstation.WorkstationManager;
 import org.nightlabs.jfire.workstation.WorkstationManagerUtil;
+import org.nightlabs.jfire.workstation.id.WorkstationID;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -40,6 +42,7 @@ import org.nightlabs.jfire.workstation.WorkstationManagerUtil;
 public class CreateWorkstationWizard extends DynamicPathWizard {
 
 	private CreateWorkstationPage createWorkstationPage;
+	private WorkstationID createdWorkstationID;
 	
 	public CreateWorkstationWizard() {
 		super();
@@ -55,15 +58,20 @@ public class CreateWorkstationWizard extends DynamicPathWizard {
 	public boolean performFinish() {
 		Workstation workstation;
 		try {
-			workstation = new Workstation(Login.getLogin().getOrganisationID(), createWorkstationPage.getWorkstationID());
+			WorkstationID workstationID = WorkstationID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), createWorkstationPage.getWorkstationID());
+			workstation = new Workstation(workstationID.organisationID, workstationID.workstationID);
 			workstation.setDescription(createWorkstationPage.getWorkstationDescription());
 			
 			WorkstationManager workstationManager = WorkstationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			workstationManager.storeWorkstation(workstation, false, null, -1);
+			createdWorkstationID = workstationID;
 			return true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	public WorkstationID getCreatedWorkstationID() {
+		return createdWorkstationID;
+	}
 }

@@ -153,7 +153,8 @@ public class RoleGroupsSection extends RestorableSectionPart
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				roleGroupTableViewer.setModel(model);
+				if (roleGroupTableViewer != null && !roleGroupTableViewer.getTable().isDisposed())
+					roleGroupTableViewer.setModel(model);
 //				if (excludedRoleGroupsViewer == null)
 //					return;
 //

@@ -30,6 +30,8 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.config.ConfigManager;
 import org.nightlabs.jfire.config.ConfigManagerUtil;
+import org.nightlabs.jfire.config.id.ConfigID;
+import org.nightlabs.jfire.security.SecurityReflector;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -38,6 +40,7 @@ import org.nightlabs.jfire.config.ConfigManagerUtil;
 public class CreateConfigGroupWizard extends DynamicPathWizard {
 
 	private CreateConfigGroupPage createConfigGroupPage;
+	private ConfigID createdConfigID;
 	
 	public CreateConfigGroupWizard(String configGroupType, String configGroupWizardTitle, String configGroupPageTitle) {
 		super();
@@ -52,6 +55,10 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 	@Override
 	public boolean performFinish() {
 		try {
+			ConfigID configID = ConfigID.create(
+					SecurityReflector.getUserDescriptor().getOrganisationID(), 
+					createConfigGroupPage.getConfigGroupKey(),
+					createConfigGroupPage.getConfigGroupType());
 			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			configManager.addConfigGroup(
 					createConfigGroupPage.getConfigGroupKey(),
@@ -60,10 +67,14 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 					false,
 					null, 0
 				);
+			createdConfigID = configID;
 			return true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	public ConfigID getCreatedConfigID() {
+		return createdConfigID;
+	}
 }
