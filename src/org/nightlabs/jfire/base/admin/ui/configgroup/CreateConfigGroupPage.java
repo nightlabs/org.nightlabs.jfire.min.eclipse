@@ -45,7 +45,7 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
  */
 public class CreateConfigGroupPage extends DynamicPathWizardPage implements FormularChangeListener
 {
-	private Text configGroupKey;
+//	private Text configGroupKey;
 	private Text configGroupName;
 	
 	/**
@@ -68,10 +68,10 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 	{
 		Formular f = new Formular(parent, SWT.NONE, this);
 		configGroupName = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.configGroupName.labelText"), null); //$NON-NLS-1$
-		configGroupKey = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.configGroupKey.labelText"), null); //$NON-NLS-1$
-		configGroupKey.setEditable(false);
-		configGroupKey.setEnabled(false);
-		configGroupKey.setVisible(false);
+//		configGroupKey = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.configGroupKey.labelText"), null); //$NON-NLS-1$
+//		configGroupKey.setEditable(false);
+//		configGroupKey.setEnabled(false);
+//		configGroupKey.setVisible(false);
 		return f;
 	}
 	
@@ -104,7 +104,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 
 	public String getConfigGroupKey()
 	{
-		return configGroupKey.getText();
+		return ObjectIDUtil.makeValidIDString(configGroupName.getText(), true);
 	}
 	
 	public String getConfigGroupType()
@@ -125,7 +125,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 		if(event.getSource() == configGroupName) {
 //			String newStr = configGroupName.getText().replaceAll("[^a-zA-Z0-9\\-]", "_"); //$NON-NLS-1$
 			String newStr = ObjectIDUtil.makeValidIDString(configGroupName.getText());
-			configGroupKey.setText(newStr);
+//			configGroupKey.setText(newStr);
 		}
 		verifyInput();
 	}

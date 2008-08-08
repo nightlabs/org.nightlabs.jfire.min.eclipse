@@ -328,8 +328,16 @@
                 editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView"/>
         </category>
         <pageFactory
+              class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage$Factory"
+              editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor"
+              indexHint="10">
+        </pageFactory>
+        <pageFactory
             class="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationFeaturePreferencesTabPage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" indexHint="10"/>
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" indexHint="20"/>
+        <pageFactory
+            class="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupMemberPage$Factory"
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" indexHint="30"/>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.EntityTreeCategoryUserConfigGroup"
             icon="icons/configgroup/CreateUserConfigGroupAction.16x16.png"
@@ -340,22 +348,14 @@
         <pageFactory
               class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage$Factory"
               editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor"
-              indexHint="5">
-        </pageFactory>
-        <pageFactory
-            class="org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesPage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" indexHint="10"/>
-        <pageFactory
-            class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberPage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" indexHint="20"/>
-        <pageFactory
-              class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.ConfigGroupGeneralPreferencesTabPage$Factory"
-              editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor"
               indexHint="10">
         </pageFactory>
         <pageFactory
-            class="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupMemberPage$Factory"
-            editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor" indexHint="20"/>
+            class="org.nightlabs.jfire.base.admin.ui.editor.user.ConfigPreferencesPage$Factory"
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" indexHint="20"/>
+        <pageFactory
+            class="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberPage$Factory"
+            editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor" indexHint="30"/>
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.prop.EntityTreeCategoryPropertyStructLocal"
             icon="icons/property_set_structures.16x16.png"
