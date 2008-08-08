@@ -36,7 +36,7 @@ import org.nightlabs.jfire.security.UserLocal;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author unascribed
  */
-public class UserDataSection extends RestorableSectionPart 
+public class UserDataSection extends RestorableSectionPart
 {
 	private Text userIdText;
 	private Text userNameText;
@@ -220,8 +220,10 @@ public class UserDataSection extends RestorableSectionPart
 	}
 	
 	void updateDisplayName() {
+		user.setAutogenerateName(autogenerateNameCheckBox.getSelection());
+		
 		if (autogenerateNameCheckBox.getSelection()) {
-			// FIXME: why changing the user object here? Does it make any sense? Marc 
+			// FIXME: why changing the user object here? Does it make any sense? Marc
 			user.setNameAuto();
 			userNameText.setText(user.getName());
 		}
