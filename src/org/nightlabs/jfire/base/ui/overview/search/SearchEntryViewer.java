@@ -401,10 +401,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	}
 
 	/**
-	 * performs a search with the current criteria
-	 *
-	 * This is done by calling {@link QuickSearchEntry#search(ProgressMonitor)} of the
-	 * current selected {@link QuickSearchEntry}
+	 * Performs a search with the current criteria.
 	 *
 	 * Furthermore the selected result ranges are set
 	 * and after the search is done {@link #displaySearchResult(Object)} is called
@@ -482,14 +479,49 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		public void expansionStateChanged(ExpansionEvent e)
 		{
 			final Section section = (Section) e.getSource();
-			sashform.setWeights(calculateSashWeights(section));
+			final int[] sashWeights = calculateSashWeights(section);
+			sashform.setWeights(sashWeights);
 			// This is not enough since the returned size is not the actual one if the searchWrapper is
 			// completely visible (e.g. when it grows too big for the sash itself, then the weights are
 			// not changed and the searchWrapper's returned size is only its visible part)
 //			scrollableSearchWrapper.setMinHeight(scrollableSearchWrapper.getSize().y);
 
 			// We need the -1 otherwise scrollbars are sometimes visible. Another magical number...
-			scrollableSearchWrapper.setMinHeight(calculateSearchAreaHeight()-1);
+			// sashweights[0] == calculateSearchAreaHeight(), so we save some runtime here.
+			scrollableSearchWrapper.setMinHeight(sashWeights[0]-1);
+		}
+	};
+
+	/**
+	 * The maximum number of retries for the {@link #setInitialSashWeightsRunnable} to get the correct
+	 * bounds of the SearchEntryViewer's parent.
+	 */
+	private static final int maxTries = 10;
+	private int parentSizeRetrievalTries = 0;
+
+	/**
+	 * This runnable tries to retrieve the correct parent's height for {@link #maxTries} times.
+	 * When retrieved it calculates the correct sash weights and sets them.
+	 */
+	private Runnable setInitialSashWeightsRunnable = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			int completeHeight = sashform.getParent().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+			if (completeHeight > 0)
+			{
+				final int[] sashWeights = calculateSashWeights(null);
+				sashform.setWeights(sashWeights);
+				scrollableSearchWrapper.setMinHeight(sashWeights[0]-1);
+				return;
+			}
+
+			if (parentSizeRetrievalTries < maxTries)
+			{
+				parentSizeRetrievalTries++;
+				Display.getDefault().asyncExec(setInitialSashWeightsRunnable);
+			}
 		}
 	};
 
@@ -505,17 +537,19 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		if (expandedStateChangedSection == null)
 		{
 			// we need to initialise size values because these composites haven't been layed out correctly.
-			searchHeight = scrollableSearchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y;
+//			searchHeight = scrollableSearchWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y;
+			searchHeight = calculateSearchAreaHeight();
 			if (searchHeight < 0)
 			{
-				searchHeight = 100;
+				searchHeight = 150;
 			}
 			// NOTE: we cannot compute the size of the sashform, since in the parent tree, the bounds/ available size are/is not known yet.
 //			completeHeight = sashform.getParent().computeSize(SWT.DEFAULT, SWT.DEFAULT).y - sashform.SASH_WIDTH;
-			completeHeight = sashform.getParent().getSize().y - sashform.getParent().getBorderWidth() - sashform.SASH_WIDTH;
+			completeHeight = sashform.getParent().getSize().y - sashform.getParent().getBorderWidth(); // - sashform.SASH_WIDTH;
 			if (completeHeight <= 0)
 			{
-				completeHeight = 5 * searchHeight;
+				completeHeight = 4 * searchHeight;
+				Display.getDefault().asyncExec(setInitialSashWeightsRunnable);
 			}
 		}
 		else
@@ -559,12 +593,15 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 		for (Section section : advancedSearchSections)
 		{
-			searchHeight += section.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+			if (section.getSize().y > 0)
+				searchHeight += section.getSize().y;
+			else
+				searchHeight += section.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 		}
 
 		// add the spacing in between the sections
 		searchHeight += advancedSearchSections.size() * verticalSpacing;
-		searchHeight += advancedSearchSections.size() * 5; //magical spacing needed due to section spacings.
+		searchHeight += advancedSearchSections.size() * 2; //magical spacing needed due to section spacings.
 		return searchHeight;
 	}
 

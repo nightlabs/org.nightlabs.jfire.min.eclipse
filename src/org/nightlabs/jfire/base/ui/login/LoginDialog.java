@@ -130,7 +130,7 @@ public class LoginDialog extends TitleAreaDialog
 				recentLoginConfigs.setSelection(-1);
 				deleteButton.setEnabled(false);
 			}
-			checkUserInput();
+			checkUserInput(false);
 		}
 	};
 
@@ -515,7 +515,7 @@ public class LoginDialog extends TitleAreaDialog
 	@Override
 	protected void okPressed()
 	{
-		if(!checkUserInput())
+		if(!checkUserInput(true))
 			return;
 		// execute login asynchronously only if parent shell is not null - i.e. when at least the workbench window is existent.
 //		logger.debug("parent shell: "+parentShell);
@@ -592,7 +592,7 @@ public class LoginDialog extends TitleAreaDialog
 		}
 	}
 
-	private boolean checkUserInput()
+	private boolean checkUserInput(boolean setSmartFocus)
 	{
 		// check entries
 		String errorMessage = null;
@@ -608,7 +608,9 @@ public class LoginDialog extends TitleAreaDialog
 		setErrorMessage(errorMessage);
 		if(errorMessage != null) {
 			setWarningMessage(null);
-			setSmartFocus();
+			if (setSmartFocus)
+				setSmartFocus();
+
 			return false;
 		}
 
