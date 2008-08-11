@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.workstation;
 
 import java.util.Collection;
-import java.util.Set;
 
 import javax.jdo.FetchPlan;
 
@@ -22,13 +21,9 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.query.QueryCollection;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.workstation.Workstation;
-import org.nightlabs.jfire.workstation.WorkstationManager;
-import org.nightlabs.jfire.workstation.WorkstationManagerUtil;
 import org.nightlabs.jfire.workstation.dao.WorkstationDAO;
-import org.nightlabs.jfire.workstation.id.WorkstationID;
 import org.nightlabs.jfire.workstation.search.WorkstationQuery;
 import org.nightlabs.progress.ProgressMonitor;
 

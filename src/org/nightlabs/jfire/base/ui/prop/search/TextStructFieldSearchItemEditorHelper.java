@@ -77,7 +77,7 @@ public class TextStructFieldSearchItemEditorHelper
 			this.displayName = displayName;
 		}
 	}
-	private MatchTypeOrderEntry[] matchTypeOrder = new MatchTypeOrderEntry[6];
+	private MatchTypeOrderEntry[] matchTypeOrder = new MatchTypeOrderEntry[7];
 	private MatchTypeOrderEntry setMatchTypeOrderEntry(int idx, int matchType) {
 		String displayName = SearchFilterItem.getLocalisedMatchType(matchType);
 		MatchTypeOrderEntry result = new MatchTypeOrderEntry(matchType, displayName);
@@ -104,7 +104,8 @@ public class TextStructFieldSearchItemEditorHelper
 			comboMatchType.add(setMatchTypeOrderEntry(2, SearchFilterItem.MATCHTYPE_BEGINSWITH).displayName);
 			comboMatchType.add(setMatchTypeOrderEntry(3, SearchFilterItem.MATCHTYPE_ENDSWITH).displayName);
 			comboMatchType.add(setMatchTypeOrderEntry(4, SearchFilterItem.MATCHTYPE_EQUALS).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(5, SearchFilterItem.MATCHTYPE_NOTEQUALS).displayName);
+			comboMatchType.add(setMatchTypeOrderEntry(5, SearchFilterItem.MATCHTYPE_MATCHES).displayName);
+			comboMatchType.add(setMatchTypeOrderEntry(6, SearchFilterItem.MATCHTYPE_NOTEQUALS).displayName);
 			
 			GridData gdCombo = new GridData();
 			gdCombo.grabExcessHorizontalSpace = true;
