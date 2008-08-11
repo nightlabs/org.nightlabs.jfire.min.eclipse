@@ -61,8 +61,8 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 					createConfigGroupPage.getConfigGroupType());
 			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
 			configManager.addConfigGroup(
-					createConfigGroupPage.getConfigGroupKey(),
-					createConfigGroupPage.getConfigGroupType(),
+					configID.configKey,
+					configID.configType,
 					createConfigGroupPage.getConfigGroupName(),
 					false,
 					null, 0
