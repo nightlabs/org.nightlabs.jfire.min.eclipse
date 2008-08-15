@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE nightlybuild PUBLIC "-//NightLabs//DTD NightlyBuild V 0.18//EN" "http://www.nightlabs.de/dtd/nightlybuild_0_18.dtd">
+<!DOCTYPE nightlybuild PUBLIC "-//NightLabs//DTD NightlyBuild V 0.20//EN" "http://www.nightlabs.de/dtd/nightlybuild_0_20.dtd">
 
 <nightlybuild>
 
@@ -24,6 +24,13 @@
 	<provides path="org.nightlabs.jfire.base.j2ee" location="org.nightlabs.jfire.base.j2ee/lib/jbossall-client.jar"/>
 
     <javadoc path="org.nightlabs.jfire.base.j2ee/src"/>
+
+	<!--
+		"javax.jdo" is an optional dependency which is neither required at build time nor at runtime.
+		Read the README.txt in project "org.nightlabs.jfire.jdo.rcp" to understand more about this.
+		Marco.
+	-->
+    <ignore-requires path="javax.jdo"/>
   </project>
 
 </nightlybuild>
