@@ -3,13 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: J2ee Classloading Plug-in
 Bundle-SymbolicName: org.nightlabs.jfire.base.j2ee;singleton:=true
 Bundle-Version: 0.9.5.qualifier
-Bundle-ClassPath: org.nightlabs.jfire.base.j2ee.jar,
+Bundle-ClassPath: .,
  lib/jbossall-client.jar,
  lib/JFireRCLBackend.jar,
  lib/JFireRCLBackendBean.jar,
  lib/JFireRemoteClassLoader.jar,
  lib/JFireIntegrationJBoss.jar,
- lib/org.nightlabs.rmissl.jar
+ lib/.
 Bundle-Activator: org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
