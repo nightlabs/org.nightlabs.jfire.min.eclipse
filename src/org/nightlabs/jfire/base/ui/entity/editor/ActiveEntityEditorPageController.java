@@ -428,7 +428,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * </p>
 	 */
 	@Override
-	public void doSave(ProgressMonitor monitor) {
+	public boolean doSave(ProgressMonitor monitor) {
 		monitor.beginTask(getSaveJobName(), 100);
 		EntityType oldControllerObject = null;
 		synchronized (mutex) {
@@ -442,6 +442,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		}
 		monitor.done();
 		fireModifyEvent(oldControllerObject, controllerObject);
+		return true;
 	}
 	
 	/**
@@ -449,13 +450,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 */
 	protected void doReload(ProgressMonitor monitor) {
 		// TODO: Think about doing this in a job and notifying the page before the reload (so it can show the progress view)
-		
-//		Collection<IEntityEditorPageController> controllers = getEntityEditorController().getPageControllers();
-//		for (IEntityEditorPageController controller : controllers) {
-//			if (controller.isLoaded() && controller.isDirty()) {
-//				controller.doLoad(monitor);
-//			}
-//		}
+		setLoaded(false);
 		doLoad(monitor);
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {

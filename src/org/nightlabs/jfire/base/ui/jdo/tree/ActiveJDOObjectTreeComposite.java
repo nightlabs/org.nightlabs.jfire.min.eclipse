@@ -12,12 +12,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.Util;
 
 /**
  * {@link AbstractTreeComposite} to be used with an {@link ActiveJDOObjectTreeController}.
- * It enables the programatical expansion of active trees (trees that get their data from an {@link ActiveJDOObjectTreeController}).
+ * It enables the programatic expansion of active trees (trees that get their data from an {@link ActiveJDOObjectTreeController}).
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
@@ -29,26 +28,33 @@ extends AbstractTreeComposite<JDOObject>
 	private static final Logger logger = Logger.getLogger(ActiveJDOObjectTreeComposite.class);
 	
 	/**
-	 * @param parent
+	 * Create a new {@link ActiveJDOObjectTreeComposite} for the given parent.
+	 * 
+	 * @param parent The parent to use.
 	 */
 	public ActiveJDOObjectTreeComposite(Composite parent) {
 		super(parent);
 	}
 
 	/**
-	 * @param parent
-	 * @param init
+	 * Create a new {@link ActiveJDOObjectTreeComposite} for the given parent.
+	 * 
+	 * @param parent The parent to use.
+	 * @param init Whether to initialize the tree (set content and label provider etc.)
 	 */
 	public ActiveJDOObjectTreeComposite(Composite parent, boolean init) {
 		super(parent, init);
 	}
 
 	/**
-	 * @param parent
-	 * @param style
-	 * @param setLayoutData
-	 * @param init
-	 * @param headerVisible
+	 * Create a new {@link ActiveJDOObjectTreeComposite} for the given parent
+	 * with the given style and layout(data).
+	 * 
+	 * @param parent The parent to use.
+	 * @param style The style to apply to the new {@link ActiveJDOObjectTreeComposite} (surrounding the tree).
+	 * @param setLayoutData Whether to set a layout-data that will cause the tree to fill in both directions inside a GridData. 
+	 * @param init Whether to initialize the tree (set content and label provider etc.)
+	 * @param headerVisible Whether the header columns of the tree should be visible.
 	 */
 	public ActiveJDOObjectTreeComposite(Composite parent, int style,
 			boolean setLayoutData, boolean init, boolean headerVisible) {
@@ -69,7 +75,10 @@ extends AbstractTreeComposite<JDOObject>
 		super(parent, style, setLayoutData, init, headerVisible, sortColumns);
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.tree.AbstractTreeComposite#getSelectionObject(java.lang.Object)
+	 */
 	@Override
 	protected JDOObject getSelectionObject(Object obj) {
 		if (!(obj instanceof JDOObjectTreeNode))
@@ -77,9 +86,18 @@ extends AbstractTreeComposite<JDOObject>
 		return (JDOObject) ((TreeNode)obj).getJdoObject();
 	}
 	
-	
+	/**
+	 * Here subclasses should provide the {@link ActiveJDOObjectTreeController} that
+	 * can provide the data for this tree.
+	 * 
+	 * @return The {@link ActiveJDOObjectTreeController} for this tree.
+	 */
 	protected abstract ActiveJDOObjectTreeController<JDOObjectID, JDOObject, TreeNode> getJDOObjectTreeController();
-	
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.tree.AbstractTreeComposite#createTreeViewer(int)
+	 */
 	@Override
 	protected TreeViewer createTreeViewer(int style) {
 		return new ActiveTreeViewer(this, style);
@@ -89,7 +107,7 @@ extends AbstractTreeComposite<JDOObject>
 		return (ActiveTreeViewer) getTreeViewer();
 	}
 	/**
-	 * Currently used for enabling programatical expansion of active trees.
+	 * Currently used for enabling programatic expansion of active trees.
 	 */
 	private class ActiveTreeViewer extends TreeViewer {
 
@@ -174,7 +192,7 @@ extends AbstractTreeComposite<JDOObject>
 		public void handleLoad(final List<TreeNode> children) {
 			getJDOObjectTreeController().removeJDOTreeNodesChangedListener(this);
 			if (expandLevel + 1 <= totalLevel) {
-				logger.info(Util.addLeadingChars(element.toString(), element.toString().length() + expandLevel + 1, ' '));
+				logger.debug(Util.addLeadingChars(element.toString(), element.toString().length() + expandLevel + 1, ' '));
 				for (TreeNode childNode : children) {
 					getActiveTreeViewer().internalExpand(root, childNode, expandLevel+1, totalLevel, listenerStack);
 				}
