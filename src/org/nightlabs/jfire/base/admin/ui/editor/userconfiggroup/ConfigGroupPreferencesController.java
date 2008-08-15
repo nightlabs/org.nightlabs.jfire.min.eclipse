@@ -19,13 +19,23 @@ public class ConfigGroupPreferencesController extends EntityEditorPageController
 		super(editor);
 		this.configGroupID = ((JDOObjectEditorInput<ConfigID>)editor.getEditorInput()).getJDOObjectID();
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doLoad(org.nightlabs.progress.ProgressMonitor)
+	 */
+	@Override
 	public void doLoad(ProgressMonitor monitor) {
 		configGroup = (ConfigGroup) ConfigDAO.sharedInstance().getConfig(configGroupID, new String[] { FetchPlan.DEFAULT }, -1, monitor);
 	}
-
-	public void doSave(ProgressMonitor monitor) {
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doSave(org.nightlabs.progress.ProgressMonitor)
+	 */
+	@Override
+	public boolean doSave(ProgressMonitor monitor) {
 		ConfigDAO.sharedInstance().storeConfig(configGroup, false, new String[] { User.FETCH_GROUP_NAME }, -1, monitor);
+		return true;
 	}
 	
 	public ConfigGroup getConfigGroup() {

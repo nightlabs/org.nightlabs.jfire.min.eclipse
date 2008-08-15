@@ -54,8 +54,9 @@ public class AuthorityTypeDetailPageController extends EntityEditorPageControlle
 	}
 
 	@Override
-	public void doSave(ProgressMonitor monitor) {
+	public boolean doSave(ProgressMonitor monitor) {
 		// there is nothing to save - it's all read-only.
+		return true;
 	}
 
 }

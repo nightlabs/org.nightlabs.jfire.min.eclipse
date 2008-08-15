@@ -30,7 +30,7 @@ extends AbstractConfigGroupPageController
 	}
 
 	@Override
-	public void doSave(ProgressMonitor monitor)
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof WorkstationGroupMemberPage) {
@@ -42,6 +42,7 @@ extends AbstractConfigGroupPageController
 				}
 			}
 		}
+		return true;
 	}
 
 }

@@ -20,7 +20,10 @@ extends AbstractConfigGroupPageController
 	public UserConfigGroupMemberPageController(EntityEditor editor, boolean startBackgroundLoading) {
 		super(editor, startBackgroundLoading);
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doLoad(org.nightlabs.progress.ProgressMonitor)
+	 */
 	@Override
 	public void doLoad(ProgressMonitor monitor)
 	{
@@ -28,9 +31,12 @@ extends AbstractConfigGroupPageController
 		monitor.worked(1);
 		monitor.worked(1);
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doSave(org.nightlabs.progress.ProgressMonitor)
+	 */
 	@Override
-	public void doSave(ProgressMonitor monitor)
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		for (IFormPage page : getPages()) {
 			if (page instanceof UserConfigGroupMemberPage) {
@@ -42,6 +48,7 @@ extends AbstractConfigGroupPageController
 				}
 			}
 		}
+		return true;
 	}
 
 }

@@ -143,6 +143,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	 * Load the usergroup data and users.
 	 * @param _monitor The progress monitor to use.
 	 */
+	@Override
 	public void doLoad(ProgressMonitor monitor)
 	{
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.SecurityPreferencesController.loadingUsers"), 100); //$NON-NLS-1$
@@ -237,10 +238,11 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 	 * Save the user data.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doSave(ProgressMonitor monitor)
+	@Override
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		if (!isLoaded())
-			return;
+			return false;
 
 		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroupsAssignedDirectly();
 		Set<RoleGroupID> includedRoleGroupIDs = NLJDOHelper.getObjectIDSet(includedRoleGroups);
@@ -274,7 +276,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 			monitor.setCanceled(true);
 			throw new RuntimeException(e);
 		}
-
+		return true;
 	}
 
 	/**

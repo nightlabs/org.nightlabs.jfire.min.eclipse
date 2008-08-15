@@ -89,6 +89,10 @@ public class UserSecurityGroupController extends EntityEditorPageController
 		this.editor = editor;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doLoad(org.nightlabs.progress.ProgressMonitor)
+	 */
 	@Override
 	public void doLoad(ProgressMonitor monitor)
 	{
@@ -110,9 +114,13 @@ public class UserSecurityGroupController extends EntityEditorPageController
 			monitor.done();
 		}
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doSave(org.nightlabs.progress.ProgressMonitor)
+	 */
 	@Override
-	public void doSave(ProgressMonitor monitor)
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		if ( logger.isInfoEnabled() ) {
 			logger.info("***********************************"); //$NON-NLS-1$
@@ -121,7 +129,7 @@ public class UserSecurityGroupController extends EntityEditorPageController
 		}
 
 		if (!isLoaded())
-			return;
+			return false;
 
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController.job.savingUserSecurityGroup"), 6); //$NON-NLS-1$
 		try	{
@@ -139,6 +147,7 @@ public class UserSecurityGroupController extends EntityEditorPageController
 		} finally {
 			monitor.done();
 		}
+		return true;
 	}
 
 	/**

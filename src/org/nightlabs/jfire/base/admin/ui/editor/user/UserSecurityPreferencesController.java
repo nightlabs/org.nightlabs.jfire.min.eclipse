@@ -279,7 +279,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 	 * Save the user data.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doSave(ProgressMonitor monitor)
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		if (logger.isDebugEnabled()) {
 			logger.debug("***********************************"); //$NON-NLS-1$
@@ -289,7 +289,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 
 		if (!isLoaded()) {
 			logger.info("User not loaded will return. User "+userID.userID); //$NON-NLS-1$
-			return;
+			return false;
 		}
 		logger.info("Saving user: "+userID); //$NON-NLS-1$
 
@@ -324,7 +324,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 			monitor.setCanceled(true);
 			throw new RuntimeException(e);
 		}
-
+		return true;
 	}
 
 	/**

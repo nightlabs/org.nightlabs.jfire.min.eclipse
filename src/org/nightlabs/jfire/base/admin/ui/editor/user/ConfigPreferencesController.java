@@ -78,39 +78,21 @@ public class ConfigPreferencesController extends EntityEditorPageController
 	 * Save the user data.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doSave(ProgressMonitor monitor)
+	@Override
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		if (pagesToStore == null || pagesToStore.isEmpty()) {
 			logger.debug("No config modules dirty, saving nothing."); //$NON-NLS-1$
 			dirtyConfigModules = null;
-			return;
+			return true;
 		}
 		
 		for (AbstractConfigModulePreferencePage page : pagesToStore) {
 			page.storeConfigModule(true);
 		}
+		return true;
 	}
 		
-			
-//		if (dirtyConfigModules == null || dirtyConfigModules.size() < 1) {
-//			logger.debug("No config modules dirty, saving nothing.");
-//			dirtyConfigModules = null;
-//			return;
-//		}
-//		ConfigManager cm = JFireBasePlugin.getConfigManager();
-//		String errMsg = "";
-//		for (ConfigModule configModule : dirtyConfigModules) {
-//			try {
-//				cm.storeConfigModule(configModule, false, null, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
-//			} catch (Exception e) {
-//				errMsg = errMsg + "Failed to store ConfigModule: "+configModule.getClass().getSimpleName()+": "+e.getMessage()+"\n";
-//			}
-//		}
-//		dirtyConfigModules = null;
-//		if (!"".equals(errMsg)) {
-//			throw new RuntimeException("Saving of one or more config modules failed:\n"+errMsg);
-//		}
-
 	/**
 	 * Get the editor.
 	 * @return the editor

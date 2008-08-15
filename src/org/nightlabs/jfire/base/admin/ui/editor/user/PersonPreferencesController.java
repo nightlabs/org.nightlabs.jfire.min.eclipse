@@ -139,7 +139,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	 * Save the user data.
 	 * @param monitor The progress monitor to use.
 	 */
-	public void doSave(ProgressMonitor monitor)
+	public boolean doSave(ProgressMonitor monitor)
 	{
 		if ( logger.isInfoEnabled() ) {
 			logger.info("***********************************"); //$NON-NLS-1$
@@ -149,7 +149,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 
 		if (!isLoaded()) {
 			logger.info("User not loaded will return. User "+userID.userID); //$NON-NLS-1$
-			return;
+			return false;
 		}
 		logger.info("Saving user "+userID.userID); //$NON-NLS-1$
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesController.doSave.monitor.taskName"), 6); //$NON-NLS-1$
@@ -182,7 +182,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 		} finally {
 			monitor.done();
 		}
-
+		return true;
 	}
 
 	/**
