@@ -189,9 +189,6 @@
             attributePattern="org.eclipse.help.ui.internal.preferences.HelpContentPreferencePage"
             elementPath="page" extensionPointID="org.eclipse.ui.preferencePages"/>
     </extension>
-    <extension point="org.nightlabs.jfire.base.j2ee.remoteResourceFilter">
-        <exclusion pattern="org.nightlabs.jfire.base.ui.exclusion1"/>
-    </extension>
     <extension point="org.nightlabs.base.ui.exceptionhandler">
         <exceptionHandler
             class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
