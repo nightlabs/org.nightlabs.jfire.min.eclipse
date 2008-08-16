@@ -43,6 +43,11 @@ import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
+ * Base class for implementations of {@link DataBlockEditor} that works with a {@link Composite}
+ * that implements the {@link IDataBlockEditorComposite} interface.
+ * With a composite implementing this interface the implementation of an editor needs only to
+ * create this {@link Composite} in {@link #createEditorComposite(Composite)}.
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractDataBlockEditor implements DataBlockEditor {
@@ -51,11 +56,16 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	
 	private IStruct struct;
 	protected DataBlock dataBlock;
+	private ListenerList dataBlockEditorListeners = new ListenerList();
+	private IValidationResultManager validationResultManager;
+	private IDataBlockEditorComposite dataBlockEditorComposite;
 
+	/**
+	 * Create a new {@link AbstractBlockBasedEditor}.
+	 */
 	protected AbstractDataBlockEditor() {
 	}
 
-	private ListenerList dataBlockEditorListeners = new ListenerList();
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#addDataBlockEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener)
 	 */
@@ -68,6 +78,11 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	public synchronized void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		dataBlockEditorListeners.add(listener);
 	}
+	/**
+	 * Call this method to notify listeners to this editor of a change.
+	 * 
+	 * @param dataFieldEditor The {@link DataFieldEditor} whose data changed.
+	 */
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = dataBlockEditorListeners.getListeners();
 		DataBlockEditorChangedEvent changedEvent = new DataBlockEditorChangedEvent(this, dataFieldEditor);
@@ -76,7 +91,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 				((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
 		}
 	}
-
+	
 	private DataFieldEditorChangedListener fieldEditorChangeListener = new DataFieldEditorChangedListener() {
 		@Override
 		public void dataFieldEditorChanged(DataFieldEditorChangedEvent changedEvent) {
@@ -86,28 +101,39 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		}
 	};	
 
-//	@Override
-//	public IStruct getStruct() {
-//		return struct;
-//	}
-
+	/**
+	 * Default implementation of updateProp() iterates through all
+	 * DataFieldEditor s added by {@link #addFieldEditor(DataField, DataFieldEditor)}
+	 * and calls their updateProp method.<br/>
+	 * Implementors might override if no registered PropDataFieldEditors are used.
+	 */
 	@Override
 	public void updatePropertySet() {
 		getDataBlockEditorComposite().updatePropertySet();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#getDataBlock()
+	 */
 	@Override
 	public DataBlock getDataBlock() {
 		return dataBlock;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#getStruct()
+	 */
 	@Override
 	public IStruct getStruct() {
 		return struct;
 	}
 
-	private IValidationResultManager validationResultManager;
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#setValidationResultManager(org.nightlabs.jfire.base.ui.prop.edit.blockbased.IValidationResultManager)
+	 */
 	@Override
 	public void setValidationResultManager(IValidationResultManager validationResultManager) {
 		this.validationResultManager = validationResultManager;
@@ -115,10 +141,16 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		validateDataBlock();
 	}
 	
+	/**
+	 * @return The {@link IValidationResultManager} set with {@link #setValidationResultManager(IValidationResultManager)}.
+	 */
 	public IValidationResultManager getValidationResultManager() {
 		return validationResultManager;
 	}
 	
+	/**
+	 * Validates the data in the {@link DataBlock} associated to this editor.
+	 */
 	protected void validateDataBlock() {
 		if (getDataBlock() != null) {
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
@@ -128,6 +160,10 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()"); 
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#setData(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlock)
+	 */
 	@Override
 	public void setData(IStruct struct, DataBlock dataBlock) {
 		this.struct = struct;
@@ -136,8 +172,13 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 			dataBlockEditorComposite.refresh(struct, dataBlock);
 	}
 	
-	private IDataBlockEditorComposite dataBlockEditorComposite;
-	
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This implementation will create and return an implemenation
+	 * of {@link IDataBlockEditorComposite} {@link #createEditorComposite(Composite)}.
+	 * </p>
+	 */
 	@Override
 	public Control createControl(Composite parent) {
 		if (dataBlockEditorComposite != null)
@@ -162,10 +203,21 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		return dataBlockEditorComposite;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#getControl()
+	 */
 	@Override
 	public Control getControl() {
 		return (Control) getDataBlockEditorComposite();
 	}
-	
+
+	/**
+	 * Create a {@link Composite} that implements {@link IDataBlockEditorComposite}.
+	 * This will be used by this class to implement the {@link DataBlockEditor} interface.
+	 * 
+	 * @param parent The parent to use.
+	 * @return The newly created {@link IDataBlockEditorComposite}.
+	 */
 	protected abstract IDataBlockEditorComposite createEditorComposite(Composite parent);
 }
