@@ -24,24 +24,58 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
  */
 public interface DataBlockEditor {
 
+	/**
+	 * Create the {@link Control} of this {@link DataBlockEditor}.
+	 * 
+	 * @param parent The parent {@link Composite} for the new {@link Control}.
+	 * @return A new {@link Control} with the UI of this {@link DataBlockEditor}.
+	 */
 	public Control createControl(Composite parent);
+	
+	/**
+	 * @return The {@link Control} created by {@link #createControl(Composite)}.
+	 */
 	public Control getControl();
 	
+	/**
+	 * Set the {@link DataBlock} for this editor.
+	 * Note, that if the UI of this editor was already created,
+	 * this method should reflect the new data in the UI with 
+	 * this call, too.
+	 *  
+	 * @param struct The {@link IStruct} the {@link DataBlock} was build from. 
+	 * @param block The {@link DataBlock} to edit.
+	 */
 	void setData(IStruct struct, DataBlock block);
 	
+	/**
+	 * @return The {@link IStruct} set with {@link #setData(IStruct, DataBlock)}.
+	 */
 	IStruct getStruct();
+	/**
+	 * @return The {@link DataBlock} set with {@link #setData(IStruct, DataBlock)}.
+	 */
 	DataBlock getDataBlock();
 	
 	/**
-	 * Default implementation of updateProp() iterates through all
-	 * DataFieldEditor s added by {@link #addFieldEditor(DataField, DataFieldEditor)}
-	 * and calls their updateProp method.<br/>
-	 * Implementors might override if no registered PropDataFieldEditors are used.
+	 * When this method is called a {@link DataBlockEditor} should reflect
+	 * the changes made in the UI to the {@link DataBlock} set with {@link #setData(IStruct, DataBlock)}.
 	 */
 	void updatePropertySet();
 
+	/**
+	 * Add a {@link DataBlockEditorChangedListener} to this editor.
+	 * It should be notified of any change in the editors UI.
+	 * 
+	 * @param listener The listener to add. 
+	 */
 	void addDataBlockEditorChangedListener(DataBlockEditorChangedListener listener);
+	/**
+	 * Remove the given {@link DataBlockEditorChangedListener}.
+	 * 
+	 * @param listener The listener to remove. 
+	 */
 	void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener);	
-
+	
 	void setValidationResultManager(IValidationResultManager validationResultManager);
 }
