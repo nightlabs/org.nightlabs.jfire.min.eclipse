@@ -6,9 +6,11 @@
   <project name="org.nightlabs.jfire.base.ui">
 	<plugin/>
     <ant path="org.nightlabs.jfire.base.ui" file="build-nightlabs.xml" target="deploy"/>
+<!-- This is now fixed in the NightlyBuild - it finds this class now.
     <requires/>
 		<requires path="/org.nightlabs.jfire.base.j2ee.osgi"/>
     <provides/>
+-->
     <javadoc path="org.nightlabs.jfire.base.ui/src"/>
   </project>
 
