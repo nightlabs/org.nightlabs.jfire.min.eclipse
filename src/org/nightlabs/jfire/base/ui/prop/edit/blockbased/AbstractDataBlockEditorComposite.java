@@ -46,6 +46,11 @@ import org.nightlabs.jfire.prop.exception.DataFieldNotFoundException;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
+ * Base class for implementations of {@link IDataBlockEditorComposite}.
+ * It has no abstract methods, but is still abstract as it is intended
+ * to be subclassed and configured/filled by creating {@link DataFieldEditor}s
+ * for 
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractDataBlockEditorComposite extends Composite implements IDataBlockEditorComposite {
@@ -54,13 +59,27 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	private IStruct struct;
 	private DataBlock dataBlock;
 	
+	/**
+	 * Create a new {@link AbstractBlockBasedEditor}. Use this super constructor from the subclass.
+	 * 
+	 * @param dataBlockEditor The {@link DataBlockEditor} this is created for.
+	 * @param parent The parent {@link Composite} to use.
+	 * @param style The style to apply to the new editor composite.
+	 */
 	protected AbstractDataBlockEditorComposite(DataBlockEditor dataBlockEditor, Composite parent, int style) {
 		super(parent,style);
 		this.dataBlockEditor = dataBlockEditor;
 		this.struct = dataBlockEditor.getStruct();
 		this.dataBlock = dataBlockEditor.getDataBlock();
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Implemented by iterating the {@link DataFieldEditor}s that were added by {@link #addFieldEditor(DataField, DataFieldEditor)}
+	 * and calling their {@link DataFieldEditor#setData(IStruct, DataField)} 
+	 * </p>
+	 */
 	@Override
 	public final void refresh(IStruct struct, DataBlock dataBlock) {
 		this.struct = struct;
@@ -73,9 +92,10 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 			}
 		}
 	}
-	
-	protected abstract void doRefresh();
 
+	/**
+	 * Added to all {@link DataFieldEditor}s added with {@link #addFieldEditor(DataField, DataFieldEditor)}.
+	 */
 	private DataFieldEditorChangedListener fieldEditorChangeListener = new DataFieldEditorChangedListener() {
 		@Override
 		public void dataFieldEditorChanged(DataFieldEditorChangedEvent changedEvent) {
@@ -93,34 +113,84 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	 */
 	private Map<String, DataFieldEditor<DataField>> fieldEditors = new HashMap<String, DataFieldEditor<DataField>>();
 
-
+	/**
+	 * Adds the given {@link DataFieldEditor} for the given {@link DataField} to the editors
+	 * known to this {@link Composite}. The {@link DataFieldEditor}s added here will be used
+	 * to implement the {@link #refresh(IStruct, DataBlock)} and {@link #updatePropertySet()}
+	 * methods of the {@link IDataBlockEditorComposite} interface.
+	 * 
+	 * @param dataField The {@link DataField} the given {@link DataFieldEditor} is for.
+	 * @param fieldEditor The {@link DataFieldEditor} to add.
+	 */
 	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor) {
 		addFieldEditor(dataField, fieldEditor, true);
 	}
 
+	/**
+	 * Adds the given {@link DataFieldEditor} for the given {@link DataField} to the editors
+	 * known to this {@link Composite}. The {@link DataFieldEditor}s added here will be used
+	 * to implement the {@link #refresh(IStruct, DataBlock)} and {@link #updatePropertySet()}
+	 * methods of the {@link IDataBlockEditorComposite} interface.
+	 * 
+	 * @param dataField The {@link DataField} the given {@link DataFieldEditor} is for.
+	 * @param fieldEditor The {@link DataFieldEditor} to add.
+	 * @param addListener Whether to add a {@link DataFieldEditorChangedListener} to the given
+	 *                    {@link DataFieldEditor} that will cause all changes in the {@link DataFieldEditor}
+	 *                    to be notified to listeners to this Composite.
+	 */
 	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor, boolean addListener) {
 		fieldEditors.put(dataField.getPropRelativePK(), fieldEditor);
-		fieldEditor.addDataFieldEditorChangedListener(fieldEditorChangeListener);
+		if (addListener)
+			fieldEditor.addDataFieldEditorChangedListener(fieldEditorChangeListener);
 	}
-
+	
+	/**
+	 * Get the {@link DataFieldEditor} that was registered with {@link #addFieldEditor(DataField, DataFieldEditor)}
+	 * to be editing the given {@link DataField}.
+	 * 
+	 * @param dataField The {@link DataField} to search the {@link DataFieldEditor} for.
+	 * @return The {@link DataFieldEditor} editing the given {@link DataField} or 
+	 *         <code>null</code> if none could be found.
+	 */
 	protected DataFieldEditor<DataField> getFieldEditor(DataField dataField) {
 		return fieldEditors.get(dataField.getPropRelativePK());
 	}
-
+	
+	/**
+	 * Checks whether a {@link DataFieldEditor} was registerd with {@link #addFieldEditor(DataField, DataFieldEditor)}
+	 * to be editing the given {@link DataField}.
+	 * 
+	 * @param dataField The {@link DataField} to search the {@link DataFieldEditor} for.
+	 * @return Whether a {@link DataFieldEditor} was registered for the given {@link DataField}.
+	 */
 	protected boolean hasFieldEditorFor(DataField dataField) {
 		return fieldEditors.containsKey(dataField.getPropRelativePK());
 	}
 
 	private ListenerList fieldEditorChangeListeners = new ListenerList();
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.IDataBlockEditorComposite#addDataFieldEditorChangeListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
+	 */
+	@Override
 	public void addDataFieldEditorChangeListener(DataFieldEditorChangedListener listener) {
 		fieldEditorChangeListeners.add(listener);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.IDataBlockEditorComposite#removeDataFieldEditorChangeListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
+	 */
+	@Override
 	public void removeDataFieldEditorChangeListener(DataFieldEditorChangedListener listener) {
 		fieldEditorChangeListeners.remove(listener);
 	}
 	
+	/**
+	 * Notifies the listener to this {@link Composite} of a change in the given {@link DataFieldEditor}.
+	 * @param dataFieldEditor The {@link DataFieldEditor} whose data changed.
+	 */
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
 		Object[] listeners = fieldEditorChangeListeners.getListeners();
 		DataFieldEditorChangedEvent evt = new DataFieldEditorChangedEvent(dataFieldEditor);
@@ -130,6 +200,7 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 		}
 	}
 
+	
 	public Map<String, Integer> getStructFieldDisplayOrder() {
 		// TODO re-enable this
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structFieldDisplayOrder();
@@ -173,8 +244,12 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#updatePropertySet()
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Implemented by iterating the {@link DataFieldEditor}s registered with {@link #addFieldEditor(DataField, DataFieldEditor)}
+	 * and calling their {@link DataFieldEditor#updatePropertySet()} method.
+	 * </p>
 	 */
 	public void updatePropertySet() {
 		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {

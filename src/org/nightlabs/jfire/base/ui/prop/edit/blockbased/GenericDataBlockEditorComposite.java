@@ -84,9 +84,4 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 			fieldEditor.refresh();
 		}
 	}
-
-	@Override
-	public void doRefresh() {
-		createFieldEditors();
-	}
 }

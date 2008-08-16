@@ -140,11 +140,6 @@ public class PersonalDataBlockEditor extends AbstractDataBlockEditor {
 			editor.setData(getStruct(), field);
 			editor.refresh();
 		}
-
-		@Override
-		public void doRefresh() {
-			createFieldEditors();
-		}
 	}
 	
 	protected PersonalDataBlockEditor(IStruct struct, DataBlock dataBlock) {
