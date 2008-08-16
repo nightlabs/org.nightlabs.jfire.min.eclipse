@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
@@ -51,6 +50,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentComposite;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentProvider;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
@@ -59,9 +59,17 @@ import org.nightlabs.jfire.prop.DisplayNamePart;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructBlock;
+import org.nightlabs.jfire.prop.exception.DataBlockGroupNotFoundException;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
+ * {@link StructBlock} based implementation of {@link PropertySetEditor}.
+ * It shows an {@link GroupedContentComposite} with the {@link StructBlock}-names as table entries
+ * and the appropriate {@link DataBlockEditor} from the {@link DataBlockEditorFactoryRegistry} for each StructBlock.
+ * <p>
+ * The {@link DataBlockEditor} is actually managed a generic {@link DataBlockGroupEditor} that is
+ * used as content for every entry (i.e. every StructBlock). 
+ * </p>
  * 
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
@@ -74,8 +82,9 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public static final String EDITORTYPE_BLOCK_BASED = "block-based"; //$NON-NLS-1$
 	
 	/**
-	 * One {@link ContentProvider} will be instantiated per {@link DataBlockEditor}
+	 * One {@link ContentProvider} will be instantiated per {@link StructBlock}
 	 * in the {@link IStruct} for the edited {@link PropertySet}.
+	 * 
 	 * It shows the {@link DataBlock}s name as title and creates a {@link DataBlockGroupEditor}
 	 * as content.
 	 */
@@ -102,6 +111,9 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultManager);
 			if (changeListenerProxy != null)
 				groupEditor.addDataBlockEditorChangedListener(changeListenerProxy);
+			if (this.blockGroup != null) {
+				refresh(this.blockGroup);
+			}
 			return groupEditor;
 		}
 		/**
@@ -181,6 +193,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	private Text displayNameText;
 	private Button autogenerateNameCheckbox;
 	private boolean showDisplayNameComposite;
+	
 	/**
 	 * Will be added to the {@link DataBlockEditor}s that have been created
 	 * and serves as proxy that notifies the listeners of this editor.
@@ -203,17 +216,16 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
 	 */
 	public BlockBasedEditor(boolean showDisplayNameComp) {
-		this(null, null, showDisplayNameComp);
+		this(null, showDisplayNameComp);
 	}
 
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
 	 * @param propSet The {@link PropertySet} to be managed.
-	 * @param propStruct The {@link IStruct} of the {@link PropertySet} to be managed.
 	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
 	 */
-	public BlockBasedEditor(PropertySet propSet, IStruct propStruct, boolean showDisplayNameComp) {
-		super(propSet, propStruct);
+	public BlockBasedEditor(PropertySet propSet, boolean showDisplayNameComp) {
+		super(propSet);
 		this.showDisplayNameComposite = showDisplayNameComp;
 	}
 	
@@ -235,17 +247,24 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 						propertySet.inflate(getStructure(new NullProgressMonitor()));
 
 					// get the ordered dataBlocks
-					for (Iterator<DataBlockGroup> it = BlockBasedEditor.this.getOrderedDataBlockGroupsIterator(); it.hasNext(); ) {
-						DataBlockGroup blockGroup = it.next();
+					for (StructBlock structBlock : getOrderedStructBlocks()) {
+						DataBlockGroup blockGroup = null;
+						try {
+							blockGroup = propertySet.getDataBlockGroup(structBlock.getIDObj());
+						} catch (DataBlockGroupNotFoundException e) {
+							throw new IllegalStateException("Could not find DataBlockGroup for " + structBlock.getIDObj() + " in PropertySet although inflated just before.");
+						}
 						if (shouldDisplayStructBlock(blockGroup)) {
-							if (!groupContentProvider.containsKey(blockGroup.getStructBlockKey())) {
-								ContentProvider contentProvider = new ContentProvider(blockGroup, propertySet.getStructure());
+							ContentProvider contentProvider = groupContentProvider.get(blockGroup.getStructBlockKey());
+							if (contentProvider == null) {
+								// If we have to create the ContentProvider it will do a refresh when constructed.
+								contentProvider = new ContentProvider(blockGroup, propertySet.getStructure());
 								groupContentProvider.put(blockGroup.getStructBlockKey(), contentProvider);
 								groupedContentComposite.addGroupedContentProvider(contentProvider);
-							}
-							else {
-								ContentProvider contentProvider = groupContentProvider.get(blockGroup.getStructBlockKey());
-								contentProvider.refresh(blockGroup);
+							} else {
+								// if the provider for this blockGroup was already
+								// created we need to refresh its data.
+								contentProvider.refresh(blockGroup);								
 							}
 						} // if (shouldDisplayStructBlock(blockGroup)) {
 					}

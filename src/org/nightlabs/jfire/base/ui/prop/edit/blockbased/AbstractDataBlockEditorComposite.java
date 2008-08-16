@@ -26,10 +26,7 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +40,20 @@ import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.exception.DataFieldNotFoundException;
+import org.nightlabs.jfire.prop.id.StructFieldID;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * Base class for implementations of {@link IDataBlockEditorComposite}.
  * It has no abstract methods, but is still abstract as it is intended
  * to be subclassed and configured/filled by creating {@link DataFieldEditor}s
- * for 
+ * for the {@link StructField}s of the edited block.
+ * <p>
+ * Implementations can rely on the data already being set for the {@link DataBlockEditor}
+ * that the Composite is created with, so it is usually a good practice to create
+ * the {@link DataFieldEditor}s in the constructor. All {@link StructField}s of the 
+ * edited {@link DataBlock} can be obtained using {@link #getOrderedStructFields()}.
+ * </p>
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -61,6 +65,10 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	
 	/**
 	 * Create a new {@link AbstractBlockBasedEditor}. Use this super constructor from the subclass.
+	 * <p>
+	 * Note that this class relies on the {@link DataBlock} already has been set to the given
+	 * {@link DataBlockEditor}.
+	 * </p>
 	 * 
 	 * @param dataBlockEditor The {@link DataBlockEditor} this is created for.
 	 * @param parent The parent {@link Composite} to use.
@@ -84,9 +92,10 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	public final void refresh(IStruct struct, DataBlock dataBlock) {
 		this.struct = struct;
 		this.dataBlock = dataBlock;
-		for (DataFieldEditor<DataField> fieldEditor : fieldEditors.values()) {
+		for (DataFieldEditor<DataField> fieldEditor : getFieldEditors().values()) {
 			try {
 				fieldEditor.setData(struct, dataBlock.getDataField(fieldEditor.getStructField().getStructFieldIDObj()));
+				fieldEditor.refresh();
 			} catch (DataFieldNotFoundException e) {
 				throw new RuntimeException("Could not find correct DataField: ", e);
 			}
@@ -108,22 +117,22 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	};
 	
 	/**
-	 * key: String DataField.getPropRelativePK<br/>
+	 * key: StructField the StructField the {@link DataFieldEditor} is for.
 	 * value: DataFieldEditor fieldEditor
 	 */
-	private Map<String, DataFieldEditor<DataField>> fieldEditors = new HashMap<String, DataFieldEditor<DataField>>();
+	private Map<StructFieldID, DataFieldEditor<DataField>> fieldEditors = new HashMap<StructFieldID, DataFieldEditor<DataField>>();
 
 	/**
-	 * Adds the given {@link DataFieldEditor} for the given {@link DataField} to the editors
+	 * Adds the given {@link DataFieldEditor} for the given {@link StructField} to the editors
 	 * known to this {@link Composite}. The {@link DataFieldEditor}s added here will be used
 	 * to implement the {@link #refresh(IStruct, DataBlock)} and {@link #updatePropertySet()}
 	 * methods of the {@link IDataBlockEditorComposite} interface.
 	 * 
-	 * @param dataField The {@link DataField} the given {@link DataFieldEditor} is for.
+	 * @param structFieldID The id of the {@link StructField} the given {@link DataFieldEditor} is for.
 	 * @param fieldEditor The {@link DataFieldEditor} to add.
 	 */
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor) {
-		addFieldEditor(dataField, fieldEditor, true);
+	protected void addFieldEditor(StructFieldID structFieldID, DataFieldEditor<DataField> fieldEditor) {
+		addFieldEditor(structFieldID, fieldEditor, true);
 	}
 
 	/**
@@ -132,16 +141,29 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	 * to implement the {@link #refresh(IStruct, DataBlock)} and {@link #updatePropertySet()}
 	 * methods of the {@link IDataBlockEditorComposite} interface.
 	 * 
-	 * @param dataField The {@link DataField} the given {@link DataFieldEditor} is for.
+	 * @param structFieldID The id of the {@link StructField} the given {@link DataFieldEditor} is for.
 	 * @param fieldEditor The {@link DataFieldEditor} to add.
 	 * @param addListener Whether to add a {@link DataFieldEditorChangedListener} to the given
 	 *                    {@link DataFieldEditor} that will cause all changes in the {@link DataFieldEditor}
 	 *                    to be notified to listeners to this Composite.
 	 */
-	protected void addFieldEditor(DataField dataField, DataFieldEditor<DataField> fieldEditor, boolean addListener) {
-		fieldEditors.put(dataField.getPropRelativePK(), fieldEditor);
+	protected void addFieldEditor(StructFieldID structFieldID, DataFieldEditor<DataField> fieldEditor, boolean addListener) {
+		fieldEditors.put(structFieldID, fieldEditor);
 		if (addListener)
 			fieldEditor.addDataFieldEditorChangedListener(fieldEditorChangeListener);
+	}
+
+	/**
+	 * Returns all {@link DataFieldEditor}s registered to this Composite.
+	 * If none were registered yet they will be created using {@link #createFieldEditors()}.
+	 * 
+	 * @return All {@link DataFieldEditor}s registered to this Composite.
+	 */
+	protected Map<StructFieldID, DataFieldEditor<DataField>> getFieldEditors() {
+		if (fieldEditors.size() == 0) {
+//			createFieldEditors();
+		}
+		return fieldEditors;
 	}
 	
 	/**
@@ -153,18 +175,18 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	 *         <code>null</code> if none could be found.
 	 */
 	protected DataFieldEditor<DataField> getFieldEditor(DataField dataField) {
-		return fieldEditors.get(dataField.getPropRelativePK());
+		return getFieldEditors().get(dataField.getPropRelativePK());
 	}
 	
 	/**
 	 * Checks whether a {@link DataFieldEditor} was registerd with {@link #addFieldEditor(DataField, DataFieldEditor)}
-	 * to be editing the given {@link DataField}.
+	 * to be editing data for the the given {@link StructField}.
 	 * 
-	 * @param dataField The {@link DataField} to search the {@link DataFieldEditor} for.
-	 * @return Whether a {@link DataFieldEditor} was registered for the given {@link DataField}.
+	 * @param structFieldID The id of the {@link StructField} to search the {@link DataFieldEditor} for.
+	 * @return Whether a {@link DataFieldEditor} was registered for the given {@link StrcutField}.
 	 */
-	protected boolean hasFieldEditorFor(DataField dataField) {
-		return fieldEditors.containsKey(dataField.getPropRelativePK());
+	protected boolean hasFieldEditorFor(StructFieldID structFieldID) {
+		return getFieldEditors().containsKey(structFieldID);
 	}
 
 	private ListenerList fieldEditorChangeListeners = new ListenerList();
@@ -201,34 +223,11 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	}
 
 	
-	public Map<String, Integer> getStructFieldDisplayOrder() {
+	public List<StructField<? extends DataField>> getOrderedStructFields() {
 		// TODO re-enable this
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structFieldDisplayOrder();
 		List<StructField<? extends DataField>> fields = getStruct().getStructBlock(getDataBlock().getDataBlockGroup()).getStructFields();
-		Map<String, Integer> fieldOrdering = new HashMap<String, Integer>(fields.size());
-		int index = 0;
-		for (StructField<? extends DataField> field : fields) {
-			fieldOrdering.put(field.getPrimaryKey(), index);
-			index++;
-		}
-
-		return fieldOrdering;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Iterator<DataField> getOrderedPropDataFieldsIterator() {
-		List<DataField> result = new LinkedList<DataField>();
-		Map<String, Integer> structFieldOrder = getStructFieldDisplayOrder();
-		for (Iterator<DataField> it = getDataBlock().getDataFields().iterator(); it.hasNext(); ) {
-			DataField dataField = it.next();
-			if (structFieldOrder.containsKey(dataField.getStructFieldPK())) {
-				Integer index = structFieldOrder.get(dataField.getStructFieldPK());
-				dataField.setPriority(index.intValue());
-			}
-			result.add(dataField);
-		}
-		Collections.sort(result);
-		return result.iterator();
+		return fields;
 	}
 
 	protected IStruct getStruct() {
@@ -252,7 +251,7 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	 * </p>
 	 */
 	public void updatePropertySet() {
-		for (DataFieldEditor<? extends DataField> editor : fieldEditors.values()) {
+		for (DataFieldEditor<? extends DataField> editor : getFieldEditors().values()) {
 			editor.updatePropertySet();
 		}
 	}

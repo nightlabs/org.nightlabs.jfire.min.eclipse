@@ -3,7 +3,7 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Iterator;
+import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.layout.GridData;
@@ -14,6 +14,9 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorLayoutData;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
 import org.nightlabs.jfire.prop.DataField;
+import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.exception.DataFieldNotFoundException;
+import org.nightlabs.jfire.prop.id.StructFieldID;
 
 public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComposite {
 
@@ -49,25 +52,29 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.IDataBlockEditorComposite#createFieldEditors()
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditorComposite#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		for (Iterator<DataField> it = getOrderedPropDataFieldsIterator(); it.hasNext(); ) {
-			DataField dataField = it.next();
-			if (!hasFieldEditorFor(dataField)) {
+		for (StructField<?> structField : getOrderedStructFields()) {
+			if (!hasFieldEditorFor(structField.getStructFieldIDObj())) {
 				DataFieldEditor<DataField> fieldEditor;
 				try {
 					fieldEditor = DataFieldEditorFactoryRegistry.sharedInstance().getNewEditorInstance(
 							getStruct(), ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE,
-							null, dataField
+							null, getDataBlock().getDataField((StructFieldID) JDOHelper.getObjectId(structField))
 					);
 				} catch (DataFieldEditorNotFoundException e) {
 					// could not find editor for class log the error
-					logger.error("Editor not found for one field, continuing",e); //$NON-NLS-1$
+					logger.error("Editor not found for one field, continuing", e); //$NON-NLS-1$
+					continue;
+				} catch (DataFieldNotFoundException e) {
+					// could not find data for the given struct field
+					logger.error("Could not find DataField for StructField " + JDOHelper.getObjectId(structField), e); //$NON-NLS-1$
 					continue;
 				}
-				addFieldEditor(dataField, fieldEditor,true);
+				addFieldEditor(structField.getStructFieldIDObj(), fieldEditor,true);
 				// add the field editor
 				fieldEditor.createControl(this);
 				DataFieldEditorLayoutData layoutData = fieldEditor.getLayoutData();
@@ -77,11 +84,6 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 					fieldEditor.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				}
 			}
-
-			DataFieldEditor fieldEditor = getFieldEditor(dataField);
-			if (getStruct() != null)
-				fieldEditor.setData(getStruct(), dataField);
-			fieldEditor.refresh();
 		}
 	}
 }

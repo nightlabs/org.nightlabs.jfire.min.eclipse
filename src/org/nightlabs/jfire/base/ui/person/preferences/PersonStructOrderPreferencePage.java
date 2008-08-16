@@ -48,7 +48,6 @@ extends LSDPreferencePage
 	
 	public PersonStructOrderPreferencePage() {
 		super();
-		System.out.println("Constructor of PersonStructOrderPreferencePage called"); //$NON-NLS-1$
 	}
 	
   @Override

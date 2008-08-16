@@ -2,7 +2,6 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -26,6 +25,10 @@ public interface DataBlockEditor {
 
 	/**
 	 * Create the {@link Control} of this {@link DataBlockEditor}.
+	 * <p>
+	 * Implementations can rely on that {@link #setData(IStruct, DataBlock)}
+	 * was called at least once before this method gets called.
+	 * </p>
 	 * 
 	 * @param parent The parent {@link Composite} for the new {@link Control}.
 	 * @return A new {@link Control} with the UI of this {@link DataBlockEditor}.
@@ -39,9 +42,14 @@ public interface DataBlockEditor {
 	
 	/**
 	 * Set the {@link DataBlock} for this editor.
-	 * Note, that if the UI of this editor was already created,
-	 * this method should reflect the new data in the UI with 
-	 * this call, too.
+	 * <p>
+	 * Note, that if the UI of this editor was already created with {@link #createControl(Composite)},
+	 * this method should reflect the new data in the UI immediately.
+	 * </p>
+	 * <p>
+	 * Also not that any framework using implementations of this interface should ensure 
+	 * that this method was called once before {@link #createControl(Composite)} gets called.
+	 * </p>
 	 *  
 	 * @param struct The {@link IStruct} the {@link DataBlock} was build from. 
 	 * @param block The {@link DataBlock} to edit.

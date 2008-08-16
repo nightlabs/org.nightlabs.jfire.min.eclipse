@@ -26,19 +26,14 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.Struct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -46,9 +41,9 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * Abstract base for block based {@link PropertySetEditor}s.
+ * Base class for the block based implementation of {@link PropertySetEditor}s.
  * It manages (holds) the {@link PropertySet} to edit and the StructBlocks
- * that should be visible when editing the propertySet.
+ * that should be visible when editing the {@link PropertySet}.
  *
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractDataBlockEditor
  * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry
@@ -82,23 +77,25 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * Create a new {@link AbstractBlockBasedEditor}.
 	 */
 	public AbstractBlockBasedEditor() {
-		this (null, null);
+		this(null);
 	}
 
 	/**
 	 * Create a new {@link AbstractBlockBasedEditor} for the given
-	 * propertySet.
+	 * {@link PropertySet}. Note that a <code>null</code> value can 
+	 * be passed here and that the {@link PropertySet} can be reset
+	 * by calling {@link #setPropertySet(PropertySet)}
 	 *
-	 * @param prop
-	 * @param propStruct
+	 * @param propertySet The propertySet to edit.
 	 */
-	public AbstractBlockBasedEditor(PropertySet prop, IStruct propStruct) {
-		this.propertySet = prop;
-		if (propStruct != null) {
+	public AbstractBlockBasedEditor(PropertySet propertySet) {
+		this.propertySet = propertySet;
+		if (this.propertySet != null && this.propertySet.isInflated()) {
+			IStruct struct = this.propertySet.getStructure();
 			String scope = StructLocal.DEFAULT_SCOPE;
-			if (propStruct instanceof StructLocal)
-				scope = ((StructLocal)propStruct).getStructLocalScope();
-			structBlockRegistry = new EditorStructBlockRegistry(propStruct.getLinkClass(), propStruct.getStructScope(), scope);
+			if (struct instanceof StructLocal)
+				scope = ((StructLocal) struct).getStructLocalScope();
+			structBlockRegistry = new EditorStructBlockRegistry(struct.getLinkClass(), struct.getStructScope(), scope);
 		}
 	}
 
@@ -106,8 +103,9 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * Sets the current propertySet of this editor.
 	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
 	 * is called.
-	 * @param refresh
-	 * @param propertySet
+	 * 
+	 * @param propertySet The {@link PropertySet} to edit.
+	 * @param refresh Whether to refresh the editor.
 	 */
 	public void setPropertySet(PropertySet propSet, boolean refresh) {
 		this.propertySet = propSet;
@@ -117,22 +115,29 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 
 	/**
 	 * Will only set the propertySet, no changes to the UI will be made.
-	 * @param propertySet
+	 * 
+	 * @param propertySet The {@link PropertySet} to edit.
 	 */
+	@Override
 	public void setPropertySet(PropertySet propSet) {
 		setPropertySet(propSet, false);
 	}
 	/**
-	 * Returns the propertySet.
-	 * @return
+	 * Returns the {@link PropertySet} associated to this editor.
+	 * @return The {@link PropertySet} associated to this editor.
 	 */
 	public PropertySet getPropertySet() {
 		return propertySet;
 	}
 
 	/**
-	 * Returns a version of the {@link Struct}.
-	 * @return
+	 * Returns the {@link IStruct} the current {@link PropertySet}
+	 * was built with. If the current {@link PropertySet} was
+	 * already inflated, its structure will be returned otherwise
+	 * the {@link StructLocal} the current {@link PropertySet} references
+	 * will be queried using the {@link StructLocalDAO}.
+	 * 
+	 * @return The {@link IStruct} the current {@link PropertySet} was built with.
 	 */
 	protected IStruct getStructure(ProgressMonitor monitor) {
 		if (propertySet.isInflated())
@@ -148,32 +153,38 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 
 
 	/**
-	 * Refreshes the UI-Representation of the given Property.
-	 *
-	 * @param changeListener
+	 * Refreshes the UI-Representation of the given {@link PropertySet}.
 	 */
 	public abstract void refreshControl();
 	
 
 	/**
-	 * Sets the editor domain for this editor and additionally
-	 * registeres structBlocks to display in {@link PropE}
-	 * @param editorScope
-	 * @param editorName
-	 * @param propStructBlockKeys
+	 * Sets the editor domain for this editor and registers the structBlocks that should be 
+	 * displayed in this editor according to the given registry.
+	 * 
+	 * @param editorName The name of the editor used to find StructBlockIDs int the given registry.
+	 * @param structBlockRegistry The registry to find the StructBlockIDs of the blocks that should be displayed.
 	 */
 	public void setEditorDomain(String editorName, EditorStructBlockRegistry structBlockRegistry) {
 		this.editorName = editorName;
 		this.structBlockRegistry = structBlockRegistry;
+		buildDomainDataBlockGroups();
 	}
 
-
+	/**
+	 * Check whether the given {@link DataBlockGroup} should be displayed according
+	 * to the current editor domain or the {@link StructBlockID}s set with {@link #setEditorStructBlockList(List)}.
+	 * 
+	 * @param blockGroup The {@link DataBlockGroup} to check.
+	 * @return Whether the given {@link DataBlockGroup} should be displayed.
+	 */
 	protected boolean shouldDisplayStructBlock(DataBlockGroup blockGroup) {
 		// default is all PropStructBlocks
 		if (domainPropStructBlocks == null)
 			return true;
 		else
-			return domainPropStructBlocks.contains(StructBlockID.create(blockGroup.getStructBlockOrganisationID(),blockGroup.getStructBlockID()));
+			return domainPropStructBlocks.contains(
+					StructBlockID.create(blockGroup.getStructBlockOrganisationID(), blockGroup.getStructBlockID()));
 	}
 
 	protected void buildDomainDataBlockGroups() {
@@ -191,7 +202,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * After this was set to a non null value this editor
 	 * will not care about registrations in {@link EditorStructBlockRegistry}.
 	 *
-	 * @param structBlockList
+	 * @param structBlockList The list of {@link StructBlockID}s of the blocks that should be displayed.
 	 */
 	public void setEditorStructBlockList(List<StructBlockID> structBlockIDs) {
 		if (structBlockIDs != null && structBlockIDs.size() > 0)
@@ -204,47 +215,21 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		}
 	}
 
-
-	protected Iterator<DataBlockGroup> getDataBlockGroupsIterator() {
-		buildDomainDataBlockGroups();
-		return propertySet.getDataBlockGroups().iterator();
-	}
-
-	public Map<String, Integer> getStructBlockDisplayOrder(IStruct struct) {
+	/**
+	 * Returns all {@link StructBlock}s the {@link IStruct} of the current {@link PropertySet}
+	 * as ordered list. Use this method to build and {@link #shouldDisplayStructBlock(DataBlockGroup)}
+	 * to check for the struct blocks of the current {@link PropertySet}.
+	 *  
+	 * @return A list of all {@link StructBlock}s for the current {@link PropertySet}.
+	 */
+	protected List<StructBlock> getOrderedStructBlocks() {
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structBlockDisplayOrder();
-		List<StructBlock> structBlocks = struct.getStructBlocks();
-		Map<String, Integer> result = new HashMap<String, Integer>();
-		for (int i = 0; i < structBlocks.size(); i++) {
-			result.put(structBlocks.get(i).getPrimaryKey(), i);
-		}
-		return result;
-	}
-
-	protected Iterator<DataBlockGroup> getOrderedDataBlockGroupsIterator() {
 		buildDomainDataBlockGroups();
-
+		if (propertySet == null)
+			throw new IllegalStateException("Do not call this method prior to setPropertySet()");
+		if (!propertySet.isInflated())
+			throw new IllegalStateException("The current PropertySet was not inflated yet, make sure it is inflated before you call this method.!");
 		IStruct struct = propertySet.getStructure();
-		if (struct == null)
-			throw new IllegalStateException("The PropertySet was not exploded yet"); //$NON-NLS-1$
-		int allStructBlockCount = struct.getStructBlocks().size();
-		List<DataBlockGroup> result = new LinkedList<DataBlockGroup>();
-		Map<String, Integer> structBlockOrder = getStructBlockDisplayOrder(struct);
-
-		int unmentionedCount = 0;
-		// all datablocks of this propertySet
-		for (Iterator<DataBlockGroup> it = propertySet.getDataBlockGroups().iterator(); it.hasNext(); ) {
-			DataBlockGroup blockGroup = it.next();
-			if (structBlockOrder.containsKey(blockGroup.getStructBlockKey())) {
-				// block mentioned in structBlockOrder
-				Integer index = structBlockOrder.get(blockGroup.getStructBlockKey());
-				blockGroup.setPriority(index.intValue());
-			}
-			else {
-				blockGroup.setPriority(allStructBlockCount + (unmentionedCount++));
-			}
-			result.add(blockGroup);
-		}
-		Collections.sort(result);
-		return result.iterator();
+		return new ArrayList<StructBlock>(struct.getStructBlocks());
 	}
 }

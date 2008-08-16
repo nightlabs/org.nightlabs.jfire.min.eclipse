@@ -56,14 +56,18 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	private org.eclipse.swt.events.ModifyListener swtModifyListener = new org.eclipse.swt.events.ModifyListener() {
 		@Override
 		public void modifyText(ModifyEvent e) {
-			notifyChangeListeners();
+			if (!refreshing) {
+				notifyChangeListeners();
+			}
 		}
 	};
 	
 	private ModifyListener modifyListener = new ModifyListener() {
 		@Override
 		public void modifyData() {
-			notifyChangeListeners();
+			if (!refreshing) {
+				notifyChangeListeners();
+			}
 		}
 	};
 
