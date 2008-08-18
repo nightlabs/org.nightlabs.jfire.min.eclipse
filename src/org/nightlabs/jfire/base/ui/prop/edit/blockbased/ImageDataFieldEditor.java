@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.InflaterInputStream;
 
-import javax.activation.MimetypesFileTypeMap;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -37,6 +35,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.datafield.IContentDataField;
 import org.nightlabs.jfire.prop.datafield.ImageDataField;
 import org.nightlabs.jfire.prop.structfield.ImageStructField;
 import org.nightlabs.language.LanguageCf;
@@ -81,11 +80,11 @@ extends AbstractDataFieldEditor<ImageDataField>
 			return new ImageDataFieldEditor(struct, data);
 		}
 	}
-	
+
 	private static Logger LOGGER = Logger.getLogger(ImageDataFieldEditor.class);
-	
+
 	private LanguageCf language;
-	
+
 	private Text filenameTextbox;
 	private Button openFileChooserButton;
 	private Button clearButton;
@@ -93,10 +92,10 @@ extends AbstractDataFieldEditor<ImageDataField>
 	private Label imageLabel;
 	private Label sizeLabel;
 	private String fileDialogFilterPath;
-	
+
 	private static final int maxThumbnailWidth = 200;
 	private static final int maxThumbnailHeight = 200;
-	
+
 	public ImageDataFieldEditor(IStruct struct, ImageDataField data) {
 		super(struct, data);
 		language = new LanguageCf(NLLocale.getDefault().getLanguage());
@@ -109,7 +108,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 	protected void setDataField(ImageDataField dataField) {
 		super.setDataField(dataField);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -117,13 +116,13 @@ extends AbstractDataFieldEditor<ImageDataField>
 	public Control createControl(final Composite parent) {
 		group = new Group(parent, SWT.NONE);
 		group.setLayout(new GridLayout(4, false));
-		
+
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA, group);
-				
+
 		GridData gd = new GridData();
 		gd.horizontalSpan = 4;
 		gd.horizontalAlignment = SWT.LEFT;
-		
+
 		filenameTextbox = new Text(group, XComposite.getBorderStyle(parent));
 		filenameTextbox.setEditable(false);
 		filenameTextbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -138,7 +137,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 				fileChooserButtonPressed();
 			}
 		});
-		
+
 		clearButton = new Button(group, SWT.PUSH);
 		clearButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.clear.text")); //$NON-NLS-1$
 		clearButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.clear.tooltip")); //$NON-NLS-1$
@@ -150,9 +149,9 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 		});
 		clearButton.setEnabled(false);
-		
+
 		sizeLabel = new Label(group, SWT.NONE);
-		
+
 		imageLabel = new Label(group, SWT.NONE);
 		imageLabel.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
@@ -167,10 +166,10 @@ extends AbstractDataFieldEditor<ImageDataField>
 //		gd.verticalIndent = 10;
 		gd.heightHint = 0;
 		imageLabel.setLayoutData(gd);
-		
+
 		return group;
 	}
-	
+
 	private void displayImage(ImageData id) {
 		if (imageLabel.getImage() != null)
 			imageLabel.getImage().dispose();
@@ -182,7 +181,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			double factor = 1.0;
 			if (width > maxThumbnailWidth || height > maxThumbnailHeight)
 				factor *= height > width ? 1.0*maxThumbnailHeight/height : 1.0*maxThumbnailHeight/width;
-				
+
 			id = id.scaledTo((int) (factor*width), (int) (factor*height));
 			Image image = new Image(imageLabel.getDisplay(), id);
 			imageLabel.setImage(image);
@@ -193,7 +192,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			imageLabelGD.heightHint = 0;
 			clearButton.setEnabled(false);
 		}
-		
+
 		// re-layout the top level container
 		Composite top = imageLabel.getParent();
 		while (top.getParent() != null)
@@ -207,14 +206,22 @@ extends AbstractDataFieldEditor<ImageDataField>
 	@Override
 	public void doRefresh() {
 		ImageStructField imageStructField = (ImageStructField) getStructField();
-		
+
 		group.setText(imageStructField.getName().getText(language.getLanguageID()));
-		
+
 		if (!getDataField().isEmpty()) {
 			filenameTextbox.setText(getDataField().getFileName());
 			ImageData id = null;
-			InputStream in = new InflaterInputStream(new ByteArrayInputStream(getDataField().getContent()));
+			ByteArrayInputStream inPlain = new ByteArrayInputStream(getDataField().getContent());
+			InputStream in;
+			if(getDataField().getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_PLAIN))
+				in = inPlain;
+			else if(getDataField().getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_DEFLATE))
+				in = new InflaterInputStream(inPlain);
+			else
+				throw new RuntimeException("Unsupported content encoding: "+getDataField().getContentEncoding());
 			try {
+				// TODO: try loading image with Java Image API if loading with SWT fails as in org.nightlabs.eclipse.ui.fckeditor.file.image.ImageUtil - marc
 				id = new ImageData(in);
 			} finally {
 				if (in != null)
@@ -237,14 +244,14 @@ extends AbstractDataFieldEditor<ImageDataField>
 	/**
 	 * Open the image file browse dialog.
 	 * @param parent The parent shell
-	 * @return the selected image file name or <code>null</code> if 
+	 * @return the selected image file name or <code>null</code> if
 	 * 		no image file was selected
 	 */
 	private String openImageFileDialog(Shell parent)
 	{
 		ImageStructField imageStructField = (ImageStructField) getStructField();
 		List<String> extList = imageStructField.getImageFormats();
-		
+
 		String[] extensions = new String[extList.size()+1];
 		String[] names = new String[extList.size()+1];
 		names[0] = Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.label.imageFiles"); //$NON-NLS-1$
@@ -259,7 +266,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			names[i] = String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.images"), ext.toUpperCase()); //$NON-NLS-1$
 			i++;
 		}
-		
+
 		FileDialog fileDialog = new FileDialog(parent);
 		fileDialog.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.fileDialog.text")); //$NON-NLS-1$
 		fileDialog.setFilterNames(names);
@@ -270,7 +277,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			fileDialogFilterPath = filename;
 		return filename;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
 	 */
@@ -292,7 +299,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 		if (path == null || path.isEmpty()) {
 			dataField.clear();
 		} else {
-			
+
 			//FIXME: get content type somehow!
 			final String contentType;
 			final String lowerPath = path.toLowerCase();
@@ -316,7 +323,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 		}
 	}
-	
+
 	public LanguageCf getLanguage() {
 		return language;
 	}
@@ -332,7 +339,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			ImageStructField imageStructField = (ImageStructField) getStructField();
 			if (!imageStructField.validateSize(file.length()/1024)) {
 				MessageDialog.openError(
-						openFileChooserButton.getShell(), 
+						openFileChooserButton.getShell(),
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.text"), //$NON-NLS-1$
 						String.format(
 								Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.message"), //$NON-NLS-1$
@@ -340,7 +347,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 				);
 				return;
 			}
-			
+
 			try {
 				ImageData data = new ImageData(filename);
 				filenameTextbox.setText(filename);
@@ -360,7 +367,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 		}
 	}
-	
+
 	/**
 	 * Called when the clear button was pressed.
 	 */
