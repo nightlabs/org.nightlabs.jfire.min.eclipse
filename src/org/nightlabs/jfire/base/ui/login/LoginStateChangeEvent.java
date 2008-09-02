@@ -4,7 +4,6 @@ import java.util.EventObject;
 
 import org.eclipse.jface.action.IAction;
 import org.nightlabs.base.ui.login.LoginState;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 
 /**
