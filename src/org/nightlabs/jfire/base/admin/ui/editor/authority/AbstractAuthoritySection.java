@@ -44,6 +44,8 @@ extends ToolBarSectionPart
 {
 	private I18nTextEditor name;
 	private I18nTextEditor description;
+	private Label nameLabel;
+	private Label descriptionLabel;
 
 	public AbstractAuthoritySection(IFormPage page, Composite parent) {
 		super(page, parent, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.title.authority")); //$NON-NLS-1$
@@ -52,13 +54,13 @@ extends ToolBarSectionPart
 		Composite wrapper = new XComposite(getContainer(), SWT.NONE);
 		wrapper.setLayout(new GridLayout(2, false));
 
-		Label nameLabel = new Label(wrapper, SWT.NONE);
+		nameLabel = new Label(wrapper, SWT.NONE);
 		nameLabel.setText("Name");
 		name = new I18nTextEditor(wrapper);
 		name.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		name.addModifyListener(markDirtyModifyListener);
 
-		Label descriptionLabel = new Label(wrapper, SWT.NONE);
+		descriptionLabel = new Label(wrapper, SWT.NONE);
 		descriptionLabel.setText("Description");	
 		GridData gd = new GridData();
 		gd.verticalAlignment = GridData.BEGINNING;
@@ -206,5 +208,7 @@ extends ToolBarSectionPart
 	private void setEnabled(boolean enabled) {
 		name.setEnabled(enabled);
 		description.setEnabled(enabled);
+		nameLabel.setEnabled(enabled);
+		descriptionLabel.setEnabled(enabled);
 	}
 }
