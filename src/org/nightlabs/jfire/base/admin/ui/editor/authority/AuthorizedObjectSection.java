@@ -40,7 +40,7 @@ implements ISelectionProvider
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorizedObjectSection.title.authorizedObjects")); //$NON-NLS-1$
 
 		authorizedObjectTable = new AuthorizedObjectTableViewer(getContainer(), this,
-				AbstractTableComposite.DEFAULT_STYLE_SINGLE);
+				AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 		authorizedObjectTable.setInput(authorizedObjects);
 		authorizedObjectTable.getTable().addDisposeListener(new DisposeListener() {
 			@Override
