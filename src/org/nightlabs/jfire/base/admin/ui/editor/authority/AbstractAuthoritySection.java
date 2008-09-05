@@ -3,14 +3,18 @@ package org.nightlabs.jfire.base.admin.ui.editor.authority;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.job.Job;
@@ -45,9 +49,22 @@ extends ToolBarSectionPart
 		super(page, parent, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.title.authority")); //$NON-NLS-1$
 		((GridData)getSection().getLayoutData()).grabExcessVerticalSpace = false;
 
-		name = new I18nTextEditor(getContainer());
+		Composite wrapper = new XComposite(getContainer(), SWT.NONE);
+		wrapper.setLayout(new GridLayout(2, false));
+
+		Label nameLabel = new Label(wrapper, SWT.NONE);
+		nameLabel.setText("Name");
+		name = new I18nTextEditor(wrapper);
+		name.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		name.addModifyListener(markDirtyModifyListener);
-		description = new I18nTextEditorMultiLine(getContainer(), name.getLanguageChooser());
+
+		Label descriptionLabel = new Label(wrapper, SWT.NONE);
+		descriptionLabel.setText("Description");	
+		GridData gd = new GridData();
+		gd.verticalAlignment = GridData.BEGINNING;
+		descriptionLabel.setLayoutData(gd);
+		description = new I18nTextEditorMultiLine(wrapper, name.getLanguageChooser());
+		description.setLayoutData(new GridData(GridData.FILL_BOTH));
 		description.addModifyListener(markDirtyModifyListener);
 
 		assignAuthorityAction.setEnabled(false);
