@@ -569,12 +569,17 @@ public class AuthorityPageControllerHelper
 				throw new IllegalStateException("this.securedObject == null"); //$NON-NLS-1$
 			if (this.authorityType == null)
 				throw new IllegalStateException("this.authorityType == null"); //$NON-NLS-1$
-			if (this.authority == null)
-				throw new IllegalStateException("this.authority == null"); //$NON-NLS-1$
+//			if (this.authority == null) // NULL IS LEGAL WHEN NO AUTHORITY IS ASSIGNED (NONE IS ALLOWED)!!!!!!! Marco.
+//				throw new IllegalStateException("this.authority == null"); //$NON-NLS-1$
 
 // TODO DataNucleus WORKAROUND: neither Authority nor AuthorityName get dirty when the names map is modified. Temporarily storing in any case.
 // TODO we need an NLJDOHelper.isDirtyRecursively(...) method that checks a whole object graph.
 //			if (authorityID == null || JDOHelper.isDirty(authority)) {
+
+			if (this.authority == null) {
+				authorityID = null;
+			}
+			else {
 				Authority a = AuthorityDAO.sharedInstance().storeAuthority(
 						authority,
 						true,
@@ -588,6 +593,7 @@ public class AuthorityPageControllerHelper
 
 				authorityID = aid;
 				authority = a;
+			}
 
 				if (assignSecuringAuthorityRequested && assignSecuringAuthorityID == null && authorityID != null)
 					assignSecuringAuthorityID = authorityID;
