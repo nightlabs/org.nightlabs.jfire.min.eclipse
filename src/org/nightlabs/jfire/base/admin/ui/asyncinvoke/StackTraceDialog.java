@@ -39,7 +39,10 @@ public class StackTraceDialog
 		Composite area = (Composite) super.createDialogArea(parent);
 		Text stackTrace = new Text(area, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
 		stackTrace.setLayoutData(new GridData(GridData.FILL_BOTH));
-		stackTrace.setText(asyncInvokeProblem.getLastError().getErrorStackTrace());
+		if (asyncInvokeProblem.getLastError() == null)
+			stackTrace.setText("*** asyncInvokeEnvelopeID=" + asyncInvokeProblem.getAsyncInvokeEnvelopeID() + " ***\n\n{Sorry! No error information available (probably not serializable)! Check the log file!}\n");
+		else
+			stackTrace.setText("*** asyncInvokeEnvelopeID=" + asyncInvokeProblem.getAsyncInvokeEnvelopeID() + " ***\n\n" + asyncInvokeProblem.getLastError().getErrorStackTrace());
 		return area;
 	}
 }
