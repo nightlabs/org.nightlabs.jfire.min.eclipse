@@ -30,6 +30,7 @@ extends AbstractConfigGroupPageController
 		monitor.beginTask("Load User Config Group Members", 2); //$NON-NLS-1$ // this is probably never shown since this method finishes really quickly (there's nothing to do) => we don't localise it
 		monitor.worked(1);
 		monitor.worked(1);
+		fireModifyEvent(null, null);
 	}
 	/*
 	 * (non-Javadoc)
@@ -46,8 +47,9 @@ extends AbstractConfigGroupPageController
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-			}
+			}			
 		}
+		fireModifyEvent(null, null);
 		return true;
 	}
 

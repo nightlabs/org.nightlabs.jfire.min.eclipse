@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
@@ -48,8 +49,7 @@ extends EntityEditorPageWithProgress
 	}
 
 	@Override
-	protected void asyncCallback()
-	{
+	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
 		final WorkstationGroupMemberPageController controller = (WorkstationGroupMemberPageController) getPageController();
 		Display.getDefault().asyncExec(new Runnable()
 		{

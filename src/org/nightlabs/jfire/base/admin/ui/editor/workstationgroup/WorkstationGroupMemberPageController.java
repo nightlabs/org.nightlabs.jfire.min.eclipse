@@ -27,6 +27,7 @@ extends AbstractConfigGroupPageController
 		monitor.beginTask("Load Workstation Config Group Members", 1); //$NON-NLS-1$ // very fast => no externalisation necessary
 		monitor.worked(1);
 		monitor.done();
+		fireModifyEvent(null, null);
 	}
 
 	@Override
@@ -42,6 +43,7 @@ extends AbstractConfigGroupPageController
 				}
 			}
 		}
+		fireModifyEvent(null, null);
 		return true;
 	}
 

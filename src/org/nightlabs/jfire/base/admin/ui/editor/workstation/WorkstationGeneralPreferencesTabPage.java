@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
@@ -35,12 +36,12 @@ public class WorkstationGeneralPreferencesTabPage extends EntityEditorPageWithPr
 		workstationDataSection = new WorkstationDataSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationGeneralPreferencesTabPage.section.workstationData")); //$NON-NLS-1$
 		getManagedForm().addPart(workstationDataSection);
 	}
-	
+
 	@Override
-	protected void asyncCallback() {
+	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				workstationDataSection.setWorkstation(((WorkstationPreferencesController)getPageController()).getWorkstation());
+				workstationDataSection.setWorkstation(((WorkstationPreferencesController)getPageController()).getControllerObject());
 				switchToContent();
 			}
 		});
