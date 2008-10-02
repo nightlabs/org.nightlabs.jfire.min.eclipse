@@ -4,41 +4,35 @@ import javax.jdo.FetchPlan;
 
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
-import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
+import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.config.ConfigGroup;
 import org.nightlabs.jfire.config.dao.ConfigDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
-import org.nightlabs.jfire.security.User;
 import org.nightlabs.progress.ProgressMonitor;
 
-public class ConfigGroupPreferencesController extends EntityEditorPageController {
+public class ConfigGroupPreferencesController extends ActiveEntityEditorPageController<ConfigGroup> {
+	
+	private static final String[] FETCH_GROUPS = new String[] { FetchPlan.DEFAULT, ConfigGroup.FETCH_GROUP_NAME };
+	
 	private ConfigID configGroupID;
-	private ConfigGroup configGroup;
 
 	public ConfigGroupPreferencesController(EntityEditor editor) {
 		super(editor);
 		this.configGroupID = ((JDOObjectEditorInput<ConfigID>)editor.getEditorInput()).getJDOObjectID();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doLoad(org.nightlabs.progress.ProgressMonitor)
-	 */
 	@Override
-	public void doLoad(ProgressMonitor monitor) {
-		configGroup = (ConfigGroup) ConfigDAO.sharedInstance().getConfig(configGroupID, new String[] { FetchPlan.DEFAULT }, -1, monitor);
+	protected String[] getEntityFetchGroups() {
+		return FETCH_GROUPS;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doSave(org.nightlabs.progress.ProgressMonitor)
-	 */
+
 	@Override
-	public boolean doSave(ProgressMonitor monitor) {
-		ConfigDAO.sharedInstance().storeConfig(configGroup, false, new String[] { User.FETCH_GROUP_NAME }, -1, monitor);
-		return true;
+	protected ConfigGroup retrieveEntity(ProgressMonitor monitor) {
+		return (ConfigGroup) ConfigDAO.sharedInstance().getConfig(configGroupID, getEntityFetchGroups(), -1, monitor);
 	}
-	
-	public ConfigGroup getConfigGroup() {
-		return configGroup;
+
+	@Override
+	protected ConfigGroup storeEntity(ConfigGroup controllerObject, ProgressMonitor monitor) {
+		return (ConfigGroup) ConfigDAO.sharedInstance().storeConfig(controllerObject, true, getEntityFetchGroups(), -1, monitor);
 	}
 }
