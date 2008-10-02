@@ -69,12 +69,6 @@ extends EntityEditorPageWithProgress
 	}
 	
 	@Override
-	protected void asyncCallback()
-	{ 
-		// noop 
-	}
-
-	@Override
 	protected String getPageFormTitle() {
 		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.prop.StructEditorPage.pageTitle"); //$NON-NLS-1$
 	}
