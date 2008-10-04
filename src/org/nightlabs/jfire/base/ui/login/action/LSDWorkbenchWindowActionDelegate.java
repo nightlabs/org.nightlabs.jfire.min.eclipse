@@ -44,7 +44,7 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 /**
  * Provides login-state-dependency for WorkbenchWindowActions wich are
  * actions contributed into the workbench window menu or tool bar.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class LSDWorkbenchWindowActionDelegate
@@ -52,7 +52,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 {
 	private static final Logger logger = Logger.getLogger(LSDWorkbenchWindowActionDelegate.class);
 	private IWorkbenchWindow window;
-	
+
 	/**
 	 * Default implementation of dispose removes this instance
 	 * as LoginStateListener, so make sure to always call super.dispose().
@@ -65,7 +65,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 			throw new RuntimeException("Login.getLogin(false) should never throw this exception!", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Returns the IWorkbenchWindow passed in {@link #init(IWorkbenchWindow)}
 	 * @return
@@ -84,7 +84,7 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 		this.window = window;
 		_init();
 	}
-	
+
 	private void _init()
 	{
 		// normally it should not happen, but it just happened to me on a windows machine :-( therefore we need these null checks. Marco.
@@ -126,25 +126,25 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public abstract void run(IAction action);
-	
+
 	/**
 	 * Subclasses may override this but have to make sure
 	 * super.selectionChanged(action,selection) is called to
 	 * further provide login-state-dependency
-	 * 
+	 *
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		// TODO Do we need really to add the listener on each selection changed, IMHO it would enough to add it once in init
 		Login.sharedInstance().addLoginStateListener(this, action);
 	}
-	
+
 	/**
 	 * Default implementation of loginStateChanged disables the action if the user is logged out,
 	 * if your implementation needs a different behavior override this method.
 	 * To keep this behavior subclasses should therefore always call super.loginStateChanged(event)
 	 * when overriding.
-	 * 
+	 *
 	 * @see LoginStateListener#afterLoginStateChange(int, int, IAction)
 	 */
 	public void loginStateChanged(LoginStateChangeEvent event) {
