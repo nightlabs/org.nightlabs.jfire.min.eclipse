@@ -28,10 +28,10 @@ import javax.jdo.FetchPlan;
 import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
-import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserSecurityGroup;
@@ -39,14 +39,13 @@ import org.nightlabs.jfire.security.dao.UserSecurityGroupDAO;
 import org.nightlabs.jfire.security.id.UserSecurityGroupID;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
-import org.nightlabs.util.Util;
 
 /**
  * A controller that loads a userSecurityGroup with its person.
  *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class UserSecurityGroupController extends EntityEditorPageController
+public class UserSecurityGroupController extends ActiveEntityEditorPageController<UserSecurityGroup>
 {
 
 	private static final String[] FETCH_GROUPS_USER_SECURITY_GROUP = new String[] {
@@ -69,16 +68,6 @@ public class UserSecurityGroupController extends EntityEditorPageController
 	private UserSecurityGroupID userSecurityGroupID;
 
 	/**
-	 * The userSecurityGroup editor.
-	 */
-	private EntityEditor editor;
-
-	/**
-	 * The editor model
-	 */
-	private UserSecurityGroup userSecurityGroup;
-
-	/**
 	 * Create an instance of this controller for
 	 * an {@link UserEditor} and load the data.
 	 */
@@ -86,28 +75,23 @@ public class UserSecurityGroupController extends EntityEditorPageController
 	{
 		super(editor);
 		this.userSecurityGroupID = (UserSecurityGroupID) ((JDOObjectEditorInput<?>)editor.getEditorInput()).getJDOObjectID();
-		this.editor = editor;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doLoad(org.nightlabs.progress.ProgressMonitor)
-	 */
 	@Override
-	public void doLoad(ProgressMonitor monitor)
-	{
+	protected UserSecurityGroup retrieveEntity(ProgressMonitor monitor) {
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController.job.loadingUserSecurityGroup"), 1); //$NON-NLS-1$
 		try {
 			if(userSecurityGroupID != null) {
 				// load userSecurityGroup with person data
 				UserSecurityGroup group = UserSecurityGroupDAO.sharedInstance().getUserSecurityGroup(
-						userSecurityGroupID, FETCH_GROUPS_USER_SECURITY_GROUP,
+						userSecurityGroupID, getEntityFetchGroups(),
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						new SubProgressMonitor(monitor, 1)
 				);
 				monitor.worked(1);
-				this.userSecurityGroup = Util.cloneSerializable(group);
+				return group;
 			}
+			return null;
 		} catch(Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -115,50 +99,28 @@ public class UserSecurityGroupController extends EntityEditorPageController
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.base.ui.entity.editor.IEntityEditorPageController#doSave(org.nightlabs.progress.ProgressMonitor)
-	 */
 	@Override
-	public boolean doSave(ProgressMonitor monitor)
-	{
-		if ( logger.isInfoEnabled() ) {
-			logger.info("***********************************"); //$NON-NLS-1$
-			logger.info("doSave()"); //$NON-NLS-1$
-			logger.info("***********************************"); //$NON-NLS-1$
-		}
-
-		if (!isLoaded())
-			return false;
-
+	protected UserSecurityGroup storeEntity(UserSecurityGroup controllerObject, ProgressMonitor monitor) {
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController.job.savingUserSecurityGroup"), 6); //$NON-NLS-1$
 		try	{
 			monitor.worked(1);
-			UserSecurityGroup oldGroup = userSecurityGroup;
-			userSecurityGroup = UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(
-					userSecurityGroup, true, FETCH_GROUPS_USER_SECURITY_GROUP,
+			return UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(
+					controllerObject, true, getEntityFetchGroups(),
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 5)
 			);
-			userSecurityGroup = Util.cloneSerializable(userSecurityGroup);
-			fireModifyEvent(oldGroup, getUserSecurityGroup());
 		} catch(Exception e) {
 			monitor.setCanceled(true);
 			throw new RuntimeException(e);
 		} finally {
 			monitor.done();
 		}
-		return true;
 	}
 
-	/**
-	 * Get the editor.
-	 * @return the editor
-	 */
-	public EntityEditor getEditor()
-	{
-		return editor;
+	@Override
+	protected String[] getEntityFetchGroups() {
+		return FETCH_GROUPS_USER_SECURITY_GROUP;
 	}
-
+	
 	/**
 	 * Get the userID.
 	 * @return the userID
@@ -166,12 +128,5 @@ public class UserSecurityGroupController extends EntityEditorPageController
 	public UserSecurityGroupID getUserSecurityGroupID()
 	{
 		return userSecurityGroupID;
-	}
-
-	/**
-	 * Returns the userSecurityGroup associated with this controller
-	 */
-	public UserSecurityGroup getUserSecurityGroup() {
-		return userSecurityGroup;
 	}
 }
