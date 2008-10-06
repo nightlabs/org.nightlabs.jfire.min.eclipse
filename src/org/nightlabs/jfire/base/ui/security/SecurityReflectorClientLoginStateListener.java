@@ -11,11 +11,11 @@ implements LoginStateListener
 	@Override
 	public void loginStateChanged(LoginStateChangeEvent event) {
 		if (LoginState.LOGGED_IN == event.getNewLoginState()) {
-			SecurityReflectorClient securityReflector = (SecurityReflectorClient) SecurityReflector.sharedInstance();
+			SecurityReflectorRCP securityReflector = (SecurityReflectorRCP) SecurityReflector.sharedInstance();
 			securityReflector.registerAuthorizedObjectRefLifecycleListener();
 		}
 		if (LoginState.ABOUT_TO_LOG_OUT == event.getNewLoginState()) {
-			SecurityReflectorClient securityReflector = (SecurityReflectorClient) SecurityReflector.sharedInstance();
+			SecurityReflectorRCP securityReflector = (SecurityReflectorRCP) SecurityReflector.sharedInstance();
 			securityReflector.unregisterAuthorizedObjectRefLifecycleListener();
 		}
 	}

@@ -28,11 +28,11 @@ import org.nightlabs.jfire.security.id.UserLocalID;
 /**
  * @author Marco Schulze - marco at nightlabs dot de
  */
-public class SecurityReflectorClient
+public class SecurityReflectorRCP
 extends SecurityReflector
 {
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = Logger.getLogger(SecurityReflectorClient.class);
+	private static final Logger logger = Logger.getLogger(SecurityReflectorRCP.class);
 
 	@Override
 	public UserDescriptor _getUserDescriptor() throws NoUserException {
@@ -115,7 +115,7 @@ extends SecurityReflector
 
 		@Override
 		public void notify(JDOLifecycleEvent event) {
-			synchronized (SecurityReflectorClient.this) {
+			synchronized (SecurityReflectorRCP.this) {
 				cache_authorityID2roleIDSet.clear();
 			}
 		}
