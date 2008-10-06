@@ -5,7 +5,7 @@ import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 import org.nightlabs.jfire.security.SecurityReflector;
 
-public class SecurityReflectorClientLoginStateListener
+public class SecurityReflectorRCPLoginStateListener
 implements LoginStateListener
 {
 	@Override
