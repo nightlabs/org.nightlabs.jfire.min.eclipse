@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
@@ -40,7 +41,7 @@ implements ISelectionProvider
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorizedObjectSection.title.authorizedObjects")); //$NON-NLS-1$
 
 		authorizedObjectTable = new AuthorizedObjectTableViewer(getContainer(), this,
-				AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
+				AbstractTableComposite.DEFAULT_STYLE_SINGLE | XComposite.getBorderStyle(getContainer()));
 		authorizedObjectTable.setInput(authorizedObjects);
 		authorizedObjectTable.getTable().addDisposeListener(new DisposeListener() {
 			@Override
@@ -76,7 +77,7 @@ implements ISelectionProvider
 	public synchronized void setAuthorityPageControllerHelper(AuthorityPageControllerHelper authorityPageControllerHelper) {
 		if (this.authorityPageControllerHelper != null) {
 			this.authorityPageControllerHelper.removePropertyChangeListener(
-					AuthorityPageControllerHelper.PROPERTY_NAME_AUTHORITY_LOADED, 
+					AuthorityPageControllerHelper.PROPERTY_NAME_AUTHORITY_LOADED,
 					propertyChangeListenerAuthorityLoaded
 			);
 		}
@@ -91,7 +92,7 @@ implements ISelectionProvider
 
 		if (this.authorityPageControllerHelper != null) {
 			this.authorityPageControllerHelper.addPropertyChangeListener(
-					AuthorityPageControllerHelper.PROPERTY_NAME_AUTHORITY_LOADED, 
+					AuthorityPageControllerHelper.PROPERTY_NAME_AUTHORITY_LOADED,
 					propertyChangeListenerAuthorityLoaded
 			);
 		}
@@ -104,7 +105,7 @@ implements ISelectionProvider
 				public void run() {
 					authorityChanged();
 				}
-			});						
+			});
 		}
 	};
 
@@ -168,7 +169,7 @@ implements ISelectionProvider
 			selectedAuthorizedObjects = new ArrayList<AuthorizedObject>();
 			selection = null;
 			IStructuredSelection sel = (IStructuredSelection) authorizedObjectTable.getSelection();
-			
+
 			for (Object object : sel.toArray()) {
 				Map.Entry<AuthorizedObject, Boolean> me = (Entry<AuthorizedObject, Boolean>) object;
 				selectedAuthorizedObjects.add(me.getKey());
