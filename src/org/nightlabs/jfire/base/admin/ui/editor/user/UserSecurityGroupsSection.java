@@ -11,6 +11,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
@@ -18,18 +19,18 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
  * The section containing the user groups controls for the {@link PersonPreferencesPage}.
- * 
+ *
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class UserSecurityGroupsSection extends RestorableSectionPart {
-	
+
 	/**
 	 * The editor model.
 	 */
 	UserSecurityPreferencesModel model;
-	
+
 	UserSecurityGroupTableViewer userSecurityGroupTableViewer;
-	
+
 	/**
 	 * Create an instance of UserSecurityGroupsSection.
 	 * @param parent The parent for this section
@@ -40,7 +41,7 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
 		createClient(getSection(), page.getEditor().getToolkit());
 	}
-	
+
 
 
 	/**
@@ -71,7 +72,7 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 			}
 		});
 	}
-	
+
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
 	{
 		FormText text = toolkit.createFormText(section, true);
@@ -91,7 +92,7 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 
 	private Table createUserSecurityGroupsTable(FormToolkit toolkit, Composite container)
 	{
-		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);
+		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | XComposite.getBorderStyle(container));
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 100;
 		fTable.setLayoutData(gd);
