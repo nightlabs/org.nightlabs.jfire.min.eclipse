@@ -66,11 +66,11 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 {
 
 	private List<IConfigModuleChangedListener> cfModChangedListeners = new LinkedList<IConfigModuleChangedListener>();
-	
+
 	protected ConfigPreferencesTreeComposite treeComposite;
 	protected ConfigPreferencesComposite preferencesComposite;
 	private SashForm wrapper;
-	
+
 	protected ConfigModule currentConfigModule;
 	protected String currentcfModID;
 	protected ConfigID currentConfigID;
@@ -85,7 +85,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 			involvedPages = new HashMap<ConfigPreferenceNode, AbstractConfigModulePreferencePage>();
 
 	protected Set<ConfigModule> dirtyConfigModules = new HashSet<ConfigModule>();
-	
+
 	/**
 	 * Set of ConfigModules that have been updated on the server side and for which the update
 	 * is not yet reflected by the gui.
@@ -102,8 +102,9 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 		this.setLayoutData(new GridData(GridData.FILL_BOTH));
 		wrapper = new SashForm(this, SWT.HORIZONTAL);
 		wrapper.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		treeComposite = new ConfigPreferencesTreeComposite(wrapper, SWT.BORDER, false, null);
+//		treeComposite = new ConfigPreferencesTreeComposite(wrapper, XComposite.getBorderStyle(wrapper), false, null);
 		GridData treeGD = new GridData(GridData.FILL_BOTH);
 		treeComposite.setLayoutData(treeGD);
 		treeComposite.getTreeViewer().addSelectionChangedListener(new ISelectionChangedListener(){
@@ -119,18 +120,18 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 					{
 						currentPage = selection.createPreferencePage();
 						currentcfModID = selection.getConfigModuleCfModID();
-						
+
 						// FIXME: store ConfigPrefNode instead of page only or somehow get the moduleID.
 						currentPage.getConfigModuleController().setConfigID(currentConfigID, true, currentcfModID);
 						currentPage.createPartContents(preferencesComposite.getWrapper());
-						
+
 						currentPage.addConfigPreferenceChangedListener(ConfigPreferencesEditComposite2.this);
 						involvedPages.put(selection, currentPage);
 					} else {
 						currentPage = involvedPages.get(selection);
 					}
-					
-					
+
+
 				} catch (CoreException e) {
 					throw new RuntimeException("Couldn't create an AbstractPreferencePage: ", e); //$NON-NLS-1$
 				}
@@ -139,7 +140,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 			}
 		});
 		preferencesComposite = new ConfigPreferencesComposite(wrapper, SWT.NONE, true);
-		
+
 		wrapper.setWeights(new int[] {3, 7});
 	}
 
@@ -161,7 +162,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 			}
 		}
 	}
-	
+
 	public void updatePreferencesComposite() {
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.config.ConfigPreferencesEditComposite2.updateingJob")) { //$NON-NLS-1$
 			@Override
@@ -213,7 +214,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 					{
 						if (isDisposed())
 							return;
-						
+
 						setFaded(false);
 					}
 				});
@@ -240,7 +241,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 		return ConfigModule.getCfModKey(page.getConfigModuleController().getConfigModuleClass(),
 							page.getConfigModuleController().getConfigModuleID());
 	}
-	
+
 	public void configPreferenceChanged(AbstractConfigModulePreferencePage preferencePage) {
 		String cfModKey = getCfModKey(preferencePage);
 		ConfigModule cfMod = involvedConfigModules.get(cfModKey);
@@ -252,23 +253,23 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 	public void addConfigModuleChangedListener(IConfigModuleChangedListener listener) {
 		cfModChangedListeners.add(listener);
 	}
-	
+
 	public void removeConfigModuleChangedListener(IConfigModuleChangedListener listener) {
 		cfModChangedListeners.remove(listener);
 	}
-	
+
 	protected void notifyChangedListeners(ConfigModule configModule) {
 		for (IConfigModuleChangedListener listener : cfModChangedListeners) {
 			listener.configModuleChanged(configModule);
 		}
 	}
-	
+
 	public void clear() {
 		involvedConfigModules.clear();
 		dirtyConfigModules.clear();
 		currentConfigModule = null;
 	}
-	
+
 	public Set<ConfigModule> getDirtyConfigModules() {
 		updateCurrentConfigModule();
 		return new HashSet<ConfigModule>(dirtyConfigModules);
@@ -285,7 +286,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 	public void addChangedConfigModule(ConfigModule module) {
 		if (changedModules == null)
 			changedModules = new HashSet<ConfigModule>();
-		
+
 		changedModules.add(module);
 	}
 }

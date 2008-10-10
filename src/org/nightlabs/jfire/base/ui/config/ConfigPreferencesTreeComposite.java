@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -49,9 +48,8 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 
 	private ContentProvider contentProvider;
 	private ConfigID currentConfigID;
-	
 	private String parentCode;
-	
+
 	private static class ContentProvider implements ITreeContentProvider {
 
 		public Object[] getChildren(Object parentElement) {
@@ -82,9 +80,8 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 	}
-	
-	private static class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 
+	private static class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 		@Override
 		public Image getImage(Object element) {
 			if (element instanceof ConfigPreferenceNode)
@@ -98,32 +95,30 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 				return ((ConfigPreferenceNode)element).getConfigPreferenceName();
 			return super.getText(element);
 		}
-		
 	}
-	
-	
+
 	/**
 	 * @param parent
 	 * @param style
 	 * @param setLayoutData
 	 */
 	public ConfigPreferencesTreeComposite(Composite parent, int style, boolean setLayoutData, ConfigID configID) {
-		super(parent, SWT.BORDER, true, true, false);
+		super(parent, style, true, true, false);
 		setConfigID(configID, new NullProgressMonitor());
 		this.parentCode = Integer.toHexString(parent.hashCode());
 	}
-	
+
 	@Override
 	public void createTreeColumns(Tree tree) {
 	}
-	
+
 	@Override
 	public void setTreeProvider(TreeViewer treeViewer) {
 		contentProvider = new ContentProvider();
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(new LabelProvider());
 	}
-	
+
 	public void setConfigID(ConfigID configID, ProgressMonitor monitor) {
 		if (configID == null || configID.equals(currentConfigID))
 			return;
@@ -142,7 +137,7 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 			});
 		}
 	}
-	
+
 	public int getSelectionCount() {
 		IStructuredSelection selection = (IStructuredSelection)getTreeViewer().getSelection();
 		return selection.size();
