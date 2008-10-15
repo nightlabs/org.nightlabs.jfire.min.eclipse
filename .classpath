@@ -13,6 +13,5 @@
 	<classpathentry kind="src" path="/NightLabsQuery"/>
 	<classpathentry kind="src" path="/NightLabsQueryJDO"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JFireQueryStore"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/NightLabsHTMLContent"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
