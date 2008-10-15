@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui.app;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -36,6 +37,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.app.AbstractApplication;
 import org.nightlabs.base.ui.app.AbstractWorkbenchAdvisor;
@@ -46,7 +48,6 @@ import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginAbortedException;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -57,17 +58,22 @@ public class JFireApplication
 extends AbstractApplication
 {
 	public static final String PLUGIN_ID = "org.nightlabs.jfire.base.ui"; //$NON-NLS-1$
-	
+
+	/**
+	 * The logger instance used in this class.
+	 */
+	private static final Logger logger = Logger.getLogger(JFireApplication.class);
+
 	private static List<JFireApplicationListener> applicationListener = new LinkedList<JFireApplicationListener>();
-	
+
 	public static void addApplicationListener(JFireApplicationListener listener) {
 		applicationListener.add(listener);
 	}
-	
+
 	public static void removeApplicationListener(JFireApplicationListener listener) {
 		applicationListener.remove(listener);
 	}
-	
+
 	public static final int APPLICATION_EVENTTYPE_STARTED = 1;
 
 	void notifyApplicationListeners(int applicationEventType) {
@@ -88,37 +94,46 @@ extends AbstractApplication
 	@Override
 	protected void preCreateWorkbench()
 	{
-		try
-		{
+		try {
+			// initialise truststore
+			initSSLTruststore();
+
 			initLogin();
-			// TODO put the Update stuff into a LoginStateListener!
-//			Login.getLogin(); // we always login in order to prevent our class-loading problems.
-//			LoginConfigModule lcm = Login.sharedInstance().getLoginConfigModule();
-//			// TODO @Carnage lcm.getLastSavedLoginConfiguration() can return null, but this was not handled in the
-//			// following if clause => NPE. I added the check for null, but I don't know whether it's correct with == + || or whether
-//			// it should be != + &&
-//			if (lcm.getLastSavedLoginConfiguration() == null || lcm.getLastSavedLoginConfiguration().isAutomaticUpdate())
-//			{
-//				Login.getLogin();
-//				StartupUpdateManager updateManager = new StartupUpdateManager(lcm);
-//				updateManager.run();
-//				if(updateManager.doRestart())
-//				{
-//					setPlatformReturnCode(IApplication.EXIT_RESTART);
-//					return;
-//				}
-//			}
+
+			LanguageManager.sharedInstance().setLanguage();
 		} catch(Exception e) {
-			e.printStackTrace(); // TODO what should be here? There was nothing in this catch block! because there is no logger, I dump at least to std-out. Marco. ;-)
+			logger.error("preCreateWorkbench: " + e.getClass() + ": " + e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
-		LanguageManager.sharedInstance().setLanguage();
 	}
-	
+
+	/**
+	 * If no truststore is specified set the java system wide truststore to the default:
+	 * config_dir/jfire-server.truststore and if no truststore is found at that location, the default
+	 * truststore from this plugin/src/jfire-server.truststore is copied to the expected location.
+	 *
+	 * @throws IOException if the truststore couldn't be copied.
+	 */
+	protected void initSSLTruststore() throws IOException
+	{
+		if (System.getProperty("javax.net.ssl.trustStore") != null)
+			return;
+
+		File truststoreFile = new File(getConfigDir(), "jfire-server.truststore").getAbsoluteFile();
+		if (!truststoreFile.exists())
+		{
+			IOUtil.copyResource(JFireApplication.class, "/jfire-server.truststore", truststoreFile);
+		}
+
+		System.setProperty("javax.net.ssl.trustStore", truststoreFile.getPath());
+		System.setProperty("javax.net.ssl.trustStorePassword", "nightlabs");
+	}
+
 	@Override
 	public AbstractWorkbenchAdvisor initWorkbenchAdvisor(Display display) {
 		return new JFireWorkbenchAdvisor();
 	}
-	
+
 	protected void initLogin() throws LoginException, LoginAbortedException
 	{
 		// create log directory if not existent
@@ -164,7 +179,7 @@ extends AbstractApplication
 		}
 		initializeLoginModule();
 	}
-	   	    			
+
 	protected void initializeLoginModule()
 	{
 		JFireSecurityConfiguration.declareConfiguration();
@@ -174,6 +189,6 @@ extends AbstractApplication
 			throw new RuntimeException("How the hell could this happen?!", e); //$NON-NLS-1$
 		}
 	}
-	
-	
+
+
 }
