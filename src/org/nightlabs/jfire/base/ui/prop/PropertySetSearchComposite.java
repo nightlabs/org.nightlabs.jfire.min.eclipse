@@ -95,7 +95,7 @@ import org.nightlabs.util.Util;
  * The other alternative is to retrieve the objects directly with the search. This has to be
  * used when the objects searched are not instances of {@link PropertySet}.
  * </p>
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  * @param <PropertySetType> The type of {@link PropertySet} the search should be performed for.
@@ -103,14 +103,14 @@ import org.nightlabs.util.Util;
  * 		in an other way linked to a property set.
  */
 public abstract class PropertySetSearchComposite<PropertySetType> extends XComposite {
-	
+
 	/**
 	 * LOG4J logger used by this class
 	 */
 	private static final Logger logger = Logger.getLogger(PropertySetSearchComposite.class);
-	
+
 	public static final String[] FETCH_GROUPS_FULL_DATA = new String[] {FetchPlan.DEFAULT, PropertySet.FETCH_GROUP_FULL_DATA};
-	
+
 	private XComposite wrapper;
 	private TabFolder filterProviderFolder;
 	private XComposite buttonBar;
@@ -119,10 +119,10 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	private XComposite resultLabelWrapper;
 	private Label resultLabel;
 	private boolean doIDSearchAndUsePropertySetCache = true;
-	
+
 	/**
 	 * Create a new {@link PropertySetSearchComposite}.
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 * @param style The style to use.
 	 * @param earlySearchText The initial search text (will be used to search right after )
@@ -138,11 +138,11 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		this.doIDSearchAndUsePropertySetCache = doIDSearchAndUsePropertySetCache;
 		init(this);
 	}
-	
+
 	/**
 	 * Create a new {@link PropertySetSearchComposite}. With {@link #doIDSearchAndUsePropertySetCache}
 	 * set to <code>true</code>.
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 * @param style The style to use.
 	 * @param earlySearchText The initial search text (will be used to search right after )
@@ -152,14 +152,14 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	) {
 		this(parent, style, quickSearchText, true);
 	}
-	
+
 	/**
 	 * Interface for filter provider tabs
 	 */
 	private static interface FilterProviderTab {
 		SearchFilterProvider getFilterProvider();
 	}
-	
+
 	/**
 	 * Static filter provider tab.
 	 */
@@ -167,7 +167,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		private TabItem tabItem;
 		private SearchFilterProvider filterProvider;
 		private Composite providerComposite;
-		
+
 		public StaticProviderTabItem(
 				TabFolder parent,
 				SearchResultFetcher resultFetcher
@@ -180,7 +180,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			tabItem.setControl(providerComposite);
 			tabItem.setData(this);
 		}
-		
+
 		public TabItem getTabItem() {
 			return tabItem;
 		}
@@ -193,7 +193,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			}
 		}
 	}
-	
+
 	private StaticProviderTabItem staticTab;
 
 	/**
@@ -203,7 +203,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		private TabItem tabItem;
 		private SearchFilterProvider filterProvider;
 		private Composite providerComposite;
-		
+
 		public DynamicProviderTabItem(TabFolder parent, SearchResultFetcher resultFetcher) {
 			tabItem = new TabItem(parent, SWT.NONE);
 			filterProvider = createDynamicSearchFilterProvider(resultFetcher);
@@ -219,7 +219,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			return filterProvider;
 		}
 	}
-	
+
 	private DynamicProviderTabItem dynamicTab;
 
 	/**
@@ -293,7 +293,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 
 		}
 	};
-	
+
 	/**
 	 * Performs a search with the current filter provider.
 	 * <p>
@@ -311,11 +311,11 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		};
 		job.schedule();
 	}
-	
+
 //	public SearchFilterProvider getSearchFilterProvider() {
 //		return ((FilterProviderTab) filterProviderFolder.getSelection()[0]).getFilterProvider();
 //	}
-	
+
 	/**
 	 * Creates the wrapping top-level {@link Composite}.
 	 * This might be overridden by clients.
@@ -324,13 +324,25 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		return wrapper;
 	}
-	
+
 	/**
 	 * Returns the wrapping top-level {@link Composite}.
 	 * @return The wrapping top-level {@link Composite}.
 	 */
 	protected Composite getWrapper() {
 		return wrapper;
+	}
+
+	private XComposite topWrapper;
+
+	private XComposite resultWrapper;
+
+	public Composite getTopWrapper() {
+		return topWrapper;
+	}
+
+	public Composite getResultWrapper() {
+		return resultWrapper;
 	}
 
 	/**
@@ -342,19 +354,20 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		createWrapper(parent);
 		SashForm sash = new SashForm(getWrapper(), SWT.VERTICAL);
 		sash.setLayoutData(new GridData(GridData.FILL_BOTH));
-		XComposite topWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+		topWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		filterProviderFolder = new TabFolder(topWrapper, SWT.NONE);
 		filterProviderFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
 		staticTab = new StaticProviderTabItem(filterProviderFolder, resultFetcher);
 		staticTab.getTabItem().setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.staticTab.text")); //$NON-NLS-1$
 		staticTab.setQuickSearchText(earlySearchText);
-		
+
 		dynamicTab = new DynamicProviderTabItem(filterProviderFolder, resultFetcher);
 		dynamicTab.getTabItem().setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.dynamicTab.text")); //$NON-NLS-1$
-		
+
 		buttonBar = new XComposite(topWrapper, SWT.NONE, XComposite.LayoutMode.LEFT_RIGHT_WRAPPER, XComposite.LayoutDataMode.GRID_DATA_HORIZONTAL);
-		
-		XComposite resultWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+
+		resultWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		resultLabelWrapper = new XComposite(resultWrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		resultLabelWrapper.getGridData().verticalIndent = 5;
 		resultLabelWrapper.getGridData().horizontalIndent = 5;
@@ -363,7 +376,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		resultLabel = new Label(resultLabelWrapper, SWT.NONE | SWT.WRAP);
 		resultLabel.setLayoutData(new GridData());
 		resultLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.resultLabel.text")); //$NON-NLS-1$
-		
+
 		resultTable = createResultTable(resultWrapper);
 		resultTable.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent arg0) {
@@ -373,7 +386,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		GridData tgd = new GridData(GridData.FILL_BOTH);
 		tgd.heightHint = 300;
 		resultTable.setLayoutData(tgd);
-		
+
 		if (earlySearchText != null && !"".equals(earlySearchText)) { //$NON-NLS-1$
 			resultFetcher.searchTriggered(staticTab.getFilterProvider());
 		}
@@ -402,7 +415,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		});
 		return searchButton;
 	}
-	
+
 	/**
 	 * Get the result Table created with {@link #createResultTable(Composite)}.
 	 * @return The result Table created with {@link #createResultTable(Composite)}.
@@ -410,7 +423,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public PropertySetTable<PropertySetType> getResultTable() {
 		return resultTable;
 	}
-	
+
 	/**
 	 * Get the Button-bar created for this Composite.
 	 * @return The Button-bar created for this Composite.
@@ -418,7 +431,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public Composite getButtonBar() {
 		return buttonBar;
 	}
-	
+
 	/**
 	 * @return Whether to do an ID search with the collected
 	 * 		criteria and afterwards resolve the found objects via the cache.
@@ -426,7 +439,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public boolean isDoIDSearchAndUsePropertySetCache() {
 		return doIDSearchAndUsePropertySetCache;
 	}
-	
+
 	/**
 	 * Define whether to do an ID search with the collected
 	 * criteria and afterwards resolve the found objects via the cache.
@@ -446,40 +459,40 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * Clients may override this, the default implementation
 	 * returns fetch-groups to get full {@link PropertySet} data.
 	 * </p>
-	 * 
+	 *
 	 * @return The fetch-groups to detach the found results with.
 	 */
 	protected String[] getFetchGroups() {
 		return FETCH_GROUPS_FULL_DATA;
 	}
-	
+
 	/**
 	 * Create the table to display the found results in.
 	 * This should be a {@link PropertySetTable} parameterized
 	 * with the same type as this class.
-	 * 
+	 *
 	 * @param parent The parent to add the table to.
 	 * @return The newly created table.
 	 */
 	protected abstract PropertySetTable<PropertySetType> createResultTable(Composite parent);
-	
+
 	/**
 	 * Create the static (simple) {@link SearchFilterProvider} that should be used in the first Tab.
-	 * 
+	 *
 	 * @param resultFetcher The {@link SearchResultFetcher} for the new provider.
 	 * @return The newly created {@link SearchFilterProvider}.
 	 */
 	protected abstract SearchFilterProvider createStaticSearchFilterProvider(SearchResultFetcher resultFetcher);
-	
+
 	/**
 	 * Create the dynamic (complex) {@link SearchFilterProvider} that should be used in the second Tab.
-	 * 
+	 *
 	 * @param resultFetcher The {@link SearchResultFetcher} for the new provider.
 	 * @return The newly created {@link SearchFilterProvider}.
 	 */
 	protected abstract SearchFilterProvider createDynamicSearchFilterProvider(SearchResultFetcher resultFetcher);
-	
-	
-	
-	
+
+
+
+
 }
