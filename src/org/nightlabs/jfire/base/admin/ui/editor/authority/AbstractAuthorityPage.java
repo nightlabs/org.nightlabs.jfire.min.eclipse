@@ -88,6 +88,7 @@ public abstract class AbstractAuthorityPage extends EntityEditorPageWithProgress
 		authoritySection.setPageController(getPageController());
 		authorizedObjectSection.setAuthorityPageControllerHelper(getAuthorityPageControllerHelper());
 		roleGroupsSection.setModel(null);
+		switchToContent();
 	}
 
 	@Override

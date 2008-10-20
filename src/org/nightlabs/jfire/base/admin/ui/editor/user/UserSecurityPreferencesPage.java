@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.base.ui.entity.editor.EntityEditorPageControllerModifyEvent;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
@@ -89,7 +90,7 @@ public class UserSecurityPreferencesPage extends EntityEditorPageWithProgress
 	}
 
 	@Override
-	protected void asyncCallback() {
+	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				UserSecurityPreferencesModel userModel = ((UserSecurityPreferencesController)getPageController()).getUserModel();

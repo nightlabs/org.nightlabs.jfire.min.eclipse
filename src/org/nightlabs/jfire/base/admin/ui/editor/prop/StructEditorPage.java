@@ -56,7 +56,6 @@ extends EntityEditorPageWithProgress
 
 	@Override
 	protected void handleControllerObjectModified(final EntityEditorPageControllerModifyEvent modifyEvent) {
-		super.handleControllerObjectModified(modifyEvent);
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()

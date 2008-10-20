@@ -58,6 +58,7 @@ public class AuthorityTypeDetailPage extends EntityEditorPageWithProgress
 				authorityTypeSection.setAuthorityType(authorityType);		
 				roleGroupsSection.setRoleGroups(authorityType.getRoleGroups());
 				authorityListSection.setAuthorityType(authorityType);
+				switchToContent();
 			}
 		});
 	}
