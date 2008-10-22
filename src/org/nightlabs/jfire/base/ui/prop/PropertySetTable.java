@@ -54,7 +54,7 @@ import org.nightlabs.util.NLLocale;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public class PropertySetTable<ProperySetType> extends AbstractTableComposite<ProperySetType> {
+public abstract class PropertySetTable<ProperySetType> extends AbstractTableComposite<ProperySetType> {
 	
 	private class LabelProvider extends TableLabelProvider {
 		/**
@@ -76,20 +76,21 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	private IStruct struct;
 	private StructFieldID[] structFieldIDs;
 	private StructField<?>[] structFields;
-	
+	private IPropertySetTableConfig config;
 	
 	/**
 	 * @param parent
 	 * @param style
-	 * @param initTable
 	 */
-	public PropertySetTable(Composite parent, int style, IStruct struct, StructFieldID[] structFieldIDs) {
+	public PropertySetTable(Composite parent, int style) {
 		super(parent, style, false);
-		this.struct = struct;
-		this.structFieldIDs = structFieldIDs;
+		this.config = getPropertySetTableConfig();
+		this.struct = config.getIStruct();
+		this.structFieldIDs = config.getStructFieldIDs();
+		
 		initTable();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -125,18 +126,35 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * @param table The {@link Table} of this table.
 	 */
 	protected void createStructFieldColumns(TableViewer tableViewer, Table table) {
-		structFields = new StructField[structFieldIDs.length];
-		for (int i = 0; i < structFieldIDs.length; i++) {
-			StructField<?> structField = null;
-			try {
-				structField = struct.getStructField(structFieldIDs[i]);
-			} catch (PropertyException e) {
-				throw new RuntimeException(e);
+		if (!config.getStructFieldIDsList().isEmpty()) {
+			for (Object fields : config.getStructFieldIDsList()) {
+				StructFieldID[] structFieldIDs = (StructFieldID[])fields;
+				StringBuffer columnText = new StringBuffer();
+				for (StructFieldID structFieldID : structFieldIDs) {
+					try {
+						columnText.append(config.getIStruct().getStructField(structFieldID).getName().getText());
+					} catch (PropertyException e) {
+						throw new RuntimeException(e);
+					}
+					columnText.append("  ");
+				}
+				new TableColumn(table, SWT.LEFT).setText(columnText.toString().trim());
 			}
-			structFields[i] = structField;
 		}
-		for (StructField<?> structField : structFields) {
-			new TableColumn(table, SWT.LEFT).setText(structField.getName().getText());
+		else {
+			structFields = new StructField[structFieldIDs.length];
+			for (int i = 0; i < structFieldIDs.length; i++) {
+				StructField<?> structField = null;
+				try {
+					structField = struct.getStructField(structFieldIDs[i]);
+				} catch (PropertyException e) {
+					throw new RuntimeException(e);
+				}
+				structFields[i] = structField;
+			}
+			for (StructField<?> structField : structFields) {
+				new TableColumn(table, SWT.LEFT).setText(structField.getName().getText());
+			}
 		}
 	}
 	
@@ -184,17 +202,40 @@ public class PropertySetTable<ProperySetType> extends AbstractTableComposite<Pro
 	 * value of a StructField and may be used in custom implementations.
 	 * 
 	 * @param propertySet The {@link PropertySet} to get the field value from.
-	 * @param structFieldIdx The index of the {@link StructFieldID} to get. (Array passed in the constructor).
+	 * @param columnIdx The index of the {@link StructFieldID} to get. (Array passed in the constructor).
 	 * @return The String representation of the {@link StructField} value for the given {@link PropertySet}.
 	 */
-	protected String getStructFieldText(PropertySet propertySet, int structFieldIdx) {
-		if (structFieldIdx >= 0 && structFieldIdx < structFieldIDs.length) {
-			DataField dataField = propertySet.getPersistentDataFieldByIndex(structFieldIDs[structFieldIdx], 0);
-			if (dataField != null && dataField instanceof II18nTextDataField) {
-				return ((II18nTextDataField) dataField).getText(NLLocale.getDefault());
+	protected String getStructFieldText(PropertySet propertySet, int columnIdx) {
+		if (config.getStructFieldIDsList().isEmpty()) {
+			if (columnIdx >= 0 && columnIdx < config.getStructFieldIDs().length) {
+				DataField dataField = propertySet.getPersistentDataFieldByIndex(config.getStructFieldIDs()[columnIdx], 0);
+				if (dataField != null && dataField instanceof II18nTextDataField) {
+					return ((II18nTextDataField) dataField).getText(NLLocale.getDefault());
+				} else
+					return ""; //$NON-NLS-1$
 			} else
 				return ""; //$NON-NLS-1$
-		} else
-			return ""; //$NON-NLS-1$
+		}
+		else {
+			if (columnIdx >= 0 && columnIdx < config.getStructFieldIDsList().size()) {
+				StructFieldID[] fieldIDs = config.getStructFieldIDsList().get(columnIdx);
+				StringBuffer text = new StringBuffer();
+				for (StructFieldID fieldID : fieldIDs) {
+					DataField dataField = propertySet.getPersistentDataFieldByIndex(fieldID, 0);
+					if (dataField != null && dataField instanceof II18nTextDataField) 
+						text.append(((II18nTextDataField) dataField).getText(NLLocale.getDefault()));
+					text.append("  ");
+				}
+				
+				return text.toString();
+			} else
+				return ""; //$NON-NLS-1$
+		}
 	}
+	
+	protected void setPropertySetTableConfig(DefaultPropertySetTableConfig config) {
+		this.config = config;
+	}
+	
+	protected abstract IPropertySetTableConfig getPropertySetTableConfig();
 }
