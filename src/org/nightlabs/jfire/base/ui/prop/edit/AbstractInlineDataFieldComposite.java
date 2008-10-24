@@ -65,7 +65,7 @@ extends XComposite
 	 */
 	public final void refresh() {
 		if (getEditor().getStructField() != null)
-			title.setText(getEditor().getStructField().getName().getText());
+			title.setText("&" + getEditor().getStructField().getName().getText());
 
 		_refresh();
 	}
