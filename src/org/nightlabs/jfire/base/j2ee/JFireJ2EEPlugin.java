@@ -49,7 +49,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
-import org.nightlabs.util.Utils;
+import org.nightlabs.util.IOUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -75,6 +75,7 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
@@ -83,6 +84,7 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
@@ -136,8 +138,8 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 	 * This method rewrites (if necessary) the MANIFEST.MF of this plugin (i.e. <code>org.nightlabs.jfire.base.j2ee</code>).
 	 *
 	 * @return <code>true</code>, if the file had to be modified (and thus a reboot of the RCP is necessary).
-	 * @throws IOException 
-	 * @throws URISyntaxException 
+	 * @throws IOException
+	 * @throws URISyntaxException
 	 */
 	public boolean updateManifest()
 	throws IOException, URISyntaxException
@@ -169,7 +171,7 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 			try {
 				OutputStream out = new FileOutputStream(origManifestFile);
 				try {
-					Utils.transferStreamData(in, out);
+					IOUtil.transferStreamData(in, out);
 				} finally {
 					out.close();
 				}
@@ -223,7 +225,7 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 		}
 
 		// get the Export-Package entry
-		StringBuffer exportPackage = new StringBuffer(
+		StringBuilder exportPackage = new StringBuilder(
 				manifest.getMainAttributes().getValue("Export-Package"));
 
 		// append all the packages from the server
