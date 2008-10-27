@@ -6,7 +6,6 @@ import javax.security.auth.login.LoginException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.notification.SelectionManager;
 import org.nightlabs.base.ui.selection.SelectionProviderProxy;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -32,7 +31,7 @@ extends LSDViewPart
 		getSite().setSelectionProvider(selectionProviderProxy);
 	}
 
-	@Implement
+	@Override
 	public void createPartContents(Composite parent)
 	{
 		try {

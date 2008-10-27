@@ -5,11 +5,9 @@ import java.util.Set;
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -24,22 +22,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.composite.FadeableComposite;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.timepattern.TimePatternSetComposite;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.timepattern.TimePatternSetJDOImpl;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.timer.Task;
-import org.nightlabs.jfire.timer.TimerManager;
-import org.nightlabs.jfire.timer.TimerManagerUtil;
 import org.nightlabs.jfire.timer.dao.TaskDAO;
 import org.nightlabs.jfire.timer.id.TaskID;
 import org.nightlabs.notification.NotificationAdapterCallerThread;
 import org.nightlabs.notification.NotificationListener;
-import org.nightlabs.progress.NullProgressMonitor;
+import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
 import org.nightlabs.util.Util;
 
@@ -143,7 +138,7 @@ implements ISelectionProvider // needed for updating ViewActions
 	{
 		currentJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.setTaskID.job.name")) { //$NON-NLS-1$
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			protected IStatus run(ProgressMonitor monitor)
 			{
 				Display.getDefault().syncExec(new Runnable()
 				{
@@ -158,7 +153,9 @@ implements ISelectionProvider // needed for updating ViewActions
 				if (taskID != null)
 //					newTask = Util.cloneSerializable(
 //							TaskProvider.sharedInstance().getTask(taskID, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT));
-					newTask = Util.cloneSerializable(TaskDAO.sharedInstance().getTask(taskID, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor()));
+					newTask = Util.cloneSerializable(
+							TaskDAO.sharedInstance().getTask(
+									taskID, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor));
 
 				final Task finalNewTask = newTask;
 				final Job thisJob = this;
@@ -236,7 +233,7 @@ implements ISelectionProvider // needed for updating ViewActions
 		final Task _task = this.task;
 		Job currentJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.submit.job.name")) { //$NON-NLS-1$
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
+			protected IStatus run(ProgressMonitor monitor) {
 				monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.submit.monitor.taskName_storing"), 2); //$NON-NLS-1$
 
 				monitor.setTaskName(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.submit.monitor.taskName_calculatingNextExecDT")); //$NON-NLS-1$
@@ -246,9 +243,8 @@ implements ISelectionProvider // needed for updating ViewActions
 				monitor.setTaskName(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskDetailComposite.submit.monitor.taskName_storingToServer")); //$NON-NLS-1$
 
 				try {
-					TimerManager m = TimerManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-					Task newTask = m.storeTask(_task, true, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT); // TODO use DAO!
-					Cache.sharedInstance().put(null, newTask, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+					Task newTask = TaskDAO.sharedInstance().storeTask(
+							_task, true, getFetchGroupsTask(), NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 
 					monitor.worked(1);
 
