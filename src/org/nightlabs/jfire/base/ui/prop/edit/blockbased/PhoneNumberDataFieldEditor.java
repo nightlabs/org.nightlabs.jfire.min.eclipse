@@ -62,9 +62,9 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 	@Override
 	public void doRefresh() {
 		PhoneNumberDataField dataField = getDataField();
-		comp.countryCodeTextBox.setText(dataField.getCountryCode());
-		comp.areaCodeTextBox.setText(dataField.getAreaCode());
-		comp.localNumberTextBox.setText(dataField.getLocalNumber());
+		comp.countryCodeTextBox.setText(dataField.getCountryCode() != null ? dataField.getCountryCode() : "");
+		comp.areaCodeTextBox.setText(dataField.getAreaCode() != null ? dataField.getAreaCode() : "");
+		comp.localNumberTextBox.setText(dataField.getLocalNumber() != null ? dataField.getLocalNumber() : "");
 		comp.compGroup.setText(getStructField().getName().getText(NLLocale.getDefault().getLanguage()));
 	}
 
