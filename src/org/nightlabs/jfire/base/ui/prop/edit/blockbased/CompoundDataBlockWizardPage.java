@@ -26,21 +26,13 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
@@ -49,7 +41,6 @@ import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.exception.DataBlockGroupNotFoundException;
 import org.nightlabs.jfire.prop.exception.DataNotFoundException;
-import org.nightlabs.jfire.prop.exception.StructBlockNotFoundException;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
@@ -71,7 +62,6 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	XComposite wrapperComp;
 	private ValidationResult lastValidationResult = null;
 	
-	private List<DataBlockGroupEditor> dataBlockGroupEditorList = new ArrayList<DataBlockGroupEditor>();
 	/**
 	 * This variable is used to retain a possible validation error message until the first input by the user was made.
 	 */
@@ -104,8 +94,15 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 
 		this.propSet = propSet;
 		this.structBlockIDs = structBlockIDs;
-		setStructBlockIDs(structBlockIDs);
-		
+		for (int i = 0; i < structBlockIDs.length; i++) {
+			try {
+				dataBlockGroups.put(structBlockIDs[i],propSet.getDataBlockGroup(structBlockIDs[i]));
+			} catch (DataNotFoundException e) {
+				ExceptionHandlerRegistry.syncHandleException(e);
+				throw new RuntimeException(e);
+			}
+		}
+
 		validationResultManager = new ValidationResultManager() {
 			@Override
 			public void setValidationResult(ValidationResult validationResult) {
@@ -134,20 +131,6 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		addChangeListener(listener[0]);
 	}
 
-	protected void setStructBlockIDs(StructBlockID[] structBlockIDs) {
-		this.structBlockIDs = structBlockIDs;
-		
-		dataBlockGroups.clear();
-		for (int i = 0; i < structBlockIDs.length; i++) {
-			try {
-				dataBlockGroups.put(structBlockIDs[i],propSet.getDataBlockGroup(structBlockIDs[i]));
-			} catch (DataNotFoundException e) {
-				ExceptionHandlerRegistry.syncHandleException(e);
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
 	/**
 	 * Creates the wrapper Composite.
 	 * Has to be called when {@link #createControl(Composite)} is
@@ -166,39 +149,16 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	 */
 	protected void createDataBlockEditors() {
 		dataBlockGroupEditors.clear();
-
-		TabFolder tabFolder = new TabFolder(wrapperComp, SWT.NONE);
-		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
 		for (int i = 0; i < structBlockIDs.length; i++) {
-			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-			XComposite wrapperComp2 = new XComposite(tabFolder, SWT.NONE, XComposite.LayoutMode.TIGHT_WRAPPER);
-			tabItem.setControl(wrapperComp2);
 			DataBlockGroup dataBlockGroup = dataBlockGroups.get(structBlockIDs[i]);
-			try {
-				tabItem.setText(getPropertySet().getStructure().getStructBlock(structBlockIDs[i]).getName().getText());
-			} catch (StructBlockNotFoundException e) {
-				throw new RuntimeException(e);
-			}
-			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp2, validationResultManager);
+			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp, validationResultManager);
 			editor.addDataBlockEditorChangedListener(listenerProxy);
 			editor.refresh(propSet.getStructure(), dataBlockGroup);
-
-			dataBlockGroupEditorList.add(editor);
-
 			dataBlockGroupEditors.put(
 					structBlockIDs[i],
 					editor
 			);
 		}
-		
-//		WizardDialog wizardDialog = (WizardDialog)getContainer();
-//		wizardDialog.addKeyListener(new KeyAdapter() {
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				System.out.println(e);
-//			}
-//		});
 	}
 
 	/**
