@@ -15,13 +15,11 @@ import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockWizardPage;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
-import org.nightlabs.jfire.prop.id.StructBlockID;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -39,16 +37,10 @@ extends DataBlockWizardPage
 	 * @param pageName
 	 */
 	public PersonPersonalDataWizardPage(String pageName, String title, Person person) {
-		super(pageName, title, person.getStructure(), person, new StructBlockID[]{PersonStruct.PERSONALDATA});
+		super(pageName, title, person.getStructure(), person, PersonStruct.PERSONALDATA);
 		if (person.getStructure() instanceof StructLocal) {
 			this.structLocalScope = ((StructLocal) person.getStructure()).getStructLocalScope();
 		}
-
-		EditorStructBlockRegistry structBlockRegistry = new EditorStructBlockRegistry(
-				getPropertySet().getStructLocalLinkClass(), getPropertySet().getStructScope(), getPropertySet().getStructLocalScope());;
-
-				StructBlockID[] structBlockIDs = structBlockRegistry.getUnassignedBlockKeyArray();
-				setStructBlockIDs(structBlockIDs);
 	}
 
 	/**
@@ -74,14 +66,14 @@ extends DataBlockWizardPage
 		autoCreateDisplayName.setLayoutData(autoCreateDisplayNameGD);
 		autoCreateDisplayName.setText(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.autoCreateDisplayName.text")); //$NON-NLS-1$
 		autoCreateDisplayName.addSelectionListener(
-				new SelectionListener() {
+			new SelectionListener() {
 
-					public void widgetSelected(SelectionEvent arg0) {
-						displayName.getTextControl().setEnabled(!autoCreateDisplayName.getSelection());
-					}
-					public void widgetDefaultSelected(SelectionEvent arg0) {
-					}
+				public void widgetSelected(SelectionEvent arg0) {
+					displayName.getTextControl().setEnabled(!autoCreateDisplayName.getSelection());
 				}
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+				}
+			}
 		);
 		autoCreateDisplayName.setSelection(true);
 		displayName.getTextControl().setEnabled(false);
@@ -93,16 +85,12 @@ extends DataBlockWizardPage
 
 		setPropDataBlockEditorColumnHint(1);
 		createDataBlockEditors();
-
-		for (StructBlockID structBlockID : getStructBlockIDs()) {
-			getDataBlockGroupEditor(structBlockID).addDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
-				@Override
-				public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
-					pageChanged();
-				}
-			});
-		}
-
+		getDataBlockGroupEditor(PersonStruct.PERSONALDATA).addDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
+			@Override
+			public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+				pageChanged();
+			}
+		});
 		pageChanged();
 		return getWrapperComp();
 	}
@@ -114,13 +102,13 @@ extends DataBlockWizardPage
 //			TextDataField firstName = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_FIRSTNAME);
 //			TextDataField companyName = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_COMPANY);
 //			displayName.getTextControl().setText(getPropertySet().getDisplayName());
-
+//
 //			if (companyName.isEmpty() && name.isEmpty())
-//			updateStatus(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.errorNameMissing")); //$NON-NLS-1$
+//				updateStatus(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.errorNameMissing")); //$NON-NLS-1$
 //			else if (companyName.isEmpty() && firstName.isEmpty())
-//			updateStatus(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.errorFirstNameMissing")); //$NON-NLS-1$
+//				updateStatus(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.errorFirstNameMissing")); //$NON-NLS-1$
 //			else
-//			updateStatus(null);
+//				updateStatus(null);
 		} catch (Throwable t) {
 			ExceptionHandlerRegistry.syncHandleException(t);
 		}
