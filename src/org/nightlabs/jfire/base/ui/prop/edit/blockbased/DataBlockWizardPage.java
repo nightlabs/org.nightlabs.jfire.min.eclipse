@@ -37,31 +37,33 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
  */
 public class DataBlockWizardPage extends CompoundDataBlockWizardPage {
 
-	private StructBlockID[] structBlockIDs;
-	
+	private StructBlockID structBlockID;
+
+
 	/**
 	 * Creates a new DataBlockWizardPage for the
-	 * StructBlocks identified by the dataBlockID
+	 * StructBlock identified by the dataBlockID
 	 */
 	public DataBlockWizardPage(
 		String pageName,
 		String title,
 		IStruct struct,
 		PropertySet prop,
-		StructBlockID[] structBlockIDs
+		StructBlockID structBlockID
 	) {
-		super(pageName, title, prop, structBlockIDs);
-		this.structBlockIDs = structBlockIDs;
+		super(pageName, title, prop, new StructBlockID[]{structBlockID});
+		this.structBlockID = structBlockID;
 	}
 
 
 	/**
-	 * Returns the PropsStructBlockIDs this WizardPage is
+	 * Returns the PropsStructBlockID this WizardPage is
 	 * associated to.
 	 *
 	 * @return
 	 */
-	public StructBlockID[] getStructBlockIDs() {
-		return structBlockIDs;
+	public StructBlockID getStructBlockID() {
+		return structBlockID;
 	}
+
 }
