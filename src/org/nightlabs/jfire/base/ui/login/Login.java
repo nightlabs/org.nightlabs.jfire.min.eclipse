@@ -317,7 +317,8 @@ extends AbstractEPProcessor
 		}
 	}
 
-	private volatile boolean handlingLogin = false;
+	private volatile LoginData handlingLoginData = null;
+	
 	private AsyncLoginResult loginResult = new AsyncLoginResult();
 
 	protected LoginConfigModule getRuntimeConfigModule()
@@ -336,7 +337,22 @@ extends AbstractEPProcessor
 		}
 		return _runtimeConfigModule;
 	}
-
+	
+	/**
+	 * Set only when {@link #loginHandlerRunnable} runs.
+	 * Used to ensure that the runnable runs only once.
+	 */
+	private volatile boolean loginHandlerRunnableRunning = false;
+	/**
+	 * Sets {@link #loginHandlerRunnableRunning} to true synchronized
+	 * and throws an exception if it was true already.
+	 * Used to ensure that {@link #loginHandlerRunnable} runs only once.
+	 */
+	private synchronized void acquireLoginHandlerRunnableRunning() {
+		if (loginHandlerRunnableRunning)
+			throw new IllegalStateException("While a loginHandlerRunnable was running, anotherone was started");
+		loginHandlerRunnableRunning = true;
+	}
 	/**
 	 * The runnable that calls the {@link ILoginHandler}.
 	 */
@@ -344,7 +360,8 @@ extends AbstractEPProcessor
 		private boolean logoutFirst = false;
 
 		public void run() {
-			handlingLogin = true;
+			acquireLoginHandlerRunnableRunning();
+			acquireHandlingLogin();
 			try {
 				if (logoutFirst)
 					logout();
@@ -354,8 +371,6 @@ extends AbstractEPProcessor
 						createLogin();
 
 					loginResult.reset();
-					// create the temporary login data
-					LoginData lData = new LoginData();
 					// find a login handler
 					ILoginHandler lHandler = getLoginHandler();
 					if (lHandler == null)
@@ -363,7 +378,7 @@ extends AbstractEPProcessor
 
 					logger.debug("Calling login handler"); //$NON-NLS-1$
 					// let the handler populate the login data
-					lHandler.handleLogin(lData, sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
+					lHandler.handleLogin(handlingLoginData, sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
 
 
 					if ((!loginResult.isSuccess()) || (loginResult.getException() != null)) {
@@ -371,50 +386,70 @@ extends AbstractEPProcessor
 						// login unsuccessful
 						return;
 					}
-
-					// set the login data
-					flushInitialContextProperties(); // should be done by logout() but it doesn't hurt
-					loginData = new LoginData(lData);
-					// done should be logged in by now
-
-					// at the end, we register the JFireRCDLDelegate
-					JFireRCDLDelegate.sharedInstance().register(DelegatingClassLoaderOSGI.getSharedInstance()); // this method does nothing, if already registered.
-					boolean needRestart = JFireJ2EEPlugin.getDefault().updateManifest();
-					if (needRestart) {
-						// Set the exception-handler mode to bypass
-						ExceptionHandlerRegistry.sharedInstance().setMode(Mode.bypass);
-						Display.getDefault().asyncExec(new Runnable()
-						{
-							public void run()
-							{
-								Shell shell = RCPUtil.getActiveShell();
-								MessageDialog.openInformation(
-										shell,
-										Messages.getString("org.nightlabs.jfire.base.ui.login.Login.rebootDialogTitle"), //$NON-NLS-1$
-										Messages.getString("org.nightlabs.jfire.base.ui.login.Login.rebootDialogMessage")); //$NON-NLS-1$
-
-								safeRestart();
-							}
-						});
+					
+					if (handlingLoginData != null) {
+						// handle the login only if the handling
+						// was not taken over by a readAndDispach further up the stack
+						handleSuccessfulLogin();
 					}
-					forceLogin = false;
-
-					// notify loginstate listeners
-					changeLoginStateAndNotifyListeners(LoginState.LOGGED_IN);
+					
 				} catch(Throwable t){
 					logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
 					loginResult.setException(t);
 				}
 			} finally {
-				handlingLogin = false;
+				handlingLoginData = null;
 				synchronized (loginResult) {
 					logger.debug("Login handler done notifying loginResult"); //$NON-NLS-1$
 					loginResult.notifyAll();
 				}
+				loginHandlerRunnableRunning = false;
 			}
 		}
 	};
-	// not logged in by now
+
+	/**
+	 * Performs the actions necessary when login was successful.
+	 * Currently this registers the remote classloading delegate.
+	 */
+	private void handleSuccessfulLogin() {
+		// set the login data
+		flushInitialContextProperties(); // should be done by logout() but it doesn't hurt
+		loginData = new LoginData(handlingLoginData);
+		// done should be logged in by now
+
+		// at the end, we register the JFireRCDLDelegate
+		JFireRCDLDelegate.sharedInstance().register(DelegatingClassLoaderOSGI.getSharedInstance()); // this method does nothing, if already registered.
+		boolean needRestart = false;
+		try {
+			needRestart = JFireJ2EEPlugin.getDefault().updateManifest();
+		} catch (Exception e) {
+			needRestart = false;
+		}
+		if (needRestart) {
+			// Set the exception-handler mode to bypass
+			ExceptionHandlerRegistry.sharedInstance().setMode(Mode.bypass);
+			Display.getDefault().asyncExec(new Runnable()
+			{
+				public void run()
+				{
+					Shell shell = RCPUtil.getActiveShell();
+					MessageDialog.openInformation(
+							shell,
+							Messages.getString("org.nightlabs.jfire.base.ui.login.Login.rebootDialogTitle"), //$NON-NLS-1$
+							Messages.getString("org.nightlabs.jfire.base.ui.login.Login.rebootDialogMessage")); //$NON-NLS-1$
+
+					safeRestart();
+				}
+			});
+		}
+		forceLogin = false;
+
+		// notify loginstate listeners
+		changeLoginStateAndNotifyListeners(LoginState.LOGGED_IN);
+		
+		handlingLoginData = null;
+	}
 
 	/**
 	 * This method is necessary, because the restart may be required at a very early stage. Thus,
@@ -465,15 +500,28 @@ extends AbstractEPProcessor
 		doLogin(false);
 	}
 
+	/**
+	 * This method checks if the login is already handled by
+	 * checking {@link #handlingLoginData} and will return <code>false</code>
+	 * if this is not null. Otherwise it will assign the 
+	 * {@link LoginData} used to handle the login and return <code>true</code>.
+	 */
 	private synchronized boolean acquireHandlingLogin()
 	{
-		if (handlingLogin)
+		if (handlingLoginData != null)
 			return false;
 
-		handlingLogin = true;
+		handlingLoginData = new LoginData();
 		return true;
 	}
-
+	/**
+	 * Checks whether {@link #handlingLoginData} is assigned 
+	 * and will return <code>true</code> if so.
+	 */
+	private boolean isHandlingLogin() {
+		return handlingLoginData != null;
+	}
+	
 	private volatile boolean loginHandlerRunnablePending = false;
 
 	/**
@@ -532,7 +580,7 @@ extends AbstractEPProcessor
 			else {
 				logger.debug("Login requestor-thread "+Thread.currentThread()+" waiting for login handler");		 //$NON-NLS-1$ //$NON-NLS-2$
 				synchronized (loginResult) {
-					while (handlingLogin) {
+					while (isHandlingLogin()) {
 						try {
 							loginResult.wait(5000);
 						} catch (InterruptedException e) { }
@@ -552,7 +600,7 @@ extends AbstractEPProcessor
 			}
 			else {
 				Display display = Display.getCurrent();
-				while (handlingLogin) {
+				while (isHandlingLogin() && !loginResult.isSuccess() && !loginResult.isLoginAborted()) {
 					display.readAndDispatch();
 
 					// During start-up, the syncExecs are *not* executed, because this obviously is deferred till the workbench is completely up.
@@ -564,6 +612,13 @@ extends AbstractEPProcessor
 						loginHandlerRunnablePending = false;
 						loginHandlerRunnable.run();
 					}
+				}
+				
+				// if we come here inside a nested readAndDispatch while another login process
+				// is performed on the UI thread outside (in the outer readAndDispatch), we have
+				// to hijack control, too and do everything already here that's normally done by the outer login process.
+				if (isHandlingLogin() && loginResult.isSuccess()) {
+					handleSuccessfulLogin();
 				}
 			}
 		}
