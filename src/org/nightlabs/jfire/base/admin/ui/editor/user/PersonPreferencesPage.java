@@ -33,6 +33,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonBlockBasedEditorSection;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditorSection;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -40,7 +41,7 @@ import org.nightlabs.jfire.security.User;
 
 /**
  * An editor page for person preferences.
- * 
+ *
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
@@ -50,7 +51,7 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 	 * The id of this page.
 	 */
 	public static final String ID_PAGE = PersonPreferencesPage.class.getName();
-	
+
 	private BlockBasedEditorSection userPropertiesSection;
 
 	/**
@@ -72,7 +73,7 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 	 * <p>
 	 * This constructor is used by the entity editor
 	 * page extension system.
-	 * 
+	 *
 	 * @param editor The editor for which to create this
 	 * 		form page.
 	 */
@@ -83,8 +84,8 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 
 	@Override
 	protected void addSections(Composite parent) {
-		userPropertiesSection = new BlockBasedEditorSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesPage.sectionTitle")); //$NON-NLS-1$
-		
+		userPropertiesSection = new PersonBlockBasedEditorSection(this, parent, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesPage.sectionTitle")); //$NON-NLS-1$
+
 		getManagedForm().addPart(userPropertiesSection);
 	}
 
@@ -102,20 +103,20 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 			}
 		});
 	}
-	
+
 	/**
 	 * This method is meant for extendors if this class to be able to update their GUI when {@link #asyncCallback()}
 	 * is called. The default implementation does nothing.
 	 */
 	protected void updateGui(PersonPreferencesController controller) {
-		
+
 	}
-	
+
 	@Override
 	protected String getPageFormTitle() {
 		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesPage.pageFormTitle"); //$NON-NLS-1$
 	}
-	
+
 	BlockBasedEditorSection getUserPropertiesSection() {
 		return userPropertiesSection;
 	}

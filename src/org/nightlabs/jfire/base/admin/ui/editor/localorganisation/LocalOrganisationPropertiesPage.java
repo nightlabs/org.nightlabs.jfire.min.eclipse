@@ -36,6 +36,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorPageWithProgress;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonBlockBasedEditorSection;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditorSection;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
@@ -44,7 +45,7 @@ import org.nightlabs.jfire.person.Person;
  * An {@link EntityEditorPageWithProgress} that shows an {@link BlockBasedEditorSection}
  * where the user can edit the {@link Person} of an {@link Organisation} inside an
  * {@link LocalOrganisationEditor}.
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class LocalOrganisationPropertiesPage extends EntityEditorPageWithProgress
@@ -77,7 +78,7 @@ public class LocalOrganisationPropertiesPage extends EntityEditorPageWithProgres
 	 * <p>
 	 * This constructor is used by the entity editor
 	 * page extension system.
-	 * 
+	 *
 	 * @param editor The editor for which to create this
 	 * 		form page.
 	 */
@@ -91,25 +92,25 @@ public class LocalOrganisationPropertiesPage extends EntityEditorPageWithProgres
 	 */
 	@Override
 	protected void addSections(Composite parent) {
-		organisationPropertiesSection = new BlockBasedEditorSection(
-				this, parent, 
+		organisationPropertiesSection = new PersonBlockBasedEditorSection(
+				this, parent,
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationPropertiesPage.sectionTitle")); //$NON-NLS-1$
 		createDescriptionControl(organisationPropertiesSection.getSection(), getManagedForm().getToolkit());
-		
+
 		getManagedForm().addPart(organisationPropertiesSection);
-		
+
 		if (getPageController().isLoaded()) {
 			setControllerObject();
 		}
 	}
-	
+
 	private void createDescriptionControl(Section section, FormToolkit toolkit)
 	{
 		FormText text = toolkit.createFormText(section, true);
 		text.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationPropertiesPage.sectionText"), false, false); //$NON-NLS-1$
 		section.setDescriptionControl(text);
 	}
-	
+
 	/**
 	 * Sets the controllers current object ({@link Organisation}) to the ui.
 	 */
