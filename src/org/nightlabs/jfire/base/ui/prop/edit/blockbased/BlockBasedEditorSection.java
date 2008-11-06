@@ -67,6 +67,11 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 
 	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey"; //$NON-NLS-1$
 
+	protected BlockBasedEditor createBlockBasedEditor()
+	{
+		return new BlockBasedEditor(true);
+	}
+
 	/**
 	 * Create the content for this section.
 	 * @param section The section to fill
@@ -79,24 +84,24 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		createDescriptionControl(section, toolkit, sectionDescriptionText);
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
-		blockBasedPersonEditor = new BlockBasedEditor(true);
+		blockBasedPersonEditor = createBlockBasedEditor();
 		blockBasedPersonEditor.setValidationResultManager(new ValidationResultManager() {
 			/**
 			 * Used to cache the validation result because MessageManager
 			 * updates UI every time which is quite expensive. Marc
 			 */
 			private ValidationResult lastValidationResult = null;
-			
+
 			private boolean needUpdate(ValidationResult validationResult)
 			{
-				if((lastValidationResult == null && validationResult != null) || 
+				if((lastValidationResult == null && validationResult != null) ||
 						(lastValidationResult != null && !lastValidationResult.equals(validationResult))) {
 					lastValidationResult = validationResult;
 					return true;
 				}
 				return false;
 			}
-			
+
 			@Override
 			public void setValidationResult(ValidationResult validationResult) {
 				if(!needUpdate(validationResult))
