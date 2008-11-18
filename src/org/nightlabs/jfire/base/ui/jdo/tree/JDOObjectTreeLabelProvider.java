@@ -6,7 +6,6 @@ package org.nightlabs.jfire.base.ui.jdo.tree;
 import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jdo.ObjectID;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * A LabelProvider that can be used with a TreeViewer that is driven by an {@link ActiveJDOObjectTreeController}.
