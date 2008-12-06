@@ -33,12 +33,11 @@ import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.NLBasePlugin;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.j2ee.LoginData;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.math.Base62Coder;
 
 /**
  * @see org.nightlabs.jfire.base.ui.login.ILoginHandler
- * 
+ *
  * @author Alexander Bieber
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
@@ -91,11 +90,11 @@ public class JFireLoginHandler implements ILoginHandler {
 			loginData.setSessionID(
 					coder.encode(System.currentTimeMillis(), 1) + '-' +
 					coder.encode((long)(Math.random() * 14776335), 1)); // 14776335 is the highest value encoded in 4 digits ("zzzz")
-			
+
 			if (loginData.getPassword() != null) {
 				// login parameters were given via startup parameters
 				//  -> initialise to last used configuration values if none were given
-				
+
 				loginConfigModule.acquireWriteLock();
 				try {
 					LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
@@ -105,9 +104,10 @@ public class JFireLoginHandler implements ILoginHandler {
 						latestConfig = new LoginConfiguration();
 						latestConfig.setLoginConfigModule(loginConfigModule);
 						LoginData defaultData = latestConfig.getLoginData();
-						defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
-						defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
-						defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
+//						defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
+//						defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
+//						defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
+						defaultData.setDefaultValues();
 					}
 
 					LoginData lastUsed = latestConfig.getLoginData();
