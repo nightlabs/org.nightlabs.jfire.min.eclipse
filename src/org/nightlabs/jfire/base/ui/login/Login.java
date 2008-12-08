@@ -129,7 +129,7 @@ extends AbstractEPProcessor
 
 	private boolean forceLogin = false;
 
-//	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
+	//	private long lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
 	private volatile LoginState  currentLoginState = LoginState.LOGGED_OUT;
 
@@ -237,12 +237,12 @@ extends AbstractEPProcessor
 	 * Used internally within static block, in order to create the shared instance as soon as the class is loaded.
 	 */
 	protected static void createLogin() {
-		sharedInstanceLogin = new Login();
+		Login.sharedInstanceLogin = new Login();
 		org.nightlabs.base.ui.login.Login.sharedInstance(); // force processing of extension point
 	}
 
 	static {
-		createLogin();
+		Login.createLogin();
 	}
 
 	public String getSessionID()
@@ -264,10 +264,10 @@ extends AbstractEPProcessor
 	 * @return
 	 */
 	public static boolean isLoggedIn() {
-		if (sharedInstanceLogin == null)
+		if (Login.sharedInstanceLogin == null)
 			return false;
 
-		LoginState ls = sharedInstanceLogin.currentLoginState;
+		LoginState ls = Login.sharedInstanceLogin.currentLoginState;
 		return ls == LoginState.LOGGED_IN || ls == LoginState.ABOUT_TO_LOG_OUT;
 	}
 
@@ -318,7 +318,7 @@ extends AbstractEPProcessor
 	}
 
 	private volatile LoginData handlingLoginData = null;
-	
+
 	private AsyncLoginResult loginResult = new AsyncLoginResult();
 
 	protected LoginConfigModule getRuntimeConfigModule()
@@ -337,7 +337,7 @@ extends AbstractEPProcessor
 		}
 		return _runtimeConfigModule;
 	}
-	
+
 	/**
 	 * Set only when {@link #loginHandlerRunnable} runs.
 	 * Used to ensure that the runnable runs only once.
@@ -367,8 +367,8 @@ extends AbstractEPProcessor
 					logout();
 
 				try{
-					if (sharedInstanceLogin == null)
-						createLogin();
+					if (Login.sharedInstanceLogin == null)
+						Login.createLogin();
 
 					loginResult.reset();
 					// find a login handler
@@ -376,31 +376,31 @@ extends AbstractEPProcessor
 					if (lHandler == null)
 						throw new LoginException("Cannot login, loginHandler is not set!"); //$NON-NLS-1$
 
-					logger.debug("Calling login handler"); //$NON-NLS-1$
+					Login.logger.debug("Calling login handler"); //$NON-NLS-1$
 					// let the handler populate the login data
-					lHandler.handleLogin(handlingLoginData, sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
+					lHandler.handleLogin(handlingLoginData, Login.sharedInstanceLogin.getRuntimeConfigModule(), loginResult);
 
 
 					if ((!loginResult.isSuccess()) || (loginResult.getException() != null)) {
-//						loginData = null;
+						//						loginData = null;
 						// login unsuccessful
 						return;
 					}
-					
+
 					if (handlingLoginData != null) {
 						// handle the login only if the handling
 						// was not taken over by a readAndDispach further up the stack
 						handleSuccessfulLogin();
 					}
-					
+
 				} catch(Throwable t){
-					logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
+					Login.logger.error("Exception thrown while logging in.",t); //$NON-NLS-1$
 					loginResult.setException(t);
 				}
 			} finally {
 				handlingLoginData = null;
 				synchronized (loginResult) {
-					logger.debug("Login handler done notifying loginResult"); //$NON-NLS-1$
+					Login.logger.debug("Login handler done notifying loginResult"); //$NON-NLS-1$
 					loginResult.notifyAll();
 				}
 				loginHandlerRunnableRunning = false;
@@ -447,7 +447,7 @@ extends AbstractEPProcessor
 
 		// notify loginstate listeners
 		changeLoginStateAndNotifyListeners(LoginState.LOGGED_IN);
-		
+
 		handlingLoginData = null;
 	}
 
@@ -503,7 +503,7 @@ extends AbstractEPProcessor
 	/**
 	 * This method checks if the login is already handled by
 	 * checking {@link #handlingLoginData} and will return <code>false</code>
-	 * if this is not null. Otherwise it will assign the 
+	 * if this is not null. Otherwise it will assign the
 	 * {@link LoginData} used to handle the login and return <code>true</code>.
 	 */
 	private synchronized boolean acquireHandlingLogin()
@@ -515,13 +515,13 @@ extends AbstractEPProcessor
 		return true;
 	}
 	/**
-	 * Checks whether {@link #handlingLoginData} is assigned 
+	 * Checks whether {@link #handlingLoginData} is assigned
 	 * and will return <code>true</code> if so.
 	 */
 	private boolean isHandlingLogin() {
 		return handlingLoginData != null;
 	}
-	
+
 	private volatile boolean loginHandlerRunnablePending = false;
 
 	/**
@@ -540,27 +540,27 @@ extends AbstractEPProcessor
 	 */
 	private void doLogin(final boolean forceLogoutFirst) throws LoginException
 	{
-		logger.debug("Login requested by thread "+Thread.currentThread());		 //$NON-NLS-1$
-//		if ((currLoginState == LoginState.OFFLINE)){
-//			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
-//			if (!forceLogin && elapsedTime < WORK_OFFLINE_TIMEOUT) {
-//				LoginException lEx = new LoginException();
-//				lEx.initCause(new LoginAbortedException());
-//				throw lEx;
-//			}
-//		}
+		Login.logger.debug("Login requested by thread "+Thread.currentThread());		 //$NON-NLS-1$
+		//		if ((currLoginState == LoginState.OFFLINE)){
+		//			long elapsedTime = System.currentTimeMillis() - lastWorkOfflineDecisionTime;
+		//			if (!forceLogin && elapsedTime < WORK_OFFLINE_TIMEOUT) {
+		//				LoginException lEx = new LoginException();
+		//				lEx.initCause(new LoginAbortedException());
+		//				throw lEx;
+		//			}
+		//		}
 
 		if (currentLoginState == LoginState.LOGGED_IN || currentLoginState == LoginState.ABOUT_TO_LOG_OUT) {
-			logger.debug("Already logged in, returning. Thread "+Thread.currentThread()); //$NON-NLS-1$
+			Login.logger.debug("Already logged in, returning. Thread "+Thread.currentThread()); //$NON-NLS-1$
 			if (forceLogin) forceLogin = false;
 			return;
 		}
 		boolean iAmHandlingLogin = acquireHandlingLogin();
-//		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
+		//		if (!Display.getDefault().getThread().equals(Thread.currentThread())) {
 		if (Display.getCurrent() == null) {
 			if (iAmHandlingLogin) {
 				final String threadName = Thread.currentThread().getName();
-				logger.info("Non-UI thread (" + threadName + ") is responsible for login. Delegating loginHandlerRunnable to UI thread."); //$NON-NLS-1$ //$NON-NLS-2$
+				Login.logger.info("Non-UI thread (" + threadName + ") is responsible for login. Delegating loginHandlerRunnable to UI thread."); //$NON-NLS-1$ //$NON-NLS-2$
 				loginHandlerRunnablePending = true;
 				Display.getDefault().syncExec(new Runnable() {
 					public void run()
@@ -571,14 +571,14 @@ extends AbstractEPProcessor
 							loginHandlerRunnable.run();
 						}
 						else
-							logger.info("Non-UI thread (" + threadName + ") was not responsible anymore for login when the scheduled Runnable was finally executed on the UI thread. Skipped login in this runnable."); //$NON-NLS-1$ //$NON-NLS-2$
+							Login.logger.info("Non-UI thread (" + threadName + ") was not responsible anymore for login when the scheduled Runnable was finally executed on the UI thread. Skipped login in this runnable."); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				});
 
-				logger.info("... syncExec for loginHandlerRunnable returned."); //$NON-NLS-1$
+				Login.logger.info("... syncExec for loginHandlerRunnable returned."); //$NON-NLS-1$
 			}
 			else {
-				logger.debug("Login requestor-thread "+Thread.currentThread()+" waiting for login handler");		 //$NON-NLS-1$ //$NON-NLS-2$
+				Login.logger.debug("Login requestor-thread "+Thread.currentThread()+" waiting for login handler");		 //$NON-NLS-1$ //$NON-NLS-2$
 				synchronized (loginResult) {
 					while (isHandlingLogin()) {
 						try {
@@ -588,15 +588,15 @@ extends AbstractEPProcessor
 				}
 			}
 
-			logger.debug("Login requestor-thread "+Thread.currentThread()+" returned");		 //$NON-NLS-1$ //$NON-NLS-2$
+			Login.logger.debug("Login requestor-thread "+Thread.currentThread()+" returned");		 //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else {
 			if (iAmHandlingLogin) {
-				logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()..."); //$NON-NLS-1$ //$NON-NLS-2$
+				Login.logger.info("UI thread (" + Thread.currentThread().getName() + ") is responsible for login. Calling loginHandlerRunnable.run()..."); //$NON-NLS-1$ //$NON-NLS-2$
 
 				changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 				loginHandlerRunnable.run();
-				logger.info("...loginHandlerRunnable.run() returned."); //$NON-NLS-1$
+				Login.logger.info("...loginHandlerRunnable.run() returned."); //$NON-NLS-1$
 			}
 			else {
 				Display display = Display.getCurrent();
@@ -606,14 +606,14 @@ extends AbstractEPProcessor
 					// During start-up, the syncExecs are *not* executed, because this obviously is deferred till the workbench is completely up.
 					// Hence, we must take over the login-process here in order to prevent dead-lock.
 					if (loginHandlerRunnablePending) {
-						logger.info("Hijacking responsibility for login, since I'm the UI thread and want to login, too. Will execute login now here."); //$NON-NLS-1$
+						Login.logger.info("Hijacking responsibility for login, since I'm the UI thread and want to login, too. Will execute login now here."); //$NON-NLS-1$
 
 						changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_IN);
 						loginHandlerRunnablePending = false;
 						loginHandlerRunnable.run();
 					}
 				}
-				
+
 				// if we come here inside a nested readAndDispatch while another login process
 				// is performed on the UI thread outside (in the outer readAndDispatch), we have
 				// to hijack control, too and do everything already here that's normally done by the outer login process.
@@ -627,14 +627,14 @@ extends AbstractEPProcessor
 			if (loginResult.getException() instanceof LoginException)
 				throw (LoginException)loginResult.getException();
 			else
-				logger.error("Exception thrown while logging in.",loginResult.getException()); //$NON-NLS-1$
+				Login.logger.error("Exception thrown while logging in.",loginResult.getException()); //$NON-NLS-1$
 			throw new LoginException(loginResult.getException().getMessage());
 		}
 		if (!loginResult.isSuccess()) {
 			if (loginResult.isLoginAborted()) {
 				// if user decided to work OFFLINE first notify loginstate listeners
-//				currLoginState = LoginState.LOGGED_OUT;
-//				notifyLoginStateListeners_afterChange(currLoginState);
+				//				currLoginState = LoginState.LOGGED_OUT;
+				//				notifyLoginStateListeners_afterChange(currLoginState);
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						changeLoginStateAndNotifyListeners(LoginState.LOGGED_OUT);
@@ -649,7 +649,7 @@ extends AbstractEPProcessor
 				throw new LoginException(loginResult.getMessage());
 		}
 
-		logger.debug("Login OK. Thread "+Thread.currentThread()); //$NON-NLS-1$
+		Login.logger.debug("Login OK. Thread "+Thread.currentThread()); //$NON-NLS-1$
 	}
 
 	private org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor objectID2PCClassNotificationInterceptor = null;
@@ -677,7 +677,7 @@ extends AbstractEPProcessor
 	public static Login getLogin()
 	throws LoginException
 	{
-		return getLogin(true);
+		return Login.getLogin(true);
 	}
 
 	/**
@@ -686,9 +686,9 @@ extends AbstractEPProcessor
 	 */
 	public static Login sharedInstance()
 	{
-		if (sharedInstanceLogin == null)
+		if (Login.sharedInstanceLogin == null)
 			throw new NullPointerException("createLogin has not been called! SharedInstance is null!"); //$NON-NLS-1$
-		return sharedInstanceLogin;
+		return Login.sharedInstanceLogin;
 	}
 
 	/**
@@ -705,13 +705,13 @@ extends AbstractEPProcessor
 	public static Login getLogin(boolean doLogin)
 	throws LoginException
 	{
-		if (sharedInstanceLogin == null)
+		if (Login.sharedInstanceLogin == null)
 			throw new NullPointerException("createLogin not called! sharedInstance is null!"); //$NON-NLS-1$
 
 		if (doLogin) {
-			sharedInstanceLogin.doLogin();
+			Login.sharedInstanceLogin.doLogin();
 		}
-		return sharedInstanceLogin;
+		return Login.sharedInstanceLogin;
 	}
 
 	/**
@@ -743,9 +743,9 @@ extends AbstractEPProcessor
 
 	private volatile LoginData loginData;
 
-//	public LoginData getLoginDataCopy() {
-//	return new LoginData(loginData);
-//	}
+	//	public LoginData getLoginDataCopy() {
+	//	return new LoginData(loginData);
+	//	}
 
 	protected LoginData getLoginData() {
 		return loginData;
@@ -796,7 +796,7 @@ extends AbstractEPProcessor
 		if (loginData == null)
 			return null;
 
-//		return loginData.getPrincipalName();
+		//		return loginData.getPrincipalName();
 		return loginData.getUserID() + LoginData.USER_ORGANISATION_SEPARATOR + loginData.getOrganisationID();
 	}
 
@@ -875,22 +875,22 @@ extends AbstractEPProcessor
 		}
 	}
 
-//	/**
-//	* @deprecated Do not use anymore! Use
-//	*/
-//	@Deprecated
-//	public InitialContext getInitialContext() throws NamingException, LoginException
-//	{
-////	logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
-////	doLogin();
-////	logger.debug("getInitialContext(): logged in"); //$NON-NLS-1$
-////	if (initialContext != null)
-////	return initialContext;
+	//	/**
+	//	* @deprecated Do not use anymore! Use
+	//	*/
+	//	@Deprecated
+	//	public InitialContext getInitialContext() throws NamingException, LoginException
+	//	{
+	////	logger.debug("getInitialContext(): begin"); //$NON-NLS-1$
+	////	doLogin();
+	////	logger.debug("getInitialContext(): logged in"); //$NON-NLS-1$
+	////	if (initialContext != null)
+	////	return initialContext;
 
-////	logger.debug("getInitialContext(): creating new initctx."); //$NON-NLS-1$
-////	initialContext = new InitialContext(getInitialContextProperties());
-////	return initialContext;
-//	}
+	////	logger.debug("getInitialContext(): creating new initctx."); //$NON-NLS-1$
+	////	initialContext = new InitialContext(getInitialContextProperties());
+	////	return initialContext;
+	//	}
 
 	/**
 	 * Returns the runtime (not the persitent) LoginConfigModule. The persistent
@@ -1021,32 +1021,32 @@ extends AbstractEPProcessor
 		}
 	}
 
-//	protected void notifyLoginStateListeners_beforeChange(LoginState newLoginState) {
-//		synchronized (loginStateListenerRegistry) {
-//			try {
-//				checkProcessing();
-//
-//				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
-//					try {
-//
-//						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
-//								getLoginState(), newLoginState,
-//								item.getAction());
-//
-//						item.getLoginStateListener().beforeLoginStateChange(event);
-//
-//
-//					} catch (Throwable t) {
-//						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
-//					}
-//				}
-//			} catch (Throwable t) {
-//				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
-//			}
-//		}
-//	}
+	//	protected void notifyLoginStateListeners_beforeChange(LoginState newLoginState) {
+	//		synchronized (loginStateListenerRegistry) {
+	//			try {
+	//				checkProcessing();
+	//
+	//				for (LoginStateListenerRegistryItem item : new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry)) {
+	//					try {
+	//
+	//						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
+	//								getLoginState(), newLoginState,
+	//								item.getAction());
+	//
+	//						item.getLoginStateListener().beforeLoginStateChange(event);
+	//
+	//
+	//					} catch (Throwable t) {
+	//						logger.warn("Caught exception while notifying LoginStateListener. Continue.", t); //$NON-NLS-1$
+	//					}
+	//				}
+	//			} catch (Throwable t) {
+	//				logger.warn("Caught exception while notifying LoginStateListeners. Abort.", t); //$NON-NLS-1$
+	//			}
+	//		}
+	//	}
 
-//	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
+	//	protected void notifyLoginStateListeners_afterChange(LoginState newLoginState) {
 	protected void changeLoginStateAndNotifyListeners(final LoginState newLoginState) {
 		if (Display.getCurrent() == null)
 			throw new IllegalStateException("This method must be called on the SWT UI thread!"); //$NON-NLS-1$
@@ -1064,17 +1064,17 @@ extends AbstractEPProcessor
 
 				currentLoginState = newLoginState;
 
-				logger.info("changeLoginStateAndNotifyListeners: changing from " + oldLoginState + " to " + newLoginState); //$NON-NLS-1$ //$NON-NLS-2$
+				Login.logger.info("changeLoginStateAndNotifyListeners: changing from " + oldLoginState + " to " + newLoginState); //$NON-NLS-1$ //$NON-NLS-2$
 
-//				if (currLoginState == LoginState.OFFLINE)
-//					lastWorkOfflineDecisionTime = System.currentTimeMillis();
+				//				if (currLoginState == LoginState.OFFLINE)
+				//					lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
 				// We should be logged in now, open the cache if not already open
 				if (newLoginState == LoginState.LOGGED_IN) {
 					try {
 						Cache.sharedInstance().open(getSessionID()); // the cache is opened implicitely now by default, but it is closed *after* a logout.
 					} catch (Throwable t) {
-						logger.debug("Cache could not be opened!", t); //$NON-NLS-1$
+						Login.logger.debug("Cache could not be opened!", t); //$NON-NLS-1$
 					}
 				}
 
@@ -1084,7 +1084,7 @@ extends AbstractEPProcessor
 					JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
 				}
 
-//				if (LoginState.LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
+				//				if (LoginState.LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
 				if (LoginState.LOGGED_OUT == newLoginState && objectID2PCClassNotificationInterceptor != null) {
 					SelectionManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					JDOLifecycleManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
@@ -1093,7 +1093,7 @@ extends AbstractEPProcessor
 
 				loginStateListenerRegistryItems = new LinkedList<LoginStateListenerRegistryItem>(loginStateListenerRegistry);
 			} catch (Throwable t) {
-				logger.warn("Caught exception while changing LoginState and obtaining LoginStateListeners.", t); //$NON-NLS-1$
+				Login.logger.warn("Caught exception while changing LoginState and obtaining LoginStateListeners.", t); //$NON-NLS-1$
 				return;
 			}
 		} // synchronized (loginStateListenerRegistry) {
@@ -1102,33 +1102,33 @@ extends AbstractEPProcessor
 		// It is important to trigger them outside of this block, because this prevents dead-locks.
 		// We ensure now above already that we are on the UI thread! But it's still important to trigger the listeners
 		// outside of the synchronized block.
-//		Display.getDefault().syncExec(new Runnable() {
-//			public void run() {
-				for (LoginStateListenerRegistryItem item : loginStateListenerRegistryItems) {
-					try {
-						LoginStateChangeEvent event = new LoginStateChangeEvent(this,
-								oldLoginState, newLoginState,
-								item.getAction());
+		//		Display.getDefault().syncExec(new Runnable() {
+		//			public void run() {
+		for (LoginStateListenerRegistryItem item : loginStateListenerRegistryItems) {
+			try {
+				LoginStateChangeEvent event = new LoginStateChangeEvent(this,
+						oldLoginState, newLoginState,
+						item.getAction());
 
-						item.getLoginStateListener().loginStateChanged(event);
-					} catch (Throwable t) {
-						logger.warn("Caught exception while notifying LoginStateListener.", t); //$NON-NLS-1$
-					}
-				}
-//			}
-//		});
+				item.getLoginStateListener().loginStateChanged(event);
+			} catch (Throwable t) {
+				Login.logger.warn("Caught exception while notifying LoginStateListener.", t); //$NON-NLS-1$
+			}
+		}
+		//			}
+		//		});
 	}
 
-//	/** // I think this method is not called anymore. Marco :-)
-//	 * Do not call this method yourself.<br/>
-//	 * It is used to trigger the notification right after the
-//	 * WorkbenchWindow is shown, as Login can be requested
-//	 * at a point in startup when actions and other
-//	 * LoginStateListeners are not build yet.<br/>
-//	 */
-//	protected void triggerLoginStateNotification() {
-//		notifyLoginStateListeners_afterChange(getLoginState());
-//	}
+	//	/** // I think this method is not called anymore. Marco :-)
+	//	 * Do not call this method yourself.<br/>
+	//	 * It is used to trigger the notification right after the
+	//	 * WorkbenchWindow is shown, as Login can be requested
+	//	 * at a point in startup when actions and other
+	//	 * LoginStateListeners are not build yet.<br/>
+	//	 */
+	//	protected void triggerLoginStateNotification() {
+	//		notifyLoginStateListeners_afterChange(getLoginState());
+	//	}
 
 	/**
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
@@ -1145,9 +1145,9 @@ extends AbstractEPProcessor
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception
 	{
-		if (LOGIN_STATE_LISTENER_ELEMENT.equals(element.getName())) {
-				LoginStateListener listener = (LoginStateListener) element.createExecutableExtension(CLASS_ELEMENT);
-				addLoginStateListener(listener);
+		if (Login.LOGIN_STATE_LISTENER_ELEMENT.equals(element.getName())) {
+			LoginStateListener listener = (LoginStateListener) element.createExecutableExtension(Login.CLASS_ELEMENT);
+			addLoginStateListener(listener);
 		}
 	}
 
@@ -1161,13 +1161,13 @@ extends AbstractEPProcessor
 		JFireRCLBackend jfireCLBackend = null;
 		if (jfireCLBackend == null) {
 			try {
-				logger.debug(Thread.currentThread().getContextClassLoader());
-				logger.debug(JFireBasePlugin.class.getClassLoader());
-				logger.debug("**********************************************************"); //$NON-NLS-1$
-				logger.debug("Create testing login"); //$NON-NLS-1$
+				Login.logger.debug(Thread.currentThread().getContextClassLoader());
+				Login.logger.debug(JFireBasePlugin.class.getClassLoader());
+				Login.logger.debug("**********************************************************"); //$NON-NLS-1$
+				Login.logger.debug("Create testing login"); //$NON-NLS-1$
 				jfireCLBackend = JFireRCLBackendUtil.getHome(
 						_loginData.getInitialContextProperties()).create();
-				logger.debug("**********************************************************"); //$NON-NLS-1$
+				Login.logger.debug("**********************************************************"); //$NON-NLS-1$
 				loginResult.setSuccess(true);
 			} catch (RemoteException remoteException) {
 				Throwable cause = remoteException.getCause();
@@ -1201,7 +1201,7 @@ extends AbstractEPProcessor
 					loginResult.setWasSocketTimeout(true);
 				}
 				// cant create local bean stub
-				logger.error("Login failed!", x); //$NON-NLS-1$
+				Login.logger.error("Login failed!", x); //$NON-NLS-1$
 				LoginException loginE = new LoginException(x.getMessage());
 				loginE.initCause(x);
 				loginResult.setMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.Login.errorUnhandledExceptionMessage")); //$NON-NLS-1$
