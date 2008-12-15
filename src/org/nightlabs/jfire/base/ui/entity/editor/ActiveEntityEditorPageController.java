@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.entity.editor;
 
@@ -86,15 +86,15 @@ import org.nightlabs.util.Util;
  *   This option will then open another Editor instance so the user can compare the objects.</li>
  * </ul>
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- * 
+ *
  * @param <EnityType> The type of entity this controller manages
 s */
 public abstract class ActiveEntityEditorPageController<EntityType> extends EntityEditorPageController {
 
 	private static final boolean ENABLE_LISTENER = true;
-	
+
 	private static final Logger logger = Logger.getLogger(ActiveEntityEditorPageController.class);
-	
+
 	/**
 	 * Enum of choices for the user when an object was changed.
 	 */
@@ -103,23 +103,23 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		loadRemoteChanges(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.loadRemoteChanges.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.loadRemoteChanges.description")), //$NON-NLS-1$ //$NON-NLS-2$
 		viewRemoteChanges(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.viewRemoteChanges.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.viewRemoteChanges.description")), //$NON-NLS-1$ //$NON-NLS-2$
 		closeEditor(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.closeEditor.message"), Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.closeEditor.description")); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		private String message;
 		private String tooltip;
-		
+
 		EntityStaleAction(String message, String tooltip) {
 			this.message = message;
 			this.tooltip = tooltip;
 		}
-		
+
 		public String getMessage() {
 			return message;
 		}
-		
+
 		public String getTooltip() {
 			return tooltip;
 		}
-		
+
 		public static EntityStaleAction getFromMessage(String msg) {
 			for (EntityStaleAction action : EntityStaleAction.values()) {
 				if (action.getMessage().equals(msg))
@@ -135,7 +135,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		private EntityStaleAction[] actions;
 		private EntityStaleAction action;
 		private IEntityEditorPageController controller;
-		
+
 		public AbstractEntityStaleHandler(
 				EntityStaleAction[] actions,
 				EntityStaleAction action,
@@ -145,7 +145,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			this.action = action;
 			this.controller = controller;
 		}
-		
+
 		private ComboBoxCellEditor getCreateCellEditor(Composite parent) {
 			if (cellEditor == null) {
 				String[] messages = new String[actions.length];
@@ -166,7 +166,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			}
 			return cellEditor;
 		}
-		
+
 		@Override
 		public CellEditor getCellEditor(Composite parent, Object element) {
 			return getCreateCellEditor(parent);
@@ -185,7 +185,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					}
 					return ""; //$NON-NLS-1$
 				}
-				
+
 			};
 		}
 
@@ -204,14 +204,14 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		@Override
 		public void setValue(Object element, Object value) {
 			this.action = EntityStaleAction.getFromMessage((String) value);
-			
+
 		}
-		
+
 		public EntityStaleAction getAction() {
 			return action;
 		}
 	}
-	
+
 	/**
 	 * Handler used by default when the entity is changed.
 	 * It will display the {@link EntityChangeUserActionDialog}
@@ -219,7 +219,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * react accordingly.
 	 */
 	protected class EntityChangedHandler extends AbstractEntityStaleHandler {
-		
+
 		public EntityChangedHandler(EntityStaleAction[] actions,
 				EntityStaleAction action, IEntityEditorPageController controller) {
 			super(actions, action, controller);
@@ -254,8 +254,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Handler used by default when the entity is deleted on the server.
 	 * It will display the {@link EntityDeleteUserActionDialog}
@@ -284,9 +284,9 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				}
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * The change listener that will determine whether a
 	 * reaction on the remote change is necessary (change not caused by itself and local changes present).
@@ -294,7 +294,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * or {@link #createEntityDeletedHandler(DirtyObjectID)}.
 	 */
 	protected class EntityChangeListener extends NotificationAdapterJob {
-		
+
 		public EntityChangeListener(String jobName) {
 			super(jobName);
 		}
@@ -315,7 +315,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 							// create the handler for the deletion of the object
 							getEntityEditor().getStaleHandler().addEntityEdiorStaleHandler(createEntityDeletedHandler(dirtyObjectID));
 						} else {
-							if (checkForSelfCausedChange(dirtyObjectID)) {								
+							if (checkForSelfCausedChange(dirtyObjectID)) {
 								// if this controller has caused the change then simply put the
 								// object into the cache again.
 								if (logger.isDebugEnabled()) {
@@ -333,6 +333,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 									IEntityEditorPageStaleHandler entityChangedHandler = createEntityChangedHandler(dirtyObjectID);
 									if (logger.isDebugEnabled())
 										logger.debug("Found foreign change and a dirty editor, invoking changeHandler: " + entityChangedHandler);
+									if (getEntityEditor().getStaleHandler() == null)
+										throw new IllegalStateException("StaleHandler not assigned for the EntityEditor of this ActiveEntityEditorPageController.");
 									getEntityEditor().getStaleHandler().addEntityEdiorStaleHandler(entityChangedHandler);
 								} else {
 									if (logger.isDebugEnabled())
@@ -351,37 +353,37 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			}
 		}
 	}
-	
+
 	/**
 	 * The object currently managed by this controller.
 	 */
 	private EntityType controllerObject = null;
-	
+
 	/**
 	 * This is determined on load and the {@link #entityChangeListener}
 	 * will be registered on this class.
 	 */
 	private Class<?> controllerObjectClass = null;
-	
+
 	/**
 	 * Determines whether the object held by the current controller
 	 * is not in sync with the server any more, that means a change
 	 * was notified but the user has neglected it.
 	 */
 	private boolean stale = false;
-	
+
 	/**
 	 * This is used to synchronize.
 	 */
 	private Object mutex = new Object();
-	
+
 	/**
 	 * The EntityChangeListener of this controller.
 	 * This value will be set when the change listener
 	 * is registered {@link #doLoad(ProgressMonitor)}.
 	 */
 	private EntityChangeListener entityChangeListener = null;
-	
+
 	/**
 	 * Create a new {@link ActiveEntityEditorPageController} that will not start background loading.
 	 * @param editor The editor this controller is associated with.
@@ -389,7 +391,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	public ActiveEntityEditorPageController(EntityEditor editor) {
 		this(editor, false);
 	}
-	
+
 	/**
 	 * Create a new {@link ActiveEntityEditorPageController}.
 	 * @param editor The editor this controller is associated with.
@@ -398,7 +400,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	public ActiveEntityEditorPageController(EntityEditor editor, boolean startBackgroundLoading) {
 		super(editor, startBackgroundLoading);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -424,7 +426,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					throw new IllegalStateException("The implementation of ActiveEntityEditorPageController '" + this.getClass().getSimpleName() + "' returned different types of objects on retrieveEntity (" + controllerObjectClass.getName() + " and " + newObj.getClass().getName() + ")."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				setControllerObject(Util.cloneSerializable(newObj));
-				if (logger.isDebugEnabled()) 
+				if (logger.isDebugEnabled())
 					logger.debug("ControllerObject after cloning: " + getControllerObject());
 				controllerObjectClass = controllerObject.getClass();
 				if (entityChangeListener == null && ENABLE_LISTENER) {
@@ -473,7 +475,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		fireModifyEvent(oldControllerObject, controllerObject);
 		return true;
 	}
-	
+
 	/**
 	 * Reload the controller object. Currently only wraps {@link #reload(IProgressMonitor)}.
 	 */
@@ -498,11 +500,11 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	public void dispose() {
 		if (entityChangeListener != null) {
 			JDOLifecycleManager.sharedInstance().removeNotificationListener(controllerObjectClass, entityChangeListener);
-		}		
+		}
 		super.dispose();
 		disposed = true;
 	}
-	
+
 	/**
 	 * Returns the text that will be set as the load Jobs name.
 	 * <p>
@@ -513,7 +515,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	protected String getLoadJobName() {
 		return Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.job.load.name"); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Returns the text that will be set as the save Jobs name.
 	 * <p>
@@ -524,7 +526,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	protected String getSaveJobName() {
 		return Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.job.save.name"); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Returns the text that will be set as the name of the Job that processes entity changes.
 	 * <p>
@@ -535,16 +537,16 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	protected String getProcessChangesJobName() {
 		return Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController.job.process.name"); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Subclasses need to implement the retrieval of the controllers
 	 * object here. Usually this will be a call to the DAO object.
-	 * 
+	 *
 	 * @param monitor The monitor to use.
 	 * @return The controllers object.
 	 */
 	protected abstract EntityType retrieveEntity(ProgressMonitor monitor);
-	
+
 	/**
 	 * Subclasses need to implement the storing of the given controller object here.
 	 * Usually this will be a call to the DAO object. The saved object (newly retrieved from the server)
@@ -554,30 +556,30 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * @return The controllers object.
 	 */
 	protected abstract EntityType storeEntity(EntityType controllerObject, ProgressMonitor monitor);
-	
+
 	/**
 	 * These fetch-groups are used for putting the controller object
 	 * into the {@link Cache}. However retrieving the object should be done
 	 * with the same fetch-group and so this method should be used by
 	 * {@link #retrieveEntity(ProgressMonitor)} and {@link #storeEntity(Object, ProgressMonitor)} also.
-	 * 
+	 *
 	 * @return The fetch-groups for retrieving the controller object.
 	 */
 	protected abstract String[] getEntityFetchGroups();
-	
+
 	/**
 	 * This fetch-depth is used for putting the controller object
 	 * into the {@link Cache}. However retrieving the object should be done
 	 * with the same fetch-depth and so this method should be used by
 	 * {@link #retrieveEntity(ProgressMonitor)} and {@link #storeEntity(Object, ProgressMonitor)} also.
 	 * The default implementation returns {@link NLJDOHelper#MAX_FETCH_DEPTH_NO_LIMIT}.
-	 * 
+	 *
 	 * @return The fetch-depth for retrieving the controller object.
 	 */
 	protected int getEntityMaxFetchDepth() {
 		return NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT;
 	}
-	
+
 	/**
 	 * This is the scope under which the entity should be put
 	 * into the Cache.
@@ -586,7 +588,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	protected String getEntityCacheScope() {
 		return null;
 	}
-	
+
 	/**
 	 * If this does not return <code>null</code> the returned {@link IEditorInput}
 	 * will be used to open a new editor instance for the controller object
@@ -604,7 +606,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	/**
 	 * This method checks if the change notified by the given {@link DirtyObjectID} was caused
 	 * by this controller (actually this is not correct, as it only checks if the change was caused by this client).
-	 * 
+	 *
 	 * @param dirtyObjectID The {@link DirtyObjectID} to check.
 	 * @return Whether the changed notified by the given {@link DirtyObjectID} was caused by this controller.
 	 */
@@ -641,7 +643,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Create the {@link IEntityEditorPageStaleHandler} that will be used notify the user of
 	 * a remote change of the controller object.
@@ -667,7 +669,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				this
 		);
 	}
-	
+
 	/**
 	 * Create the {@link IEntityEditorPageStaleHandler} that will be executed to notify the user that
 	 * the controller object was deleted on the server.
@@ -689,12 +691,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				this
 		);
 	}
-	
+
 	/**
 	 * Determines whether the object held by the current controller
 	 * is not in sync with the server any more, that means a change
 	 * was notified but the user has neglected it.
-	 * 
+	 *
 	 * @return The stale state.
 	 */
 	public boolean isStale() {
@@ -707,7 +709,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	protected void setStale(boolean stale) {
 		this.stale = stale;
 	}
-	
+
 	/**
 	 * Returns the current object managed by this controller.
 	 * @return The current object managed by this controller.
@@ -715,7 +717,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	public EntityType getControllerObject() {
 		return controllerObject;
 	}
-	
+
 	/**
 	 * Sets current object managed by this controller.
 	 * @param controllerObject The object to set.
