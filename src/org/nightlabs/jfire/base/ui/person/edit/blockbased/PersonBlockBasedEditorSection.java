@@ -79,7 +79,7 @@ public class PersonBlockBasedEditorSection extends BlockBasedEditorSection {
 			Label localeLabel = new Label(carrier2, SWT.NONE);
 			localeLabel.setText("Language");
 			localeCombo = new XComboComposite<Locale>(
-					carrier2, SWT.NONE,
+					carrier2, SWT.READ_ONLY,
 					new LabelProvider() {
 						@Override
 						public String getText(Object element) {
