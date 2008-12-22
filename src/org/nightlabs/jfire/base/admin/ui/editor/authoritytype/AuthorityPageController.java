@@ -6,6 +6,7 @@ import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper;
+import org.nightlabs.jfire.base.admin.ui.editor.authority.InheritedSecuringAuthorityResolver;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.security.AuthorityType;
@@ -31,7 +32,13 @@ extends ActiveEntityEditorPageController<AuthorityType>
 		super(editor);
 	}
 
-	private AuthorityPageControllerHelper authorityPageControllerHelper = new AuthorityPageControllerHelper();
+	private AuthorityPageControllerHelper authorityPageControllerHelper = new AuthorityPageControllerHelper() {
+		@Override
+		protected InheritedSecuringAuthorityResolver createInheritedSecuringAuthorityResolver() {
+			return null; // no inheritance for AuthorityTypes
+		}
+
+	};
 
 	public AuthorityPageControllerHelper getAuthorityPageControllerHelper() {
 		return authorityPageControllerHelper;

@@ -20,11 +20,14 @@ import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
+import org.nightlabs.inheritance.FieldMetaData;
+import org.nightlabs.inheritance.Inheritable;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityType;
@@ -49,12 +52,25 @@ import org.nightlabs.progress.SubProgressMonitor;
 import org.nightlabs.util.Util;
 
 /**
- * An instance of this class should be used by all <code>AuthorityPageController</code>s, i.e. whenever the <code>Authority</code>
- * attached to a certain object is edited.
+ * {@link AuthorityPageControllerHelper}s are used by different widgets like the
+ * {@link AbstractAuthorityPage} to edit an {@link Authority} and its assignment to a {@link SecuredObject}.
+ * <p>
+ * This helper can load its data using the {@link #load(SecuredObject, ProgressMonitor)} method
+ * where you have to supply the {@link SecuredObject} whose securing {@link Authority} should be loaded.
+ * </p>
+ * <p>
+ * Subclasses have to implement the method {@link #createInheritedSecuringAuthorityResolver()} where
+ * they create another helper that loads the assignment-inheritance-data of the current {@link SecuredObject}.
+ * </p>
+ * <p>
+ * Usually a subclasses of this helper is used for a custom {@link IEntityEditorPageController}s which then
+ * is assigned to custom {@link AbstractAuthorityPage}s.
+ * </p>
  *
  * @author marco schulze - marco at nightlabs dot de
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class AuthorityPageControllerHelper
+public abstract class AuthorityPageControllerHelper
 {
 
 	private AuthorityTypeID authorityTypeID;
@@ -120,7 +136,7 @@ public class AuthorityPageControllerHelper
 	 */
 	protected synchronized void load(AuthorityTypeID authorityTypeID, AuthorityID authorityID, Authority newAuthority, ProgressMonitor monitor)
 	{
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper.job.loadingAuthorityData"), 100); //$NON-NLS-1$
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper.job.loadingAuthorityData"), 120); //$NON-NLS-1$
 
 		if (authorityTypeID == null) {
 			authorityID = null;
@@ -253,8 +269,12 @@ public class AuthorityPageControllerHelper
 				((UserSecurityGroup)ao).getMembers();
 		}
 
+		this.inheritedSecuringAuthorityResolver = null;
+		
+		loadInheritanceData(new SubProgressMonitor(monitor, 20));
+		
 		monitor.done();
-
+		
 		propertyChangeSupport.firePropertyChange(PROPERTY_NAME_AUTHORITY_LOADED, null, authority);
 	}
 
@@ -657,6 +677,12 @@ public class AuthorityPageControllerHelper
 			// assign the new securingAuthority (if necessary)
 			assignSecuringAuthority(new SubProgressMonitor(monitor, 10));
 
+			
+			if (securedObjectInheritable != null) {
+				// this is most likely in the cache and might have changed above,
+				// so we have to invalidate it in the cache *now*, we can't wait for the notification mechanism
+				Cache.sharedInstance().removeByObjectID(JDOHelper.getObjectId(securedObjectInheritable), false);
+			}
 			// reload everything
 			load(authorityTypeID, authorityID, null, new SubProgressMonitor(monitor, 90));
 		} finally {
@@ -691,6 +717,18 @@ public class AuthorityPageControllerHelper
 	 */
 	public AuthorityID getAssignSecuringAuthorityID() {
 		return assignSecuringAuthorityID;
+	}
+
+	/**
+	 * Get whether the authority will be set to be inherited from the parent.
+	 * @return <code>true</code> if the authority should be inherited and the assignment has been requested, <code>false</code> otherwise.
+	 */
+	public boolean isAssignSecuringAuthorityInherited() {
+		return assignSecuringAuthorityInherited;
+	}
+
+	public boolean isAssignSecuringAuthorityRequested() {
+		return assignSecuringAuthorityRequested;
 	}
 
 	public void setAssignSecuringAuthority(AuthorityID newAuthorityID, boolean inherited) {
@@ -752,4 +790,73 @@ public class AuthorityPageControllerHelper
 	//////////////////
 	// END PropertyChangeSupport
 	//////////////////
+
+	/**
+	 * This is set to <code>null</code> on {@link #load(AuthorityTypeID, AuthorityID, Authority, ProgressMonitor)}
+	 * so after load the inheritance data can be reloaded.
+	 */
+	private volatile InheritedSecuringAuthorityResolver inheritedSecuringAuthorityResolver;
+	private Inheritable securedObjectInheritable;
+	
+	/**
+	 * Get the {@link InheritedSecuringAuthorityResolver} which is used to find out the {@link Authority} that is assigned to the
+	 * parent-{@link SecuredObject} of that <code>SecuredObject</code> that is currently edited.
+	 * This method can return <code>null</code> if there is no inheritance mechanism implemented
+	 * for the <code>SecuredObject</code> in the concrete use case.
+	 *
+	 * @return an instance of <code>InheritedSecuringAuthorityResolver</code> or <code>null</code>, if there is no inheritance mechanism.
+	 */
+	protected abstract InheritedSecuringAuthorityResolver createInheritedSecuringAuthorityResolver();
+
+	/**
+	 * Get the current {@link InheritedSecuringAuthorityResolver} for this helper.
+	 * Note, that this method might return <code>null</code>, check {@link #isManageInheritance()}
+	 * to see if this helper manages inheritance.
+	 * @return The current instance of {@link InheritedSecuringAuthorityResolver} or <code>null</code> if {@link #isManageInheritance()} is <code>false</code>.
+	 */
+	public InheritedSecuringAuthorityResolver getInheritedSecuringAuthorityResolver() {
+		if (inheritedSecuringAuthorityResolver == null) {
+			synchronized (this) {
+				if (inheritedSecuringAuthorityResolver == null) {
+					inheritedSecuringAuthorityResolver = createInheritedSecuringAuthorityResolver();
+				}
+			}
+		}
+		return inheritedSecuringAuthorityResolver;
+	}
+	
+	private void loadInheritanceData(ProgressMonitor monitor) {
+		monitor.beginTask("Loading inheritance data", 2);
+		inheritedSecuringAuthorityResolver = null;
+		securedObjectInheritable = null;
+		InheritedSecuringAuthorityResolver resolver = getInheritedSecuringAuthorityResolver();
+		if (resolver != null) {
+			monitor.worked(1);
+			securedObjectInheritable = resolver.retrieveSecuredObjectInheritable(monitor);
+			monitor.worked(1);
+		}
+		monitor.done();
+	}
+	
+	public Inheritable getSecuredObjectInheritable() {
+		return securedObjectInheritable;
+	}
+	
+	public boolean isAuthorityInitiallyInherited() {
+		if (securedObjectInheritable != null) {
+			FieldMetaData fmd = securedObjectInheritable.getFieldMetaData(SecuredObject.FieldName.securingAuthorityID);
+			if (fmd != null) {
+				return fmd.isValueInherited();
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Check, if this helper manages inheritance, if this is <code>true</code> {@link #getInheritedSecuringAuthorityResolver()}
+	 * should not return <code>null</code>.
+	 */
+	public boolean isManageInheritance() {
+		return getInheritedSecuringAuthorityResolver() != null;
+	}
 }

@@ -14,9 +14,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.nightlabs.base.ui.action.InheritanceAction;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
-import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditorMultiLine;
@@ -25,21 +25,19 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.SecuredObject;
+import org.nightlabs.jfire.security.id.AuthorityID;
+import org.nightlabs.util.Util;
 
 /**
- * Abstract super class for the easy implementation of an {@link Authority}-section within an Authority-editor-page.
- * <p>
- * When implementing an editor-page for editing the <code>Authority</code> (or its assignment to a {@link SecuredObject}),
- * you are encouraged to subclass this section as first section within your page. Simply implement the abstract method
- * {@link #createInheritedSecuringAuthorityResolver()} and call
- * {@link #setAuthorityPageControllerHelper(AuthorityPageControllerHelper)} whenever
- * the <code>SecuredObject</code> you are managing is changed. The best way to get an Authority-editor-page is to subclass
- * {@link AbstractAuthorityPage}.
- * </p>
+ * Section to edit an {@link Authority}s name and description.
+ * It also serves as the control to assign a new {@link Authority} to the current {@link SecuredObject}
+ * as well as managing the inheritance of the {@link Authority} from the parent {@link SecuredObject}.
+ * This section uses an {@link AuthorityPageControllerHelper} that should be set by {@link #setAuthorityPageControllerHelper(AuthorityPageControllerHelper)}.
  *
  * @author marco schulze - marco at nightlabs dot de
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public abstract class AbstractAuthoritySection
+public class AuthoritySection
 extends ToolBarSectionPart
 {
 	private I18nTextEditor name;
@@ -47,7 +45,7 @@ extends ToolBarSectionPart
 	private Label nameLabel;
 	private Label descriptionLabel;
 
-	public AbstractAuthoritySection(IFormPage page, Composite parent) {
+	public AuthoritySection(IFormPage page, Composite parent) {
 		super(page, parent, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.title.authority")); //$NON-NLS-1$
 		((GridData)getSection().getLayoutData()).grabExcessVerticalSpace = false;
 
@@ -61,7 +59,7 @@ extends ToolBarSectionPart
 		name.addModifyListener(markDirtyModifyListener);
 
 		descriptionLabel = new Label(wrapper, SWT.NONE);
-		descriptionLabel.setText("Description");	
+		descriptionLabel.setText("Description");
 		GridData gd = new GridData();
 		gd.verticalAlignment = GridData.BEGINNING;
 		descriptionLabel.setLayoutData(gd);
@@ -71,6 +69,8 @@ extends ToolBarSectionPart
 
 		assignAuthorityAction.setEnabled(false);
 		getToolBarManager().add(assignAuthorityAction);
+		inheritAction.setEnabled(false);
+		getToolBarManager().add(inheritAction);
 		updateToolBarManager();
 
 		name.addDisposeListener(new DisposeListener() {
@@ -101,16 +101,6 @@ extends ToolBarSectionPart
 		return authorityPageControllerHelper;
 	}
 
-	/**
-	 * Get the {@link InheritedSecuringAuthorityResolver} which is used to find out the {@link Authority} that is assigned to the
-	 * parent-{@link SecuredObject} of that <code>SecuredObject</code> that is edited by the current editor. This method
-	 * can return <code>null</code> if there is no inheritance mechanism implemented
-	 * for the <code>SecuredObject</code> in the concrete use case.
-	 *
-	 * @return an instance of <code>InheritedSecuringAuthorityResolver</code> or <code>null</code>, if there is no inheritance mechanism.
-	 */
-	protected abstract InheritedSecuringAuthorityResolver createInheritedSecuringAuthorityResolver();
-
 	private Action assignAuthorityAction = new Action() {
 		{
 			setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.action.text.assignAuthority")); //$NON-NLS-1$
@@ -123,11 +113,12 @@ extends ToolBarSectionPart
 
 			final AssignAuthorityWizard assignAuthorityWizard = new AssignAuthorityWizard(
 					authorityPageControllerHelper.getAuthorityTypeID(),
-					createInheritedSecuringAuthorityResolver()
+					authorityPageControllerHelper.getInheritedSecuringAuthorityResolver()
 			);
 			DynamicPathWizardDialog dialog = new DynamicPathWizardDialog(getSection().getShell(), assignAuthorityWizard);
 			if (dialog.open() == Dialog.OK) {
 				Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.job.loadingAuthority")) { //$NON-NLS-1$
+					@Override
 					protected org.eclipse.core.runtime.IStatus run(org.nightlabs.progress.ProgressMonitor monitor) throws Exception {
 						authorityPageControllerHelper.load(
 								assignAuthorityWizard.getAuthorityTypeID(),
@@ -142,6 +133,7 @@ extends ToolBarSectionPart
 
 						getSection().getDisplay().asyncExec(new Runnable() {
 							public void run() {
+								inheritAction.setChecked(assignAuthorityWizard.isAuthorityIDInherited());
 								authorityChanged();
 								markDirty();
 							}
@@ -153,6 +145,52 @@ extends ToolBarSectionPart
 				job.setPriority(Job.SHORT);
 				job.schedule();
 			}
+		}
+	};
+
+	private InheritanceAction inheritAction = new InheritanceAction() {
+		@Override
+		public void run() {
+			final boolean oldEnabled = inheritAction.isEnabled();
+			inheritAction.setEnabled(false);
+			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.job.loadingAuthority")) {
+				@Override
+				protected org.eclipse.core.runtime.IStatus run(org.nightlabs.progress.ProgressMonitor monitor) throws Exception {
+					try {
+						if (!authorityPageControllerHelper.isManageInheritance())
+							return Status.OK_STATUS;
+						boolean setInherited = isChecked();
+						AuthorityID parentAuthorityID = authorityPageControllerHelper.isManageInheritance()
+							? authorityPageControllerHelper.getInheritedSecuringAuthorityResolver().getInheritedSecuringAuthorityID(monitor)
+							: null;
+						authorityPageControllerHelper.setAssignSecuringAuthority(parentAuthorityID, setInherited);
+						AuthorityID newAuthorityID = setInherited ? parentAuthorityID : authorityPageControllerHelper.getAuthorityID();
+						if (!Util.equals(newAuthorityID, authorityPageControllerHelper.getAuthorityID())) {
+							authorityPageControllerHelper.load(
+									authorityPageControllerHelper.getAuthorityTypeID(), // The type should not change when re-assigning
+									newAuthorityID,
+									null, monitor);
+						}
+
+						getSection().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								authorityChanged();
+								markDirty();
+							}
+						});
+
+						return Status.OK_STATUS;
+					} finally {
+						getSection().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								inheritAction.setEnabled(oldEnabled);
+							}
+						});
+					}
+				}
+			};
+			job.setPriority(Job.SHORT);
+			job.schedule();
 		}
 	};
 
@@ -169,17 +207,23 @@ extends ToolBarSectionPart
 			public void run() {
 				assignAuthorityAction.setEnabled(authorityPageControllerHelper != null);
 				authorityChanged();
+				inheritAction.setEnabled(authorityPageControllerHelper != null);
+				inheritAction.setChecked(false);
+				if (authorityPageControllerHelper != null && authorityPageControllerHelper.isManageInheritance()) {
+					inheritAction.setEnabled(true);
+					inheritAction.setChecked(authorityPageControllerHelper.isAuthorityInitiallyInherited());
+				}
 			}
 		});
 	}
 
-	/**
-	 * This method should takes your implementation of {@link IEntityEditorPageController} and must call
-	 * {@link #setAuthorityPageControllerHelper(AuthorityPageControllerHelper)}.
-	 *
-	 * @param pageController your use-case-specific implementation of {@link IEntityEditorPageController}.
-	 */
-	public abstract void setPageController(IEntityEditorPageController pageController);
+//	/**
+//	 * This method should take your implementation of {@link IEntityEditorPageController} and must call
+//	 * {@link #setAuthorityPageControllerHelper(AuthorityPageControllerHelper)}.
+//	 *
+//	 * @param pageController your use-case-specific implementation of {@link IEntityEditorPageController}.
+//	 */
+//	public abstract void setPageController(IEntityEditorPageController pageController);
 
 	private void authorityChanged() {
 		if (name.isDisposed())
@@ -190,9 +234,9 @@ extends ToolBarSectionPart
 			description.setI18nText(null, EditMode.DIRECT);
 
 			if (authorityPageControllerHelper == null)
-				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noSecuredObjectSelected")); //$NON-NLS-1$
+				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noSecuredObjectSelected"));
 			else
-				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noAuthorityAssigned")); //$NON-NLS-1$
+				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noAuthorityAssigned"));
 
 			setEnabled(false);
 		}
