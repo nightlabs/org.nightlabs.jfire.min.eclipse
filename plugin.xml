@@ -91,7 +91,7 @@
                  class="org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction"
                  id="org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction"
                  label="Refresh cache (reload all)"
-                 menubarPath="file/additions"
+                 menubarPath="help/additions"
                  tooltip="Clear the cache and fire dirty notifications for all objects that were in the cache in order to cause reloading.">
            </action>
         </actionSet>
