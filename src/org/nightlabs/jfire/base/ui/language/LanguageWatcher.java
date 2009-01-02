@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.action.IAction;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.config.Config;
@@ -42,7 +41,6 @@ import org.nightlabs.config.ConfigException;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.language.Language;
 import org.nightlabs.jfire.language.LanguageException;
 import org.nightlabs.jfire.language.LanguageManagerUtil;

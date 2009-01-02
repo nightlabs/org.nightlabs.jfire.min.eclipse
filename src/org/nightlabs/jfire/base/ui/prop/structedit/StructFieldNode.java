@@ -4,7 +4,6 @@ import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.util.NLLocale;
 import org.nightlabs.util.Util;

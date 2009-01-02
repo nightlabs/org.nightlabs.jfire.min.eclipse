@@ -27,7 +27,6 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;

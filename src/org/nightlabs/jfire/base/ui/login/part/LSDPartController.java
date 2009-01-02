@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.login.part;
 
 import javax.security.auth.login.LoginException;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;

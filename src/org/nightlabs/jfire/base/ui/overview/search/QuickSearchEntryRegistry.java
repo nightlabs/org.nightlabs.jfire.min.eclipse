@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * Registry for the extension-point org.nightlabs.jfire.base.ui.quickSearchEntry

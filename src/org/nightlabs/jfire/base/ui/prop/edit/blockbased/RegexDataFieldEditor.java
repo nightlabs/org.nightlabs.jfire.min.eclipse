@@ -4,19 +4,15 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
-import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;

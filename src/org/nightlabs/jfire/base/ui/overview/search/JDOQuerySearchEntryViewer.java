@@ -4,7 +4,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.overview.Entry;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 
 /**

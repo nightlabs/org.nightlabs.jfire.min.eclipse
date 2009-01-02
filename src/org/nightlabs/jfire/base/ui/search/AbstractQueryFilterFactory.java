@@ -10,7 +10,6 @@ import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactoryRegistry;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * 

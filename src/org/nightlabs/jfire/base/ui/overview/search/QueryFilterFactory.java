@@ -7,7 +7,6 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.QueryProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 
 /**

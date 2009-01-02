@@ -21,11 +21,11 @@ import org.nightlabs.base.ui.exceptionhandler.DefaultErrorDialog;
 import org.nightlabs.base.ui.exceptionhandler.ErrorItem;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.JFireEjbUtil;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.JFireSecurityManager;
-import org.nightlabs.jfire.security.JFireSecurityManagerUtil;
 import org.nightlabs.jfire.security.Role;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.id.RoleID;
@@ -194,7 +194,7 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 		}
 
 		if (!roleIDs.isEmpty()) {
-			JFireSecurityManager m = JFireSecurityManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			JFireSecurityManager m = JFireEjbUtil.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
 			Set<Role> retrievedRoles = m.getRolesForRequiredRoleIDs(roleIDs);
 			roles.addAll(retrievedRoles);
 			Cache.sharedInstance().putAll(InsufficientPermissionDialog.class.getName(), retrievedRoles, (String[])null, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);

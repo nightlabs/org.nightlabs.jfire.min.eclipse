@@ -2,7 +2,6 @@ package org.nightlabs.jfire.base.ui.editlock;
 
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.jdo.ObjectID;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.editlock.id.EditLockTypeID;
 import org.nightlabs.progress.ProgressMonitor;
 

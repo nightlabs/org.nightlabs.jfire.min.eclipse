@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.exceptionhandler;
 
 import org.nightlabs.base.ui.exceptionhandler.ErrorItem;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class InsufficientPermissionErrorItem extends ErrorItem
 {
