@@ -93,7 +93,7 @@ public class CreateUserWizard extends DynamicPathWizard
 			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
 			newUser.getPerson().deflate();
 
-//			JFireSecurityManager userManager = JFireEjbUtil.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+//			JFireSecurityManager userManager = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
 ////			userManager.saveUser(newUser, cuPage.getPassword1());
 //			userManager.storeUser(newUser, cuPage.getPassword1(), false, null, 1);
 			UserDAO.sharedInstance().storeUser(newUser, cuPage.getPassword1(), false, null, 1, new NullProgressMonitor()); // TODO do this asynchronously in a job!
