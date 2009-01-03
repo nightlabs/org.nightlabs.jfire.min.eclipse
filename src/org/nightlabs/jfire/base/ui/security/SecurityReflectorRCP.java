@@ -9,7 +9,7 @@ import javax.naming.InitialContext;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.nightlabs.jfire.base.JFireEjbUtil;
+import org.nightlabs.jfire.base.JFireEjbFactory;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
@@ -77,7 +77,7 @@ extends SecurityReflector
 			return result;
 
 		try {
-			JFireSecurityManager jfireSecurityManager = JFireEjbUtil.getBean(JFireSecurityManager.class, _getInitialContextProperties());
+			JFireSecurityManager jfireSecurityManager = JFireEjbFactory.getBean(JFireSecurityManager.class, _getInitialContextProperties());
 			result = jfireSecurityManager.getRoleIDs(authorityID);
 		} catch (NoUserException e) {
 			throw e;

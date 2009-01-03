@@ -6,7 +6,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
-import org.nightlabs.jfire.base.JFireEjbUtil;
+import org.nightlabs.jfire.base.JFireEjbFactory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.prop.PropertyManager;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -21,7 +21,7 @@ public class StructEditorUtil {
 
 	public static PropertyManager getPropertyManager() {
 		try {
-			return JFireEjbUtil.getBean(PropertyManager.class, Login.getLogin().getInitialContextProperties());
+			return JFireEjbFactory.getBean(PropertyManager.class, Login.getLogin().getInitialContextProperties());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

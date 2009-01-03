@@ -29,7 +29,7 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.query.QueryCollection;
-import org.nightlabs.jfire.base.JFireEjbUtil;
+import org.nightlabs.jfire.base.JFireEjbFactory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.JFireSecurityManager;
@@ -221,7 +221,7 @@ extends XComposite
 			@Override
 			protected IStatus run(ProgressMonitor monitor){
 				try {
-					JFireSecurityManager um = JFireEjbUtil.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+					JFireSecurityManager um = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
 					final QueryCollection<UserQuery> queries =
 						new QueryCollection<UserQuery>(User.class);
 					Display.getDefault().syncExec(new Runnable(){

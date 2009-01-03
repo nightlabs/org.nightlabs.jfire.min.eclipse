@@ -20,7 +20,7 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jdo.ObjectIDUtil;
-import org.nightlabs.jfire.base.JFireEjbUtil;
+import org.nightlabs.jfire.base.JFireEjbFactory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
@@ -260,7 +260,7 @@ public class StructEditor {
 	private PropertyManager getPropertyManager() {
 		if (propertyManager == null) {
 			try {
-				propertyManager = JFireEjbUtil.getBean(PropertyManager.class, Login.getLogin().getInitialContextProperties());
+				propertyManager = JFireEjbFactory.getBean(PropertyManager.class, Login.getLogin().getInitialContextProperties());
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);

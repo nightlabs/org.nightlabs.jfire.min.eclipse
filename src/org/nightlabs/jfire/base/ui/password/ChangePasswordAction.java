@@ -12,7 +12,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
-import org.nightlabs.jfire.base.JFireEjbUtil;
+import org.nightlabs.jfire.base.JFireEjbFactory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.JFireSecurityManager;
@@ -73,7 +73,7 @@ public class ChangePasswordAction implements IWorkbenchWindowActionDelegate {
 		if (newPassword == null) 
 			return; // User canceled or somehow else entered no new and confirmed password -> do nothing
 		try {
-			JFireSecurityManager um = JFireEjbUtil.getBean(JFireSecurityManager.class, SecurityReflector.getInitialContextProperties());
+			JFireSecurityManager um = JFireEjbFactory.getBean(JFireSecurityManager.class, SecurityReflector.getInitialContextProperties());
 			um.setUserPassword(newPassword);
 			Login.sharedInstance().setPassword(newPassword);
 			MessageDialog.openInformation(RCPUtil.getActiveShell(), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.passwordChanged.title"), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.passwordChanged.message")); //$NON-NLS-1$ //$NON-NLS-2$
