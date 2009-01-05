@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.htmlcontent.IFCKEditorContent;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Marc Klinger - marc[at]nightlabs[dot]de
@@ -63,7 +64,7 @@ public class FCKEditorContentDialog extends ResizableTitleAreaDialog
 		try {
 			this.url = ContentViewerUtil.createStaticContent(content);
 		} catch (IOException e) {
-			throw new RuntimeException("Creating static browser content failed", e);
+			throw new RuntimeException("Creating static browser content failed", e); //$NON-NLS-1$
 		}
 		if(browser != null)
 			browser.setUrl(url);

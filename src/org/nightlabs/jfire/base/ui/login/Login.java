@@ -350,7 +350,7 @@ extends AbstractEPProcessor
 	 */
 	private synchronized void acquireLoginHandlerRunnableRunning() {
 		if (loginHandlerRunnableRunning)
-			throw new IllegalStateException("While a loginHandlerRunnable was running, anotherone was started");
+			throw new IllegalStateException("While a loginHandlerRunnable was running, anotherone was started"); //$NON-NLS-1$
 		loginHandlerRunnableRunning = true;
 	}
 	/**

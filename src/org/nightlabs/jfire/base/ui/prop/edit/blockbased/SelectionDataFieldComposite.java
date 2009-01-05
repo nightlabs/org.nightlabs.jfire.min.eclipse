@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.XComboComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.ModifyListener;
 import org.nightlabs.jfire.prop.datafield.SelectionDataField;
 import org.nightlabs.jfire.prop.exception.StructFieldValueNotFoundException;
@@ -60,7 +61,7 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 //					return valueHolder.value.getValueName().getText();
 				StructFieldValue value = (StructFieldValue) element;
 				if (value == null)
-					return "[empty]";
+					return Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.SelectionDataFieldComposite.value.empty"); //$NON-NLS-1$
 				else
 					return value.getValueName().getText();
 			}

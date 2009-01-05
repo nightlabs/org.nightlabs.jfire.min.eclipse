@@ -22,6 +22,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditorSection;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.language.LanguageCf;
 import org.nightlabs.util.CollectionUtil;
@@ -77,7 +78,7 @@ public class PersonBlockBasedEditorSection extends BlockBasedEditorSection {
 
 			XComposite carrier2 = new XComposite(carrier, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER);
 			Label localeLabel = new Label(carrier2, SWT.NONE);
-			localeLabel.setText("Language");
+			localeLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonBlockBasedEditorSection.label.language")); //$NON-NLS-1$
 			localeCombo = new XComboComposite<Locale>(
 					carrier2, SWT.READ_ONLY,
 					new LabelProvider() {

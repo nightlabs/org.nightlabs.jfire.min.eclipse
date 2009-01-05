@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 
@@ -133,7 +134,7 @@ public class DataFieldEditorFactoryRegistry extends AbstractEPProcessor {
 	 * @return A new instance of the appropriate DataFieldEditor
 	 * @throws DataFieldEditorNotFoundException If no editor could be found for the type of the {@link DataField} passed.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public DataFieldEditor<DataField> getNewEditorInstance(
 			IStruct struct, String editorType,
 			String context, DataField dataField

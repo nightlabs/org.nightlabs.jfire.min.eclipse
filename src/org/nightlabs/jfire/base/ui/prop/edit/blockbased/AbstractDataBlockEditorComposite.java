@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -97,7 +98,7 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 				fieldEditor.setData(struct, dataBlock.getDataField(fieldEditor.getStructField().getStructFieldIDObj()));
 				fieldEditor.refresh();
 			} catch (DataFieldNotFoundException e) {
-				throw new RuntimeException("Could not find correct DataField: ", e);
+				throw new RuntimeException("Could not find correct DataField: ", e); //$NON-NLS-1$
 			}
 		}
 	}

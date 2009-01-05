@@ -225,8 +225,8 @@ public class QueryStoreCapableCategoryComposite
 				}
 				catch (BackingStoreException e1)
 				{
-					logger.warn("Couldn't flush the Eclipse Preference Store for saving the sash weights " +
-							"of the overview category: "+getCategory().getCategoryFactory().getCategoryID(),
+					logger.warn("Couldn't flush the Eclipse Preference Store for saving the sash weights " + //$NON-NLS-1$
+							"of the overview category: "+getCategory().getCategoryFactory().getCategoryID(), //$NON-NLS-1$
 							new Exception());
 				}
 			}
@@ -427,7 +427,7 @@ class FilteredQueryStoreComposite
 	 */
 	private SelectionListener doubleClickListener = new SelectionAdapter()
 	{
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		@Override
 		public void widgetDefaultSelected(SelectionEvent e)
 		{

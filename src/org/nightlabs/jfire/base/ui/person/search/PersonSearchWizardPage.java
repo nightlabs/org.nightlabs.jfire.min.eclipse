@@ -73,7 +73,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	private boolean controlIsChildOfOrEquals(Composite parent, Widget child)
 	{
 		if (parent == null)
-			throw new IllegalArgumentException("parent == null");
+			throw new IllegalArgumentException("parent == null"); //$NON-NLS-1$
 
 		if (child == null)
 			return false;

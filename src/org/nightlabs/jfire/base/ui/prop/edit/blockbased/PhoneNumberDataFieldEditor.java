@@ -15,6 +15,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.PhoneNumberDataField;
 import org.nightlabs.util.NLLocale;
@@ -62,9 +63,9 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 	@Override
 	public void doRefresh() {
 		PhoneNumberDataField dataField = getDataField();
-		comp.countryCodeTextBox.setText(dataField.getCountryCode() != null ? dataField.getCountryCode() : "");
-		comp.areaCodeTextBox.setText(dataField.getAreaCode() != null ? dataField.getAreaCode() : "");
-		comp.localNumberTextBox.setText(dataField.getLocalNumber() != null ? dataField.getLocalNumber() : "");
+		comp.countryCodeTextBox.setText(dataField.getCountryCode() != null ? dataField.getCountryCode() : ""); //$NON-NLS-1$
+		comp.areaCodeTextBox.setText(dataField.getAreaCode() != null ? dataField.getAreaCode() : ""); //$NON-NLS-1$
+		comp.localNumberTextBox.setText(dataField.getLocalNumber() != null ? dataField.getLocalNumber() : ""); //$NON-NLS-1$
 		comp.compGroup.setText(getStructField().getName().getText(NLLocale.getDefault().getLanguage()));
 	}
 

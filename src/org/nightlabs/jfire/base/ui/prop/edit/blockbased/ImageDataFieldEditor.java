@@ -219,7 +219,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			else if(getDataField().getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_DEFLATE))
 				in = new InflaterInputStream(inPlain);
 			else
-				throw new RuntimeException("Unsupported content encoding: "+getDataField().getContentEncoding());
+				throw new RuntimeException("Unsupported content encoding: "+getDataField().getContentEncoding()); //$NON-NLS-1$
 			try {
 				// TODO: try loading image with Java Image API if loading with SWT fails as in org.nightlabs.eclipse.ui.fckeditor.file.image.ImageUtil - marc
 				id = new ImageData(in);

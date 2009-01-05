@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -157,7 +158,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 			if (getValidationResultManager() != null)
 				getValidationResultManager().setValidationResults(validationResults);
 		} else
-			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()"); 
+			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()");  //$NON-NLS-1$
 	}
 	
 	/*
@@ -182,7 +183,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	@Override
 	public Control createControl(Composite parent) {
 		if (dataBlockEditorComposite != null)
-			throw new IllegalStateException("The control for this DataBlockEditor was already created");
+			throw new IllegalStateException("The control for this DataBlockEditor was already created"); //$NON-NLS-1$
 		dataBlockEditorComposite = createEditorComposite(parent);
 		dataBlockEditorComposite.addDataFieldEditorChangeListener(fieldEditorChangeListener);
 		dataBlockEditorComposite.addDisposeListener(new DisposeListener() {
@@ -192,14 +193,14 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 			}
 		});
 		if (!(dataBlockEditorComposite instanceof Control))
-			throw new IllegalStateException(this.getClass() + " is not implemented correctly, it did not return a " + Control.class.getName() + " in createEditorComposite()");
+			throw new IllegalStateException(this.getClass() + " is not implemented correctly, it did not return a " + Control.class.getName() + " in createEditorComposite()"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return (Control) dataBlockEditorComposite;
 	}
 	
 	private IDataBlockEditorComposite getDataBlockEditorComposite() {
 		if (dataBlockEditorComposite == null)
-			throw new IllegalStateException("The control of this DataBlockEditor was not created yet, however this implementation relies on it in order to function");
+			throw new IllegalStateException("The control of this DataBlockEditor was not created yet, however this implementation relies on it in order to function"); //$NON-NLS-1$
 		return dataBlockEditorComposite;
 	}
 	

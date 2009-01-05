@@ -319,9 +319,9 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 								// if this controller has caused the change then simply put the
 								// object into the cache again.
 								if (logger.isDebugEnabled()) {
-									logger.debug("Found self-caused change, putting the entity in the cache:");
-									logger.debug("Entity: " + controllerObject);
-									logger.debug("EntityFetchGroups: " + getEntityFetchGroups());
+									logger.debug("Found self-caused change, putting the entity in the cache:"); //$NON-NLS-1$
+									logger.debug("Entity: " + controllerObject); //$NON-NLS-1$
+									logger.debug("EntityFetchGroups: " + getEntityFetchGroups()); //$NON-NLS-1$
 								}
 								Cache.sharedInstance().put(null, controllerObject, getEntityFetchGroups(), getEntityMaxFetchDepth());
 								setStale(false);
@@ -332,13 +332,13 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 									// create the handler for the change of the object
 									IEntityEditorPageStaleHandler entityChangedHandler = createEntityChangedHandler(dirtyObjectID);
 									if (logger.isDebugEnabled())
-										logger.debug("Found foreign change and a dirty editor, invoking changeHandler: " + entityChangedHandler);
+										logger.debug("Found foreign change and a dirty editor, invoking changeHandler: " + entityChangedHandler); //$NON-NLS-1$
 									if (getEntityEditor().getStaleHandler() == null)
-										throw new IllegalStateException("StaleHandler not assigned for the EntityEditor of this ActiveEntityEditorPageController.");
+										throw new IllegalStateException("StaleHandler not assigned for the EntityEditor of this ActiveEntityEditorPageController."); //$NON-NLS-1$
 									getEntityEditor().getStaleHandler().addEntityEdiorStaleHandler(entityChangedHandler);
 								} else {
 									if (logger.isDebugEnabled())
-										logger.debug("Found foreign change but clean editor, will silently reload the entity");
+										logger.debug("Found foreign change but clean editor, will silently reload the entity"); //$NON-NLS-1$
 									// no local changes, reload
 									doReload(new SubProgressMonitor(new ProgressMonitorWrapper(getProgressMonitor()), 100));
 									setStale(false);
@@ -411,14 +411,14 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	@Override
 	public void doLoad(ProgressMonitor monitor) {
 		if (logger.isDebugEnabled())
-			logger.debug("Started loading for " + this.getClass().getName());
+			logger.debug("Started loading for " + this.getClass().getName()); //$NON-NLS-1$
 		EntityType oldControllerObject = null;
 		monitor.beginTask(getLoadJobName(), 100);
 		synchronized (mutex) {
 			oldControllerObject = getControllerObject();
 			EntityType newObj = retrieveEntity(new SubProgressMonitor(monitor, 100));
 			if (logger.isDebugEnabled())
-				logger.debug("retrieveEntity returned: " + newObj);
+				logger.debug("retrieveEntity returned: " + newObj); //$NON-NLS-1$
 			if (newObj == null)
 				controllerObject = newObj;
 			else {
@@ -427,13 +427,13 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				}
 				setControllerObject(Util.cloneSerializable(newObj));
 				if (logger.isDebugEnabled())
-					logger.debug("ControllerObject after cloning: " + getControllerObject());
+					logger.debug("ControllerObject after cloning: " + getControllerObject()); //$NON-NLS-1$
 				controllerObjectClass = controllerObject.getClass();
 				if (entityChangeListener == null && ENABLE_LISTENER) {
 					entityChangeListener = new EntityChangeListener(getProcessChangesJobName());
 					JDOLifecycleManager.sharedInstance().addNotificationListener(controllerObjectClass, entityChangeListener);
 					if (logger.isDebugEnabled())
-						logger.debug("Registered changeListener for " + controllerObjectClass);
+						logger.debug("Registered changeListener for " + controllerObjectClass); //$NON-NLS-1$
 				}
 			}
 			setStale(false);
@@ -453,21 +453,21 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	@Override
 	public boolean doSave(ProgressMonitor monitor) {
 		if (logger.isDebugEnabled())
-			logger.debug("Started saving for " + this.getClass().getName());
+			logger.debug("Started saving for " + this.getClass().getName()); //$NON-NLS-1$
 		monitor.beginTask(getSaveJobName(), 100);
 		EntityType oldControllerObject = null;
 		synchronized (mutex) {
 			oldControllerObject = controllerObject;
 			if (logger.isDebugEnabled())
-				logger.debug("Old controllerObject: " + oldControllerObject);
+				logger.debug("Old controllerObject: " + oldControllerObject); //$NON-NLS-1$
 			controllerObject = storeEntity(controllerObject, new SubProgressMonitor(monitor, 100));
 			if (logger.isDebugEnabled())
-				logger.debug("storeEntity returned: " + controllerObject);
+				logger.debug("storeEntity returned: " + controllerObject); //$NON-NLS-1$
 			// we don't put the result into the Cache, as the Cache will be notified
 			// of the change and the change listener will put the object into the cache
 			controllerObject = Util.cloneSerializable(controllerObject);
 			if (logger.isDebugEnabled())
-				logger.debug("Controller object after clone: " + getControllerObject());
+				logger.debug("Controller object after clone: " + getControllerObject()); //$NON-NLS-1$
 			setStale(false);
 			markUndirty();
 		}
@@ -616,7 +616,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			Object currentlyManagedObjectVersion = JDOHelper.getVersion(getControllerObject());
 			Object notifiedVersion = dirtyObjectID.getObjectVersion();
 			if (logger.isDebugEnabled())
-				logger.debug("checkForSelfCausedChange comparing versions. currentlyManagedObjectVersion: " + currentlyManagedObjectVersion + ", notifiedVersion: " + notifiedVersion);
+				logger.debug("checkForSelfCausedChange comparing versions. currentlyManagedObjectVersion: " + currentlyManagedObjectVersion + ", notifiedVersion: " + notifiedVersion); //$NON-NLS-1$ //$NON-NLS-2$
 			return notifiedVersion.equals(currentlyManagedObjectVersion);
 		}
 
@@ -630,13 +630,13 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 //		return false;
 //		return true;
 		if (logger.isDebugEnabled()) {
-			logger.debug("checkForSelfCausedChange looking for sourceSessionIDs.");
-			logger.debug("Cache sessionID is: " + Cache.sharedInstance().getSessionID());
+			logger.debug("checkForSelfCausedChange looking for sourceSessionIDs."); //$NON-NLS-1$
+			logger.debug("Cache sessionID is: " + Cache.sharedInstance().getSessionID()); //$NON-NLS-1$
 		}
 		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
 			if (!sessionID.equals(Cache.sharedInstance().getSessionID())) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("Found non-matching sourceSessionID: " + sessionID + ", treated as froreign change");
+					logger.debug("Found non-matching sourceSessionID: " + sessionID + ", treated as froreign change"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				return false;
 			}

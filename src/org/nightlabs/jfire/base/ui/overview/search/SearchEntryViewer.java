@@ -646,7 +646,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 				if (activeMenuItem != null) // there is already an item declared as default.
 				{
 					logger.warn("There is already a quick search entry marked as default! This entry wit id="+ //$NON-NLS-1$
-						quickSearchEntryFactory.getId() + " and with name=" +quickSearchEntryFactory.getName() +
+						quickSearchEntryFactory.getId() + " and with name=" +quickSearchEntryFactory.getName() + //$NON-NLS-1$
 					" is also declared as 'default'! This declaration is ignored."); //$NON-NLS-1$
 				}
 				else

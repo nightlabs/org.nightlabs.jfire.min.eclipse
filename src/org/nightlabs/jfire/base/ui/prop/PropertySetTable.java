@@ -35,6 +35,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -136,7 +137,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 					} catch (PropertyException e) {
 						throw new RuntimeException(e);
 					}
-					columnText.append("  ");
+					columnText.append("  "); //$NON-NLS-1$
 				}
 				new TableColumn(table, SWT.LEFT).setText(columnText.toString().trim());
 			}
@@ -224,7 +225,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 					DataField dataField = propertySet.getPersistentDataFieldByIndex(fieldID, 0);
 					if (dataField != null && dataField instanceof II18nTextDataField) 
 						text.append(((II18nTextDataField) dataField).getText(NLLocale.getDefault()));
-					text.append("  ");
+					text.append("  "); //$NON-NLS-1$
 				}
 				
 				return text.toString();

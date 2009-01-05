@@ -87,30 +87,30 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 
 		try {
 			String launcher = null;
-			String eclipseCommands = System.getProperty("eclipse.commands");
+			String eclipseCommands = System.getProperty("eclipse.commands"); //$NON-NLS-1$
 			if(eclipseCommands != null) {
-				String[] lines = eclipseCommands.split("\n");
+				String[] lines = eclipseCommands.split("\n"); //$NON-NLS-1$
 				if(lines != null) {
 					for (int i=0; i<lines.length; i++) {
-						if(lines[i].equals("-launcher") && lines.length > i+1)
+						if(lines[i].equals("-launcher") && lines.length > i+1) //$NON-NLS-1$
 							launcher = lines[i+1];
 					}
 				}
 			}
 			if(launcher != null) {
 				String launcherBaseName = launcher;
-				if(launcherBaseName.toLowerCase().endsWith(".exe"))
-					launcherBaseName = launcherBaseName.substring(0, launcherBaseName.length()-".exe".length());
-				String ini = launcher+".ini";
+				if(launcherBaseName.toLowerCase().endsWith(".exe")) //$NON-NLS-1$
+					launcherBaseName = launcherBaseName.substring(0, launcherBaseName.length()-".exe".length()); //$NON-NLS-1$
+				String ini = launcher+".ini"; //$NON-NLS-1$
 				File iniFile = new File(ini);
 				if(!iniFile.canWrite())
-					throw new IOException("Cannot write to ini file: "+iniFile.getAbsolutePath());
+					throw new IOException("Cannot write to ini file: "+iniFile.getAbsolutePath()); //$NON-NLS-1$
 
 				// backup:
-				File backupFile = new File(ini+".bak");
+				File backupFile = new File(ini+".bak"); //$NON-NLS-1$
 				int count = 1;
 				while(backupFile.exists()) {
-					backupFile = new File(ini+".bak"+count);
+					backupFile = new File(ini+".bak"+count); //$NON-NLS-1$
 					count++;
 				}
 				IOUtil.copyFile(iniFile, backupFile);
@@ -123,14 +123,14 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 				boolean foundEntry = false;
 				boolean foundVMArgs = false;
 				while((line = fileReader.readLine()) != null) {
-					if(!foundVMArgs && line.trim().equals("-vmargs")) {
+					if(!foundVMArgs && line.trim().equals("-vmargs")) { //$NON-NLS-1$
 						foundVMArgs = true;
 					}
 					if(!foundVMArgs && replaceNextLine) {
 						newContents.append(languageID);
 						replaceNextLine = false;
 					} else {
-						if(!foundVMArgs && line.trim().equals("-nl")) {
+						if(!foundVMArgs && line.trim().equals("-nl")) { //$NON-NLS-1$
 							replaceNextLine = true;
 							foundEntry = true;
 						}
@@ -142,7 +142,7 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 				if(!foundEntry) {
 					newContents.insert(0, '\n');
 					newContents.insert(0, languageID);
-					newContents.insert(0, "-nl\n");
+					newContents.insert(0, "-nl\n"); //$NON-NLS-1$
 				}
 				// write new contents
 				FileWriter fileWriter = new FileWriter(iniFile);
@@ -150,8 +150,8 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 				fileWriter.close();
 			}
 		} catch(Exception e) {
-			Logger.getLogger(SwitchLanguageDialog.class).error("Error updating launcher ini file", e);
-			MessageDialog.openWarning(getShell(), "Error switching language", "The language configuration could only partially be saved. The application may appear to be in multiple languages. Please contact your administrator to change the application language.");
+			Logger.getLogger(SwitchLanguageDialog.class).error("Error updating launcher ini file", e); //$NON-NLS-1$
+			MessageDialog.openWarning(getShell(), Messages.getString("org.nightlabs.jfire.base.ui.language.SwitchLanguageDialog.errorDialog.title"), Messages.getString("org.nightlabs.jfire.base.ui.language.SwitchLanguageDialog.errorDialog.message")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

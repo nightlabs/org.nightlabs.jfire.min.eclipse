@@ -48,6 +48,7 @@ import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginAbortedException;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -102,7 +103,7 @@ extends AbstractApplication
 
 			LanguageManager.sharedInstance().setLanguage();
 		} catch(Exception e) {
-			logger.error("preCreateWorkbench: " + e.getClass() + ": " + e.getMessage(), e);
+			logger.error("preCreateWorkbench: " + e.getClass() + ": " + e.getMessage(), e); //$NON-NLS-1$ //$NON-NLS-2$
 			throw new RuntimeException(e);
 		}
 	}
@@ -116,17 +117,17 @@ extends AbstractApplication
 	 */
 	protected void initSSLTruststore() throws IOException
 	{
-		if (System.getProperty("javax.net.ssl.trustStore") != null)
+		if (System.getProperty("javax.net.ssl.trustStore") != null) //$NON-NLS-1$
 			return;
 
-		File truststoreFile = new File(getConfigDir(), "jfire-server.truststore").getAbsoluteFile();
+		File truststoreFile = new File(getConfigDir(), "jfire-server.truststore").getAbsoluteFile(); //$NON-NLS-1$
 		if (!truststoreFile.exists())
 		{
-			IOUtil.copyResource(JFireApplication.class, "/jfire-server.truststore", truststoreFile);
+			IOUtil.copyResource(JFireApplication.class, "/jfire-server.truststore", truststoreFile); //$NON-NLS-1$
 		}
 
-		System.setProperty("javax.net.ssl.trustStore", truststoreFile.getPath());
-		System.setProperty("javax.net.ssl.trustStorePassword", "nightlabs");
+		System.setProperty("javax.net.ssl.trustStore", truststoreFile.getPath()); //$NON-NLS-1$
+		System.setProperty("javax.net.ssl.trustStorePassword", "nightlabs"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override

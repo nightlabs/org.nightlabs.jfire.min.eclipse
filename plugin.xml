@@ -83,17 +83,13 @@
                 label="%org.nightlabs.jfire.base.ui.login.action.LoginAction.label"
                 menubarPath="loginMenu/loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
         </actionSet>
-        <actionSet
-              id="org.nightlabs.jfire.base.ui.jdo.cache.actions"
-              label="Cache"
-              visible="true">
-           <action
-                 class="org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction"
-                 id="org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction"
-                 label="Refresh cache (reload all)"
-                 menubarPath="help/additions"
-                 tooltip="Clear the cache and fire dirty notifications for all objects that were in the cache in order to cause reloading.">
-           </action>
+        <actionSet id="org.nightlabs.jfire.base.ui.jdo.cache.actions"
+            label="%org.nightlabs.jfire.base.ui.jdo.cache.actions.label" visible="true">
+            <action
+                class="org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction"
+                id="org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction"
+                label="%org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction.label"
+                menubarPath="help/additions" tooltip="%org.nightlabs.jfire.base.ui.jdo.cache.RefreshAllAction.tooltip"/>
         </actionSet>
     </extension>
     <extension point="org.nightlabs.jfire.base.ui.loginstatelistener">
@@ -214,11 +210,7 @@
         <loginStateListener class="org.nightlabs.jfire.base.ui.login.part.LoginStateListenerForCloseOnLogoutEditorParts"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.exceptionhandler.LoginStateListenerForScreenShotCfg"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.security.SecurityReflectorRCPLoginStateListener"/>
-        <loginStateListener
-              class="org.nightlabs.jfire.base.ui.editlock.EditLockManLoginStateListener">
-        </loginStateListener>
-        <loginStateListener
-              class="org.nightlabs.jfire.base.ui.login.TimeCheckLoginStateListener">
-        </loginStateListener>
+        <loginStateListener class="org.nightlabs.jfire.base.ui.editlock.EditLockManLoginStateListener"/>
+        <loginStateListener class="org.nightlabs.jfire.base.ui.login.TimeCheckLoginStateListener"/>
     </extension>
 </plugin>

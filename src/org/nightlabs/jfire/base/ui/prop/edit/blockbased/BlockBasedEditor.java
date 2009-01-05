@@ -252,7 +252,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 						try {
 							blockGroup = propertySet.getDataBlockGroup(structBlock.getIDObj());
 						} catch (DataBlockGroupNotFoundException e) {
-							throw new IllegalStateException("Could not find DataBlockGroup for " + structBlock.getIDObj() + " in PropertySet although inflated just before.");
+							throw new IllegalStateException("Could not find DataBlockGroup for " + structBlock.getIDObj() + " in PropertySet although inflated just before."); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 						if (shouldDisplayStructBlock(blockGroup)) {
 							ContentProvider contentProvider = groupContentProvider.get(blockGroup.getStructBlockKey());

@@ -681,24 +681,24 @@ public class LoginDialog extends TitleAreaDialog
 			// login failed
 			if (loginResult.isWasAuthenticationErr()) {
 				Throwable error = loginResult.getException();
-				if (error != null && findCause(error, LoginException.class, "org.jfire.serverShuttingDown") != null)
-					setErrorMessage("Server is shutting down. Try again later (after it restarted).");
-				else if (error != null && findCause(error, LoginException.class, "org.jfire.serverNotYetUpAndRunning") != null)
-					setErrorMessage("Server is not yet up and running. Please try again later (when the boot process completed).");
+				if (error != null && findCause(error, LoginException.class, "org.jfire.serverShuttingDown") != null) //$NON-NLS-1$
+					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorMessage.shuttingDown")); //$NON-NLS-1$
+				else if (error != null && findCause(error, LoginException.class, "org.jfire.serverNotYetUpAndRunning") != null) //$NON-NLS-1$
+					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorMessage.notYetUpAndRunning")); //$NON-NLS-1$
 				else if (error != null && findCause(error, LoginException.class, "org.jfire.workstationUnknown") != null) { //$NON-NLS-1$
-					setErrorMessage("There is no workstation with this identifier!");
+					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errormaessage.noSuchWorkstation")); //$NON-NLS-1$
 					// We cannot use setSmartFocus, because it should not focus an empty workstationID field,
 					// if login failed for another reason.
 					showDetails(true);
 					textWorkstationID.setFocus();
 				}
 				else if (error != null && findCause(error, LoginException.class, "org.jfire.workstationIllegal") != null) { //$NON-NLS-1$
-					setErrorMessage("Nobody is allowed to login with this internal workstation identifier!");
+					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorMessage.illegalWorkstation")); //$NON-NLS-1$
 					showDetails(true);
 					textWorkstationID.setFocus();
 				}
 				else if (error != null && findCause(error, LoginException.class, "org.jfire.workstationRequired") != null) { //$NON-NLS-1$
-					setErrorMessage("You are not allowed to login without a workstation! Please specify one.");
+					setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.errorMessage.workstationNeeded")); //$NON-NLS-1$
 					showDetails(true);
 					textWorkstationID.setFocus();
 				}
@@ -729,10 +729,10 @@ public class LoginDialog extends TitleAreaDialog
 	private static Throwable findCause(Throwable e, Class<? extends Throwable> searchedClass, String searchedMessageRegex)
 	{
 		if (e == null)
-			throw new IllegalArgumentException("e must not be null!");
+			throw new IllegalArgumentException("e must not be null!"); //$NON-NLS-1$
 
 		if (searchedClass == null && searchedMessageRegex == null)
-			throw new IllegalArgumentException("searchedClass and searchedMessageRegex are both null! One must be defined!");
+			throw new IllegalArgumentException("searchedClass and searchedMessageRegex are both null! One must be defined!"); //$NON-NLS-1$
 
 		Pattern searchedMessageRegexPattern = searchedMessageRegex == null ? null : Pattern.compile(searchedMessageRegex);
 

@@ -184,7 +184,7 @@ class SelectionStructFieldEditComposite extends XComposite implements LanguageCh
 		}
 		
 		emptySelectionCheckbox = new Button(wrapper, SWT.CHECK);
-		emptySelectionCheckbox.setText("Allow empty selection");
+		emptySelectionCheckbox.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.checkbox.allowEmptySelection.text")); //$NON-NLS-1$
 		emptySelectionCheckbox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

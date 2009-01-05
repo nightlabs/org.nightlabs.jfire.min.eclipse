@@ -226,9 +226,9 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 		//return AbstractPropStructOrderConfigModule.sharedInstance().structBlockDisplayOrder();
 		buildDomainDataBlockGroups();
 		if (propertySet == null)
-			throw new IllegalStateException("Do not call this method prior to setPropertySet()");
+			throw new IllegalStateException("Do not call this method prior to setPropertySet()"); //$NON-NLS-1$
 		if (!propertySet.isInflated())
-			throw new IllegalStateException("The current PropertySet was not inflated yet, make sure it is inflated before you call this method.!");
+			throw new IllegalStateException("The current PropertySet was not inflated yet, make sure it is inflated before you call this method.!"); //$NON-NLS-1$
 		IStruct struct = propertySet.getStructure();
 		return new ArrayList<StructBlock>(struct.getStructBlocks());
 	}
