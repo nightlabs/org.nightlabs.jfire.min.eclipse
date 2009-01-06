@@ -35,7 +35,6 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -56,7 +55,7 @@ import org.nightlabs.util.NLLocale;
  *
  */
 public abstract class PropertySetTable<ProperySetType> extends AbstractTableComposite<ProperySetType> {
-	
+
 	private class LabelProvider extends TableLabelProvider {
 		/**
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
@@ -78,7 +77,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 	private StructFieldID[] structFieldIDs;
 	private StructField<?>[] structFields;
 	private IPropertySetTableConfig config;
-	
+
 	/**
 	 * @param parent
 	 * @param style
@@ -88,10 +87,10 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 		this.config = getPropertySetTableConfig();
 		this.struct = config.getIStruct();
 		this.structFieldIDs = config.getStructFieldIDs();
-		
+
 		initTable();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -117,12 +116,12 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 		tableViewer.setContentProvider(new TableContentProvider());
 		tableViewer.setLabelProvider(new LabelProvider());
 	}
-	
+
 	/**
 	 * Creates the StructFieldColumns columns for this table.
 	 * This method is called by {@link #createTableColumns(TableViewer, Table)}
 	 * if not overridden or can be used in custom implementations.
-	 * 
+	 *
 	 * @param tableViewer The {@link TableViewer} of this table.
 	 * @param table The {@link Table} of this table.
 	 */
@@ -158,13 +157,13 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 			}
 		}
 	}
-	
+
 	/**
 	 * Applies a weighted table layout with the same weight for
 	 * all present Columns in this table.
 	 * This method is called by {@link #createTableColumns(TableViewer, Table)}
 	 * if not overridden or might be used in custom implementations.
-	 * 
+	 *
 	 * @param table The {@link Table} of this table.
 	 */
 	protected void applyTableLayout(Table table) {
@@ -176,7 +175,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 		// TODO: Better use SWT TableLayout ?
 	}
 
-	
+
 	/**
 	 * This method may be overridden to extract the {@link PropertySet}
 	 * from a single table element (element set as input).
@@ -188,7 +187,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 	 * The default implementation returns the element if it is an
 	 * instance of {@link PropertySet}.
 	 * </p>
-	 * 
+	 *
 	 * @param element The element to extract the {@link PropertySet} from.
 	 * @return The {@link PropertySet} extracted from the given Element.
 	 */
@@ -197,11 +196,11 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 			return (PropertySet) element;
 		return null;
 	}
-	
+
 	/**
 	 * Used by the {@link LabelProvider} of this table to display the
 	 * value of a StructField and may be used in custom implementations.
-	 * 
+	 *
 	 * @param propertySet The {@link PropertySet} to get the field value from.
 	 * @param columnIdx The index of the {@link StructFieldID} to get. (Array passed in the constructor).
 	 * @return The String representation of the {@link StructField} value for the given {@link PropertySet}.
@@ -223,20 +222,23 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 				StringBuffer text = new StringBuffer();
 				for (StructFieldID fieldID : fieldIDs) {
 					DataField dataField = propertySet.getPersistentDataFieldByIndex(fieldID, 0);
-					if (dataField != null && dataField instanceof II18nTextDataField) 
-						text.append(((II18nTextDataField) dataField).getText(NLLocale.getDefault()));
+					if (dataField != null && dataField instanceof II18nTextDataField)
+					{
+						String fieldValue = ((II18nTextDataField) dataField).getText(NLLocale.getDefault());
+						text.append(fieldValue != null ? fieldValue : "");
+					}
 					text.append("  "); //$NON-NLS-1$
 				}
-				
+
 				return text.toString();
 			} else
 				return ""; //$NON-NLS-1$
 		}
 	}
-	
+
 	protected void setPropertySetTableConfig(DefaultPropertySetTableConfig config) {
 		this.config = config;
 	}
-	
+
 	protected abstract IPropertySetTableConfig getPropertySetTableConfig();
 }
