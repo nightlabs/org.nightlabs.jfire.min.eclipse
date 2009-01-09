@@ -31,6 +31,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbench;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;
+import org.nightlabs.jfire.workstation.Workstation;
 import org.nightlabs.jfire.workstation.id.WorkstationID;
 
 /**
@@ -74,9 +75,12 @@ extends AbstractConfigModulePreferencePage
 	public void init(IWorkbench workbench) {
 		try {
 			Login login = Login.getLogin();
+			String workstationID = login.getWorkstationID();
+			if (workstationID == null || workstationID.trim().isEmpty())
+				workstationID = Workstation.WORKSTATION_ID_FALLBACK;
 			getConfigModuleController().setConfigID(
 					WorkstationConfigSetup.getWorkstationConfigID(WorkstationID.create(
-							login.getOrganisationID(), login.getWorkstationID())),
+							login.getOrganisationID(), workstationID)),
 							false, (String) null); // TODO: how to get the ConfigModule's id (number) or create several pages with all ids there are
 		} catch (Exception e) {
 			logger.info("User decided to work offline!"); //$NON-NLS-1$
