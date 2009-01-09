@@ -32,6 +32,8 @@ import org.nightlabs.jfire.config.UserConfigSetup;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;
 import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
 import org.nightlabs.jfire.security.id.UserID;
+import org.nightlabs.jfire.workstation.Workstation;
+import org.nightlabs.jfire.workstation.WorkstationResolveStrategy;
 import org.nightlabs.jfire.workstation.id.WorkstationID;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -81,9 +83,10 @@ public class ConfigUtil
 	public static <T extends ConfigModule> T getWorkstationCfMod(Class<T> cfModClass, String[] fetchGroups,
 			int maxFetchDepth, ProgressMonitor monitor) {
 		try {
-			WorkstationID workstationID = WorkstationID.create(
+			WorkstationID workstationID = Workstation.getWorkstationID(
 					Login.getLogin().getOrganisationID(),
-					Login.getLogin().getWorkstationID()
+					Login.getLogin().getWorkstationID(),
+					WorkstationResolveStrategy.FALLBACK
 				);
 			return ConfigModuleDAO.sharedInstance().getConfigModule(
 					WorkstationConfigSetup.getWorkstationConfigID(workstationID),
