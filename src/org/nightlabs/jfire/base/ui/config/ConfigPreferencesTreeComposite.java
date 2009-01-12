@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -117,6 +118,7 @@ public class ConfigPreferencesTreeComposite extends AbstractTreeComposite<Config
 		contentProvider = new ContentProvider();
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(new LabelProvider());
+		treeViewer.setSorter(new ViewerSorter());
 	}
 
 	public void setConfigID(ConfigID configID, ProgressMonitor monitor) {
