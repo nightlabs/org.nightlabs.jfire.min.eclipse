@@ -470,15 +470,22 @@ extends LSDPreferencePage
 	 */
 	protected void setUpGui()
 	{
-		if (getConfigModuleController().getConfigModule().isGroupConfigModule())
-			createConfigGroupHeader(header);
-		else
-			createConfigMemberHeader(header);
-
-		createPreferencePage(body);
-		StackLayout layout = (StackLayout) fadableWrapper.getLayout();
-		layout.topControl = loadingDone;
-		fadableWrapper.layout(true, true);
+		if (!header.isDisposed()) {
+			if (getConfigModuleController().getConfigModule().isGroupConfigModule()) {
+				createConfigGroupHeader(header);
+			}
+			else {
+				createConfigMemberHeader(header);
+			}
+		}
+		if (!body.isDisposed()) {
+			createPreferencePage(body);
+		}
+		if (!fadableWrapper.isDisposed()) {
+			StackLayout layout = (StackLayout) fadableWrapper.getLayout();
+			layout.topControl = loadingDone;
+			fadableWrapper.layout(true, true);
+		}
 	}
 
 	/**
