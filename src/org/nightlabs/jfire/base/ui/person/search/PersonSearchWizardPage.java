@@ -45,6 +45,10 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	private PersonEditorWizardHop editorWizardHop;
 	private PersonSearchComposite searchComposite;
 	private String quickSearchText;
+	/**
+	 * This is set to true when newPerson is pressed and re-set when the page is shown.
+	 */
+	private boolean editingNewPerson = false;
 	private Person newPerson;
 	private Button searchButton;
 	private Button createNewButton;
@@ -143,20 +147,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 			createNewButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					if (newPerson == null) {
-						newPerson = new Person(
-							SecurityReflector.getUserDescriptor().getOrganisationID(),
-							IDGenerator.nextID(PropertySet.class)
-						);
-						StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-								Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
-						newPerson.inflate(structLocal);
-						newPersonEditorWizardHop = new PersonEditorWizardHop();
-						newPersonEditorWizardHop.initialise(newPerson);
-					}
-					getWizardHop().addHopPage(newPersonEditorWizardHop.getEntryPage());
-					personSelectionChanged();
-					getContainer().showPage(getNextPage());
+					newPersonPressed();
 				}
 			});
 		}
@@ -169,16 +160,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 			editButton.addSelectionListener(new SelectionAdapter(){
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// we have to create a new one, because initialise(...) doesn't overwrite the data
-					editorWizardHop = new PersonEditorWizardHop();
-					Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
-					StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-							Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
-					selectedPerson.inflate(structLocal);
-					editorWizardHop.initialise(selectedPerson);
-					getWizardHop().addHopPage(editorWizardHop.getEntryPage());
-					personSelectionChanged();
-					getContainer().showPage(getNextPage());
+					editPersonPressed();
 				}
 			});
 		}
@@ -198,6 +180,46 @@ public class PersonSearchWizardPage extends WizardHopPage {
 			}
 		});
 		return searchComposite;
+	}
+
+	private boolean switchingToNewPerson = false;
+
+	protected void newPersonPressed()
+	{
+		switchingToNewPerson = true;
+		try {
+			if (newPerson == null) {
+				newPerson = new Person(
+						SecurityReflector.getUserDescriptor().getOrganisationID(),
+						IDGenerator.nextID(PropertySet.class)
+				);
+				StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+				newPerson.inflate(structLocal);
+				newPersonEditorWizardHop = new PersonEditorWizardHop();
+				newPersonEditorWizardHop.initialise(newPerson);
+			}
+			editingNewPerson = true;
+			getWizardHop().addHopPage(newPersonEditorWizardHop.getEntryPage());
+			personSelectionChanged();
+			getContainer().showPage(getNextPage());
+		} finally {
+			switchingToNewPerson = false;
+		}
+	}
+
+	protected void editPersonPressed()
+	{
+		// we have to create a new one, because initialise(...) doesn't overwrite the data
+		editorWizardHop = new PersonEditorWizardHop();
+		Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
+		StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+		selectedPerson.inflate(structLocal);
+		editorWizardHop.initialise(selectedPerson);
+		getWizardHop().addHopPage(editorWizardHop.getEntryPage());
+		personSelectionChanged();
+		getContainer().showPage(getNextPage());
 	}
 
 	protected void personDoubleClicked() {
@@ -228,6 +250,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		getWizardHop().removeAllHopPages();
 		getContainer().updateButtons();
 		makeSearchButtonDefault();
+		editingNewPerson = false;
 	}
 
 	private void makeSearchButtonDefault() {
@@ -248,9 +271,12 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	 */
 	public Person getSelectedPerson() {
 		if (getWizard().getContainer().getCurrentPage() == this) {
-			return searchComposite.getResultTable().getFirstSelectedElement();
+			if (switchingToNewPerson && newPerson != null)
+				return newPerson;
+			else
+				return searchComposite.getResultTable().getFirstSelectedElement();
 		} else {
-			if (newPerson != null)
+			if (newPerson != null && editingNewPerson)
 				return newPerson;
 			else
 				return searchComposite.getResultTable().getFirstSelectedElement();
