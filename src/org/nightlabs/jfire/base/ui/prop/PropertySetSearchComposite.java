@@ -394,6 +394,14 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		return getWrapper();
 	}
 
+	public void setQuickSearchText(String text)
+	{
+		earlySearchText = text;
+		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+			staticTab.setQuickSearchText(earlySearchText);
+		}
+	}
+
 	/**
 	 * Creates a Button in the given Composite that will trigger {@link #performSearch()}
 	 * when selected.

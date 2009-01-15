@@ -36,8 +36,10 @@ import org.nightlabs.jfire.person.Person;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public class PersonEditorWizardOtherPage extends
-		FullDataBlockCoverageWizardPage {
+public class PersonEditorWizardOtherPage
+extends FullDataBlockCoverageWizardPage
+{
+	public static final String PAGE_NAME = PersonEditorWizardOtherPage.class.getName();
 
 	/**
 	 * @param pageName
@@ -46,17 +48,16 @@ public class PersonEditorWizardOtherPage extends
 	 */
 	public PersonEditorWizardOtherPage(Person person) {
 		super(
-			PersonEditorWizardOtherPage.class.getName(),
+			PAGE_NAME,
 			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditorWizardOtherPage.title"), //$NON-NLS-1$
 			person,
 			null
 		);
-
 		setImageDescriptor(
 				SharedImages.getSharedImageDescriptor(
 						JFireBasePlugin.getDefault(),
 						PersonEditorWizardOtherPage.class, null, SharedImages.ImageDimension._75x70));
 	}
-	
+
 
 }

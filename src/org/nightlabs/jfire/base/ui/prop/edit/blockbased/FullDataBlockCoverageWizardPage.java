@@ -43,7 +43,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	protected FullDataBlockCoverageComposite fullDataBlockCoverageComposite;
 	protected PropertySet prop;
 	protected EditorStructBlockRegistry editorStructBlockRegistry;
-	
+
 	/**
 	 * This variable is used to retain a possible validation error message until the first input by the user was made.
 	 */
@@ -72,7 +72,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 			public void setValidationResult(ValidationResult validationResult) {
 				if (pristine)
 					return;
-				
+
 				if (validationResult == null)
 					setMessage(null);
 				else
@@ -80,7 +80,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 			}
 		};
 		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry, resultManager);
-		
+
 		// Register a listener, that sets pristine to false and then immediately deregisteres itself again
 		final DataBlockEditorChangedListener[] listener = new DataBlockEditorChangedListener[1];
 		listener[0] = new DataBlockEditorChangedListener() {
@@ -91,7 +91,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 			}
 		};
 		fullDataBlockCoverageComposite.addChangeListener(listener[0]);
-		
+
 		return fullDataBlockCoverageComposite;
 	}
 
@@ -112,6 +112,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	 * See {@link FullDataBlockCoverageComposite#refresh(PropertySet)}
 	 */
 	public void refresh(PropertySet propertySet) {
+		this.prop = propertySet;
 		if (fullDataBlockCoverageComposite != null)
 			fullDataBlockCoverageComposite.refresh(propertySet);
 	}
@@ -130,5 +131,9 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 
 	public void markPristine() {
 		pristine = true;
+	}
+
+	public PropertySet getPropertySet() {
+		return prop;
 	}
 }

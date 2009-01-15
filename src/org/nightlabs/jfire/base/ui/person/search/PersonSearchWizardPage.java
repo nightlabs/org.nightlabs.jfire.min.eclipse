@@ -62,15 +62,32 @@ public class PersonSearchWizardPage extends WizardHopPage {
 	}
 
 	public PersonSearchWizardPage(String quickSearchText, boolean allowNewLegalEntityCreation, boolean allowEditLegalEntity) {
-		super(
-			PersonSearchWizardPage.class.getName(),
-			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.title") //$NON-NLS-1$
+		this(
+			quickSearchText,
+			allowNewLegalEntityCreation,
+			allowEditLegalEntity,
+			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.title"), //$NON-NLS-1$
+			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.description") //$NON-NLS-1$
 		);
+	}
+
+	/**
+	 * Creates a PersonSearchWizardPage.
+	 *
+	 * @param quickSearchText the quickSearchText (will be displayed in the name-surname-company field)
+	 * @param allowNewLegalEntityCreation determines if the create new person button will be displayed, for creating a new person
+	 * @param allowEditLegalEntity determines if the edit person button will be displayed, for editing a selected person
+	 * @param title the title of the wizard page
+	 * @param description the description of the wizard page
+	 */
+	public PersonSearchWizardPage(String quickSearchText, boolean allowNewLegalEntityCreation, boolean allowEditLegalEntity, String title,
+			String description)
+	{
+		super(PersonSearchWizardPage.class.getName(), title);
 		this.quickSearchText = quickSearchText;
 		this.allowNewLegalEntityCreation = allowNewLegalEntityCreation;
 		this.allowEditLegalEntity = allowEditLegalEntity;
-
-		setDescription(Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.description")); //$NON-NLS-1$
+		setDescription(description);
 		new WizardHop(this);
 	}
 
@@ -196,6 +213,9 @@ public class PersonSearchWizardPage extends WizardHopPage {
 				StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
 						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
 				newPerson.inflate(structLocal);
+				if (quickSearchText != null) {
+					newPerson.setDisplayName(quickSearchText);
+				}
 				newPersonEditorWizardHop = new PersonEditorWizardHop();
 				newPersonEditorWizardHop.initialise(newPerson);
 			}
@@ -289,5 +309,12 @@ public class PersonSearchWizardPage extends WizardHopPage {
 
 	protected String getEditButtonText() {
 		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.button.editPerson.text"); //$NON-NLS-1$
+	}
+
+	public void setQuickSearchText(String text) {
+		this.quickSearchText = text;
+		if (searchComposite != null && !searchComposite.isDisposed()) {
+			searchComposite.setQuickSearchText(text);
+		}
 	}
 }
