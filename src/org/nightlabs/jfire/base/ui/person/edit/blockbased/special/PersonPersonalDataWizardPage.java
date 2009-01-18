@@ -102,17 +102,6 @@ extends DataBlockWizardPage
 	protected void pageChanged() {
 		try {
 			updatePropertySet();
-//			TextDataField name = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_NAME);
-//			TextDataField firstName = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_FIRSTNAME);
-//			TextDataField companyName = (TextDataField) getDataBlockGroup(PersonStruct.PERSONALDATA).getDataBlockByIndex(0).getDataField(PersonStruct.PERSONALDATA_COMPANY);
-//			displayName.getTextControl().setText(getPropertySet().getDisplayName());
-//
-//			if (companyName.isEmpty() && name.isEmpty())
-//				updateStatus(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.errorNameMissing")); //$NON-NLS-1$
-//			else if (companyName.isEmpty() && firstName.isEmpty())
-//				updateStatus(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage.errorFirstNameMissing")); //$NON-NLS-1$
-//			else
-//				updateStatus(null);
 		} catch (Throwable t) {
 			ExceptionHandlerRegistry.syncHandleException(t);
 		}

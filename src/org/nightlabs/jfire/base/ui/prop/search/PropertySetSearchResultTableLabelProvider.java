@@ -30,7 +30,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.prop.datafield.TextDataField;
+import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -58,8 +58,8 @@ public class PropertySetSearchResultTableLabelProvider implements ITableLabelPro
 		else if (element instanceof Object[]) {
 			Object[] array = (Object[])element;
 			if (array.length > columnIndex) {
-				if (array[columnIndex] instanceof TextDataField) {
-					label = ((TextDataField)array[columnIndex]).getText();
+				if (array[columnIndex] instanceof II18nTextDataField) {
+					label = ((II18nTextDataField) array[columnIndex]).getI18nText().getText();
 				}
 			}
 			else

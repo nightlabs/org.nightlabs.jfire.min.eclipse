@@ -210,7 +210,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 			if (columnIdx >= 0 && columnIdx < config.getStructFieldIDs().length) {
 				DataField dataField = propertySet.getPersistentDataFieldByIndex(config.getStructFieldIDs()[columnIdx], 0);
 				if (dataField != null && dataField instanceof II18nTextDataField) {
-					return ((II18nTextDataField) dataField).getText(NLLocale.getDefault());
+					return ((II18nTextDataField) dataField).getI18nText().getText();
 				} else
 					return ""; //$NON-NLS-1$
 			} else
@@ -224,7 +224,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 					DataField dataField = propertySet.getPersistentDataFieldByIndex(fieldID, 0);
 					if (dataField != null && dataField instanceof II18nTextDataField)
 					{
-						String fieldValue = ((II18nTextDataField) dataField).getText(NLLocale.getDefault());
+						String fieldValue = ((II18nTextDataField) dataField).getI18nText().getText();
 						text.append(fieldValue != null ? fieldValue : "");
 					}
 					text.append("  "); //$NON-NLS-1$

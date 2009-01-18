@@ -39,7 +39,6 @@ import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
 import org.nightlabs.jfire.prop.structfield.TextStructField;
-import org.nightlabs.util.NLLocale;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -101,10 +100,10 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	 */
 	@Override
 	public void _refresh() {
-		if (getEditor().getDataField().getText(NLLocale.getDefault()) == null)
+		if (getEditor().getDataField().getI18nText().getText() == null)
 			fieldText.setText(""); //$NON-NLS-1$
 		else
-			fieldText.setText(getEditor().getDataField().getText(NLLocale.getDefault()));
+			fieldText.setText(getEditor().getDataField().getI18nText().getText());
 	}
 	
 	private boolean isMultiLine() {
