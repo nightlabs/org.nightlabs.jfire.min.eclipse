@@ -18,7 +18,7 @@ import org.nightlabs.base.ui.composite.XComposite;
  * to use to build up the shelf and it entries. As a default the {@link OverviewRegistry}
  * itself will be used (extension-point: org.nightlabs.jfire.base.ui.overview)
  * </p>
- * 
+ *
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
@@ -27,7 +27,7 @@ extends XComposite
 {
 	/**
 	 * Create a new {@link OverviewShelf}
-	 * 
+	 *
 	 * @param parent The shelfs parent {@link Composite}.
 	 * @param style The style of the shelfs wrapping {@link XComposite}
 	 * @param layoutMode The {@link LayoutMode} of the shelfs wrapping {@link XComposite}
@@ -42,7 +42,7 @@ extends XComposite
 
 	/**
 	 * Create a new {@link OverviewShelf}
-	 * 
+	 *
 	 * @param parent The shelfs parent {@link Composite}.
 	 * @param style The style of the shelfs wrapping {@link XComposite}
 	 */
@@ -52,7 +52,39 @@ extends XComposite
 	}
 
 	private PShelf shelf;
-	
+//	private ExpandBar expandbar;
+//
+//	/**
+//	 * Creates the contents of this shelf.
+//	 * Note that it applies a {@link FillLayout} to the
+//	 * given Parent.
+//	 * <p>
+//	 * Called from the constructor with <code>this</code>.
+//	 * </p>
+//	 * @param parent The parent (like <code>this</code>).
+//	 */
+//	protected void createComposite(Composite parent)
+//	{
+//		parent.setLayout(new FillLayout());
+//		expandbar = new ExpandBar(parent, SWT.V_SCROLL);
+//		expandbar.setLayoutData(new GridData(GridData.FILL_BOTH));
+//
+//		for (final Category category: getOverviewRegistry().createCategories(getScope()))
+//		{
+//			final ExpandItem categoryItem = new ExpandItem(expandbar, SWT.NONE);
+//			categoryItem.setData(category);
+//			categoryItem.setText(category.getCategoryFactory().getName());
+//			categoryItem.setImage(category.getCategoryFactory().getImage());
+//			categoryItem.setHeight(300);
+//			Composite itemControl = new XComposite(shelf, SWT.BORDER);
+//			itemControl.setLayout(new FillLayout());
+//			categoryItem.setControl(itemControl);
+//			category.createComposite((Composite)categoryItem.getControl());
+//			categoryItem.setExpanded(true);
+//		}
+//		shelf.layout(true, true);
+//	}
+
 	/**
 	 * Creates the contents of this shelf.
 	 * Note that it applies a {@link FillLayout} to the
@@ -70,7 +102,7 @@ extends XComposite
 		shelf.setRenderer(new RedmondShelfRenderer());
 		shelf.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		for (Category category: getOverviewRegistry().createCategories(getScope()))
+		for (final Category category: getOverviewRegistry().createCategories(getScope()))
 		{
 			PShelfItem categoryItem = new PShelfItem(shelf,SWT.NONE);
 			categoryItem.setData(category);
@@ -80,7 +112,7 @@ extends XComposite
 			category.createComposite(categoryItem.getBody());
 		}
 	}
-	
+
 	/**
 	 * Callback method to define the {@link OverviewRegistry} that should be used
 	 * by this shelf.
@@ -89,9 +121,9 @@ extends XComposite
 	{
 		return OverviewRegistry.sharedInstance();
 	}
-	
+
 	/**
-	 * @return The scope, for which 
+	 * @return The scope, for which
 	 */
 	protected abstract String getScope();
 }
