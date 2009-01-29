@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -152,7 +151,6 @@ public class EditLockMan
 		}
 
 		@Override
-		@Implement
 		protected IStatus run(ProgressMonitor monitor) throws Exception
 		{
 			synchronized (editLockID2Job) {
@@ -428,7 +426,6 @@ public class EditLockMan
 	{
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockMan.releaseLockJob")) { //$NON-NLS-1$
 			@Override
-			@Implement
 			protected IStatus run(ProgressMonitor monitor) throws Exception
 			{
 				releaseEditLocks(objectIDs, releaseReason, monitor);

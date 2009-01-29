@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
@@ -50,7 +49,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.composite.FadeableComposite;
 import org.nightlabs.base.ui.composite.InheritanceToggleButton;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -377,7 +375,6 @@ extends LSDPreferencePage
 	private EditLockHandle lockHandle = null;
 
 	@Override
-	@Implement
 	public void createPartContents(Composite parent)
 	{
 		fadableWrapper = new FadeableComposite(parent, SWT.NONE, LayoutMode.NONE, LayoutDataMode.NONE);

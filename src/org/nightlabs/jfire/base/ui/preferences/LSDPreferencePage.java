@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.part.ControllablePart;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
@@ -39,12 +38,12 @@ implements IWorkbenchPreferencePage, ControllablePart
 		LSDPartController.sharedInstance().registerPart(this, new FillLayout());
 	}
 	
-	@Implement
+	@Override
 	public boolean canDisplayPart() {
 		return Login.isLoggedIn();
 	}
 
-	@Implement
+	@Override
 	public void createPartContents(Composite parent) {
 //		createContents(parent);
 	}
@@ -61,7 +60,7 @@ implements IWorkbenchPreferencePage, ControllablePart
 		return workbench;
 	}
 	
-	@Implement
+	@Override
 	public void init(IWorkbench workbench) {
 		this.workbench = workbench;
 	}

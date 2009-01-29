@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.jdo.ObjectID;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
@@ -538,7 +537,6 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectTreeController.loadingDataJob")) { //$NON-NLS-1$
 			@Override
-			@Implement
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				if (logger.isDebugEnabled())

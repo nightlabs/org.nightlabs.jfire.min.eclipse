@@ -1,7 +1,5 @@
 package org.nightlabs.jfire.base.ui.overview;
 
-import org.nightlabs.annotation.Implement;
-
 /**
  * The abstract base for {@link Entry}s holding their creating {@link EntryFactory}.
  * 
@@ -12,14 +10,11 @@ public abstract class AbstractEntry implements Entry {
 
 	private EntryFactory entryFactory;
 	
-	/**
-	 * 
-	 */
 	public AbstractEntry(EntryFactory entryFactory) {
 		this.entryFactory = entryFactory;
 	}
 
-	@Implement
+	@Override
 	public EntryFactory getEntryFactory() {
 		return entryFactory;
 	}

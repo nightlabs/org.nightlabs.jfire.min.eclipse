@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.composite.AbstractListComposite;
 import org.nightlabs.base.ui.composite.ListComposite;
 import org.nightlabs.base.ui.job.Job;
@@ -70,7 +69,6 @@ public class OrganisationList
 
 		new Job(Messages.getString("org.nightlabs.jfire.base.ui.organisation.OrganisationList.loadJob.name")) { //$NON-NLS-1$
 			@Override
-			@Implement
 			protected IStatus run(ProgressMonitor monitor) throws Exception
 			{
 				final List<Organisation> organisations = organisationIDDataSource == null ?
