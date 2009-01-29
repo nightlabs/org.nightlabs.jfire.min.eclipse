@@ -2,7 +2,6 @@ package org.nightlabs.jfire.base.admin.ui.timer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 
 public class TaskListView
@@ -12,7 +11,7 @@ extends LSDViewPart
 
 	private TaskListComposite taskListComposite;
 
-	@Implement
+	@Override
 	public void createPartContents(Composite parent)
 	{
 		taskListComposite = new TaskListComposite(parent, SWT.NONE);
@@ -25,5 +24,4 @@ extends LSDViewPart
 	{
 		// TODO Auto-generated method stub
 	}
-
 }

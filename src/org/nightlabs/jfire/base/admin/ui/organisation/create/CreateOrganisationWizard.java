@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -92,7 +91,6 @@ public class CreateOrganisationWizard extends Wizard
 				new Object[] { organisationID, organisationDisplayName });
 		Job job = new Job(createOrganisationJobName) {
 			@Override
-			@Implement
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				try {

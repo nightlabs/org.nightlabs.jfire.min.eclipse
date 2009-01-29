@@ -29,7 +29,6 @@ package org.nightlabs.jfire.base.admin.ui.organisation.registration;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.nightlabs.annotation.Implement;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.jfire.organisation.RegistrationStatus;
 import org.nightlabs.l10n.DateFormatter;
@@ -46,13 +45,13 @@ public class RegistrationTableLabelProvider
 	{
 	}
 
-	@Implement
+	@Override
 	public Image getColumnImage(Object element, int columnIndex)
 	{
 		return null;
 	}
 
-	@Implement
+	@Override
 	public String getColumnText(Object element, int columnIndex)
 	{
 		try {
