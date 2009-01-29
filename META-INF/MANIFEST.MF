@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.nightlabs.jfire.errorreport.mantis;singleton:=true
 Bundle-Version: 0.9.5.qualifier
 Bundle-Vendor: nightlabs.org
 Require-Bundle: org.nightlabs.base.ui.errorreport.mantis;bundle-version="0.9.5"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
