@@ -697,7 +697,8 @@ extends LSDPreferencePage
 	 */
 	protected void setEditable(boolean editable)
 	{
-		fadableWrapper.setEnabled(editable);
+		if (fadableWrapper != null && !fadableWrapper.isDisposed())
+			fadableWrapper.setEnabled(editable);
 
 		// Reset the ToggleButton state in case the config is in no group -> it is editable
 		// -> the fadableWrapper rekursively sets all elements enabled = true, although
