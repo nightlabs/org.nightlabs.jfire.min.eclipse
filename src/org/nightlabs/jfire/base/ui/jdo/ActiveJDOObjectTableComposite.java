@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.DisposeEvent;
@@ -59,6 +60,8 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	}
 	
 	private ActiveJDOObjectController<JDOObjectID, JDOObject> controller;
+	
+	private ListenerList tableListeners = new ListenerList();
 	
 	public ActiveJDOObjectTableComposite(Composite parent, int style) {
 		super(parent, style);
@@ -116,6 +119,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 							if (!getContentProvider().isInputSet()) {
 								getContentProvider().setInput(loadedObjects);
 								getTableViewer().setInput(loadedObjects);
+								fireSetInputEvent();
 							} else {
 								for (JDOObject loadedObject : loadedObjects) {
 									if (getContentProvider().containsElement(loadedObject)) {
@@ -124,6 +128,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 										getTableViewer().add(loadedObject);
 										getContentProvider().add(loadedObject);
 									}
+									fireElementAddedEvent();
 								}
 							}
 						}
@@ -145,6 +150,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 							getTableViewer().remove(removeElements);
 						}
 					});
+					fireElementRemovedEvent();
 				}
 			}
 		};
@@ -155,6 +161,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 			public void widgetDisposed(DisposeEvent arg0)
 			{
 				controller.close();
+				tableListeners.clear();
 			}
 		});
 
@@ -167,5 +174,28 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 */
 	public void load() {
 		getActiveJDOObjectController().getJDOObjects();
+	}
+	
+	protected void fireSetInputEvent() {
+		for (Object listener : tableListeners.getListeners())
+			((ActiveJDOObjectTableListener) listener).inputSet();
+	}
+	
+	protected void fireElementAddedEvent() {
+		for (Object listener : tableListeners.getListeners())
+			((ActiveJDOObjectTableListener) listener).elementAdded();
+	}
+	
+	protected void fireElementRemovedEvent() {
+		for (Object listener : tableListeners.getListeners())
+			((ActiveJDOObjectTableListener) listener).elementRemoved();
+	}
+	
+	public void addTableListener(ActiveJDOObjectTableListener listener) {
+		tableListeners.add(listener);
+	}
+	
+	public void removeTableListener(ActiveJDOObjectTableListener listener) {
+		tableListeners.add(listener);
 	}
 }
