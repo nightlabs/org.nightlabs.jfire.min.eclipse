@@ -211,6 +211,12 @@
               elementPath="actionSet"
               extensionPointID="org.eclipse.ui.actionSets">
         </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.cheatsheets.actionSet"
+              elementPath="actionSet"
+              extensionPointID="org.eclipse.ui.actionSets">
+        </removeExtension>
     </extension>
     <extension point="org.nightlabs.base.ui.exceptionhandler">
         <exceptionHandler
