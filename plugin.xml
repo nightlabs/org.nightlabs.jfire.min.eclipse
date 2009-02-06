@@ -188,14 +188,29 @@
             attributePattern=".*eclipse.*resource.*"
             elementPath="perspective" extensionPointID="org.eclipse.ui.perspectives"/>
         <removeExtension attributeName="class"
-            attributePattern="org.eclipse.update.internal.ui.preferences.MainPreferencePage"
-            elementPath="page" extensionPointID="org.eclipse.ui.preferencePages"/>
-        <removeExtension attributeName="class"
             attributePattern="org.eclipse.help.ui.internal.preferences.HelpPreferencePage"
             elementPath="page" extensionPointID="org.eclipse.ui.preferencePages"/>
         <removeExtension attributeName="class"
             attributePattern="org.eclipse.help.ui.internal.preferences.HelpContentPreferencePage"
             elementPath="page" extensionPointID="org.eclipse.ui.preferencePages"/>
+        <removeExtension
+              attributeName="class"
+              attributePattern="org.eclipse.update.internal.ui.preferences.MainPreferencePage"
+              elementPath="page"
+              extensionPointID="org.eclipse.ui.preferencePages">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.update.scheduler.AutomaticUpdatesPreferencePage"
+              elementPath="page"
+              extensionPointID="org.eclipse.ui.preferencePages">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.update.ui.softwareUpdates"
+              elementPath="actionSet"
+              extensionPointID="org.eclipse.ui.actionSets">
+        </removeExtension>
     </extension>
     <extension point="org.nightlabs.base.ui.exceptionhandler">
         <exceptionHandler

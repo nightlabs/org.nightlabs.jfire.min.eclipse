@@ -41,8 +41,13 @@ extends DefaultActionBuilder
 	public JFireActionBuilder(IActionBarConfigurer configurer) {
 		super(configurer);
 		// by default JFire Applications don't use the eclipse help system
-		if (menuBarItems != null)
-			menuBarItems.remove(ActionBarItem.Help);
+		if (menuBarItems != null) {
+			menuBarItems.remove(ActionBarItem.Help);	
+			menuBarItems.remove(ActionBarItem.Update);
+			menuBarItems.remove(ActionBarItem.Import);
+			menuBarItems.remove(ActionBarItem.Export);
+			menuBarItems.remove(ActionBarItem.Properties);
+		}
 	}
 	
 	@Override
