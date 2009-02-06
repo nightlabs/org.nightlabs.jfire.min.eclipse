@@ -217,6 +217,48 @@
               elementPath="actionSet"
               extensionPointID="org.eclipse.ui.actionSets">
         </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.console.ConsoleView"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.views.BookmarkView"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.views.TaskList"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.views.ProblemView"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.views.ResourceNavigator"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.cheatsheets.views.CheatSheetView"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.navigator.ProjectExplorer"
+              elementPath="view"
+              extensionPointID="org.eclipse.ui.views">
+        </removeExtension>
     </extension>
     <extension point="org.nightlabs.base.ui.exceptionhandler">
         <exceptionHandler
