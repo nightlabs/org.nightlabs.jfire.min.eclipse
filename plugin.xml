@@ -259,6 +259,36 @@
               elementPath="view"
               extensionPointID="org.eclipse.ui.views">
         </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.editors.wizards.UntitledTextFileWizard"
+              elementPath="wizard"
+              extensionPointID="org.eclipse.ui.newWizards">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.wizards.new.project"
+              elementPath="wizard"
+              extensionPointID="org.eclipse.ui.newWizards">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.wizards.new.folder"
+              elementPath="wizard"
+              extensionPointID="org.eclipse.ui.newWizards">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.wizards.new.file"
+              elementPath="wizard"
+              extensionPointID="org.eclipse.ui.newWizards">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.ui.Basic"
+              elementPath="category"
+              extensionPointID="org.eclipse.ui.newWizards">
+        </removeExtension>
     </extension>
     <extension point="org.nightlabs.base.ui.exceptionhandler">
         <exceptionHandler
