@@ -384,4 +384,32 @@
               indexHint="20">
         </pageFactory>
     </extension>
+    <extension
+          point="org.eclipse.ui.newWizards">
+       <category
+             id="org.nightlabs.jfire.base.admin.ui"
+             name="System">
+       </category>
+       <wizard
+             category="org.nightlabs.jfire.base.admin.ui"
+             class="org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard"
+             icon="icons/user/CreateUserAction.16x16.png"
+             id="org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard"
+             name="User">
+       </wizard>
+       <wizard
+             category="org.nightlabs.jfire.base.admin.ui"
+             class="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupWizard"
+             icon="icons/usersecuritygroup/CreateUserGroupAction.16x16.png"
+             id="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupWizard"
+             name="UserGroup">
+       </wizard>
+       <wizard
+             category="org.nightlabs.jfire.base.admin.ui"
+             class="org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationWizard"
+             icon="icons/workstation/CreateWorkstationAction.16x16.png"
+             id="org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationWizard"
+             name="Workstation">
+       </wizard>
+    </extension>
 </plugin>

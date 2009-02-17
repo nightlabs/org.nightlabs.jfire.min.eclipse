@@ -32,6 +32,9 @@ import javax.ejb.CreateException;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
@@ -49,7 +52,7 @@ import org.nightlabs.progress.NullProgressMonitor;
  * @author Niklas Schiffler <nick@nightlabs.de>
  *
  */
-public class CreateUserGroupWizard extends DynamicPathWizard
+public class CreateUserGroupWizard extends DynamicPathWizard implements INewWizard
 {
 	private CreateUserGroupPage cugPage;
 	private UserSecurityGroupID createdUserSecurityGroupID;
@@ -117,5 +120,10 @@ public class CreateUserGroupWizard extends DynamicPathWizard
 	
 	public UserSecurityGroupID getCreatedUserSecurityGroupID() {
 		return createdUserSecurityGroupID;
+	}
+	
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		// do nothing
 	}
 }

@@ -26,6 +26,9 @@
 
 package org.nightlabs.jfire.base.admin.ui.workstation;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -39,8 +42,8 @@ import org.nightlabs.jfire.workstation.id.WorkstationID;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateWorkstationWizard extends DynamicPathWizard {
-
+public class CreateWorkstationWizard extends DynamicPathWizard implements INewWizard 
+{
 	private CreateWorkstationPage createWorkstationPage;
 	private WorkstationID createdWorkstationID;
 	
@@ -73,5 +76,10 @@ public class CreateWorkstationWizard extends DynamicPathWizard {
 
 	public WorkstationID getCreatedWorkstationID() {
 		return createdWorkstationID;
+	}
+	
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		// do nothing
 	}
 }

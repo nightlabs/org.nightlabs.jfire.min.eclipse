@@ -26,6 +26,9 @@
 
 package org.nightlabs.jfire.base.admin.ui.user;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedPropertySetEditorWizardHop;
@@ -44,7 +47,7 @@ import org.nightlabs.progress.NullProgressMonitor;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marco Schulze - Marco at NightLabs dot de
  */
-public class CreateUserWizard extends DynamicPathWizard
+public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 {
 	private CreateUserPage cuPage;
 	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
@@ -119,4 +122,8 @@ public class CreateUserWizard extends DynamicPathWizard
 		return createdUserID;
 	}
 	
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		// do nothing
+	}
 }
