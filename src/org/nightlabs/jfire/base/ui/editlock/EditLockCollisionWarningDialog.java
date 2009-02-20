@@ -7,15 +7,13 @@ import javax.jdo.FetchPlan;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.job.Job;
-import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
+import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.editlock.AcquireEditLockResult;
@@ -24,7 +22,8 @@ import org.nightlabs.jfire.editlock.dao.EditLockDAO;
 import org.nightlabs.progress.ProgressMonitor;
 
 public class EditLockCollisionWarningDialog
-extends ResizableTrayDialog
+//extends ResizableTrayDialog
+extends ResizableTitleAreaDialog
 {
 	private AcquireEditLockResult acquireEditLockResult;
 
@@ -32,7 +31,7 @@ extends ResizableTrayDialog
 
 	public EditLockCollisionWarningDialog(Shell parentShell, AcquireEditLockResult acquireEditLockResult)
 	{
-		super(parentShell, null);
+		super(parentShell, Messages.getBundle());
 		this.acquireEditLockResult = acquireEditLockResult;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		setBlockOnOpen(false);
@@ -56,10 +55,13 @@ extends ResizableTrayDialog
 	{
 		Composite page = (Composite) super.createDialogArea(parent);
 
-		Label l = new Label(page, SWT.WRAP);
-		l.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.warningText")); //$NON-NLS-1$
-		l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+//		Label l = new Label(page, SWT.WRAP);
+//		l.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.warningText")); //$NON-NLS-1$
+//		l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		getShell().setText("Edit Lock Collision");
+		setTitle("Edit Lock Collision");
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.warningText")); //$NON-NLS-1$
+		
 		editLockTable = new EditLockTable(page, SWT.NONE);
 		editLockTable.setInput(new String[] {Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.loadingLabel")}); //$NON-NLS-1$
 

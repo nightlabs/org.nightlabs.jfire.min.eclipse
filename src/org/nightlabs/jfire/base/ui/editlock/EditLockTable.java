@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.editlock;
 
 import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -64,9 +63,13 @@ extends AbstractTableComposite
 		tc.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockTable.lastAquired")); //$NON-NLS-1$
 
 		TableLayout tl = new TableLayout();
-		tl.addColumnData(new ColumnWeightData(1));
+//		tl.addColumnData(new ColumnWeightData(1));
+//		tl.addColumnData(new ColumnPixelData(120));
+//		tl.addColumnData(new ColumnPixelData(120));
+		tl.addColumnData(new ColumnPixelData(200));
 		tl.addColumnData(new ColumnPixelData(120));
 		tl.addColumnData(new ColumnPixelData(120));
+		
 		table.setLayout(tl);
 	}
 
