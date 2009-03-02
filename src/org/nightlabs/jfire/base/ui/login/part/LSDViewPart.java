@@ -13,7 +13,7 @@ import org.nightlabs.jfire.base.ui.login.Login;
  * Extend this Class if you want to write an LoginStateDepenend View, instead of
  * implementing the Method createPartControl(Composite parent) you need to implement
  * the createPartContents(Composite parent) defined by the interface {@link ControllablePart}
- * 
+ *
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
@@ -26,7 +26,7 @@ implements PartVisibilityListener, ControllablePart
 		// Register the view at the view-controller
 		LSDPartController.sharedInstance().registerPart(this, new FillLayout());
 	}
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
     // Delegate this to the view-controller, to let him decide what to display
