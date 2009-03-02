@@ -65,8 +65,9 @@ public class FullDataBlockCoverageComposite extends Composite {
 			throw new IllegalArgumentException("The given propertySet was not exploded by a StructLocal"); //$NON-NLS-1$
 		this.structBlockRegistry = structBlockRegistry;
 		if (structBlockRegistry == null) {
-			this.structBlockRegistry = new EditorStructBlockRegistry(
-					propertySet.getStructLocalLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope());
+			this.structBlockRegistry = new EditorStructBlockRegistry(propertySet.getStructLocalObjectID());
+//					propertySet.getStructure().getOrganisationID(),
+//					propertySet.getStructLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope());
 		}
 		StructBlockID[] fullCoverageBlockIDs = this.structBlockRegistry.getUnassignedBlockKeyArray();
 		createPropEditors(validationResultManager);
@@ -129,25 +130,25 @@ public class FullDataBlockCoverageComposite extends Composite {
 			editor.setPropertySet(propertySet, true);
 		}
 	}
-	
+
 	private ListenerList listenerList = new ListenerList();
-	
+
 	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {
 		@Override
 		public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
 			notifyChangeListeners(dataBlockEditorChangedEvent);
 		}
 	};
-	
+
 	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent event) {
 		for (Object obj :  listenerList.getListeners())
 			((DataBlockEditorChangedListener) obj).dataBlockEditorChanged(event);
 	}
-	
+
 	public void addChangeListener(DataBlockEditorChangedListener listener) {
 		listenerList.add(listener);
 	}
-	
+
 	public void removeChangeListener(DataBlockEditorChangedListener listener) {
 		listenerList.remove(listener);
 	}

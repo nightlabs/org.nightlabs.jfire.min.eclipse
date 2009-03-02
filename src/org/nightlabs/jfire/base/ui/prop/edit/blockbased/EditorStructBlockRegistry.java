@@ -34,56 +34,71 @@ import java.util.List;
 import java.util.Map;
 
 import org.nightlabs.jfire.prop.IStruct;
-import org.nightlabs.jfire.prop.Struct;
 import org.nightlabs.jfire.prop.StructBlock;
-import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructBlockID;
+import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
  * Temporal registry for PropStructBlocks to be displayed by block-based PropEditors.
- * 
+ *
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class EditorStructBlockRegistry
 {
-	/**
-	 * The class whose property's structBlock is to be edited.
-	 */
-	private String linkClass;
-	/**
-	 * The {@link Struct} scope to use.
-	 */
-	private String structScope;
-	/**
-	 * The {@link StructLocal} scope to use.
-	 */
-	private String structLocalScope;
-	
-	
+//	private String organisationID;
+//	/**
+//	 * The class whose property's structBlock is to be edited.
+//	 */
+//	private String linkClass;
+//	/**
+//	 * The {@link Struct} scope to use.
+//	 */
+//	private String structScope;
+//	/**
+//	 * The {@link StructLocal} scope to use.
+//	 */
+//	private String structLocalScope;
+
+	private StructLocalID structLocalID;
+
+
 	/**
 	 * key:   String editorName
 	 * value: List propStructBlockIDs
 	 */
 	private Map<String, List<StructBlockID>> editorsStructBlocks;
-	
-	public EditorStructBlockRegistry(Class<?> linkClass, String structScope, String stuctLocalScope)
+
+//	public EditorStructBlockRegistry(String organisationID, Class<?> linkClass, String structScope, String stuctLocalScope)
+//	{
+//		this(organisationID, linkClass.getName(), structScope, stuctLocalScope);
+//	}
+
+	public EditorStructBlockRegistry(StructLocalID structLocalID)
 	{
-		this(linkClass.getName(), structScope, stuctLocalScope);
-	}
-	
-	public EditorStructBlockRegistry(String linkClass, String structScope, String structLocalScope)
-	{
-		this.linkClass = linkClass;
-		this.structScope = structScope;
-		this.structLocalScope = structLocalScope;
+		this.structLocalID = structLocalID;
 		editorsStructBlocks = new HashMap<String, List<StructBlockID>>();
+//		this(
+//				structLocalID.organisationID,
+//				structLocalID.linkClass,
+//				structLocalID.structScope,
+//				structLocalID.structLocalScope
+//		);
 	}
-	
+
+//	private EditorStructBlockRegistry(String organisationID, String linkClass, String structScope, String structLocalScope)
+//	{
+//		this.organisationID = organisationID;
+//		this.linkClass = linkClass;
+//		this.structScope = structScope;
+//		this.structLocalScope = structLocalScope;
+//		editorsStructBlocks = new HashMap<String, List<StructBlockID>>();
+//	}
+
 	/**
 	 * Registers the given structBlockIDs for the editor with the given name.
-	 * 
+	 *
 	 * @param editorName The name of the editor, whose structBlockIDs are to be registered.
 	 * @param propStructBlockKeys Array of structBlockIDs to be registered.
 	 */
@@ -91,14 +106,14 @@ public class EditorStructBlockRegistry
 	{
 		if(!editorsStructBlocks.containsKey(editorName))
 			editorsStructBlocks.put(editorName, new LinkedList<StructBlockID>());
-		
+
 		List<StructBlockID> propStructBlockKeyList = editorsStructBlocks.get(editorName);
 		for (int i = 0; i < propStructBlockIDs.length; i++)
 		{
 			propStructBlockKeyList.add(propStructBlockIDs[i]);
 		}
 	}
-	
+
 	/**
 	 * Returns a {@link List} of the structBlockIDs for the given <code>editorName</code>.
 	 * @param editorName The name of the editor whose registered structBlockIDs are to be returned.
@@ -112,7 +127,7 @@ public class EditorStructBlockRegistry
 		else
 			return Collections.emptyList();
 	}
-	 
+
 	/**
 	 * @see #getEditorStructBlocks(String)
 	 */
@@ -120,10 +135,10 @@ public class EditorStructBlockRegistry
 	{
 		return getEditorStructBlocks(editorName).iterator();
 	}
-	
+
 	/**
 	 * Checks wether the given StructBlock is registered in at least one editor within the given scope.
-	 * 
+	 *
 	 * @param editorScope
 	 * @param structBlock
 	 * @return
@@ -137,7 +152,7 @@ public class EditorStructBlockRegistry
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns a list of {@link StructBlockID}s that are not covered by any editor.
 	 * @return a list of {@link StructBlockID}s that are not covered by any editor.
@@ -145,7 +160,9 @@ public class EditorStructBlockRegistry
 	public List<StructBlockID> getUnassignedBlockKeyList()
 	{
 		List<StructBlockID> toReturn = new LinkedList<StructBlockID>();
-		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(linkClass, structScope, structLocalScope, new NullProgressMonitor());
+		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(
+				structLocalID, new NullProgressMonitor()
+		);
 		for (StructBlock structBlock : struct.getStructBlocks())
 		{
 			if (!hasEditorCoverage(structBlock))
@@ -153,7 +170,7 @@ public class EditorStructBlockRegistry
 		}
 		return toReturn;
 	}
-	
+
 	/**
 	 * Returns an array of {@link StructBlockID}s that are not covered by any editor.
 	 * @return an arry of {@link StructBlockID}s that are not covered by any editor.
@@ -162,12 +179,12 @@ public class EditorStructBlockRegistry
 	{
 		List<StructBlockID> keys = getUnassignedBlockKeyList();
 		StructBlockID[] toReturn = new StructBlockID[keys.size()];
-		
+
 		for (int i=0; i < keys.size(); i++)
 		{
 			toReturn[i] = keys.get(i);
 		}
 		return toReturn;
 	}
-	
+
 }

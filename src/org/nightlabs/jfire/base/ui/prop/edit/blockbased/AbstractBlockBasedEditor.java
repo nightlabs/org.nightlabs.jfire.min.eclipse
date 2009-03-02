@@ -52,11 +52,11 @@ import org.nightlabs.progress.ProgressMonitor;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractBlockBasedEditor implements PropertySetEditor { // extends ScrolledComposite {
-	
+
 	protected PropertySet propertySet;
 	/**
-	 * The registry that manages/registers {@link StructBlock}s edited in 
-	 * a domain. This will either be assigned in the constructor when a 
+	 * The registry that manages/registers {@link StructBlock}s edited in
+	 * a domain. This will either be assigned in the constructor when a
 	 * {@link PropertySet} is passed. Or in {@link #setEditorDomain(String, EditorStructBlockRegistry)}.
 	 */
 	protected EditorStructBlockRegistry structBlockRegistry;
@@ -72,7 +72,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * in {@link #setEditorDomain(String, EditorStructBlockRegistry)}.
 	 */
 	private String editorName;
-	
+
 	/**
 	 * Create a new {@link AbstractBlockBasedEditor}.
 	 */
@@ -82,7 +82,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 
 	/**
 	 * Create a new {@link AbstractBlockBasedEditor} for the given
-	 * {@link PropertySet}. Note that a <code>null</code> value can 
+	 * {@link PropertySet}. Note that a <code>null</code> value can
 	 * be passed here and that the {@link PropertySet} can be reset
 	 * by calling {@link #setPropertySet(PropertySet)}
 	 *
@@ -90,20 +90,22 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 */
 	public AbstractBlockBasedEditor(PropertySet propertySet) {
 		this.propertySet = propertySet;
-		if (this.propertySet != null && this.propertySet.isInflated()) {
-			IStruct struct = this.propertySet.getStructure();
-			String scope = StructLocal.DEFAULT_SCOPE;
-			if (struct instanceof StructLocal)
-				scope = ((StructLocal) struct).getStructLocalScope();
-			structBlockRegistry = new EditorStructBlockRegistry(struct.getLinkClass(), struct.getStructScope(), scope);
-		}
+//		if (this.propertySet != null && this.propertySet.isInflated()) {
+//			IStruct struct = this.propertySet.getStructure();
+//			String localScope = StructLocal.DEFAULT_SCOPE;
+//			if (struct instanceof StructLocal)
+//				localScope = ((StructLocal) struct).getStructLocalScope();
+//			structBlockRegistry = new EditorStructBlockRegistry(struct.getOrganisationID(), struct.getLinkClass(), struct.getStructScope(), localScope);
+//		}
+		if (propertySet != null)
+			structBlockRegistry = new EditorStructBlockRegistry(propertySet.getStructLocalObjectID());
 	}
 
 	/**
 	 * Sets the current propertySet of this editor.
 	 * If refresh is true {@link #refreshForm(DataBlockEditorChangedListener)}
 	 * is called.
-	 * 
+	 *
 	 * @param propertySet The {@link PropertySet} to edit.
 	 * @param refresh Whether to refresh the editor.
 	 */
@@ -115,7 +117,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 
 	/**
 	 * Will only set the propertySet, no changes to the UI will be made.
-	 * 
+	 *
 	 * @param propertySet The {@link PropertySet} to edit.
 	 */
 	@Override
@@ -136,7 +138,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * already inflated, its structure will be returned otherwise
 	 * the {@link StructLocal} the current {@link PropertySet} references
 	 * will be queried using the {@link StructLocalDAO}.
-	 * 
+	 *
 	 * @return The {@link IStruct} the current {@link PropertySet} was built with.
 	 */
 	protected IStruct getStructure(ProgressMonitor monitor) {
@@ -144,8 +146,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.AbstractBlockBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
-				propertySet.getStructLocalLinkClass(), 
-				propertySet.getStructScope(), propertySet.getStructLocalScope(), monitor
+				propertySet.getStructLocalObjectID(), monitor
 		);
 		monitor.worked(1);
 		return structure;
@@ -156,25 +157,26 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * Refreshes the UI-Representation of the given {@link PropertySet}.
 	 */
 	public abstract void refreshControl();
-	
+
 
 	/**
-	 * Sets the editor domain for this editor and registers the structBlocks that should be 
+	 * Sets the editor domain for this editor and registers the structBlocks that should be
 	 * displayed in this editor according to the given registry.
-	 * 
+	 *
 	 * @param editorName The name of the editor used to find StructBlockIDs int the given registry.
 	 * @param structBlockRegistry The registry to find the StructBlockIDs of the blocks that should be displayed.
 	 */
 	public void setEditorDomain(String editorName, EditorStructBlockRegistry structBlockRegistry) {
 		this.editorName = editorName;
 		this.structBlockRegistry = structBlockRegistry;
+		// TODO shouldn't we check for compatibility with the propertySet (the Struct[Local] might be different)?!
 		buildDomainDataBlockGroups();
 	}
 
 	/**
 	 * Check whether the given {@link DataBlockGroup} should be displayed according
 	 * to the current editor domain or the {@link StructBlockID}s set with {@link #setEditorStructBlockList(List)}.
-	 * 
+	 *
 	 * @param blockGroup The {@link DataBlockGroup} to check.
 	 * @return Whether the given {@link DataBlockGroup} should be displayed.
 	 */
@@ -219,7 +221,7 @@ public abstract class AbstractBlockBasedEditor implements PropertySetEditor { //
 	 * Returns all {@link StructBlock}s the {@link IStruct} of the current {@link PropertySet}
 	 * as ordered list. Use this method to build and {@link #shouldDisplayStructBlock(DataBlockGroup)}
 	 * to check for the struct blocks of the current {@link PropertySet}.
-	 *  
+	 *
 	 * @return A list of all {@link StructBlock}s for the current {@link PropertySet}.
 	 */
 	protected List<StructBlock> getOrderedStructBlocks() {

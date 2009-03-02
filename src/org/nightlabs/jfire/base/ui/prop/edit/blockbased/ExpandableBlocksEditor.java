@@ -41,14 +41,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlockGroup;
-import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructBlockID;
-import org.nightlabs.progress.NullProgressMonitor;
-import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * A PropertySetEditor based on PropStructBlocks/PropDataBlocks.
@@ -66,16 +61,17 @@ import org.nightlabs.progress.ProgressMonitor;
 public class ExpandableBlocksEditor implements PropertySetEditor { // extends ScrolledComposite {
 	public static final String EDITORTYPE_BLOCK_BASED_EXPANDABLE = "block-based-expandable"; //$NON-NLS-1$
 
-	public ExpandableBlocksEditor() {
-		this(null);
-	}
-
-	public ExpandableBlocksEditor(PropertySet prop) {
-		this.prop = prop;
-		structBlockRegistry = new EditorStructBlockRegistry(
-				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope());
-	}
-
+	// I commented this all out. Marco.
+//	public ExpandableBlocksEditor() { // FIXME: This constructor definitely causes a NullPointerException
+//		this(null);
+//	}
+//
+//	public ExpandableBlocksEditor(PropertySet prop) {
+//		this.prop = prop;
+//		structBlockRegistry = new EditorStructBlockRegistry(
+//				prop.getStructure().getOrganisationID(),
+//				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope());
+//	}
 
 	private FormToolkit toolkit = null;
 
@@ -93,8 +89,9 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	 */
 	public void setPropertySet(PropertySet prop, boolean refresh) {
 		this.prop = prop;
-		structBlockRegistry = new EditorStructBlockRegistry(
-				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope());
+		structBlockRegistry = new EditorStructBlockRegistry(prop.getStructLocalObjectID());
+//				prop.getStructure().getOrganisationID(),
+//				prop.getStructLinkClass(), prop.getStructScope(), prop.getStructLocalScope());
 		if (refresh)
 			refreshControl();
 	}
@@ -134,16 +131,18 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		return groupEditors;
 	}
 
-	protected IStruct getPropStructure(ProgressMonitor monitor) {
-		if (prop.isInflated())
-			return prop.getStructure();
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
-		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
-				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope(), monitor
-		);
-		monitor.worked(1);
-		return structure;
-	}
+// Commented this out, because it is impossible to get the structure from a PropertySet. Maybe this should be changed?! Currently the Structure's organisationID is unknown when the PropertySet is not inflated! Marco.
+//	protected IStruct getPropStructure(ProgressMonitor monitor) {
+//		if (prop.isInflated())
+//			return prop.getStructure();
+//		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ExpandableBlocksEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
+//		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
+//
+//				prop.getStructLocalLinkClass(), prop.getStructScope(), prop.getStructLocalScope(), monitor
+//		);
+//		monitor.worked(1);
+//		return structure;
+//	}
 
 
 //	public void refreshControl() {
@@ -159,8 +158,8 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		Display.getDefault().asyncExec(
 			new Runnable() {
 				public void run() {
-					if (!prop.isInflated())
-						prop.inflate(getPropStructure(new NullProgressMonitor()));
+//					if (!prop.isInflated())
+//						prop.inflate(getPropStructure(new NullProgressMonitor()));
 
 					// get the ordered dataBlocks
 					for (Iterator<DataBlockGroup> it = ExpandableBlocksEditor.this.getOrderedDataBlockGroupsIterator(); it.hasNext(); ) {

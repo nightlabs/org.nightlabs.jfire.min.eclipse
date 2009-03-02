@@ -60,24 +60,24 @@ import org.nightlabs.progress.ProgressMonitor;
  * A field based {@link PropertySetEditor} that will set its look depending
  * on the editorType and the PropDataFieldEditors registered
  * by the propDataField-extension-point.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
 public class FieldBasedEditor implements PropertySetEditor {
 
 	public static final Logger LOGGER = Logger.getLogger(FieldBasedEditor.class);
-	
+
 	public static final String EDITORTYPE_FIELD_BASED = "field-based"; //$NON-NLS-1$
 
 	/**
-	 * 
+	 *
 	 */
 	public FieldBasedEditor() {
 		super();
 	}
-	
-	
+
+
 	private String editorType;
 	/**
 	 * Get the editorType.
@@ -96,7 +96,7 @@ public class FieldBasedEditor implements PropertySetEditor {
 	}
 
 	private PropertySet propertySet;
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#setProp(org.nightlabs.jfire.base.ui.prop.Property)
 	 */
@@ -112,10 +112,10 @@ public class FieldBasedEditor implements PropertySetEditor {
 		if (refresh)
 			refreshControl();
 	}
-	
+
 	private boolean showEmptyFields = true;
 	/**
-	 * 
+	 *
 	 * @return Wheather empty fields of the associated propertySet should be displayed.
 	 */
 	public boolean isShowEmptyFields() {
@@ -128,16 +128,16 @@ public class FieldBasedEditor implements PropertySetEditor {
 	public void setShowEmptyFields(boolean showEmptyFields) {
 		this.showEmptyFields = showEmptyFields;
 	}
-	
+
 	private XComposite editorWrapper;
 //	private Color wrapperSelectedColor = new Color(Display.getDefault(), 155, 155, 155);
 //	private Color wrapperNormalColor;
-	
+
 	private XComposite editorComposite;
-	
+
 //	private boolean selectionCallback = false;
-	
-	
+
+
 	/**
 	 * Creates a new GridLayout wich will be applied to the Editor.
 	 * Intended to be overridden to apply a custom layout (more columns etc.)
@@ -148,39 +148,39 @@ public class FieldBasedEditor implements PropertySetEditor {
 		XComposite.configureLayout(LayoutMode.ORDINARY_WRAPPER, wrapperLayout);
 		return wrapperLayout;
 	}
-	
+
 	/**
 	 * Returns null. Can be overridden to return a custom GridData
 	 * for the given field, or null to use the LayoutData provided
 	 * by the field-editor itself.
-	 * 
+	 *
 	 * @param field
 	 * @return A new GridData or null.
 	 */
 	protected GridData getGridDataForField(DataField field) {
 		return null;
 	}
-	
+
 	protected GridData wrapperGridData;
-	
+
 	/**
 	 * Determines weather a LayoutData in form of
 	 * a new GridData(GridData.FILL_BOTH) should
 	 * be set to the editorWrapper
-	 * 
+	 *
 	 * @return Weather to setLayoutData on editorWrapper
 	 */
 	protected boolean setLayoutDataForWrapper() {
 		return false;
 	}
 	/**
-	 * 
+	 *
 	 * @return The editorWrapper's GridData or null;
 	 */
 	protected GridData getWrapperGridData() {
 		return wrapperGridData;
 	}
-	
+
 	public void disposeControl() {
 		for (Iterator<DataFieldEditor<DataField>> iter = fieldEditors.values().iterator(); iter.hasNext();) {
 			DataFieldEditor<DataField> editor = iter.next();
@@ -198,32 +198,32 @@ public class FieldBasedEditor implements PropertySetEditor {
 			editorWrapper = null;
 		}
 	}
-	
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#createControl(org.eclipse.swt.widgets.Composite, boolean)
 	 */
 	public Control createControl(Composite parent, boolean refresh) {
 		if (editorWrapper == null) {
-			
+
 			editorWrapper = new XComposite(parent, SWT.NONE);
 //			wrapperNormalColor = editorWrapper.getBackground();
-			
+
 			if (setLayoutDataForWrapper()) {
 				wrapperGridData = new GridData();
 				wrapperGridData.horizontalAlignment = GridData.FILL;
 				wrapperGridData.grabExcessHorizontalSpace = true;
 				wrapperGridData.verticalAlignment = GridData.BEGINNING;
-				
+
 				editorWrapper.setLayoutData(wrapperGridData);
 			}
-			
+
 			GridLayout gridLayout = createGridLayout();
-			
+
 			if (gridLayout == null)
 				throw new IllegalStateException("createGridLayout() returned null!!"); //$NON-NLS-1$
-			
+
 			editorWrapper.setLayout(gridLayout);
-			
+
 			editorComposite = new XComposite(editorWrapper, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
 //			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 //			GridLayout layout = new GridLayout();
@@ -238,13 +238,13 @@ public class FieldBasedEditor implements PropertySetEditor {
 		}
 		if (refresh)
 			refreshControl();
-		
+
 		return editorWrapper;
 	}
-	
+
 	/**
 	 * Calls createControl but returns as SelectableComposite.
-	 * 
+	 *
 	 * @param parent
 	 * @param changeListener
 	 * @param refresh
@@ -253,15 +253,15 @@ public class FieldBasedEditor implements PropertySetEditor {
 	public SelectableComposite getComposite(Composite parent, DataBlockEditorChangedListener changeListener, boolean refresh) {
 		return (SelectableComposite)createControl(parent,refresh);
 	}
-	
+
 	/**
 	 * Map holding all fieldEditors.<br/>
 	 * key: StructFieldID structFieldID<br/>
 	 * value: DataFieldEditor fieldEditor
 	 */
 	private Map<StructFieldID, DataFieldEditor<DataField>> fieldEditors = new HashMap<StructFieldID, DataFieldEditor<DataField>>();
-	
-	
+
+
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#refreshControl()
 	 */
@@ -271,10 +271,10 @@ public class FieldBasedEditor implements PropertySetEditor {
 				public void run() {
 					if (propertySet == null)
 						return;
-					
+
 					if (!propertySet.isInflated())
 						propertySet.inflate(getPropStructure(new NullProgressMonitor()));
-					
+
 					for (StructFieldID structFieldID : EditorStructFieldRegistry.sharedInstance().getStructFieldList(getEditorType())) {
 						DataField field = null;
 						try {
@@ -321,25 +321,23 @@ public class FieldBasedEditor implements PropertySetEditor {
 			}
 		);
 	}
-	
+
 	protected IStruct getPropStructure(ProgressMonitor monitor) {
 		if (propertySet.isInflated())
 			return propertySet.getStructure();
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor.getPropStructure.monitor.taskName"), 1); //$NON-NLS-1$
 		IStruct structure = StructLocalDAO.sharedInstance().getStructLocal(
-				propertySet.getStructLocalLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope(), monitor
+				propertySet.getStructLocalObjectID(),
+//				propertySet.getStructLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope(),
+				monitor
 		);
 		monitor.worked(1);
 		return structure;
 	}
-	
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#updatePropertySet()
-	 */
+	@Override
 	public void updatePropertySet() {
-		for (Iterator iter = fieldEditors.values().iterator(); iter.hasNext();) {
-			DataFieldEditor editor = (DataFieldEditor) iter.next();
+		for (DataFieldEditor<DataField> editor : fieldEditors.values()) {
 			editor.updatePropertySet();
 		}
 	}

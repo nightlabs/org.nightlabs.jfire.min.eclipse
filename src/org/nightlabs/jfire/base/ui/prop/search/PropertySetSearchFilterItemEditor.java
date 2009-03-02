@@ -47,17 +47,20 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jdo.ui.search.SearchFilterItemEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.dao.StructDAO;
+import org.nightlabs.jfire.prop.id.StructID;
 import org.nightlabs.jfire.prop.structfield.TextStructField;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * Concrete SearchFilterItemEditor that represents a
  * criteria for the search of persons.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor implements SelectionListener{
@@ -69,7 +72,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	private XComposite wrapper;
 	private List<PropertySetStructFieldSearchItemEditorHelper> searchFieldList;
 	private Combo comboSearchField;
-	
+
 	/**
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getControl(org.eclipse.swt.widgets.Composite, int)
 	 */
@@ -80,13 +83,13 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 			GridLayout wrapperLayout = (GridLayout)wrapper.getLayout();
 			wrapperLayout.numColumns = 2;
 			wrapperLayout.makeColumnsEqualWidth = false;
-			
+
 			comboSearchField = new Combo(wrapper, SWT.DROP_DOWN | SWT.READ_ONLY);
 			GridData gdCombo = new GridData();
 			gdCombo.grabExcessHorizontalSpace = false;
 			gdCombo.horizontalAlignment = GridData.FILL;
 			comboSearchField.setLayoutData(gdCombo);
-			
+
 			comboSearchField.addSelectionListener(this);
 			// TODO: temporär -> ExtensionPoint
 			PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().addEditorFactory(TextStructField.class, new TextStructFieldSearchItemEditorHelper.Factory());
@@ -94,7 +97,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		}
 		return wrapper;
 	}
-	
+
 	public void fillSearchFieldCombo() {
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditor.fillSearchFieldCombo.job.name")) { //$NON-NLS-1$
 			@Override
@@ -112,7 +115,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 					public void run() {
 						if (comboSearchField.isDisposed())
 							return;
-						
+
 						for (int i = 0; i<searchFieldList.size()-1; i++) {
 							PropertySetSearchFilterItemEditorHelper helper = searchFieldList.get(i);
 							comboSearchField.add(helper.getDisplayName());
@@ -126,20 +129,21 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		};
 		job.schedule();
 	}
-	
+
 	/**
 	 * Builds a list of PropertySetSearchFilterItemEditorHelper
 	 * that are used to build the contents of the search field combo
 	 * and the right part of the editor.
-	 * 
+	 *
 	 * @return
 	 */
 	protected List<PropertySetStructFieldSearchItemEditorHelper> buildSearchFieldList(ProgressMonitor monitor) {
 		List<PropertySetStructFieldSearchItemEditorHelper> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorHelper>();
 		// We query the Struct instead of the StructLocal, and search for common features
 		// TODO I think this is OK right now, but there should be a possibility to search for structfields defined in StructLocals
-		for (StructBlock structBlock : StructDAO.sharedInstance().getStruct(Person.class.getName(), Person.STRUCT_SCOPE, monitor).getStructBlocks()) {
-			for (StructField structField : structBlock.getStructFields()) {
+		IStruct struct = StructDAO.sharedInstance().getStruct(StructID.create(Organisation.DEV_ORGANISATION_ID, Person.class, Person.STRUCT_SCOPE), monitor);
+		for (StructBlock structBlock : struct.getStructBlocks()) {
+			for (StructField<?> structField : structBlock.getStructFields()) {
 				if (PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().hasHelper(structField.getClass()))
 					helperList.add(new PropertySetStructFieldSearchItemEditorManager(structField));
 			}
@@ -149,7 +153,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 
 	/**
 	 * Delegates to the current PropertySetSearchFilterItemEditorHelper.
-	 * 
+	 *
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getSearchFilterItem()
 	 */
 	@Override
@@ -157,17 +161,17 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		return getCurrentHelper().getSearchFilterItem();
 	}
 
-	
+
 	private PropertySetSearchFilterItemEditorHelper lastHelper;
 	private int lastIdx = -1;
-	
+
 	private PropertySetSearchFilterItemEditorHelper getCurrentHelper() {
 		int idx = comboSearchField.getSelectionIndex();
 		if ((idx < 0) || (idx >= searchFieldList.size()))
 			throw new ArrayIndexOutOfBoundsException("Selection index of search field combo is out of range of searchFieldList.S"); //$NON-NLS-1$
 		return searchFieldList.get(idx);
 	}
-	
+
 	private void onComboChange() {
 		int idx = comboSearchField.getSelectionIndex();
 		if (idx == lastIdx)

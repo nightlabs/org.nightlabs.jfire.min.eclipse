@@ -211,7 +211,11 @@ public class PersonSearchWizardPage extends WizardHopPage {
 						IDGenerator.nextID(PropertySet.class)
 				);
 				StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+						newPerson.getStructLocalObjectID(),
+//						Organisation.DEV_ORGANISATION_ID,
+//						Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE,
+						new NullProgressMonitor()
+				);
 				newPerson.inflate(structLocal);
 				if (quickSearchText != null) {
 					newPerson.setDisplayName(quickSearchText);
@@ -234,7 +238,11 @@ public class PersonSearchWizardPage extends WizardHopPage {
 		editorWizardHop = new PersonEditorWizardHop();
 		Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
 		StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+				selectedPerson.getStructLocalObjectID(),
+//				Organisation.DEV_ORGANISATION_ID,
+//				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE,
+				new NullProgressMonitor()
+		);
 		selectedPerson.inflate(structLocal);
 		editorWizardHop.initialise(selectedPerson);
 		getWizardHop().addHopPage(editorWizardHop.getEntryPage());
