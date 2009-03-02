@@ -72,11 +72,15 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 	{
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
 		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(
-				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+				person.getStructLocalObjectID(),
+//				Organisation.DEV_ORGANISATION_ID,
+//				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE,
+				new NullProgressMonitor()
+		);
 		person.inflate(personStruct);
 		cugPage = new CreateUserGroupPage();
 		addPage(cugPage);
-		
+
 //		Tobias: We don't want a usergroup to have a person, thus we prohibit editing here :)
 //		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
 //		String msg = "Here you can edit all information for the selected contact";
@@ -95,10 +99,10 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 					groupID.organisationID, groupID.userSecurityGroupID);
 			newGroup.setName(cugPage.getUserName());
 			newGroup.setDescription(cugPage.getUserGroupDescription());
-			
+
 //			newGroup.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
 //			newGroup.getPerson().deflate();
-			
+
 //			JFireSecurityManager userManager = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
 ////			userManager.saveUser(newGroup, null);
 //			userManager.storeUser(newGroup, null, false, null, 1);
@@ -108,7 +112,7 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 					(String[]) null,
 					1,
 					new NullProgressMonitor()); // TODO do this asynchronously in a job!
-			
+
 			createdUserSecurityGroupID = groupID;
 			return true;
 		} catch (RuntimeException e) {
@@ -117,11 +121,11 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public UserSecurityGroupID getCreatedUserSecurityGroupID() {
 		return createdUserSecurityGroupID;
 	}
-	
+
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// do nothing

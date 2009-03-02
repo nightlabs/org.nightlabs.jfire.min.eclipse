@@ -54,7 +54,7 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 	private boolean canFinish = false;
 
 	private UserID createdUserID;
-	
+
 	public CreateUserWizard()
 	{
 		setNeedsProgressMonitor(true);
@@ -66,9 +66,13 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 	{
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
 		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(
-				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, new NullProgressMonitor());
+				person.getStructLocalObjectID(),
+//				Organisation.DEV_ORGANISATION_ID,
+//				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE,
+				new NullProgressMonitor()
+		);
 		person.inflate(personStruct);
-		
+
 		cuPage = new CreateUserPage() {
 			@Override
 			public void onHide() {
@@ -76,7 +80,7 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 			}
 		};
 		addPage(cuPage);
-		
+
 		propertySetEditorWizardHop = new BlockBasedPropertySetEditorWizardHop(person);
 		String msg = Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.label.message"); //$NON-NLS-1$
 		propertySetEditorWizardHop.addWizardPage(null, Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.page.title.remainigData"), Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserWizard.page.title.additionalData"), msg); //$NON-NLS-1$ //$NON-NLS-2$
@@ -112,16 +116,16 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public boolean canFinish() {
 		return canFinish && super.canFinish();
 	}
-	
+
 	public UserID getCreatedUserID() {
 		return createdUserID;
 	}
-	
+
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// do nothing

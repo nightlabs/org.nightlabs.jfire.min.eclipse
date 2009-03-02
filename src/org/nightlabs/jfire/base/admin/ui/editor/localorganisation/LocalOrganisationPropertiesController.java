@@ -33,7 +33,6 @@ import org.nightlabs.jfire.organisation.dao.OrganisationDAO;
 import org.nightlabs.jfire.organisation.id.OrganisationID;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.Struct;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.progress.ProgressMonitor;
@@ -51,7 +50,7 @@ public class LocalOrganisationPropertiesController extends ActiveEntityEditorPag
 	 */
 	private static final String[] FETCH_GROUPS = new String[] {
 		FetchPlan.DEFAULT,
-		Organisation.FETCH_GROUP_PERSON,		
+		Organisation.FETCH_GROUP_PERSON,
 		PropertySet.FETCH_GROUP_FULL_DATA
 	};
 
@@ -60,7 +59,7 @@ public class LocalOrganisationPropertiesController extends ActiveEntityEditorPag
 	 */
 	private OrganisationID organisationID;
 	/**
-	 * The {@link StructLocal} the {@link Organisation}s {@link Person} is build from. 
+	 * The {@link StructLocal} the {@link Organisation}s {@link Person} is build from.
 	 */
 	private StructLocal structLocal;
 
@@ -110,12 +109,13 @@ public class LocalOrganisationPropertiesController extends ActiveEntityEditorPag
 		Person person = organisation.getPerson();
 		if (person == null) {
 			person = new Person(organisation.getOrganisationID(), PropertySet.TEMPORARY_PROP_ID);
-			person.setStructScope(Struct.DEFAULT_SCOPE);
-			person.setStructLocalScope(StructLocal.DEFAULT_SCOPE);
+//			person.setStructScope(Struct.DEFAULT_SCOPE);
+//			person.setStructLocalScope(StructLocal.DEFAULT_SCOPE);
 			organisation.setPerson(person);
 		}
 		structLocal = StructLocalDAO.sharedInstance().getStructLocal(
-				Person.class, person.getStructScope(), person.getStructLocalScope(), new SubProgressMonitor(monitor, 2));
+				person.getStructLocalObjectID(), new SubProgressMonitor(monitor, 2)
+		);
 		monitor.done();
 		return organisation;
 	}

@@ -35,8 +35,6 @@ import org.nightlabs.base.ui.entity.editor.IEntityEditorPageFactory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonBlockBasedEditorSection;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditorSection;
-import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.security.User;
 
 /**
@@ -95,8 +93,9 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 			public void run() {
 				PersonPreferencesController controller = (PersonPreferencesController)getPageController();
 				User user = controller.getUser();
-				if (user.getPerson() == null)
-					user.setPerson(new Person(user.getOrganisationID(), PropertySet.TEMPORARY_PROP_ID));
+//				if (user.getPerson() == null)
+//					user.setPerson(new Person(user.getOrganisationID(), PropertySet.TEMPORARY_PROP_ID));
+
 				userPropertiesSection.setPropertySet(user.getPerson(), controller.getStructLocal());
 				updateGui(controller);
 				switchToContent();

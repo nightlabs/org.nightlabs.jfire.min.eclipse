@@ -60,7 +60,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 		PropertySet.FETCH_GROUP_FULL_DATA,
 		IExpression.FETCH_GROUP_IEXPRESSION_FULL_DATA
 	};
-	
+
 	private static final String[] STRUCT_LOCAL_FETCH_GROUPS = new String[] {
 		FetchPlan.DEFAULT,
 		IStruct.FETCH_GROUP_ISTRUCT_FULL_DATA,
@@ -111,7 +111,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 	 */
 	public void doLoad(ProgressMonitor monitor)
 	{
-		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesController.loadingUserPerson"), 4); //$NON-NLS-1$
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.PersonPreferencesController.loadingUserPerson"), 2); //$NON-NLS-1$
 		try {
 //			Thread.sleep(1000);
 			if(userID != null) {
@@ -123,11 +123,23 @@ public class PersonPreferencesController extends EntityEditorPageController
 						monitor
 				);
 				monitor.worked(1);
-				structLocal = StructLocalDAO.sharedInstance().getStructLocal(Person.class, STRUCT_LOCAL_FETCH_GROUPS, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, monitor);
-				this.user = Util.cloneSerializable(user);
+
+
+//				structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+//						Organisation.DEV_ORGANISATION_ID,
+//						Person.class, STRUCT_LOCAL_FETCH_GROUPS, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE, monitor);
+				user = Util.cloneSerializable(user);
+
+				if (user.getPerson() == null)
+					user.setPerson(new Person(user.getOrganisationID(), PropertySet.TEMPORARY_PROP_ID));
+
+				this.structLocal = StructLocalDAO.sharedInstance().getStructLocal(
+						user.getPerson().getStructLocalObjectID(),
+						new SubProgressMonitor(monitor, 1)
+				);
+
+				this.user = user;
 				fireModifyEvent(null, getUser());
-				logger.info("Loading user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.info("Loading user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} catch(Exception e) {
 			throw new RuntimeException(e);
@@ -172,7 +184,7 @@ public class PersonPreferencesController extends EntityEditorPageController
 				// this needs to be registered in Login
 				Login.sharedInstance().setPassword(oldUser.getUserLocal().getNewPassword());
 			}
-			
+
 			fireModifyEvent(oldUser, getUser());
 
 			logger.info("Saving user "+userID.userID+" person done without errors"); //$NON-NLS-1$ //$NON-NLS-2$
