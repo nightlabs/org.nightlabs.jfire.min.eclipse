@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -53,7 +52,7 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  */
 public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 
-	private static final Logger logger = Logger.getLogger(AbstractBlockBasedEditor.class);
+	private static final Logger logger = Logger.getLogger(AbstractDataBlockEditor.class);
 	
 	private IStruct struct;
 	protected DataBlock dataBlock;
@@ -154,11 +153,18 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	 */
 	protected void validateDataBlock() {
 		if (getDataBlock() != null) {
+			long start = System.currentTimeMillis();
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
-			if (getValidationResultManager() != null)
-				getValidationResultManager().setValidationResults(validationResults);
-		} else
-			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()");  //$NON-NLS-1$
+			long duration = System.currentTimeMillis() - start;			
+			if (getValidationResultManager() != null) {
+				getValidationResultManager().setValidationResults(validationResults);	
+			}
+			if (logger.isDebugEnabled()) {
+				logger.debug("Validation of of datablock "+getDataBlock()+" took "+duration+" ms!");
+			}
+		} else {
+			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()");  //$NON-NLS-1$	
+		}
 	}
 	
 	/*
