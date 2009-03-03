@@ -38,9 +38,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -56,7 +59,7 @@ import org.nightlabs.util.Util;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marco Schulze - Marco at NightLabs dot de
  */
-public class CreateOrganisationWizard extends Wizard
+public class CreateOrganisationWizard extends Wizard implements INewWizard
 {
 	private static final Logger logger = Logger.getLogger(CreateOrganisationWizard.class);
 
@@ -218,4 +221,13 @@ public class CreateOrganisationWizard extends Wizard
 //		}
 //		return true;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 */
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		// do nothing
+	}
+	
 }

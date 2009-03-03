@@ -411,5 +411,12 @@
              id="org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationWizard"
              name="%org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationWizard.name">
        </wizard>
+       <wizard
+             category="org.nightlabs.jfire.base.admin.ui"
+             class="org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard"
+             icon="icons/organisation-16.gif"
+             id="org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard"
+             name="%org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard.name">
+       </wizard>
     </extension>
 </plugin>
