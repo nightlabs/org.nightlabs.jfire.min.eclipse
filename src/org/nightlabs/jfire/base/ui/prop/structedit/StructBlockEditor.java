@@ -1,9 +1,5 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
@@ -15,15 +11,9 @@ public class StructBlockEditor extends AbstractStructPartEditor<StructBlock> {
 	
 	public Composite createComposite(Composite parent, int style, StructEditor structEditor, LanguageChooser languageChooser) {
 		structBlockEditorComposite = new StructBlockEditorComposite(parent, style, languageChooser);
-		structBlockEditorComposite.getBlockNameEditor().addModifyListener(new ModifyListener() {
+		structBlockEditorComposite.addDataChangeListener(new IDataChangeListener(){
 			@Override
-			public void modifyText(ModifyEvent e) {
-				notifyModifyListeners();
-			}
-		});
-		structBlockEditorComposite.getUniqueButton().addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void dataChanged() {
 				notifyModifyListeners();
 			}
 		});

@@ -1,5 +1,9 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -11,19 +15,133 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
+import org.nightlabs.base.ui.action.SelectionAction;
 import org.nightlabs.base.ui.composite.ChildStatusController;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
+import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.validation.IDataFieldValidator;
+import org.nightlabs.jfire.prop.validation.IScriptValidator;
+import org.nightlabs.jfire.prop.validation.ScriptDataBlockValidator;
+import org.nightlabs.jfire.prop.validation.ScriptDataFieldValidator;
 
 public abstract class AbstractStructFieldEditor<F extends StructField>
 extends AbstractStructPartEditor<F>
-implements StructFieldEditor<F> {
+implements StructFieldEditor<F> 
+{
+	class AddValidatorAction extends Action 
+	{
+		public AddValidatorAction() {
+			super();
+			setText("Add Validator");
+			setToolTipText("Add an validator to the data field");
+			setId(AddValidatorAction.class.getName());
+			setImageDescriptor(SharedImages.ADD_16x16);
+		}
+		
+		@Override
+		public void run() {
+			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null);
+			int returnCode = dialog.open();
+			if (returnCode == Window.OK) {
+				String script = dialog.getScript();
+				ScriptDataFieldValidator validator = new ScriptDataFieldValidator(
+						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script);
+				structField.addDataFieldValidator(validator);
+				validatorTable.setInput(structField.getDataFieldValidators());
+				setChanged();
+			}
+		}
+	}
+
+	class DeleteValidatorAction extends SelectionAction 
+	{
+		public DeleteValidatorAction() {
+			super();
+			setText("Delete Validator");
+			setToolTipText("Removes the selected validator from the data field");
+			setId(DeleteValidatorAction.class.getName());
+			setImageDescriptor(SharedImages.DELETE_16x16);
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
+		 */
+		@Override
+		public boolean calculateEnabled() {
+			return !getSelection().isEmpty();
+		}
+
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateVisible()
+		 */
+		@Override
+		public boolean calculateVisible() {
+			return true;
+		}
+
+		@Override
+		public void run() {
+			IDataFieldValidator validator = (IDataFieldValidator) getSelectedObjects().get(0);
+			structField.removeDataFieldValidator(validator);
+			validatorTable.refresh();
+			setChanged();
+		}
+	}
+
+	class EditValidatorAction extends SelectionAction 
+	{
+		public EditValidatorAction() {
+			super();
+			setText("Edit Validator");
+			setToolTipText("Edits the selected validator");
+			setId(EditValidatorAction.class.getName());
+			setImageDescriptor(SharedImages.EDIT_16x16);
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
+		 */
+		@Override
+		public boolean calculateEnabled() {
+			return !getSelection().isEmpty();
+		}
+
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateVisible()
+		 */
+		@Override
+		public boolean calculateVisible() {
+			return true;
+		}
+
+		@Override
+		public void run() {
+			IDataFieldValidator validator = (IDataFieldValidator) getSelectedObjects().get(0);
+			if (validator instanceof IScriptValidator) {
+				ScriptDataFieldValidator scriptValidator = (ScriptDataFieldValidator) validator;
+				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null);
+				dialog.setScript(scriptValidator.getScript());
+				int returnCode = dialog.open();
+				if (returnCode == Window.OK) {
+					scriptValidator.setScript(dialog.getScript());
+					validatorTable.refresh();
+					setChanged();
+				}
+			}
+		}
+	}
 	
 	private Composite specialComposite;
 	private I18nTextEditor fieldNameEditor;
@@ -34,6 +152,11 @@ implements StructFieldEditor<F> {
 	private String errorMessage;
 	private Group editorGroup;
 	private ChildStatusController childStatusController;
+	private DataFieldValidatorTable validatorTable;
+	
+	protected Shell getShell() {
+		return editorGroup.getShell();
+	}
 	
 	public void setChanged() {
 //		getStructEditor().setChanged(true);
@@ -57,8 +180,39 @@ implements StructFieldEditor<F> {
 		new Label(editorGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		specialComposite = createSpecialComposite(editorGroup, style);
-
+		if (specialComposite != null && !specialComposite.isDisposed()) {
+			specialComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));	
+		}
+		
 		errorComp = new ErrorComposite(editorGroup);
+		errorComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		ToolBarSectionPart sectionPart = new ToolBarSectionPart(new FormToolkit(editorGroup.getDisplay()), editorGroup, Section.TITLE_BAR, "Validators");
+		validatorTable = new DataFieldValidatorTable(sectionPart.getSection(), SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
+		validatorTable.setLayoutData(new GridData(GridData.FILL_BOTH));
+		sectionPart.getSection().setClient(validatorTable);
+		
+		final EditValidatorAction editAction = new EditValidatorAction();
+		sectionPart.registerAction(new AddValidatorAction(), true);
+		sectionPart.registerAction(new DeleteValidatorAction(), true);
+		sectionPart.registerAction(editAction, true);
+		sectionPart.setSelectionProvider(validatorTable);
+		sectionPart.updateToolBarManager();
+		
+		validatorTable.addDoubleClickListener(new IDoubleClickListener(){
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				editAction.run();
+			}
+		});
+
+//		fieldNameEditor.addModifyListener(new ModifyListener() {
+//			@Override
+//			public void modifyText(ModifyEvent e) {
+//				setChanged();
+//			}
+//		});
+		
 		return editorGroup;
 	}
 	
@@ -116,6 +270,8 @@ implements StructFieldEditor<F> {
 				setChanged();
 			}
 		});
+		structField = field;
+		validatorTable.setInput(structField.getDataFieldValidators());
 		setSpecialData(field);
 	}
 	
