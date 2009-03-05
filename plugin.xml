@@ -118,44 +118,44 @@
     <extension point="org.nightlabs.jfire.base.ui.propStructField">
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.TextStructField"
-            description="Simple field for textual input"
+            description="%org.nightlabs.jfire.prop.structfield.TextStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.TextStructFieldEditor$TextStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.TextStructFieldFactory" name="Text field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.TextStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.TextStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.SelectionStructField"
-            description="Field that lets the user select from a predefined domain of values"
+            description="%org.nightlabs.jfire.prop.structfield.SelectionStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor$SelectionStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldFactory" name="Selection field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.SelectionStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.RegexStructField"
-            description="Field that allows to restrict the given input by a regular expression."
+            description="%org.nightlabs.jfire.prop.structfield.RegexStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.RegexStructFieldEditor$RegexStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.RegexStructFieldFactory" name="Regex field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.RegexStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.RegexStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.NumberStructField"
-            description="Simple field for numerical input"
+            description="%org.nightlabs.jfire.prop.structfield.NumberStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.NumberStructFieldEditor$NumberStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.NumberStructFieldFactory" name="Number field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.NumberStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.NumberStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.ImageStructField"
-            description="Field for adding image data"
+            description="%org.nightlabs.jfire.prop.structfield.ImageStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldEditor$ImageStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldFactory" name="Image field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.ImageStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.ImageStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.DateStructField"
-            description="Field for inputting absolute times/dates."
+            description="%org.nightlabs.jfire.prop.structfield.DateStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.DateStructFieldEditor$DateStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.DateStructFieldFactory" name="Date field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.DateStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.DateStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.PhoneNumberStructField"
-            description="Field for inputting phone numbers."
+            description="%org.nightlabs.jfire.prop.structfield.PhoneNumberStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.DefaultStructFieldEditor$DefaultStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.PhoneNumberStructFieldFactory" name="Phone number field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.PhoneNumberStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.PhoneNumberStructField.name"/>
         <propStructField
             class="org.nightlabs.jfire.prop.structfield.I18nTextStructField"
-            description="Field for multilingual textual input"
+            description="%org.nightlabs.jfire.prop.structfield.I18nTextStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.I18nTextStructFieldEditor$I18nTextStructFieldEditorFactory"
-            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.I18nTextStructFieldFactory" name="I18n Text field"/>
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.I18nTextStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.I18nTextStructField.name"/>
     </extension>
     <extension
         id="org.nightlabs.jfire.person.edit.blockbased.special.PersonalDataBlockEditor" point="org.nightlabs.jfire.base.ui.specialisedDataBlockEditor">
