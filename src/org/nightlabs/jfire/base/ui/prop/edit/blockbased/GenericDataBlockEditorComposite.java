@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
@@ -21,11 +21,11 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
 public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComposite {
 
 	private static final Logger logger = Logger.getLogger(GenericDataBlockEditorComposite.class);
-	
+
 	/**
 	 * Assumes to have a parent with GridLayout.
 	 * Adds its controls to the parent.
-	 * 
+	 *
 	 * @param parent Should be a ExpandableDataBlockGroupEditor
 	 * @param style SWT-style for the container-GenericDataBlockEditorComposite
 	 * @param columnHint A hint for the column count the Editor should use
@@ -77,6 +77,7 @@ public class GenericDataBlockEditorComposite extends AbstractDataBlockEditorComp
 				addFieldEditor(structField.getStructFieldIDObj(), fieldEditor,true);
 				// add the field editor
 				fieldEditor.createControl(this);
+				fieldEditor.refresh();
 				DataFieldEditorLayoutData layoutData = fieldEditor.getLayoutData();
 				if (layoutData != null) {
 					fieldEditor.getControl().setLayoutData(DataFieldEditorLayoutData.toGridData(layoutData));

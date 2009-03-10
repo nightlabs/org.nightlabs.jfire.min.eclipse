@@ -25,7 +25,7 @@ public class SelectionDataFieldComposite
 extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 {
 	private XComboComposite<StructFieldValue> fieldValueCombo;
-	
+
 //	private static class FieldValueHolder {
 //		StructFieldValue value;
 //
@@ -95,19 +95,16 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 		});
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
-	 */
 	@Override
 	public void _refresh() {
 		SelectionStructField field = (SelectionStructField) getEditor().getStructField();
-		
+
 		List<StructFieldValue> structFieldValues = new LinkedList<StructFieldValue>(field.getStructFieldValues());
 		if (field.allowsEmptySelection())
 			structFieldValues.add(0, null);
-		
+
 		fieldValueCombo.setInput( structFieldValues );
-		
+
 		SelectionDataField dataField = getEditor().getDataField();
 		if (dataField.getStructFieldValueID() != null) {
 			try {

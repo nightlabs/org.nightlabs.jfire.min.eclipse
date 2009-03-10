@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
@@ -27,7 +27,7 @@ import org.nightlabs.util.NLLocale;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataField> {
-	
+
 	public static class Factory extends AbstractDataFieldEditorFactory<NumberDataField> {
 
 		/**
@@ -53,10 +53,10 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 			return NumberDataField.class;
 		}
 	}
-	
+
 	private LanguageCf language;
 	private NumberDataFieldComposite comp;
-	
+
 	public NumberDataFieldEditor(IStruct struct, NumberDataField data) {
 		super(struct, data);
 		language = new LanguageCf(NLLocale.getDefault().getLanguage());
@@ -66,7 +66,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 	protected void setDataField(NumberDataField dataField) {
 		super.setDataField(dataField);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
@@ -75,7 +75,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 	public Control createControl(Composite parent) {
 		if (comp == null)
 			comp = new NumberDataFieldComposite(parent, this);
-		
+
 		return comp;
 //		comp = new XComposite(parent, SWT.NONE, LayoutMode.T, LayoutDataMode.GRID_DATA_HORIZONTAL);
 //
@@ -113,7 +113,7 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 //
 //		valueSpinner.setSelection(numberDataField.getIntValue());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
@@ -129,10 +129,10 @@ public class NumberDataFieldEditor extends AbstractDataFieldEditor<NumberDataFie
 	public void updatePropertySet() {
 		if (!isChanged())
 			return;
-		
+
 		getDataField().setValue(comp.getSpinnerValue());
 	}
-	
+
 	public LanguageCf getLanguage() {
 		return language;
 	}
@@ -144,31 +144,31 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 	private Spinner valueSpinner;
 //	private NumberDataFieldEditor editor;
 	private ModifyListener modifyListener;
-	
+
 	public NumberDataFieldComposite(Composite parent, NumberDataFieldEditor _editor) {
 		super(parent, SWT.NONE, _editor);
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
-		
+
 //		this.editor = _editor;
 //		setLayout(createLayout());
-		
+
 //		title = new Label(this, SWT.NONE);
 //		title.setLayoutData(createLabelLayoutData());
 		valueSpinner = new Spinner(this, this.getBorderStyle());
 		valueSpinner.setLayoutData(createSpinnerLayoutData());
-		
+
 		modifyListener = new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				getEditor().setChanged(true);
 			}
 		};
 		valueSpinner.addModifyListener(modifyListener);
-		
+
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueSpinner);
 //		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, title);
 	}
-	
+
 	protected GridData createLabelLayoutData() {
 		GridData nameData = new GridData(GridData.FILL_HORIZONTAL);
 		nameData.grabExcessHorizontalSpace = true;
@@ -180,20 +180,17 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 		textData.grabExcessHorizontalSpace = true;
 		return textData;
 	}
-	
+
 	protected int getTextBorderStyle() {
 		return getBorderStyle();
 	}
-	
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
-	 */
+
 	@Override
 	public void _refresh() {
 		NumberDataField numberDataField = getEditor().getDataField();
 		NumberStructField numberStructField = (NumberStructField) getEditor().getStructField();
 //		title.setText(numberStructField.getName().getText(editor.getLanguage().getLanguageID()));
-		
+
 		if (numberStructField.isBounded()) {
 			valueSpinner.setMaximum(numberStructField.getMax());
 			valueSpinner.setMinimum(numberStructField.getMin());
@@ -202,15 +199,15 @@ class NumberDataFieldComposite extends AbstractInlineDataFieldComposite<NumberDa
 			valueSpinner.setMinimum(0);
 		}
 		valueSpinner.setDigits(numberStructField.getDigits());
-		
-		
+
+
 		valueSpinner.setSelection(numberDataField.getIntValue());
 	}
-	
+
 	public int getSpinnerValue() {
 		return valueSpinner.getSelection();
 	}
-	
+
 	@Override
 	public void dispose() {
 		valueSpinner.removeModifyListener(modifyListener);

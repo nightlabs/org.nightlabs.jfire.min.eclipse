@@ -38,7 +38,7 @@ import org.nightlabs.jfire.prop.StructField;
 /**
  * Abstract base class for all  {@link DataFieldEditor}s with implementations for the listener stuff and other
  * common things for all field editors.<br/>
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
@@ -61,7 +61,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 			}
 		}
 	};
-	
+
 	private ModifyListener modifyListener = new ModifyListener() {
 		@Override
 		public void modifyData() {
@@ -86,6 +86,9 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	 */
 	@Override
 	public void setData(IStruct struct, F data) {
+		if (refreshing) // Added this, because otherwise refreshing might be set "false" too early. If this is incorrect, then refreshing must be changed to an int and become a (recursion-)counter. Marco.
+			return;
+
 		refreshing = true;
 		this.struct = struct;
 		try  {
@@ -124,6 +127,9 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	 */
 	@Override
 	public final void refresh() {
+		if (refreshing) // Added this, because otherwise refreshing might be set "false" too early. If this is incorrect, then refreshing must be changed to an int and become a (recursion-)counter. Marco.
+			return;
+
 		refreshing = true;
 		try {
 			doRefresh();
@@ -235,7 +241,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	protected org.eclipse.swt.events.ModifyListener getSwtModifyListener() {
 		return swtModifyListener;
 	}
-	
+
 	/**
 	 * This method returns a {@link ModifyListener} that can be used if {@link ModifyListener}s of this {@link DataFieldEditor}
 	 * should be notified of some other change in the data fields.

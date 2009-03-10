@@ -47,7 +47,6 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 
 	public I18nTextDataFieldEditor(IStruct struct, I18nTextDataField data) {
 		super(struct, data);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static class Factory extends AbstractDataFieldEditorFactory<I18nTextDataField> {
@@ -55,9 +54,7 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 		public Class<I18nTextDataField> getPropDataFieldType() {
 			return I18nTextDataField.class;
 		}
-		/**
-		 * {@inheritDoc}
-		 */
+
 		@Override
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
@@ -75,36 +72,31 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 		}
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
-	 */
-	public String getEditorType() {
-		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
-	}
+// This seems not to be used (and the method in the javadoc doesn't exist). Commented it out. Marco.
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getEditorType()
+//	 */
+//	public String getEditorType() {
+//		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
+//	}
 
 	private I18nTextDataFieldComposite composite;
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+
 	@Override
 	public Control createControl(Composite parent) {
 		if (composite == null) {
 			composite = new I18nTextDataFieldComposite(this, parent, SWT.NONE, getSwtModifyListener());
 		}
-		composite.refresh();
+//		composite.refresh(); // I think the framework calls refresh() anyway, hence it's not necessary to call this method here. Marco.
 		return composite;
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
-	 */
+	@Override
 	public Control getControl() {
 		return composite;
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#updatePropertySet()
-	 */
+	@Override
 	public void updatePropertySet()
 	{
 //		Display.getDefault().syncExec(new Runnable(){
@@ -114,16 +106,14 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 //		});
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#disposeControl()
-	 */
-	public void disposeControl() {
-		composite.dispose();
-	}
+// This seems not to be used (and the method in the javadoc doesn't exist). Commented it out. Marco.
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#disposeControl()
+//	 */
+//	public void disposeControl() {
+//		composite.dispose();
+//	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#refresh()
-	 */
 	@Override
 	public void doRefresh() {
 		if (composite != null)
