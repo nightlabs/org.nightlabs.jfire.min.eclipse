@@ -24,21 +24,26 @@ import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
+import org.nightlabs.i18n.I18nText;
+import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructBlock;
+import org.nightlabs.jfire.prop.validation.ExpressionDataBlockValidator;
 import org.nightlabs.jfire.prop.validation.IDataBlockValidator;
+import org.nightlabs.jfire.prop.validation.IExpressionValidator;
 import org.nightlabs.jfire.prop.validation.IScriptValidator;
 import org.nightlabs.jfire.prop.validation.ScriptDataBlockValidator;
+import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
 public class StructBlockEditorComposite extends XComposite
 {
-	class AddValidatorAction extends Action 
+	class AddScriptValidatorAction extends Action 
 	{
-		public AddValidatorAction() {
+		public AddScriptValidatorAction() {
 			super();
-			setText("Add Validator");
-			setToolTipText("Add an validator to the data block");
-			setId(AddValidatorAction.class.getName());
+			setText("Add Script Validator");
+			setToolTipText("Add an script validator to the data block");
+			setId(AddScriptValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
 		
@@ -50,6 +55,35 @@ public class StructBlockEditorComposite extends XComposite
 				String script = dialog.getScript();
 				ScriptDataBlockValidator validator = new ScriptDataBlockValidator(
 						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script);
+				block.addDataBlockValidator(validator);
+				validatorTable.setInput(block.getDataBlockValidators());
+				markDirty();
+			}
+		}
+	}
+	
+	class AddExpressionValidatorAction extends Action 
+	{
+		public AddExpressionValidatorAction() {
+			super();
+			setText("Add Expression Validator");
+			setToolTipText("Add an expression validator to the data block");
+			setId(AddExpressionValidatorAction.class.getName());
+			setImageDescriptor(SharedImages.ADD_16x16);
+		}
+		
+		@Override
+		public void run() {
+			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null);
+			dialog.setStruct(block.getStruct());
+			int returnCode = dialog.open();
+			if (returnCode == Window.OK) {
+				IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
+				I18nText message = dialog.getExpressionValidatorComposite().getMessage();
+				ValidationResultType validationResultType = dialog.getExpressionValidatorComposite().getValidationResultType();
+				ExpressionDataBlockValidator validator = new ExpressionDataBlockValidator(
+						expression, message.getText(), validationResultType);
+				validator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);
 				block.addDataBlockValidator(validator);
 				validatorTable.setInput(block.getDataBlockValidators());
 				markDirty();
@@ -130,7 +164,26 @@ public class StructBlockEditorComposite extends XComposite
 					scriptValidator.setScript(dialog.getScript());
 					validatorTable.refresh();
 					markDirty();
-				}				
+				}
+			}
+			if (validator instanceof IExpressionValidator) {
+				ExpressionDataBlockValidator expressionValidator = (ExpressionDataBlockValidator) validator;
+				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null);
+				dialog.setExpression(expressionValidator.getExpression());
+				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
+				dialog.setValidationResultType(expressionValidator.getValidationResult().getResultType());
+				dialog.setStruct(block.getStruct());
+				int returnCode = dialog.open();
+				if (returnCode == Window.OK) {
+					IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
+					I18nText message = dialog.getExpressionValidatorComposite().getMessage();
+					ValidationResultType validationResultType = dialog.getExpressionValidatorComposite().getValidationResultType();
+					expressionValidator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);					
+					expressionValidator.getValidationResult().setValidationResultType(validationResultType);
+					expressionValidator.setExpression(expression);
+					validatorTable.refresh();
+					markDirty();					
+				}
 			}
 		}
 	}
@@ -162,7 +215,8 @@ public class StructBlockEditorComposite extends XComposite
 		listeners = new ListenerList();
 		
 		final EditValidatorAction editAction = new EditValidatorAction();
-		sectionPart.registerAction(new AddValidatorAction(), true);
+		sectionPart.registerAction(new AddExpressionValidatorAction(), true);
+		sectionPart.registerAction(new AddScriptValidatorAction(), true);
 		sectionPart.registerAction(new DeleteValidatorAction(), true);
 		sectionPart.registerAction(editAction, true);
 		sectionPart.setSelectionProvider(validatorTable);

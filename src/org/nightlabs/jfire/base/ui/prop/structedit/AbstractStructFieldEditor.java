@@ -40,13 +40,13 @@ public abstract class AbstractStructFieldEditor<F extends StructField>
 extends AbstractStructPartEditor<F>
 implements StructFieldEditor<F> 
 {
-	class AddValidatorAction extends Action 
+	class AddScriptValidatorAction extends Action 
 	{
-		public AddValidatorAction() {
+		public AddScriptValidatorAction() {
 			super();
-			setText("Add Validator");
-			setToolTipText("Add an validator to the data field");
-			setId(AddValidatorAction.class.getName());
+			setText("Add Script Validator");
+			setToolTipText("Add an script validator to the data field");
+			setId(AddScriptValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
 		
@@ -193,7 +193,7 @@ implements StructFieldEditor<F>
 		sectionPart.getSection().setClient(validatorTable);
 		
 		final EditValidatorAction editAction = new EditValidatorAction();
-		sectionPart.registerAction(new AddValidatorAction(), true);
+		sectionPart.registerAction(new AddScriptValidatorAction(), true);
 		sectionPart.registerAction(new DeleteValidatorAction(), true);
 		sectionPart.registerAction(editAction, true);
 		sectionPart.setSelectionProvider(validatorTable);
