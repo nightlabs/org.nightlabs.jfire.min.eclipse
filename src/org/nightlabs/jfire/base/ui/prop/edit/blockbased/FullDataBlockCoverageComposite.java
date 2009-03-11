@@ -87,12 +87,12 @@ public class FullDataBlockCoverageComposite extends Composite {
 		this.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		for (int i=0; i<numColumns; i++) {
-			XComposite wrapper = new XComposite(this,SWT.BORDER, XComposite.LayoutMode.TIGHT_WRAPPER);
+			XComposite wrapper = new XComposite(this,SWT.NONE, XComposite.LayoutMode.TIGHT_WRAPPER);
 			BlockBasedEditor propEditor = (BlockBasedEditor)propEditors.get(i);
 			propEditor.setPropertySet(propertySet);
 //			propEditor.setEditorDomain(editorScope,"#FullDatBlockCoverageComposite"+i);
 			propEditor.setEditorStructBlockList(splitBlockIDs[i]);
-			Control propEditorControl = propEditor.createControl(wrapper,true);
+			Control propEditorControl = propEditor.createControl(wrapper, true);
 			GridData editorControlGD = new GridData(GridData.FILL_BOTH);
 			propEditorControl.setLayoutData(editorControlGD);
 		}

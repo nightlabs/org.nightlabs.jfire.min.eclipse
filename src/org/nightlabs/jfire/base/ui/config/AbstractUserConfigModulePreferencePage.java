@@ -63,6 +63,17 @@ extends AbstractConfigModulePreferencePage
 	}
 
 	/**
+	 * Returns the cfModID part of the ConfigID the ConfigModule should be edited for.
+	 * <p>
+	 * The default implementation returns <code>null</code>.
+	 * </p>
+	 * @return The cfModID part of the ConfigID the ConfigModule should be edited for.
+	 */
+	protected String getConfigModuleID() {
+		return null;
+	}
+	
+	/**
 	 * Sets the current ConfigID to the user currently logged in user.
 	 * 
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -74,7 +85,7 @@ extends AbstractConfigModulePreferencePage
 			getConfigModuleController().setConfigID(
 					UserConfigSetup.getUserConfigID(UserID.create(
 							login.getOrganisationID(), login.getUserID())),
-							false, (String) null); // TODO: how to get the ConfigModule's id (number) or create several pages with all ids there are
+							false, getConfigModuleID());
 		} catch (Exception e) {
 			logger.info("User decided to work offline!"); //$NON-NLS-1$
 		}

@@ -306,4 +306,15 @@
         <loginStateListener class="org.nightlabs.jfire.base.ui.editlock.EditLockManLoginStateListener"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.login.TimeCheckLoginStateListener"/>
     </extension>
+    
+    <!--
+    <extension
+          point="org.eclipse.ui.preferencePages">
+       <page
+             class="org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferencePage"
+             id="org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferencePage"
+             name="FieldBasedEditLayout">
+       </page>
+    </extension>
+    -->
 </plugin>

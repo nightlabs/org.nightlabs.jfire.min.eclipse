@@ -93,6 +93,8 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		this.struct = struct;
 		try  {
 			setDataField(data);
+			if (getControl() != null && !getControl().isDisposed())
+				refresh();
 		} finally {
 			refreshing = false;
 		}
