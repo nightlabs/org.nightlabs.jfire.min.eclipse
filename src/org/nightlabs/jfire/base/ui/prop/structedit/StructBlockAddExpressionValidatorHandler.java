@@ -3,7 +3,11 @@
  */
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import org.nightlabs.jfire.prop.id.StructBlockID;
+import javax.jdo.JDOHelper;
+
+import org.nightlabs.jfire.prop.StructBlock;
+import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.id.StructFieldID;
 
 /**
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
@@ -12,18 +16,23 @@ import org.nightlabs.jfire.prop.id.StructBlockID;
 public class StructBlockAddExpressionValidatorHandler 
 extends AbstractAddExpressionValidatorHandler
 {
-	private StructBlockID structBlockID;
+	private StructBlock structBlock;
 	
-	public StructBlockAddExpressionValidatorHandler(StructBlockID structBlockID) {
-		this.structBlockID = structBlockID;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.structedit.IAddExpressionValidatorHandler#addExpressionPressed()
-	 */
-	@Override
-	public void addExpressionPressed() {
-		
+	public StructBlockAddExpressionValidatorHandler(StructBlock structBlock) {
+		this.structBlock = structBlock;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.structedit.AbstractAddExpressionValidatorHandler#getStructFieldID()
+	 */
+	@Override
+	protected StructFieldID getStructFieldID() 
+	{
+		if (!structBlock.getStructFields().isEmpty()) {
+			StructField<?> structField = structBlock.getStructFields().iterator().next();
+			return (StructFieldID) JDOHelper.getObjectId(structField);
+		}
+		return null;
+	}
+	
 }

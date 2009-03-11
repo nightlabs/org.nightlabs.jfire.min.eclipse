@@ -26,6 +26,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.expression.IExpression;
+import org.nightlabs.jfire.base.ui.prop.structedit.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.validation.ExpressionDataBlockValidator;
@@ -74,8 +75,8 @@ public class StructBlockEditorComposite extends XComposite
 		
 		@Override
 		public void run() {
-			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null);
-			dialog.setStruct(block.getStruct());
+			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null, 
+					block.getStruct(), new StructBlockAddExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
 				IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
@@ -168,11 +169,10 @@ public class StructBlockEditorComposite extends XComposite
 			}
 			if (validator instanceof IExpressionValidator) {
 				ExpressionDataBlockValidator expressionValidator = (ExpressionDataBlockValidator) validator;
-				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null);
-				dialog.setExpression(expressionValidator.getExpression());
+				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(), 
+						block.getStruct(), new StructBlockAddExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
 				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
 				dialog.setValidationResultType(expressionValidator.getValidationResult().getResultType());
-				dialog.setStruct(block.getStruct());
 				int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
 					IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
@@ -187,12 +187,13 @@ public class StructBlockEditorComposite extends XComposite
 			}
 		}
 	}
-	
+
 	private I18nTextEditor blockNameEditor;
 	private Button uniqueButton;
 	private StructBlock block;
 	private DataBlockValidatorTable validatorTable;
 	private ListenerList listeners;
+	private ToolBarSectionPart sectionPart;
 	
 	public StructBlockEditorComposite(Composite parent, int style, LanguageChooser languageChooser) {
 		super(parent, style, LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
@@ -207,7 +208,8 @@ public class StructBlockEditorComposite extends XComposite
 		uniqueButton.setLayoutData((new GridData()));
 		uniqueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.unique.text")); //$NON-NLS-1$
 		
-		ToolBarSectionPart sectionPart = new ToolBarSectionPart(new FormToolkit(getDisplay()), this, Section.TITLE_BAR, "Validators");
+		sectionPart = new ToolBarSectionPart(new FormToolkit(getDisplay()), this, Section.TITLE_BAR, 
+				"Validators");
 		validatorTable = new DataBlockValidatorTable(sectionPart.getSection(), SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		validatorTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 		sectionPart.getSection().setClient(validatorTable);
@@ -271,5 +273,10 @@ public class StructBlockEditorComposite extends XComposite
 		for (Object listener : listeners.getListeners()) {
 			((IDataChangeListener)listener).dataChanged();
 		}
+	}
+	
+	public void setEnabled(boolean enabled, boolean validatorEnablement) {
+		super.setEnabled(enabled);
+		sectionPart.getSection().setEnabled(validatorEnablement);
 	}
 }
