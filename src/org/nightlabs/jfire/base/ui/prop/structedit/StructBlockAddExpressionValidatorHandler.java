@@ -3,8 +3,6 @@
  */
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import javax.jdo.JDOHelper;
-
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -30,7 +28,7 @@ extends AbstractAddExpressionValidatorHandler
 	{
 		if (!structBlock.getStructFields().isEmpty()) {
 			StructField<?> structField = structBlock.getStructFields().iterator().next();
-			return (StructFieldID) JDOHelper.getObjectId(structField);
+			return structField.getStructFieldIDObj();
 		}
 		return null;
 	}

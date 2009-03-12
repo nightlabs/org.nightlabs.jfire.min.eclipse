@@ -198,11 +198,15 @@ implements IExpressionValidatorUI
 	protected void createComposite(Composite parent) 
 	{		
 		i18nTextEditor = new I18nTextEditor(parent);
+		message = i18nTextEditor.getI18nText();
+		
 		validationResultTypeCombo = new ValidationResultTypeCombo(parent, SWT.READ_ONLY | SWT.BORDER);
 		validationResultTypeCombo.selectElement(ValidationResultType.ERROR);
 		if (validationResultType != null) {
 			validationResultTypeCombo.selectElement(validationResultType);
 		}
+		validationResultType = validationResultTypeCombo.getSelectedElement();
+		
 		validationResultTypeCombo.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {

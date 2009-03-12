@@ -63,7 +63,7 @@ public class StructBlockEditorComposite extends XComposite
 		}
 	}
 	
-	class AddExpressionValidatorAction extends Action 
+	class AddExpressionValidatorAction extends SelectionAction 
 	{
 		public AddExpressionValidatorAction() {
 			super();
@@ -90,6 +90,27 @@ public class StructBlockEditorComposite extends XComposite
 				markDirty();
 			}
 		}
+
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
+		 */
+		@Override
+		public boolean calculateEnabled() 
+		{
+			if (block != null) {
+				return !block.getStructFields().isEmpty();	
+			}
+			return false;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateVisible()
+		 */
+		@Override
+		public boolean calculateVisible() {
+			return true;
+		}
+		
 	}
 	
 	class DeleteValidatorAction extends SelectionAction 
@@ -251,6 +272,7 @@ public class StructBlockEditorComposite extends XComposite
 		uniqueButton.setSelection(block.isUnique());
 		validatorTable.setInput(block.getDataBlockValidators());
 		this.setVisible(true);
+		sectionPart.updateToolBarManager();
 	}
 
 	public I18nTextEditor getBlockNameEditor() {
