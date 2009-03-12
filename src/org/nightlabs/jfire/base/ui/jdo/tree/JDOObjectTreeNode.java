@@ -7,24 +7,29 @@ import java.util.List;
 import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
+import org.nightlabs.jdo.ObjectID;
 
 /**
  * 
  * @author Marco Schulze
+ * @author Khaireel Mohamed - khaireel at nightlabs dot de
  */
-public class JDOObjectTreeNode<JDOObjectID, JDOObject, Controller extends ActiveJDOObjectTreeController>
+public class JDOObjectTreeNode
+<JDOObjectID extends ObjectID, 
+ JDOObject, 
+ Controller extends ActiveJDOObjectTreeController<JDOObjectID, JDOObject, ? extends JDOObjectTreeNode<JDOObjectID, JDOObject, ? super Controller>>>
 {
 	private static final Logger logger = Logger.getLogger(JDOObjectTreeNode.class);
 
 	private Controller activeJDOObjectTreeController;
-	private JDOObjectTreeNode parent;
+	private JDOObjectTreeNode<JDOObjectID, JDOObject, Controller> parent;
 	private JDOObject jdoObject;
 
 	public void setActiveJDOObjectTreeController(Controller activeJDOObjectTreeController)
 	{
 		this.activeJDOObjectTreeController = activeJDOObjectTreeController;
 	}
-	public void setParent(JDOObjectTreeNode parent)
+	public void setParent(JDOObjectTreeNode<JDOObjectID, JDOObject, Controller> parent)
 	{
 		this.parent = parent;
 	}
@@ -36,7 +41,7 @@ public class JDOObjectTreeNode<JDOObjectID, JDOObject, Controller extends Active
 	{
 		return activeJDOObjectTreeController;
 	}
-	public JDOObjectTreeNode getParent()
+	public JDOObjectTreeNode<JDOObjectID, JDOObject, Controller> getParent()
 	{
 		return parent;
 	}
@@ -45,24 +50,24 @@ public class JDOObjectTreeNode<JDOObjectID, JDOObject, Controller extends Active
 		return jdoObject;
 	}
 
-	private List<JDOObjectTreeNode> childNodes = null;
-	private List<JDOObjectTreeNode> childNodes_ro = null;
+	private List<JDOObjectTreeNode<JDOObjectID, JDOObject, Controller>> childNodes = null;
+	private List<JDOObjectTreeNode<JDOObjectID, JDOObject, Controller>> childNodes_ro = null;
 
 	/**
 	 * @return a read-only copy of the child-nodes of this node or <code>null</code>, if there are no child-nodes assigned (i.e. {@link #setChildNodes(List)} has never been called).
 	 */
-	public synchronized List<JDOObjectTreeNode> getChildNodes()
+	public synchronized List<JDOObjectTreeNode<JDOObjectID, JDOObject, Controller>> getChildNodes()
 	{
 		if (childNodes == null)
 			return null;
 
 		if (childNodes_ro == null)
-			childNodes_ro = Collections.unmodifiableList(new ArrayList<JDOObjectTreeNode>(childNodes));
+			childNodes_ro = Collections.unmodifiableList(new ArrayList<JDOObjectTreeNode<JDOObjectID, JDOObject, Controller>>(childNodes));
 
 		return childNodes_ro;
 	}
 
-	public synchronized void setChildNodes(List<JDOObjectTreeNode> childNodes)
+	public synchronized void setChildNodes(List<JDOObjectTreeNode<JDOObjectID, JDOObject, Controller>> childNodes)
 	{
 		this.childNodes = childNodes;
 		this.childNodes_ro = null;
@@ -77,7 +82,7 @@ public class JDOObjectTreeNode<JDOObjectID, JDOObject, Controller extends Active
 	 *		called and a List of child-nodes assigned. <code>false</code>, if the <code>List</code> of child-nodes does not
 	 *		yet exist (is <code>null</code>) and the child-node could therefore not be added.
 	 */
-	public synchronized boolean addChildNode(JDOObjectTreeNode childNode)
+	public synchronized boolean addChildNode(JDOObjectTreeNode<JDOObjectID, JDOObject, Controller> childNode)
 	{
 		if (childNodes == null) {
 			if (logger.isDebugEnabled())
@@ -102,7 +107,7 @@ public class JDOObjectTreeNode<JDOObjectID, JDOObject, Controller extends Active
 	 *		<code>List</code>. <code>false</code>, if the <code>List</code> of child-nodes does not
 	 *		yet exist (is <code>null</code>) or the child-node was not contained in it.
 	 */
-	public synchronized boolean removeChildNode(JDOObjectTreeNode childNode)
+	public synchronized boolean removeChildNode(JDOObjectTreeNode<JDOObjectID, JDOObject, Controller> childNode)
 	{
 		if (childNodes == null) {
 			if (logger.isDebugEnabled())

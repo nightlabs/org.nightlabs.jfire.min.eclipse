@@ -15,8 +15,13 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * and uses the controller to serve element.
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
+ * @author Khaireel Mohamed - khaireel at nightlabs dot de
  */
-public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode> extends TreeContentProvider {
+public abstract class JDOObjectTreeContentProvider
+<JDOObjectID extends ObjectID, 
+ JDOObject, 
+ TreeNode extends JDOObjectTreeNode<JDOObjectID, JDOObject, ? extends ActiveJDOObjectTreeController<JDOObjectID, JDOObject, TreeNode>>> 
+extends TreeContentProvider {
 
 	public JDOObjectTreeContentProvider() {
 	}
@@ -28,8 +33,7 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 	{
 		return getChildren(inputElement);
 	}
-
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	
 	@Override
 	public Object[] getChildren(Object parentElement)
 	{
@@ -37,14 +41,14 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 		ActiveJDOObjectTreeController<JDOObjectID, JDOObject, TreeNode> controller = null;
 
 		if (parentElement instanceof ActiveJDOObjectTreeController) {
-			controller = (ActiveJDOObjectTreeController)parentElement;
+			controller = naiveCast(controller, parentElement);
 			parent = null;
 		}
 		else if (parentElement instanceof String) {
 			return null;
 		}
 		else {
-			parent = (TreeNode) parentElement;
+			parent = naiveCast(parent, parentElement);
 			controller = parent.getActiveJDOObjectTreeController();
 		}
 
@@ -58,15 +62,21 @@ public abstract class JDOObjectTreeContentProvider<JDOObjectID extends ObjectID,
 			return res.toArray();
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof String)
 			return false;
-		TreeNode node = (TreeNode) element;
+		TreeNode node = null;
+		node = naiveCast(node, element);
 		return hasJDOObjectChildren((JDOObject) node.getJdoObject());
 	}
 	
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	private <T> T naiveCast(T t, Object obj) {
+		return (T) obj;
+	}
+	
+
 	/**
 	 * Implement this for custom checking whether the node/jdoObject has children.
 	 * 

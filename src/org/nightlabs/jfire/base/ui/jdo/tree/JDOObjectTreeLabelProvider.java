@@ -14,7 +14,10 @@ import org.nightlabs.jdo.ObjectID;
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public abstract class JDOObjectTreeLabelProvider<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectTreeNode>
+public abstract class JDOObjectTreeLabelProvider
+<JDOObjectID extends ObjectID, 
+ JDOObject, 
+ TreeNode extends JDOObjectTreeNode> //<JDOObjectID, JDOObject, ? super TreeNode>>
 extends TableLabelProvider
 {
 

@@ -125,6 +125,12 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * @return The {@link Class} (type) of the JDO object this controller is for.
 	 */
 	protected abstract Class<? extends JDOObject> getJDOObjectClass();
+	
+//	private JDOObject obj = null;
+//	protected <T extends JDOObject> Class<T> _getJDOObjectClass() {
+//		obj.getClass()
+//	}
+	
 
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
@@ -177,7 +183,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 	private NotificationListener changeListener;
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+//	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected void handleChangeNotification(NotificationEvent notificationEvent, IProgressMonitor monitor) {
 		synchronized (objectID2TreeNode) {
 			if (hiddenRootNode == null)
@@ -238,7 +244,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 			super(name);
 		}
 		
-		@SuppressWarnings("unchecked") //$NON-NLS-1$
+//		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void notify(NotificationEvent notificationEvent) {
 			handleChangeNotification(notificationEvent, getProgressMonitor());
 		}
@@ -323,7 +329,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 			return filter;
 		}
 
-		@SuppressWarnings("unchecked") //$NON-NLS-1$
+//		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void notify(JDOLifecycleEvent event)
 		{
 			if (logger.isDebugEnabled())
@@ -492,7 +498,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * @param parent The parent node or <code>null</code>.
 	 * @return A list of {@link TreeNode}s or <code>null</code>, if data is not yet ready.
 	 */
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+//	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public List<TreeNode> getNodes(TreeNode _parent)
 	{
 		if (_parent != null && _parent == hiddenRootNode)
@@ -652,7 +658,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 		treeNodesChangedListeners.remove(listener);
 	}
 	
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+//	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void fireJDOObjectsChangedEvent(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent)
 	{
 		if (logger.isDebugEnabled()) {
