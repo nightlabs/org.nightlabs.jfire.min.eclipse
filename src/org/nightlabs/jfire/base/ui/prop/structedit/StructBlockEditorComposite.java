@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.window.Window;
@@ -38,7 +37,7 @@ import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
 public class StructBlockEditorComposite extends XComposite
 {
-	class AddScriptValidatorAction extends Action 
+	class AddScriptValidatorAction extends SelectionAction 
 	{
 		public AddScriptValidatorAction() {
 			super();
@@ -55,12 +54,32 @@ public class StructBlockEditorComposite extends XComposite
 			if (returnCode == Window.OK) {
 				String script = dialog.getScript();
 				ScriptDataBlockValidator validator = new ScriptDataBlockValidator(
-						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script);
+						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script, block);
 				block.addDataBlockValidator(validator);
 				validatorTable.setInput(block.getDataBlockValidators());
 				markDirty();
 			}
 		}
+		
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
+		 */
+		@Override
+		public boolean calculateEnabled() 
+		{
+			if (block != null) {
+				return !block.getStructFields().isEmpty();	
+			}
+			return false;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateVisible()
+		 */
+		@Override
+		public boolean calculateVisible() {
+			return true;
+		}		
 	}
 	
 	class AddExpressionValidatorAction extends SelectionAction 
@@ -83,7 +102,7 @@ public class StructBlockEditorComposite extends XComposite
 				I18nText message = dialog.getExpressionValidatorComposite().getMessage();
 				ValidationResultType validationResultType = dialog.getExpressionValidatorComposite().getValidationResultType();
 				ExpressionDataBlockValidator validator = new ExpressionDataBlockValidator(
-						expression, message.getText(), validationResultType);
+						expression, message.getText(), validationResultType, block);
 				validator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);
 				block.addDataBlockValidator(validator);
 				validatorTable.setInput(block.getDataBlockValidators());
@@ -110,7 +129,6 @@ public class StructBlockEditorComposite extends XComposite
 		public boolean calculateVisible() {
 			return true;
 		}
-		
 	}
 	
 	class DeleteValidatorAction extends SelectionAction 

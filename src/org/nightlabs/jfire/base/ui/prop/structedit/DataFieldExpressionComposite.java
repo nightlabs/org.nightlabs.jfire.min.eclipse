@@ -130,7 +130,8 @@ public class DataFieldExpressionComposite extends XComposite {
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						StructField<?> sf = structFieldCombo.getSelectedElement();
-						expression.setStructFieldID((StructFieldID) JDOHelper.getObjectId(sf));
+//						expression.setStructFieldID((StructFieldID) JDOHelper.getObjectId(sf));
+						expression.setStructFieldID(sf.getStructFieldIDObj());
 						expressionValidatorUI.refresh();
 					}
 				});

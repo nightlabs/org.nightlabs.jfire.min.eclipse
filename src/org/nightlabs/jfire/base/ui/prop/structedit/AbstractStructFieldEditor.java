@@ -57,7 +57,7 @@ implements StructFieldEditor<F>
 			if (returnCode == Window.OK) {
 				String script = dialog.getScript();
 				ScriptDataFieldValidator validator = new ScriptDataFieldValidator(
-						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script);
+						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script, structField);
 				structField.addDataFieldValidator(validator);
 				validatorTable.setInput(structField.getDataFieldValidators());
 				setChanged();
