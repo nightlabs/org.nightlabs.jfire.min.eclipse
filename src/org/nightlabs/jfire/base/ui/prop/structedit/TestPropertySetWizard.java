@@ -26,8 +26,9 @@ public class TestPropertySetWizard extends DynamicPathWizard
 	 */
 	@Override
 	public void addPages() {
-		page = new FullDataBlockCoverageWizardPage(propertySet.getDisplayName(), 
-				propertySet.getDisplayName(), propertySet, editorStructBlockRegistry);
+		page = new FullDataBlockCoverageWizardPage("Test Structure", 
+				"Test Structure", 
+				propertySet, editorStructBlockRegistry);
 		addPage(page);
 		super.addPages();
 	}

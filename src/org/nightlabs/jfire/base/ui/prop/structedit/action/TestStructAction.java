@@ -48,10 +48,9 @@ public class TestStructAction extends SelectionAction
 		StructLocal structLocal = (StructLocal) struct;
 		PropertySet propertySet = new PropertySet(IDGeneratorClient.getOrganisationID(),
 				IDGeneratorClient.nextID(PropertySet.class), structLocal);
-		propertySet.setDisplayName("Test PropertySet");
 		propertySet.inflate(struct);
 		TestPropertySetWizard wizard = new TestPropertySetWizard(propertySet, null);
-		wizard.setWindowTitle(propertySet.getDisplayName());
+		wizard.setWindowTitle("Test Structure");
 		DynamicPathWizardDialog dlg = new DynamicPathWizardDialog(wizard);
 		dlg.open();
 	}
