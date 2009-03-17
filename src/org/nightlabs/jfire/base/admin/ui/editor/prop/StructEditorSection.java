@@ -25,6 +25,7 @@ import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructBlockAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.AddStructFieldAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction;
 import org.nightlabs.jfire.base.ui.prop.structedit.action.RemoveStructElementAction;
+import org.nightlabs.jfire.base.ui.prop.structedit.action.TestStructAction;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.IStruct.OrderMoveDirection;
 
@@ -62,6 +63,7 @@ implements StructureChangedListener
 		actionList.add( addStructFieldActionItem );
 		removeStructElementAction = new ActionContributionItem(new RemoveStructElementAction(structEditor));
 		actionList.add( removeStructElementAction );
+		actionList.add( new ActionContributionItem(new TestStructAction(structEditor)) );
 
 		ToolBarManager toolBarManager = getToolBarManager();
 		final MenuManager menuManager = new MenuManager("Actions"); //$NON-NLS-1$
