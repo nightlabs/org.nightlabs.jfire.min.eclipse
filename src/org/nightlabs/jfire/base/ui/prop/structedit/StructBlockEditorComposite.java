@@ -49,12 +49,18 @@ public class StructBlockEditorComposite extends XComposite
 		
 		@Override
 		public void run() {
-			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null);
+			ScriptDataBlockValidator newValidator = new ScriptDataBlockValidator(
+					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", block);
+			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, 
+					newValidator, new StructBlockAddScriptValidatorHandler(block));
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
-				String script = dialog.getScript();
+				IScriptValidator scriptValidator = dialog.getScriptValidator();
 				ScriptDataBlockValidator validator = new ScriptDataBlockValidator(
-						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script, block);
+						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, scriptValidator.getScript(), block);
+				for (String key : scriptValidator.getValidationResultKeys()) {
+					validator.addValidationResult(key, scriptValidator.getValidationResult(key));
+				}
 				block.addDataBlockValidator(validator);
 				validatorTable.setInput(block.getDataBlockValidators());
 				markDirty();
@@ -197,11 +203,11 @@ public class StructBlockEditorComposite extends XComposite
 			IDataBlockValidator validator = (IDataBlockValidator) getSelectedObjects().get(0);
 			if (validator instanceof IScriptValidator) {
 				ScriptDataBlockValidator scriptValidator = (ScriptDataBlockValidator) validator;
-				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null);
-				dialog.setScript(scriptValidator.getScript());
+				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, scriptValidator,
+						new StructBlockAddScriptValidatorHandler(block));
 				int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
-					scriptValidator.setScript(dialog.getScript());
+//					scriptValidator.setScript(dialog.getScript());
 					validatorTable.refresh();
 					markDirty();
 				}

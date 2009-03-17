@@ -15,22 +15,22 @@ import org.nightlabs.jfire.prop.validation.GenericDataFieldNotEmptyExpression;
 public abstract class AbstractAddExpressionValidatorHandler 
 implements IAddExpressionValidatorHandler 
 {
-	private ExpressionValidatorComposite expressionValidatorComposite;
+	private IExpressionValidatorEditor expressionValidatorEditor;
 	
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.structedit.IAddExpressionValidatorHandler#getExpressionValidatorComposite()
 	 */
 	@Override
-	public ExpressionValidatorComposite getExpressionValidatorComposite() {
-		return expressionValidatorComposite;
+	public IExpressionValidatorEditor getExpressionValidatorEditor() {
+		return expressionValidatorEditor;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.structedit.IAddExpressionValidatorHandler#setExpressionValidatorComposite(org.nightlabs.jfire.base.ui.prop.structedit.ExpressionValidatorComposite)
 	 */
 	@Override
-	public void setExpressionValidatorComposite(ExpressionValidatorComposite composite) {
-		this.expressionValidatorComposite = composite;
+	public void setExpressionValidatorEditor(IExpressionValidatorEditor editor) {
+		this.expressionValidatorEditor = editor;
 	}
 
 	/* (non-Javadoc)
@@ -42,16 +42,16 @@ implements IAddExpressionValidatorHandler
 		StructFieldID structFieldID = getStructFieldID();
 		if (structFieldID != null) {
 			IExpression newExpression = new GenericDataFieldNotEmptyExpression(structFieldID);
-			IExpression selectedExpression = getExpressionValidatorComposite().getSelectedExpression();
+			IExpression selectedExpression = getExpressionValidatorEditor().getSelectedExpression();
 			if (selectedExpression != null) {
 				if (selectedExpression instanceof Composition) {
 					Composition composition = (Composition) selectedExpression;
 					composition.addExpression(newExpression);
-					getExpressionValidatorComposite().refresh();
+					getExpressionValidatorEditor().refresh();
 				}
 			}
-			else if (getExpressionValidatorComposite().getExpression() == null) {
-				getExpressionValidatorComposite().setExpression(newExpression);
+			else if (getExpressionValidatorEditor().getExpression() == null) {
+				getExpressionValidatorEditor().setExpression(newExpression);
 			}
 		}
 	}

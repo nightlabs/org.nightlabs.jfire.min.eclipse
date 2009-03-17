@@ -52,8 +52,8 @@ import org.nightlabs.jfire.prop.validation.ValidationResultType;
  */
 public class ExpressionValidatorComposite 
 extends XComposite 
-implements IExpressionValidatorUI
-{	
+implements IExpressionValidatorEditor
+{
 	class ContentProvider extends TreeContentProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
@@ -160,7 +160,7 @@ implements IExpressionValidatorUI
 		this.struct = struct;
 		this.mode = mode;
 		this.addHandler = handler;
-		addHandler.setExpressionValidatorComposite(this);
+		addHandler.setExpressionValidatorEditor(this);
 		createComposite(this);
 	}
 
@@ -196,17 +196,24 @@ implements IExpressionValidatorUI
 	}
 	
 	protected void createComposite(Composite parent) 
-	{		
-		i18nTextEditor = new I18nTextEditor(parent);
+	{
+		Composite wrapper = new Composite(parent, SWT.NONE);
+		wrapper.setLayout(new GridLayout(2, false));
+		wrapper.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		Label messageLabel = new Label(wrapper, SWT.NONE);
+		messageLabel.setText("Message");
+		i18nTextEditor = new I18nTextEditor(wrapper);		 
 		message = i18nTextEditor.getI18nText();
 		
-		validationResultTypeCombo = new ValidationResultTypeCombo(parent, SWT.READ_ONLY | SWT.BORDER);
+		Label validationTypeLabel = new Label(wrapper, SWT.NONE);
+		validationTypeLabel.setText("Validation Type");
+		validationResultTypeCombo = new ValidationResultTypeCombo(wrapper, SWT.READ_ONLY | SWT.BORDER);
 		validationResultTypeCombo.selectElement(ValidationResultType.ERROR);
 		if (validationResultType != null) {
 			validationResultTypeCombo.selectElement(validationResultType);
 		}
 		validationResultType = validationResultTypeCombo.getSelectedElement();
-		
 		validationResultTypeCombo.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -218,7 +225,7 @@ implements IExpressionValidatorUI
 		treeAndTextComposite.setLayout(new GridLayout(2, true));
 		createTreeViewer(treeAndTextComposite);
 		createExpressionText(expression, treeAndTextComposite);
-		
+
 		setExpression(expression);
 	}
 

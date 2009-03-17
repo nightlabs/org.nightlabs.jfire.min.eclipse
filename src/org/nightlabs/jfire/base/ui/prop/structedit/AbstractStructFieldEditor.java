@@ -52,12 +52,18 @@ implements StructFieldEditor<F>
 		
 		@Override
 		public void run() {
-			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null);
+			ScriptDataFieldValidator newValidator = new ScriptDataFieldValidator(
+					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", structField);
+			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, newValidator,
+					new StructFieldAddScriptValidatorHandler(structField));
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
-				String script = dialog.getScript();
+				IScriptValidator scriptValidator = dialog.getScriptValidator();
 				ScriptDataFieldValidator validator = new ScriptDataFieldValidator(
-						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, script, structField);
+						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, scriptValidator.getScript(), structField);
+				for (String key : scriptValidator.getValidationResultKeys()) {
+					validator.addValidationResult(key, scriptValidator.getValidationResult(key));
+				}
 				structField.addDataFieldValidator(validator);
 				validatorTable.setInput(structField.getDataFieldValidators());
 				setChanged();
@@ -131,11 +137,11 @@ implements StructFieldEditor<F>
 			IDataFieldValidator validator = (IDataFieldValidator) getSelectedObjects().get(0);
 			if (validator instanceof IScriptValidator) {
 				ScriptDataFieldValidator scriptValidator = (ScriptDataFieldValidator) validator;
-				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null);
-				dialog.setScript(scriptValidator.getScript());
+				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, scriptValidator,
+						new StructFieldAddScriptValidatorHandler(structField));
 				int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
-					scriptValidator.setScript(dialog.getScript());
+//					scriptValidator.setScript(dialog.getScript());
 					validatorTable.refresh();
 					setChanged();
 				}

@@ -34,7 +34,7 @@ public class DataFieldExpressionComposite extends XComposite {
 	private Combo operationCombo;
 	private boolean liveUpdate;
 	private DataFieldExpression<?> expression;
-	private IExpressionValidatorUI expressionValidatorUI; 
+	private IExpressionValidatorEditor expressionValidatorEditor; 
 	private ISelectionChangedListener structBlockComboListener = new ISelectionChangedListener(){
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
@@ -49,7 +49,7 @@ public class DataFieldExpressionComposite extends XComposite {
 	 * @param style
 	 */
 	public DataFieldExpressionComposite(Composite parent, int style, LayoutMode layoutMode, DataFieldExpression<?> expression, 
-			Mode mode, IStruct struct, boolean liveUpdate, IExpressionValidatorUI expressionValidatorUI) 
+			Mode mode, IStruct struct, boolean liveUpdate, IExpressionValidatorEditor expressionValidatorEditor) 
 	{
 		super(parent, style, layoutMode);
 		if (struct == null) {
@@ -61,7 +61,7 @@ public class DataFieldExpressionComposite extends XComposite {
 		this.struct = struct;
 		this.liveUpdate = liveUpdate;
 		this.expression = expression;
-		this.expressionValidatorUI = expressionValidatorUI;
+		this.expressionValidatorEditor = expressionValidatorEditor;
 		createExpressionComposite(expression, this, mode);
 	}	
 	
@@ -130,9 +130,8 @@ public class DataFieldExpressionComposite extends XComposite {
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						StructField<?> sf = structFieldCombo.getSelectedElement();
-//						expression.setStructFieldID((StructFieldID) JDOHelper.getObjectId(sf));
 						expression.setStructFieldID(sf.getStructFieldIDObj());
-						expressionValidatorUI.refresh();
+						expressionValidatorEditor.refresh();
 					}
 				});
 			}

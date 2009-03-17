@@ -9,7 +9,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
  */
 public interface IAddExpressionValidatorHandler 
 {
-	public void setExpressionValidatorComposite(ExpressionValidatorComposite composite);
-	public ExpressionValidatorComposite getExpressionValidatorComposite();
+	public void setExpressionValidatorEditor(IExpressionValidatorEditor editor);
+	public IExpressionValidatorEditor getExpressionValidatorEditor();
 	public void addExpressionPressed();
 }
