@@ -28,16 +28,25 @@ import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
+import org.nightlabs.i18n.I18nText;
+import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable;
+import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog;
 import org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog;
+import org.nightlabs.jfire.base.ui.prop.validation.StructFieldAddExpressionValidatorHandler;
 import org.nightlabs.jfire.base.ui.prop.validation.StructFieldAddScriptValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.validation.ExpressionDataFieldValidator;
+import org.nightlabs.jfire.prop.validation.IDataFieldExpression;
 import org.nightlabs.jfire.prop.validation.IDataFieldValidator;
+import org.nightlabs.jfire.prop.validation.IExpressionValidator;
 import org.nightlabs.jfire.prop.validation.IScriptValidator;
 import org.nightlabs.jfire.prop.validation.ScriptDataBlockValidator;
 import org.nightlabs.jfire.prop.validation.ScriptDataFieldValidator;
+import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
 public abstract class AbstractStructFieldEditor<F extends StructField>
 extends AbstractStructPartEditor<F>
@@ -74,6 +83,38 @@ implements StructFieldEditor<F>
 		}
 	}
 
+	class AddExpressionValidatorAction extends Action 
+	{
+		public AddExpressionValidatorAction() {
+			super();
+			setText("Add Expression Validator");
+			setToolTipText("Add an expression based valdidator");
+			setId(AddExpressionValidatorAction.class.getName());
+			setImageDescriptor(SharedImages.ADD_16x16);
+		}
+		
+		@Override
+		public void run() {
+			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null, 
+					getStructEditor().getStruct(), new StructFieldAddExpressionValidatorHandler(getStructField()), 
+					Mode.STRUCT_FIELD) ;
+			int returnCode = dialog.open();
+			if (returnCode == Window.OK) {
+				IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
+				I18nText message = dialog.getExpressionValidatorComposite().getMessage();
+				ValidationResultType validationResultType = dialog.getExpressionValidatorComposite().getValidationResultType();
+				if (expression instanceof IDataFieldExpression<?>) {
+					ExpressionDataFieldValidator<?, ?> validator = new ExpressionDataFieldValidator(
+							(IDataFieldExpression<?>) expression, message.getText(), validationResultType, getStructField());
+					validator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);
+					getStructField().addDataFieldValidator(validator);
+					validatorTable.setInput(getStructField().getDataFieldValidators());
+					setChanged();					
+				}
+			}
+		}
+	}	
+	
 	class DeleteValidatorAction extends SelectionAction 
 	{
 		public DeleteValidatorAction() {
@@ -149,6 +190,24 @@ implements StructFieldEditor<F>
 					setChanged();
 				}
 			}
+			if (validator instanceof IExpressionValidator) {
+				IExpressionValidator expressionValidator = (IExpressionValidator) validator;
+				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(), 
+						getStructEditor().getStruct(), new StructFieldAddExpressionValidatorHandler(getStructField()), Mode.STRUCT_FIELD);
+				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
+				dialog.setValidationResultType(expressionValidator.getValidationResult().getResultType());
+				int returnCode = dialog.open();
+				if (returnCode == Window.OK) {
+					IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
+					I18nText message = dialog.getExpressionValidatorComposite().getMessage();
+					ValidationResultType validationResultType = dialog.getExpressionValidatorComposite().getValidationResultType();
+					expressionValidator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);					
+					expressionValidator.getValidationResult().setValidationResultType(validationResultType);
+					expressionValidator.setExpression(expression);
+					validatorTable.refresh();
+					setChanged();					
+				}
+			}
 		}
 	}
 	
@@ -202,6 +261,7 @@ implements StructFieldEditor<F>
 		sectionPart.getSection().setClient(validatorTable);
 		
 		final EditValidatorAction editAction = new EditValidatorAction();
+		sectionPart.registerAction(new AddExpressionValidatorAction(), true);
 		sectionPart.registerAction(new AddScriptValidatorAction(), true);
 		sectionPart.registerAction(new DeleteValidatorAction(), true);
 		sectionPart.registerAction(editAction, true);

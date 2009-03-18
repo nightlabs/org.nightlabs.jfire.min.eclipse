@@ -448,10 +448,16 @@ implements IExpressionValidatorEditor
 			public void widgetSelected(SelectionEvent e) {
 				addCompositionPressed();
 			}
-		});
+		});		
 		conditionOperatorCombo = new CompositionCombo(buttonComp, SWT.READ_ONLY | SWT.BORDER);
 		conditionOperatorCombo.addElements(Arrays.asList(new String[] {AndCondition.OPERATOR_TEXT, OrCondition.OPERATOR_TEXT}));
 		conditionOperatorCombo.selectElement(OrCondition.OPERATOR_TEXT);
+		
+		if (mode == Mode.STRUCT_FIELD) {
+			addComposition.setEnabled(false);
+			conditionOperatorCombo.setEnabled(false);
+		}
+		
 	}
 	
 	protected void createExpressionText(IExpression expression, Composite parent) 

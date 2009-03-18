@@ -219,7 +219,7 @@ public class StructBlockEditorComposite extends XComposite
 				}
 			}
 			if (validator instanceof IExpressionValidator) {
-				ExpressionDataBlockValidator expressionValidator = (ExpressionDataBlockValidator) validator;
+				IExpressionValidator expressionValidator = (IExpressionValidator) validator;
 				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(), 
 						block.getStruct(), new StructBlockAddExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
 				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
