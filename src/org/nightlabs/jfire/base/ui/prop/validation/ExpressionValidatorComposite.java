@@ -148,8 +148,11 @@ implements IExpressionValidatorEditor
 	private ValidationResultType validationResultType;
 	private IAddExpressionValidatorHandler addHandler;
 	private IExpression selectedExpression;
-	private Combo conditionOperatorCombo;
+//	private Combo conditionOperatorCombo;
+	private CompositionCombo conditionOperatorCombo;
 	private Button removeExpression;
+	private Button addExpression;
+	private Button addComposition;
 	private IStruct struct;
 	private Text expressionText;
 	private Composite expressionDetailComposite;
@@ -195,6 +198,8 @@ implements IExpressionValidatorEditor
 					selectedExpression = expression;
 					showExpression(selectedExpression);
 					removeExpression.setEnabled(true);
+					addExpression.setEnabled(expression instanceof Composition);
+					addComposition.setEnabled(expression instanceof Composition);
 				}
 			}
 			else {
@@ -212,16 +217,7 @@ implements IExpressionValidatorEditor
 		layout(true, true);
 		validateOK();
 	}
-	
-//	protected void showExpression(IExpression expression) 
-//	{
-//		expressionText.setText(getText(expression));		
-//		createExpressionDetail(expression, this);
-//		createButtonComposite(expression, this);
-//		layout(true, true);
-//		validateOK();
-//	}
-	
+		
 	protected void createComposite(Composite parent) 
 	{
 		Composite wrapper = new Composite(parent, SWT.NONE);
@@ -419,7 +415,7 @@ implements IExpressionValidatorEditor
 		}
 		buttonComp = new XComposite(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER, 4);
 		buttonComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		Button addExpression = new Button(buttonComp, SWT.NONE);
+		addExpression = new Button(buttonComp, SWT.NONE);
 		addExpression.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.button.addExpression.text")); //$NON-NLS-1$
 		addExpression.addSelectionListener(new SelectionAdapter(){
 			/* (non-Javadoc)
@@ -442,7 +438,7 @@ implements IExpressionValidatorEditor
 				removeExpressionPressed();
 			}
 		});
-		Button addComposition = new Button(buttonComp, SWT.NONE);
+		addComposition = new Button(buttonComp, SWT.NONE);
 		addComposition.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.button.addComposition.text")); //$NON-NLS-1$
 		addComposition.addSelectionListener(new SelectionAdapter() {
 			/* (non-Javadoc)
@@ -453,9 +449,9 @@ implements IExpressionValidatorEditor
 				addCompositionPressed();
 			}
 		});
-		conditionOperatorCombo = new Combo(buttonComp, SWT.READ_ONLY | SWT.BORDER);
-		conditionOperatorCombo.setItems(new String[] {AndCondition.OPERATOR_TEXT, OrCondition.OPERATOR_TEXT});
-		conditionOperatorCombo.select(0);
+		conditionOperatorCombo = new CompositionCombo(buttonComp, SWT.READ_ONLY | SWT.BORDER);
+		conditionOperatorCombo.addElements(Arrays.asList(new String[] {AndCondition.OPERATOR_TEXT, OrCondition.OPERATOR_TEXT}));
+		conditionOperatorCombo.selectElement(OrCondition.OPERATOR_TEXT);
 	}
 	
 	protected void createExpressionText(IExpression expression, Composite parent) 
@@ -469,7 +465,7 @@ implements IExpressionValidatorEditor
 	
 	protected String getText(IExpression expression) 
 	{
-		// TODO exchange this with extensible LabelProvider extension-point
+		// TODO should come from extension-point
 		if (expression != null) 
 		{
 			if (expression instanceof Composition) 
@@ -500,7 +496,9 @@ implements IExpressionValidatorEditor
 						String name = structField.getName().getText();
 						stringBuilder.append(name);
 						if (expression instanceof GenericDataFieldNotEmptyExpression) {
-							stringBuilder.insert(0, NOT_EMPTY + " "); //$NON-NLS-1$
+//							stringBuilder.insert(0, NOT_EMPTY + " "); //$NON-NLS-1$
+							stringBuilder.append(" "); //$NON-NLS-1$
+							stringBuilder.append(NOT_EMPTY); //$NON-NLS-1$
 						}
 						return stringBuilder.toString();
 					} catch (Exception e) {
@@ -527,14 +525,6 @@ implements IExpressionValidatorEditor
 	public void setExpression(IExpression expression) 
 	{
 		this.expression = expression;		
-//		if (expression != null) {
-//			treeViewer.setInput(Collections.singleton(this.expression));			
-//		}
-//		else {
-//			treeViewer.setInput(Collections.emptyList());
-//		}
-//		treeViewer.expandAll();
-//		showExpression(expression);
 		refresh();
 	}
 
@@ -542,7 +532,6 @@ implements IExpressionValidatorEditor
 	{
 		ISelection oldSelection = treeViewer.getSelection();
 		showExpression(expression);
-//		treeViewer.refresh();
 		if (expression != null) {
 			treeViewer.setInput(Collections.singleton(this.expression));	
 		}
@@ -593,7 +582,7 @@ implements IExpressionValidatorEditor
 	
 	protected void addCompositionPressed() 
 	{
-		String selection = conditionOperatorCombo.getItem(conditionOperatorCombo.getSelectionIndex());
+		String selection = conditionOperatorCombo.getSelectedElement();
 		Composition newComposition = null; 
 		if (selection.equals(AndCondition.OPERATOR_TEXT)) {
 			newComposition = new AndCondition();

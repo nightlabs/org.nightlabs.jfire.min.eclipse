@@ -17,7 +17,6 @@ import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructBlockCombo;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldCombo;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
@@ -68,6 +67,79 @@ public class DataFieldExpressionComposite extends XComposite {
 		createExpressionComposite(expression, this, mode);
 	}	
 	
+//	protected void createExpressionComposite(final DataFieldExpression<?> expression, Composite parent, Mode mode) 
+//	{
+//		int columns = 1;
+//		switch (mode) {
+//			case STRUCT:
+//				columns = 3;
+//				break;
+//			case STRUCT_BLOCK:
+//				columns = 2;
+//				break;
+//			case STRUCT_FIELD:
+//				columns = 1;
+//				break;								
+//		}
+//		Composite wrapper = new XComposite(parent, SWT.NONE);
+//		wrapper.setLayout(new GridLayout(columns, false));
+//		wrapper.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//		
+//		int comboStyle = SWT.READ_ONLY | SWT.BORDER;
+//		
+//		operationCombo = new Combo(wrapper, comboStyle);
+//		operationCombo.setItems(new String[] {ExpressionValidatorComposite.NOT_EMPTY});
+//		operationCombo.select(0);
+//
+//		StructBlock structBlock = null;
+//		StructField<?> structField = null;
+//		try {
+//			structField = struct.getStructField(expression.getStructFieldID());
+//			structBlock = structField.getStructBlock();
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//
+//		if (mode == Mode.STRUCT) {
+//			structBlockCombo = new StructBlockCombo(wrapper, comboStyle);
+//			structBlockCombo.addSelectionChangedListener(structBlockComboListener);
+//			structBlockCombo.addElements(struct.getStructBlocks());
+//			if (structBlock != null) {
+//				structBlockCombo.selectElement(structBlock);
+//			}
+//			structBlockCombo.addSelectionChangedListener(new ISelectionChangedListener(){
+//				@Override
+//				public void selectionChanged(SelectionChangedEvent event) {
+//					StructBlock structBlock = structBlockCombo.getSelectedElement();
+//					structFieldCombo.removeAll();
+//					structFieldCombo.addElements(structBlock.getStructFields());
+//					if (!structFieldCombo.getElements().isEmpty())
+//						structFieldCombo.selectElementByIndex(0);
+//				}
+//			});
+//		}
+//
+//		if (mode == Mode.STRUCT_BLOCK) {
+//			structFieldCombo = new StructFieldCombo(wrapper, comboStyle);
+//			if (structBlock != null) {
+//				structFieldCombo.addElements(structBlock.getStructFields());
+//				if (structField != null) {
+//					structFieldCombo.selectElement(structField);
+//				}
+//			}
+//			if (liveUpdate) {
+//				structFieldCombo.addSelectionChangedListener(new ISelectionChangedListener(){
+//					@Override
+//					public void selectionChanged(SelectionChangedEvent event) {
+//						StructField<?> sf = structFieldCombo.getSelectedElement();
+//						expression.setStructFieldID(sf.getStructFieldIDObj());
+//						expressionValidatorEditor.refresh();
+//					}
+//				});
+//			}
+//		}
+//	}
+	
 	protected void createExpressionComposite(final DataFieldExpression<?> expression, Composite parent, Mode mode) 
 	{
 		int columns = 1;
@@ -88,10 +160,6 @@ public class DataFieldExpressionComposite extends XComposite {
 		
 		int comboStyle = SWT.READ_ONLY | SWT.BORDER;
 		
-		operationCombo = new Combo(wrapper, comboStyle);
-		operationCombo.setItems(new String[] {ExpressionValidatorComposite.NOT_EMPTY});
-		operationCombo.select(0);
-
 		StructBlock structBlock = null;
 		StructField<?> structField = null;
 		try {
@@ -139,6 +207,10 @@ public class DataFieldExpressionComposite extends XComposite {
 				});
 			}
 		}
+		
+		operationCombo = new Combo(wrapper, comboStyle);
+		operationCombo.setItems(new String[] {ExpressionValidatorComposite.NOT_EMPTY});
+		operationCombo.select(0);		
 	}
 	
 	public IExpression getExpression() 
