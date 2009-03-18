@@ -3,6 +3,7 @@
  */
 package org.nightlabs.jfire.base.ui.prop.validation;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -156,6 +157,7 @@ implements IExpressionValidatorEditor
 	private Composite buttonComp;
 	private IErrorMessageDisplayer messageDisplayer;
 	private SashForm sash;
+	private CompositionOperatorLabelProvider compositionOperatorLabelProvider;
 	
 	/**
 	 * @param parent
@@ -176,6 +178,7 @@ implements IExpressionValidatorEditor
 		this.addHandler = handler;
 		this.messageDisplayer = messageDisplayer;
 		addHandler.setExpressionValidatorEditor(this);
+		compositionOperatorLabelProvider = new CompositionOperatorLabelProvider();
 		createComposite(this);
 	}
 
@@ -298,13 +301,14 @@ implements IExpressionValidatorEditor
 		Composite comp = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		comp.setLayout(new GridLayout(2, false));
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		final Combo compositionKindCombo = new Combo(comp, SWT.READ_ONLY | SWT.BORDER);
-		compositionKindCombo.setItems(new String[] {AndCondition.OPERATOR_TEXT, OrCondition.OPERATOR_TEXT});
-		compositionKindCombo.setText(composition.getOperatorText());
+		final CompositionCombo compositionKindCombo = new CompositionCombo(comp, SWT.READ_ONLY | SWT.BORDER);
+		compositionKindCombo.setLayoutData(new GridData());
+		compositionKindCombo.addElements(Arrays.asList(new String[] {AndCondition.OPERATOR_TEXT, OrCondition.OPERATOR_TEXT}));
+		compositionKindCombo.selectElement(composition.getOperatorText());
 		compositionKindCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String operator = compositionKindCombo.getItem(compositionKindCombo.getSelectionIndex());
+				String operator = compositionKindCombo.getSelectedElement();
 				if (!operator.equals(composition.getOperatorText())) 
 				{
 					Composition newComposition = null;
@@ -325,7 +329,6 @@ implements IExpressionValidatorEditor
 						expression = newComposition;
 					}
 					refresh();
-//					showExpression(expression);
 				}
 			}
 		});
@@ -479,7 +482,7 @@ implements IExpressionValidatorEditor
 					stringBuilder.append(getText(expr));
 					if (i < composition.getExpressions().size()-1) {
 						stringBuilder.append(" "); //$NON-NLS-1$
-						stringBuilder.append(composition.getOperatorText());
+						stringBuilder.append(compositionOperatorLabelProvider.getText(composition.getOperatorText()));
 						stringBuilder.append(" ");						 //$NON-NLS-1$
 					}
 				}
