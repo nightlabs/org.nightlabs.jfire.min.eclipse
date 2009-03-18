@@ -5,6 +5,8 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -39,14 +41,6 @@ public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> 
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
 
-//		/* (non-Javadoc)
-//		 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory#getDataFieldEditorClass()
-//		 */
-//		@Override
-//		public Class<? extends DataFieldEditor<DateDataField>> getDataFieldEditorClass() {
-//			return DateDataFieldEditor.class;
-//		}
-
 		@Override
 		public DataFieldEditor<DateDataField> createPropDataFieldEditor(IStruct struct, DateDataField data) {
 			return new DateDataFieldEditor(struct, data);
@@ -62,12 +56,7 @@ public class DateDataFieldEditor extends AbstractDataFieldEditor<DateDataField> 
 	}
 	
 	private DateDataFieldComposite comp;
-	
-//	@Override
-//	protected void setDataField(DateDataField dataField) {
-//		super.setDataField(dataField);
-//	}
-	
+		
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
@@ -125,14 +114,18 @@ class DateDataFieldComposite extends AbstractInlineDataFieldComposite<DateDataFi
 			dateTimeControl.dispose();
 		
 		dateTimeControl = new DateTimeControl(this, SWT.NONE, dateStructField.getDateTimeEditFlags(), (Date) null);
-		//XComposite.configureLayout(LayoutMode.TIGHT_WRAPPER, dateTimeControl.getGridLayout());
 		dateTimeControl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		dateTimeControl.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				getEditor().setChanged(true);
 			}
 		});
-//		dateTimeControl.getParent().layout();
+		dateTimeControl.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				getEditor().setChanged(true);
+			}
+		});
 		dateTimeControl.setDate(getEditor().getDataField().getDate());
 	}
 	

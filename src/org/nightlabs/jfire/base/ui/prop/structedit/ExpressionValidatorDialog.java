@@ -5,10 +5,13 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.expression.IExpression;
@@ -29,6 +32,7 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 	private IStruct struct;
 	private IAddExpressionValidatorHandler handler;
 	private Mode mode;
+	private String dialogMessage;
 	
 	/**
 	 * @param shell
@@ -49,9 +53,11 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 	{
 		setTitle("Expression Validator");
 		getShell().setText("Expression Validator");
-		setMessage("Add/Edit an expression based validator");
+		dialogMessage = "Add/Edit an expression based validator";
+		setMessage(dialogMessage);
 		
-		expressionValidatorComposite = new ExpressionValidatorComposite(parent, SWT.NONE, expression, struct, handler, mode);
+		expressionValidatorComposite = new ExpressionValidatorComposite(parent, SWT.NONE, 
+				expression, struct, handler, mode, new MessageDisplayer());
 		if (message != null) {
 			expressionValidatorComposite.setMessage(message);
 		}
@@ -60,11 +66,11 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 		}
 		return expressionValidatorComposite;
 	}
-		
+
 	public ExpressionValidatorComposite getExpressionValidatorComposite() {
 		return expressionValidatorComposite;
 	}
-	
+
 	/**
 	 * Sets the message.
 	 * @param message the message to set
@@ -89,4 +95,39 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 		}
 	}
 
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+		expressionValidatorComposite.refresh();
+	}
+	
+	class MessageDisplayer implements IErrorMessageDisplayer 
+	{
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.message.IMessageDisplayer#setMessage(java.lang.String, int)
+		 */
+		@Override
+		public void setMessage(String message, int type) {
+			if (message != null) {
+				ExpressionValidatorDialog.this.setMessage(message, type);
+			}
+			else {
+				ExpressionValidatorDialog.this.setMessage(dialogMessage);
+			}			
+			Button okButton = getButton(IDialogConstants.OK_ID);
+			if (okButton != null)
+				okButton.setEnabled(message == null);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.nightlabs.base.ui.message.IErrorMessageDisplayer#setErrorMessage(java.lang.String)
+		 */
+		@Override
+		public void setErrorMessage(String errorMessage) {
+			ExpressionValidatorDialog.this.setErrorMessage(errorMessage);
+			Button okButton = getButton(IDialogConstants.OK_ID);
+			if (okButton != null)
+				okButton.setEnabled(errorMessage == null);
+		}
+	}
 }

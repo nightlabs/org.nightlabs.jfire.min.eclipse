@@ -6,12 +6,16 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -31,6 +35,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
+import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
 import org.nightlabs.base.ui.tree.TreeContentProvider;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.i18n.I18nTextBuffer;
@@ -147,19 +152,27 @@ implements IExpressionValidatorEditor
 	private Composite expressionDetailComposite;
 	private Mode mode = Mode.STRUCT_BLOCK;
 	private Composite buttonComp;
+	private IErrorMessageDisplayer messageDisplayer;
+	private SashForm sash;
 	
 	/**
 	 * @param parent
 	 * @param style
 	 */
 	public ExpressionValidatorComposite(Composite parent, int style, IExpression expression,
-			IStruct struct, IAddExpressionValidatorHandler handler, Mode mode) 
+			IStruct struct, IAddExpressionValidatorHandler handler, Mode mode, IErrorMessageDisplayer messageDisplayer) 
 	{	
 		super(parent, style);
+		assert struct != null;
+		assert handler != null;
+		assert mode != null;
+		assert messageDisplayer != null;
+		
 		this.expression = expression;
 		this.struct = struct;
 		this.mode = mode;
 		this.addHandler = handler;
+		this.messageDisplayer = messageDisplayer;
 		addHandler.setExpressionValidatorEditor(this);
 		createComposite(this);
 	}
@@ -187,13 +200,22 @@ implements IExpressionValidatorEditor
 	
 	protected void showExpression(IExpression expression) 
 	{
-		if (expression != null) {
-			expressionText.setText(getText(expression));
-		}
-		createExpressionDetail(expression, this);
+		expressionText.setText(getText(expression));		
+		createExpressionDetail(expression, sash);
 		createButtonComposite(expression, this);
+		sash.setWeights(new int[] {1,1});
 		layout(true, true);
+		validateOK();
 	}
+	
+//	protected void showExpression(IExpression expression) 
+//	{
+//		expressionText.setText(getText(expression));		
+//		createExpressionDetail(expression, this);
+//		createButtonComposite(expression, this);
+//		layout(true, true);
+//		validateOK();
+//	}
 	
 	protected void createComposite(Composite parent) 
 	{
@@ -203,8 +225,14 @@ implements IExpressionValidatorEditor
 		
 		Label messageLabel = new Label(wrapper, SWT.NONE);
 		messageLabel.setText("Message");
-		i18nTextEditor = new I18nTextEditor(wrapper);		 
+		i18nTextEditor = new I18nTextEditor(wrapper);
 		message = i18nTextEditor.getI18nText();
+		i18nTextEditor.addModifyListener(new ModifyListener(){
+			@Override
+			public void modifyText(ModifyEvent e) {
+				validateOK();
+			}
+		});
 		
 		Label validationTypeLabel = new Label(wrapper, SWT.NONE);
 		validationTypeLabel.setText("Validation Type");
@@ -220,12 +248,15 @@ implements IExpressionValidatorEditor
 				validationResultType = validationResultTypeCombo.getSelectedElement();
 			}
 		});		
- 
-		Composite treeAndTextComposite = new XComposite(parent, SWT.NONE);
+  
+		sash = new SashForm(parent, SWT.VERTICAL);
+		sash.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		Composite treeAndTextComposite = new XComposite(sash, SWT.NONE);
 		treeAndTextComposite.setLayout(new GridLayout(2, true));
 		createTreeViewer(treeAndTextComposite);
 		createExpressionText(expression, treeAndTextComposite);
-
+		
 		setExpression(expression);
 	}
 
@@ -286,8 +317,13 @@ implements IExpressionValidatorEditor
 					Composition parent = getParentForExpression(expression, composition);
 					if (parent != null) {
 						parent.replaceExpression(composition, newComposition);
-						refresh();
 					}
+					// composition is the root expression
+					else if (composition.equals(expression)) {
+						expression = newComposition;
+					}
+					refresh();
+//					showExpression(expression);
 				}
 			}
 		});
@@ -486,18 +522,29 @@ implements IExpressionValidatorEditor
 	public void setExpression(IExpression expression) 
 	{
 		this.expression = expression;		
-		if (expression != null) {
-			treeViewer.setInput(Collections.singleton(this.expression));
-			treeViewer.expandAll();			
-		}
-		showExpression(expression);
+//		if (expression != null) {
+//			treeViewer.setInput(Collections.singleton(this.expression));			
+//		}
+//		else {
+//			treeViewer.setInput(Collections.emptyList());
+//		}
+//		treeViewer.expandAll();
+//		showExpression(expression);
+		refresh();
 	}
 
 	public void refresh() 
 	{
 		ISelection oldSelection = treeViewer.getSelection();
 		showExpression(expression);
-		treeViewer.refresh();
+//		treeViewer.refresh();
+		if (expression != null) {
+			treeViewer.setInput(Collections.singleton(this.expression));	
+		}
+		else {
+			treeViewer.setInput(Collections.emptyList());	
+		}
+		treeViewer.expandAll();
 		if (oldSelection != null) {
 			treeViewer.setSelection(oldSelection, true);
 		}
@@ -533,13 +580,14 @@ implements IExpressionValidatorEditor
 		return validationResultType;
 	}
 	
-	protected void addExpressionPressed() {
-		if (addHandler != null) {
-			addHandler.addExpressionPressed();
-		}
+	protected void addExpressionPressed() 
+	{
+		addHandler.addExpressionPressed();
+		validateOK();
 	}
 	
-	protected void addCompositionPressed() {
+	protected void addCompositionPressed() 
+	{
 		String selection = conditionOperatorCombo.getItem(conditionOperatorCombo.getSelectionIndex());
 		Composition newComposition = null; 
 		if (selection.equals(AndCondition.OPERATOR_TEXT)) {
@@ -564,9 +612,14 @@ implements IExpressionValidatorEditor
 		if (selectedExpression != null) {
 			Composition parent = getParentForExpression(expression, selectedExpression);
 			if (parent != null) {
-				parent.getExpressions().remove(selectedExpression);
-				setExpression(expression);
+				parent.removeExpression(selectedExpression);
 			}
+			// the selectedExpression is the root
+			else if (selectedExpression.equals(expression)) {
+				expression = null;
+			}
+			selectedExpression = null;
+			setExpression(expression);
 		}
 	}
 	
@@ -584,5 +637,37 @@ implements IExpressionValidatorEditor
 			}
 		}
 		return null;
+	}
+	
+	protected void validateOK() 
+	{
+		String message = null;
+		
+		if (expression == null)
+			message = "There exists no expression. Please add one.";
+		
+		if (!checkExpression(expression))
+			message = "There exists an Composition with less than 2 expressions. Please add more expressions or delete it";
+		
+		if (i18nTextEditor.getEditText().isEmpty())
+			message = "The message is empty. Please provide one.";
+		
+		messageDisplayer.setMessage(message, IMessageProvider.INFORMATION);
+	}
+	
+	protected boolean checkExpression(IExpression expression) 
+	{
+		if (expression instanceof Composition) {
+			Composition composition = (Composition) expression;
+			if (composition.getExpressions().size() < 2)
+				return false;
+			
+			for (IExpression expr : composition.getExpressions()) {
+				boolean check = checkExpression(expr);
+				if (!check)
+					return check;
+			}
+		}
+		return true;
 	}
 }

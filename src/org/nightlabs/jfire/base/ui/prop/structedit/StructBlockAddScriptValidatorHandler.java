@@ -35,7 +35,7 @@ extends AbstractAddScriptValidatorHandler
 		sb.append(LINE_BREAK);
 		for (int i=0; i<structBlock.getStructFields().size(); i++) {
 			StructField<?> sf = structBlock.getStructFields().get(i);			
-			String structFieldName = sf.getName().getText();
+			String structFieldName = getStructFieldVarName(sf);
 			sb.append(structFieldName+"ID");
 			sb.append(" = ");
 			sb.append("new StructFieldID(");
@@ -50,7 +50,7 @@ extends AbstractAddScriptValidatorHandler
 		sb.append("if (");
 		for (int i=0; i<structBlock.getStructFields().size(); i++) {			
 			StructField<?> structField = structBlock.getStructFields().get(i);
-			String structFieldName = structField.getName().getText();
+			String structFieldName = getStructFieldVarName(structField);
 			sb.append(structFieldName+".isEmpty()");
 			if (i != structBlock.getStructFields().size() - 1) {
 				sb.append(" || ");
@@ -70,4 +70,8 @@ extends AbstractAddScriptValidatorHandler
 		return sb.toString();
 	}
 
+	private String getStructFieldVarName(StructField<?> sf) {
+		String name = sf.getName().getText().trim();
+		return name.replace(" ", "-");
+	}
 }

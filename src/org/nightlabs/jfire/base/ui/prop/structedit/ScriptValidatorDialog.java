@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -52,6 +53,8 @@ implements IScriptValidatorEditor
 	private Map<String, I18nValidationResult> key2ValidationResult;
 	private I18nValidationResult currentValidationResult;
 	private IAddScriptValidatorHandler addHandler;
+	private Button addTemplateButton;
+	private String message;
 	
 	/**
 	 * @param shell
@@ -78,7 +81,8 @@ implements IScriptValidatorEditor
 	{
 		setTitle("Validator Script");
 		getShell().setText("Validator Script");
-		setMessage("Edit the validator script");
+		message = "Edit the validator script";
+		setMessage(message);
 	
 		Composite wrapper = new XComposite(parent, SWT.NONE);
 		
@@ -161,7 +165,7 @@ implements IScriptValidatorEditor
 				validateOK();
 			}
 		});
-		Button addTemplateButton = new Button(wrapper, SWT.NONE);
+		addTemplateButton = new Button(wrapper, SWT.NONE);
 		addTemplateButton.setText("Add Template");
 		addTemplateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -314,13 +318,13 @@ implements IScriptValidatorEditor
 	private String getValidationText() 
 	{
 		if (keyCombo.getText().isEmpty())
-			return "No key selected";
+			return "No key selected. Please select/add a key.";
 		
 		if (i18nTextEditor.getEditText().isEmpty())
-			return "Message is empty";
+			return "Message is empty. Please provide a message.";
 		
 		if (text.getText().isEmpty())
-			return "No script provided";
+			return "No script provided. Please enter a script or press "+addTemplateButton.getText();
 		
 		return null;
 	}
@@ -328,7 +332,11 @@ implements IScriptValidatorEditor
 	private void validateOK() 
 	{
 		String validationText = getValidationText();
-		setErrorMessage(validationText);
+		if (validationText != null)
+			setMessage(validationText, IMessageProvider.INFORMATION);
+		else
+			setMessage(message);
+		
 		Button okButton = getButton(IDialogConstants.OK_ID);
 		if (okButton != null)
 			okButton.setEnabled(validationText == null);		
