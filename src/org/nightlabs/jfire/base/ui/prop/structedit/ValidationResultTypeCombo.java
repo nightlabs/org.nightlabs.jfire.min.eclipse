@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.nightlabs.base.ui.composite.XComboComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
 /**
@@ -44,11 +45,11 @@ public class ValidationResultTypeCombo extends XComboComposite<ValidationResultT
 				ValidationResultType type = (ValidationResultType) element;
 				switch (type) {
 					case ERROR:
-						return "Error";
+						return Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ValidationResultTypeCombo.error"); //$NON-NLS-1$
 					case WARNING:	
-						return "Warning";
+						return Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ValidationResultTypeCombo.warning"); //$NON-NLS-1$
 					case INFO:
-						return "Info";
+						return Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.ValidationResultTypeCombo.info"); //$NON-NLS-1$
 				}
 			}			
 			return super.getText(element);

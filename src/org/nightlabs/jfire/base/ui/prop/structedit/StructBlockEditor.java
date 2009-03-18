@@ -3,6 +3,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
+import org.nightlabs.jfire.base.ui.prop.validation.IDataChangeListener;
 import org.nightlabs.jfire.prop.StructBlock;
 
 public class StructBlockEditor extends AbstractStructPartEditor<StructBlock> {

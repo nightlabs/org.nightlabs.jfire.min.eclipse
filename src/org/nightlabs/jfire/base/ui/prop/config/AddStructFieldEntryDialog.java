@@ -24,6 +24,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructTreeComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -68,7 +69,7 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 				separatorSelected();
 			}
 		});
-		separatorType.setText("Separator");
+		separatorType.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.button.separator")); //$NON-NLS-1$
 		
 		Button structFieldReferenceType = new Button(radioGroup, SWT.RADIO);
 		structFieldReferenceType.addSelectionListener(new SelectionAdapter() {
@@ -77,7 +78,7 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 				structFieldReferenceSelected();
 			}
 		});
-		structFieldReferenceType.setText("Struct field reference");
+		structFieldReferenceType.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.button.structFieldReference")); //$NON-NLS-1$
 		structTree = new StructTreeComposite(comp, true, null);
 		structTree.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -90,8 +91,8 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 		structTree.setInput(structLocal);
 		structFieldReferenceType.setSelection(true);
 		structFieldReferenceSelected();
-		setTitle("Add new layout entry");
-		setMessage("Select either separator or a field to reference");
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.dialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.dialog.message")); //$NON-NLS-1$
 		comp.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				setOKButtonEnabled(false);
@@ -103,7 +104,7 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Add new layout entry");
+		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.window.title")); //$NON-NLS-1$
 	}
 	
 	protected void setOKButtonEnabled(boolean value) {

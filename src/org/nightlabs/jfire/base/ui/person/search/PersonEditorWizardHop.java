@@ -11,6 +11,7 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.wizard.WizardHop;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.config.ConfigUtil;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
@@ -35,7 +36,7 @@ public class PersonEditorWizardHop extends WizardHop {
 	 *
 	 */
 	public PersonEditorWizardHop() {
-		loadJob = new Job("Loading layout config module") {
+		loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditorWizardHop.job.loadLayout.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				configModule = ConfigUtil.getUserCfMod(

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.validation.ExpressionDataFieldValidator;
 import org.nightlabs.jfire.prop.validation.IDataFieldValidator;
 import org.nightlabs.jfire.prop.validation.ScriptDataFieldValidator;
@@ -36,10 +37,10 @@ extends AbstractTableComposite<IDataFieldValidator>
 			if (element instanceof IDataFieldValidator) {
 				IDataFieldValidator dataFieldValidator = (IDataFieldValidator) element;
 				if (dataFieldValidator instanceof ScriptDataFieldValidator) {
-					return "Script-Validator";
+					return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable.scriptValidator"); //$NON-NLS-1$
 				}
 				else if (dataFieldValidator instanceof ExpressionDataFieldValidator) {
-					return "Expression-Validator";
+					return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable.expressionValidator"); //$NON-NLS-1$
 				}
 			}
 			return super.getText(element);
@@ -82,7 +83,7 @@ extends AbstractTableComposite<IDataFieldValidator>
 	protected void createTableColumns(TableViewer tableViewer, Table table) 
 	{
 		TableColumn tc = new TableColumn(table, SWT.NONE);
-		tc.setText("Name");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable.table.column.name")); //$NON-NLS-1$
 //		TableLayout tl = new TableLayout();
 //		tl.addColumnData(new ColumnWeightData(1, 300, true));
 		WeightedTableLayout tl = new WeightedTableLayout(new int[] {1});

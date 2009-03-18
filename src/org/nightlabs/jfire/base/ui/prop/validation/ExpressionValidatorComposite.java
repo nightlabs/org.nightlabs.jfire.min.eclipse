@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -44,6 +44,8 @@ import org.nightlabs.jfire.base.expression.Composition;
 import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.expression.Negation;
 import org.nightlabs.jfire.base.expression.OrCondition;
+import org.nightlabs.jfire.base.ui.prop.structedit.ValidationResultTypeCombo;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -116,10 +118,10 @@ implements IExpressionValidatorEditor
 		public String getText(Object element) 
 		{
 			if (element instanceof Composition) {
-				return "Composition";
+				return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.composition"); //$NON-NLS-1$
 			}
 			else if (element instanceof IExpression) {
-				return "Expression";
+				return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.expression"); //$NON-NLS-1$
 			}
 			else {
 				return super.getText(element);	
@@ -127,8 +129,8 @@ implements IExpressionValidatorEditor
 		}
 	}
 
-	public static final String NEGATION = "!";
-	public static final String NOT_EMPTY = "NOT EMPTY";
+	public static final String NEGATION = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.negation"); //$NON-NLS-1$
+	public static final String NOT_EMPTY = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.notEmpty"); //$NON-NLS-1$
 	
 	public enum Mode 
 	{
@@ -224,7 +226,7 @@ implements IExpressionValidatorEditor
 		wrapper.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		Label messageLabel = new Label(wrapper, SWT.NONE);
-		messageLabel.setText("Message");
+		messageLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.label.message.text")); //$NON-NLS-1$
 		i18nTextEditor = new I18nTextEditor(wrapper);
 		message = i18nTextEditor.getI18nText();
 		i18nTextEditor.addModifyListener(new ModifyListener(){
@@ -235,7 +237,7 @@ implements IExpressionValidatorEditor
 		});
 		
 		Label validationTypeLabel = new Label(wrapper, SWT.NONE);
-		validationTypeLabel.setText("Validation Type");
+		validationTypeLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.label.validationType.text")); //$NON-NLS-1$
 		validationResultTypeCombo = new ValidationResultTypeCombo(wrapper, SWT.READ_ONLY | SWT.BORDER);
 		validationResultTypeCombo.selectElement(ValidationResultType.ERROR);
 		if (validationResultType != null) {
@@ -328,7 +330,7 @@ implements IExpressionValidatorEditor
 			}
 		});
 		Label amountLabel = new Label(comp, SWT.NONE);
-		amountLabel.setText("Composition Operator");
+		amountLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.label.amount.text")); //$NON-NLS-1$
 		Group expressionsComp = new Group(parent, SWT.NONE);
 		expressionsComp.setLayout(new GridLayout());
 		expressionsComp.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -347,7 +349,7 @@ implements IExpressionValidatorEditor
 	{
 		ExpandableComposite expandableComposite = new ExpandableComposite(parent, SWT.NONE);
 		expandableComposite.setLayout(new GridLayout());
-		expandableComposite.setText("Composition");
+		expandableComposite.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.composition")); //$NON-NLS-1$
 		expandableComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		Group comp = new Group(expandableComposite, SWT.NONE);
 		comp.setLayout(new GridLayout());
@@ -374,7 +376,7 @@ implements IExpressionValidatorEditor
 		comp.setLayout(layout);
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		final Combo negationCombo = new Combo(comp, SWT.READ_ONLY | SWT.BORDER);
-		negationCombo.setItems(new String[] {"", ExpressionValidatorComposite.NEGATION});
+		negationCombo.setItems(new String[] {"", ExpressionValidatorComposite.NEGATION}); //$NON-NLS-1$
 		negationCombo.select(1);
 		negationCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -400,7 +402,7 @@ implements IExpressionValidatorEditor
 		treeViewer.setLabelProvider(new LabelProvider());
 		Tree tree = treeViewer.getTree();
 		TreeColumn column = new TreeColumn(tree, SWT.NONE);
-		column.setText("Name");
+		column.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.table.column.name")); //$NON-NLS-1$
 		WeightedTableLayout layout = new WeightedTableLayout(new int[] {1});
 		tree.setLayout(layout);
 		tree.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -415,7 +417,7 @@ implements IExpressionValidatorEditor
 		buttonComp = new XComposite(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER, 4);
 		buttonComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		Button addExpression = new Button(buttonComp, SWT.NONE);
-		addExpression.setText("Add Expression");
+		addExpression.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.button.addExpression.text")); //$NON-NLS-1$
 		addExpression.addSelectionListener(new SelectionAdapter(){
 			/* (non-Javadoc)
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -426,7 +428,7 @@ implements IExpressionValidatorEditor
 			}
 		});
 		removeExpression = new Button(buttonComp, SWT.NONE);
-		removeExpression.setText("Remove Expression");
+		removeExpression.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.button.removeExpression.text")); //$NON-NLS-1$
 		removeExpression.setEnabled(false);
 		removeExpression.addSelectionListener(new SelectionAdapter(){
 			/* (non-Javadoc)
@@ -438,7 +440,7 @@ implements IExpressionValidatorEditor
 			}
 		});
 		Button addComposition = new Button(buttonComp, SWT.NONE);
-		addComposition.setText("Add Composition");
+		addComposition.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.button.addComposition.text")); //$NON-NLS-1$
 		addComposition.addSelectionListener(new SelectionAdapter() {
 			/* (non-Javadoc)
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -471,17 +473,17 @@ implements IExpressionValidatorEditor
 			{
 				Composition composition = (Composition) expression;
 				StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append("(");
+				stringBuilder.append("("); //$NON-NLS-1$
 				for (int i=0; i<composition.getExpressions().size(); i++) {
 					IExpression expr = composition.getExpressions().get(i);
 					stringBuilder.append(getText(expr));
 					if (i < composition.getExpressions().size()-1) {
-						stringBuilder.append(" ");
+						stringBuilder.append(" "); //$NON-NLS-1$
 						stringBuilder.append(composition.getOperatorText());
-						stringBuilder.append(" ");						
+						stringBuilder.append(" ");						 //$NON-NLS-1$
 					}
 				}
-				stringBuilder.append(")");
+				stringBuilder.append(")"); //$NON-NLS-1$
 				return stringBuilder.toString();
 			}
 			else if (expression instanceof DataFieldExpression<?> && struct != null) {
@@ -495,7 +497,7 @@ implements IExpressionValidatorEditor
 						String name = structField.getName().getText();
 						stringBuilder.append(name);
 						if (expression instanceof GenericDataFieldNotEmptyExpression) {
-							stringBuilder.insert(0, NOT_EMPTY + " ");
+							stringBuilder.insert(0, NOT_EMPTY + " "); //$NON-NLS-1$
 						}
 						return stringBuilder.toString();
 					} catch (Exception e) {
@@ -508,7 +510,7 @@ implements IExpressionValidatorEditor
 				Negation negation = (Negation) expression;
 				StringBuilder stringBuilder = new StringBuilder();
 				stringBuilder.append(NEGATION);
-				stringBuilder.append(" ");
+				stringBuilder.append(" "); //$NON-NLS-1$
 				stringBuilder.append(getText(negation.getExpression()));
 				return stringBuilder.toString();
 			}
@@ -516,7 +518,7 @@ implements IExpressionValidatorEditor
 				return expression.toString();	
 			}			
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 	
 	public void setExpression(IExpression expression) 
@@ -644,13 +646,13 @@ implements IExpressionValidatorEditor
 		String message = null;
 		
 		if (expression == null)
-			message = "There exists no expression. Please add one.";
+			message = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.errorMessage.noExpression"); //$NON-NLS-1$
 		
 		if (!checkExpression(expression))
-			message = "There exists an Composition with less than 2 expressions. Please add more expressions or delete it";
+			message = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.errorMessage.compositionTooSmall"); //$NON-NLS-1$
 		
 		if (i18nTextEditor.getEditText().isEmpty())
-			message = "The message is empty. Please provide one.";
+			message = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.errorMessage.messageEmpty"); //$NON-NLS-1$
 		
 		messageDisplayer.setMessage(message, IMessageProvider.INFORMATION);
 	}

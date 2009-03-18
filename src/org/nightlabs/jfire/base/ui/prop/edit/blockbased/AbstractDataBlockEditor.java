@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -160,7 +161,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 				getValidationResultManager().setValidationResults(validationResults);	
 			}
 			if (logger.isDebugEnabled()) {
-				logger.debug("Validation of of datablock "+getDataBlock()+" took "+duration+" ms!");
+				logger.debug("Validation of of datablock "+getDataBlock()+" took "+duration+" ms!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		} else {
 			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()");  //$NON-NLS-1$	

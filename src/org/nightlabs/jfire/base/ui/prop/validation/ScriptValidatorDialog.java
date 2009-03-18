@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +32,8 @@ import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jfire.base.idgenerator.IDGeneratorClient;
+import org.nightlabs.jfire.base.ui.prop.structedit.ValidationResultTypeCombo;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.validation.I18nValidationResult;
 import org.nightlabs.jfire.prop.validation.I18nValidationResultMessage;
 import org.nightlabs.jfire.prop.validation.IScriptValidator;
@@ -65,10 +67,10 @@ implements IScriptValidatorEditor
 	{
 		super(shell, resourceBundle);
 		if (scriptValidator == null)
-			throw new IllegalArgumentException("Param scriptValidator must not be null!");
+			throw new IllegalArgumentException("Param scriptValidator must not be null!"); //$NON-NLS-1$
 
 		if (handler == null)
-			throw new IllegalArgumentException("Param handler must not be null!");
+			throw new IllegalArgumentException("Param handler must not be null!"); //$NON-NLS-1$
 		
 		this.scriptValidator = scriptValidator;
 		this.addHandler = handler;
@@ -79,9 +81,9 @@ implements IScriptValidatorEditor
 	@Override
 	protected Control createDialogArea(Composite parent) 
 	{
-		setTitle("Validator Script");
-		getShell().setText("Validator Script");
-		message = "Edit the validator script";
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.dialog.title")); //$NON-NLS-1$
+		getShell().setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.window.title")); //$NON-NLS-1$
+		message = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.dialog.message"); //$NON-NLS-1$
 		setMessage(message);
 	
 		Composite wrapper = new XComposite(parent, SWT.NONE);
@@ -91,7 +93,7 @@ implements IScriptValidatorEditor
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Label keyLabel = new Label(comp, SWT.NONE);
-		keyLabel.setText("Key");
+		keyLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.label.key.text")); //$NON-NLS-1$
 		Composite keyWrapper = new XComposite(comp, SWT.NONE);
 		GridLayout layout = new GridLayout(3, false);
 		XComposite.configureLayout(LayoutMode.TIGHT_WRAPPER, layout);
@@ -111,7 +113,7 @@ implements IScriptValidatorEditor
 		});
 
 		Button addKeyButton = new Button(keyWrapper, SWT.NONE);
-		addKeyButton.setText("Add");
+		addKeyButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.button.addKey.text")); //$NON-NLS-1$
 		addKeyButton.addSelectionListener(new SelectionAdapter(){
 			/* (non-Javadoc)
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -123,7 +125,7 @@ implements IScriptValidatorEditor
 			}
 		});
 		Button removeKeyButton = new Button(keyWrapper, SWT.NONE);
-		removeKeyButton.setText("Remove");
+		removeKeyButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.button.removeKey.text")); //$NON-NLS-1$
 		removeKeyButton.addSelectionListener(new SelectionAdapter(){
 			/* (non-Javadoc)
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -136,7 +138,7 @@ implements IScriptValidatorEditor
 		});		
 		
 		Label messageLabel = new Label(comp, SWT.NONE);
-		messageLabel.setText("Message");
+		messageLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.label.message.text")); //$NON-NLS-1$
 		i18nTextEditor = new I18nTextEditor(comp);
 		i18nTextEditor.addModifyListener(new ModifyListener(){
 			@Override
@@ -146,7 +148,7 @@ implements IScriptValidatorEditor
 		});
 		
 		Label validationTypeLabel = new Label(comp, SWT.NONE);
-		validationTypeLabel.setText("Validation Type");
+		validationTypeLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.label.validationType.text")); //$NON-NLS-1$
 		validationResultTypeCombo = new ValidationResultTypeCombo(comp, SWT.READ_ONLY | SWT.BORDER);
 		validationResultTypeCombo.selectElement(ValidationResultType.ERROR);		
 		validationResultTypeCombo.addSelectionListener(new SelectionAdapter() {
@@ -166,7 +168,7 @@ implements IScriptValidatorEditor
 			}
 		});
 		addTemplateButton = new Button(wrapper, SWT.NONE);
-		addTemplateButton.setText("Add Template");
+		addTemplateButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.button.addTemplate.text")); //$NON-NLS-1$
 		addTemplateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -186,7 +188,7 @@ implements IScriptValidatorEditor
 	private void setScriptValidator(IScriptValidator scriptValidator) 
 	{
 		if (scriptValidator == null)
-			throw new IllegalArgumentException("Param scriptValidator must not be null!");
+			throw new IllegalArgumentException("Param scriptValidator must not be null!"); //$NON-NLS-1$
 		
 		this.scriptValidator = scriptValidator;
 		key2ValidationResult = new HashMap<String, I18nValidationResult>();
@@ -208,7 +210,7 @@ implements IScriptValidatorEditor
 				}
 			}
 		}
-		if (keyCombo != null && !keyCombo.getText().equals("")) {
+		if (keyCombo != null && !keyCombo.getText().equals("")) { //$NON-NLS-1$
 			selectKey(keyCombo.getText());
 		}
 		
@@ -259,13 +261,13 @@ implements IScriptValidatorEditor
 	
 	private void addKeyPressed() 
 	{
-		InputDialog dialog = new InputDialog(getShell(), "Add Key", 
-			"Add an key for validation, which must be returned from the script",
-			"", new IInputValidator(){
+		InputDialog dialog = new InputDialog(getShell(), Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.inputDialog.window.title"),  //$NON-NLS-1$
+			Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.inputDialog.message"), //$NON-NLS-1$
+			"", new IInputValidator(){ //$NON-NLS-1$
 				@Override
 				public String isValid(String newText) {
 					if (newText.isEmpty()) {
-						return "key must not be empty";
+						return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.validator.errorMessage"); //$NON-NLS-1$
 					}
 					return null;
 				}
@@ -318,13 +320,13 @@ implements IScriptValidatorEditor
 	private String getValidationText() 
 	{
 		if (keyCombo.getText().isEmpty())
-			return "No key selected. Please select/add a key.";
+			return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.errorMessage.noKey"); //$NON-NLS-1$
 		
 		if (i18nTextEditor.getEditText().isEmpty())
-			return "Message is empty. Please provide a message.";
+			return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.errorMessage.messageEmpty"); //$NON-NLS-1$
 		
 		if (text.getText().isEmpty())
-			return "No script provided. Please enter a script or press "+addTemplateButton.getText();
+			return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.errorMessage.scriptEmpty")+addTemplateButton.getText(); //$NON-NLS-1$
 		
 		return null;
 	}

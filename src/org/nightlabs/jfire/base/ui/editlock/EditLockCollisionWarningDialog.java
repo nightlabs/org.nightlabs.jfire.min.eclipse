@@ -58,8 +58,8 @@ extends ResizableTitleAreaDialog
 //		Label l = new Label(page, SWT.WRAP);
 //		l.setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.warningText")); //$NON-NLS-1$
 //		l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		getShell().setText("Edit Lock Collision");
-		setTitle("Edit Lock Collision");
+		getShell().setText(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.windowTitle")); //$NON-NLS-1$
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.dialogTitle")); //$NON-NLS-1$
 		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.editlock.EditLockCollisionWarningDialog.warningText")); //$NON-NLS-1$
 		
 		editLockTable = new EditLockTable(page, SWT.NONE);

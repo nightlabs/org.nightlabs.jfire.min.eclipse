@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 /**
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 import javax.jdo.JDOHelper;
 
@@ -14,7 +14,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.expression.IExpression;
-import org.nightlabs.jfire.base.ui.prop.structedit.ExpressionValidatorComposite.Mode;
+import org.nightlabs.jfire.base.ui.prop.structedit.StructBlockCombo;
+import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldCombo;
+import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
@@ -53,10 +56,10 @@ public class DataFieldExpressionComposite extends XComposite {
 	{
 		super(parent, style, layoutMode);
 		if (struct == null) {
-			throw new IllegalArgumentException("Param struct must not be null!");
+			throw new IllegalArgumentException("Param struct must not be null!"); //$NON-NLS-1$
 		}
 		if (expression == null) {
-			throw new IllegalArgumentException("Param expression mut not be null!");
+			throw new IllegalArgumentException("Param expression mut not be null!"); //$NON-NLS-1$
 		}
 		this.struct = struct;
 		this.liveUpdate = liveUpdate;

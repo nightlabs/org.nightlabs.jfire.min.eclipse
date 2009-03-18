@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.validation.ExpressionDataBlockValidator;
 import org.nightlabs.jfire.prop.validation.IDataBlockValidator;
 import org.nightlabs.jfire.prop.validation.ScriptDataBlockValidator;
@@ -36,10 +37,10 @@ extends AbstractTableComposite<IDataBlockValidator>
 			if (element instanceof IDataBlockValidator) {
 				IDataBlockValidator dataBlockValidator = (IDataBlockValidator) element;
 				if (dataBlockValidator instanceof ScriptDataBlockValidator) {
-					return "Script-Validator";
+					return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.DataBlockValidatorTable.scriptValidator"); //$NON-NLS-1$
 				}
 				else if (dataBlockValidator instanceof ExpressionDataBlockValidator) {
-					return "Expression-Validator";
+					return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.DataBlockValidatorTable.expressionValidator"); //$NON-NLS-1$
 				}
 			}
 			return super.getText(element);
@@ -82,7 +83,7 @@ extends AbstractTableComposite<IDataBlockValidator>
 	protected void createTableColumns(TableViewer tableViewer, Table table) 
 	{
 		TableColumn tc = new TableColumn(table, SWT.NONE);
-		tc.setText("Name");
+		tc.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.DataBlockValidatorTable.table.column.name")); //$NON-NLS-1$
 //		TableLayout tl = new TableLayout();
 //		tl.addColumnData(new ColumnWeightData(1, 300, true));
 		WeightedTableLayout tl = new WeightedTableLayout(new int[] {1});

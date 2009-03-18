@@ -29,6 +29,9 @@ import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable;
+import org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog;
+import org.nightlabs.jfire.base.ui.prop.validation.StructFieldAddScriptValidatorHandler;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.validation.IDataFieldValidator;
@@ -44,8 +47,8 @@ implements StructFieldEditor<F>
 	{
 		public AddScriptValidatorAction() {
 			super();
-			setText("Add Script Validator");
-			setToolTipText("Add an script validator to the data field");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.addScriptValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.addScriptValidator.tooltip")); //$NON-NLS-1$
 			setId(AddScriptValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
@@ -53,7 +56,7 @@ implements StructFieldEditor<F>
 		@Override
 		public void run() {
 			ScriptDataFieldValidator newValidator = new ScriptDataFieldValidator(
-					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", structField);
+					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", structField); //$NON-NLS-1$
 			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, newValidator,
 					new StructFieldAddScriptValidatorHandler(structField));
 			int returnCode = dialog.open();
@@ -75,8 +78,8 @@ implements StructFieldEditor<F>
 	{
 		public DeleteValidatorAction() {
 			super();
-			setText("Delete Validator");
-			setToolTipText("Removes the selected validator from the data field");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.removeValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.removeValidator.tooltip")); //$NON-NLS-1$
 			setId(DeleteValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.DELETE_16x16);
 		}
@@ -110,8 +113,8 @@ implements StructFieldEditor<F>
 	{
 		public EditValidatorAction() {
 			super();
-			setText("Edit Validator");
-			setToolTipText("Edits the selected validator");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.editValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.editValidator.tooltip")); //$NON-NLS-1$
 			setId(EditValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.EDIT_16x16);
 		}
@@ -193,7 +196,7 @@ implements StructFieldEditor<F>
 		errorComp = new ErrorComposite(editorGroup);
 		errorComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		ToolBarSectionPart sectionPart = new ToolBarSectionPart(new FormToolkit(editorGroup.getDisplay()), editorGroup, Section.TITLE_BAR, "Validators");
+		ToolBarSectionPart sectionPart = new ToolBarSectionPart(new FormToolkit(editorGroup.getDisplay()), editorGroup, Section.TITLE_BAR, Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.section.validators.title")); //$NON-NLS-1$
 		validatorTable = new DataFieldValidatorTable(sectionPart.getSection(), SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		validatorTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 		sectionPart.getSection().setClient(validatorTable);

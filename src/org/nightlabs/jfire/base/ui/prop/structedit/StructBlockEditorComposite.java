@@ -25,7 +25,13 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.expression.IExpression;
-import org.nightlabs.jfire.base.ui.prop.structedit.ExpressionValidatorComposite.Mode;
+import org.nightlabs.jfire.base.ui.prop.validation.DataBlockValidatorTable;
+import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog;
+import org.nightlabs.jfire.base.ui.prop.validation.IDataChangeListener;
+import org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog;
+import org.nightlabs.jfire.base.ui.prop.validation.StructBlockAddExpressionValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.StructBlockAddScriptValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.validation.ExpressionDataBlockValidator;
@@ -41,8 +47,8 @@ public class StructBlockEditorComposite extends XComposite
 	{
 		public AddScriptValidatorAction() {
 			super();
-			setText("Add Script Validator");
-			setToolTipText("Add an script validator to the data block");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.addScriptValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.addScriptValidator.tooltip")); //$NON-NLS-1$
 			setId(AddScriptValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
@@ -50,7 +56,7 @@ public class StructBlockEditorComposite extends XComposite
 		@Override
 		public void run() {
 			ScriptDataBlockValidator newValidator = new ScriptDataBlockValidator(
-					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", block);
+					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", block); //$NON-NLS-1$
 			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, 
 					newValidator, new StructBlockAddScriptValidatorHandler(block));
 			int returnCode = dialog.open();
@@ -92,8 +98,8 @@ public class StructBlockEditorComposite extends XComposite
 	{
 		public AddExpressionValidatorAction() {
 			super();
-			setText("Add Expression Validator");
-			setToolTipText("Add an expression validator to the data block");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.addExpressionValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.addExpressionValidator.tooltip")); //$NON-NLS-1$
 			setId(AddExpressionValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
@@ -141,8 +147,8 @@ public class StructBlockEditorComposite extends XComposite
 	{
 		public DeleteValidatorAction() {
 			super();
-			setText("Delete Validator");
-			setToolTipText("Removes the selected validator from the data block");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.removeValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.removeValidator.tooltip")); //$NON-NLS-1$
 			setId(DeleteValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.DELETE_16x16);
 		}
@@ -176,8 +182,8 @@ public class StructBlockEditorComposite extends XComposite
 	{
 		public EditValidatorAction() {
 			super();
-			setText("Edit Validator");
-			setToolTipText("Edits the selected validator");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.editValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.action.editValidator.tooltip")); //$NON-NLS-1$
 			setId(EditValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.EDIT_16x16);
 		}
@@ -254,7 +260,7 @@ public class StructBlockEditorComposite extends XComposite
 		uniqueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.unique.text")); //$NON-NLS-1$
 		
 		sectionPart = new ToolBarSectionPart(new FormToolkit(getDisplay()), this, Section.TITLE_BAR, 
-				"Validators");
+				Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.section.validators.title")); //$NON-NLS-1$
 		validatorTable = new DataBlockValidatorTable(sectionPart.getSection(), SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		validatorTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 		sectionPart.getSection().setClient(validatorTable);

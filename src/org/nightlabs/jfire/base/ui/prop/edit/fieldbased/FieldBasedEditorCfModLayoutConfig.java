@@ -74,7 +74,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 */
 	public void setConfigModule(PropertySetFieldBasedEditLayoutConfigModule configModule) {
 		if (configModule == null)
-			throw new IllegalArgumentException("Parameter configModule must not be null.");
+			throw new IllegalArgumentException("Parameter configModule must not be null."); //$NON-NLS-1$
 		this.configModule = configModule;
 	}
 	/*
@@ -148,7 +148,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 						if (propertySet == null)
 							return;
 						if (configModule == null)
-							throw new IllegalStateException("This instance of " + FieldBasedEditorCfModLayoutConfig.this.getClass().getName() + " does not have a config module assigned yet. Use setConfigModule() before creating the UI for this editor.");
+							throw new IllegalStateException("This instance of " + FieldBasedEditorCfModLayoutConfig.this.getClass().getName() + " does not have a config module assigned yet. Use setConfigModule() before creating the UI for this editor."); //$NON-NLS-1$ //$NON-NLS-2$
 						
 						if (!propertySet.isInflated())
 							propertySet.inflate(getPropStructure(new NullProgressMonitor()));

@@ -3,6 +3,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.EditorStructBlockRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.FullDataBlockCoverageWizardPage;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.PropertySet;
 
 /**
@@ -26,8 +27,8 @@ public class TestPropertySetWizard extends DynamicPathWizard
 	 */
 	@Override
 	public void addPages() {
-		page = new FullDataBlockCoverageWizardPage("Test Structure", 
-				"Test Structure", 
+		page = new FullDataBlockCoverageWizardPage(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.TestPropertySetWizard.page.title"),  //$NON-NLS-1$
+				Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.TestPropertySetWizard.page.message"),  //$NON-NLS-1$
 				propertySet, editorStructBlockRegistry);
 		addPage(page);
 		super.addPages();

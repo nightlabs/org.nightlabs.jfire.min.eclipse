@@ -35,6 +35,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -225,7 +226,7 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 					if (dataField != null && dataField instanceof II18nTextDataField)
 					{
 						String fieldValue = ((II18nTextDataField) dataField).getI18nText().getText();
-						text.append(fieldValue != null ? fieldValue : "");
+						text.append(fieldValue != null ? fieldValue : ""); //$NON-NLS-1$
 					}
 					text.append("  "); //$NON-NLS-1$
 				}

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.ui.prop.structedit;
+package org.nightlabs.jfire.base.ui.prop.validation;
 
 /**
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
@@ -9,5 +9,8 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
  */
 public interface IDataChangeListener 
 {
+	/**
+	 * Is called when data has changed;
+	 */
 	public void dataChanged();
 }
