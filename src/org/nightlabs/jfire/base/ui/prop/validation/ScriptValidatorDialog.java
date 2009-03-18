@@ -11,6 +11,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -292,7 +293,16 @@ implements IScriptValidatorEditor
 	private void addTemplatePressed() 
 	{
 		if (addHandler != null) {
-			addHandler.addTemplatePressed();
+			if (!text.getText().isEmpty()) {
+				boolean confirm = MessageDialog.openConfirm(getShell(), 
+						Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.overrideDialog.title"),  //$NON-NLS-1$
+						Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.overrideDialog.message")); //$NON-NLS-1$
+				if (confirm)
+					addHandler.addTemplatePressed();
+			}
+			else {
+				addHandler.addTemplatePressed();	
+			}
 		}
 	}
 	
