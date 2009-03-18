@@ -148,7 +148,6 @@ implements IExpressionValidatorEditor
 	private ValidationResultType validationResultType;
 	private IAddExpressionValidatorHandler addHandler;
 	private IExpression selectedExpression;
-//	private Combo conditionOperatorCombo;
 	private CompositionCombo conditionOperatorCombo;
 	private Button removeExpression;
 	private Button addExpression;
@@ -227,7 +226,6 @@ implements IExpressionValidatorEditor
 		Label messageLabel = new Label(wrapper, SWT.NONE);
 		messageLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.label.message.text")); //$NON-NLS-1$
 		i18nTextEditor = new I18nTextEditor(wrapper);
-		message = i18nTextEditor.getI18nText();
 		i18nTextEditor.addModifyListener(new ModifyListener(){
 			@Override
 			public void modifyText(ModifyEvent e) {
