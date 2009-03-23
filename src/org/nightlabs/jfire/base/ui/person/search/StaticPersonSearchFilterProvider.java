@@ -29,7 +29,9 @@ package org.nightlabs.jfire.base.ui.person.search;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -50,15 +52,16 @@ import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class StaticPersonSearchFilterProvider implements
-		EarlySearchFilterProvider {
-
+public class StaticPersonSearchFilterProvider 
+implements EarlySearchFilterProvider 
+{
 	private StaticPersonSearchFilterProviderComposite searchFilterProviderComposite;
 	private boolean createOwnSearchButton;
 	private boolean createFilterProviderCompositeSearchButton;
 	private XComposite wrapper;
 	private Button searchButton;
 	private SearchResultFetcher resultFetcher;
+	private ListenerList modifyListener;
 	
 	private SelectionListener searchListener = new SelectionListener() {
 		public void widgetSelected(SelectionEvent e) {
@@ -80,6 +83,7 @@ public class StaticPersonSearchFilterProvider implements
 		this.resultFetcher = resultFetcher;
 		this.createOwnSearchButton = createOwnSearchButton;
 		this.createFilterProviderCompositeSearchButton = false;
+		modifyListener = new ListenerList();
 	}
 	
 	/**
@@ -93,6 +97,7 @@ public class StaticPersonSearchFilterProvider implements
 		this.resultFetcher = resultFetcher;
 		this.createOwnSearchButton = createOwnSearchButton;
 		this.createFilterProviderCompositeSearchButton = createFilterProviderCompositeSearchButton;
+		modifyListener = new ListenerList();
 	}
 	
 	/**
@@ -102,6 +107,7 @@ public class StaticPersonSearchFilterProvider implements
 		wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		
 		searchFilterProviderComposite = new StaticPersonSearchFilterProviderComposite(wrapper, SWT.NONE, createFilterProviderCompositeSearchButton);
+		
 		if (createOwnSearchButton) {
 			searchButton = new Button(searchFilterProviderComposite, SWT.PUSH);
 			searchButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.person.search.StaticPersonSearchFilterProvider.searchButton.text")); //$NON-NLS-1$
@@ -111,10 +117,17 @@ public class StaticPersonSearchFilterProvider implements
 			gd.widthHint = 80;
 			searchButton.setLayoutData(gd);
 		}
+		
 		if (createFilterProviderCompositeSearchButton) {
 			searchFilterProviderComposite.getSearchButton().addSelectionListener(searchListener);
 		}
-			
+
+		if (!modifyListener.isEmpty()) {
+			for (Object listener : modifyListener.getListeners()) {
+				searchFilterProviderComposite.getControlName().addModifyListener((ModifyListener) listener);
+			}
+		}
+		
 		searchFilterProviderComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		return wrapper;
 	}
@@ -260,6 +273,37 @@ public class StaticPersonSearchFilterProvider implements
 	 */
 	public void setEarlySearchText(String earlySearchText) {
 		searchFilterProviderComposite.getControlName().getTextControl().setText(earlySearchText);
+	}
+	
+	@Override
+	public String getSearchText() {
+		return searchFilterProviderComposite.getControlName().getTextControl().getText();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jdo.ui.search.EarlySearchFilterProvider#addSearchTextModifyListener(org.eclipse.swt.events.ModifyListener)
+	 */
+	@Override
+	public void addSearchTextModifyListener(ModifyListener listener) {
+		if (searchFilterProviderComposite != null) {
+			searchFilterProviderComposite.getControlName().addModifyListener(listener);
+		}
+		else {
+			modifyListener.add(listener);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nightlabs.jdo.ui.search.EarlySearchFilterProvider#removeSearchTextModifyListener(org.eclipse.swt.events.ModifyListener)
+	 */
+	@Override
+	public void removeSearchTextModifyListener(ModifyListener listener) {
+		if (searchFilterProviderComposite != null) {
+			searchFilterProviderComposite.getControlName().removeModifyListener(listener);
+		}
+		else {
+			modifyListener.remove(listener);
+		}
 	}
 	
 }

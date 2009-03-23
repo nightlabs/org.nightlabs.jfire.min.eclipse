@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -58,6 +59,7 @@ import org.nightlabs.jdo.ui.search.EarlySearchFilterProvider;
 import org.nightlabs.jdo.ui.search.SearchFilterProvider;
 import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.person.search.StaticPersonSearchFilterProvider;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.PropertyManager;
 import org.nightlabs.jfire.prop.PropertyManagerHome;
@@ -402,6 +404,39 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		}
 	}
 
+	public String getSearchText() 
+	{
+		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+			if (staticTab.getFilterProvider() instanceof StaticPersonSearchFilterProvider) {
+				StaticPersonSearchFilterProvider provider = (StaticPersonSearchFilterProvider) staticTab.getFilterProvider();
+				return provider.getSearchText();
+			}
+		}
+		return null;
+	}
+	
+	public boolean addSearchTextModifyListener(ModifyListener listener) {
+		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+			if (staticTab.getFilterProvider() instanceof EarlySearchFilterProvider) {
+				EarlySearchFilterProvider provider = (EarlySearchFilterProvider) staticTab.getFilterProvider();
+				provider.addSearchTextModifyListener(listener);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean removeSearchTextModifyListener(ModifyListener listener) {
+		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+			if (staticTab.getFilterProvider() instanceof EarlySearchFilterProvider) {
+				EarlySearchFilterProvider provider = (EarlySearchFilterProvider) staticTab.getFilterProvider();
+				provider.removeSearchTextModifyListener(listener);
+				return true;
+			}
+		}
+		return false;
+	}	
+	
 	/**
 	 * Creates a Button in the given Composite that will trigger {@link #performSearch()}
 	 * when selected.
