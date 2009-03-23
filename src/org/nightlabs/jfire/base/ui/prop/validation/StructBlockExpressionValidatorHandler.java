@@ -11,12 +11,12 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public class StructBlockAddExpressionValidatorHandler 
-extends AbstractAddExpressionValidatorHandler
+public class StructBlockExpressionValidatorHandler 
+extends AbstractExpressionValidatorHandler
 {
 	private StructBlock structBlock;
 	
-	public StructBlockAddExpressionValidatorHandler(StructBlock structBlock) {
+	public StructBlockExpressionValidatorHandler(StructBlock structBlock) {
 		this.structBlock = structBlock;
 	}
 

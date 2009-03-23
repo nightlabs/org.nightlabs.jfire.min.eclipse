@@ -1,13 +1,10 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.prop.validation;
 
 /**
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public interface IAddScriptValidatorHandler 
+public interface IScriptValidatorHandler 
 {
 	/**
 	 * Returns the IScriptValidatorEditor.
@@ -25,5 +22,12 @@ public interface IAddScriptValidatorHandler
 	 * This method get called when the users presses on the add template button,
 	 * in the IScriptValidatorEditor.
 	 */
-	public void addTemplatePressed();
+	public void addTemplate();
+	
+	/**
+	 * Validates the given script.
+	 * @param script the script as string to validate
+	 * @return null if the script is ok or the error message as string.
+	 */
+	public String validateScript(String script);
 }

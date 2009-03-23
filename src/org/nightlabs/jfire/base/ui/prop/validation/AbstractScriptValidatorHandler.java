@@ -7,8 +7,8 @@ package org.nightlabs.jfire.base.ui.prop.validation;
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public abstract class AbstractAddScriptValidatorHandler 
-implements IAddScriptValidatorHandler 
+public abstract class AbstractScriptValidatorHandler 
+implements IScriptValidatorHandler 
 {
 	private IScriptValidatorEditor editor;
 	
@@ -34,7 +34,7 @@ implements IAddScriptValidatorHandler
 	 * @see org.nightlabs.jfire.base.ui.prop.structedit.IAddScriptValidatorHandler#addTemplatePressed()
 	 */
 	@Override
-	public void addTemplatePressed() {
+	public void addTemplate() {
 		getScriptValidatorEditor().setScript(getTemplateText());
 	}
 	

@@ -146,7 +146,7 @@ implements IExpressionValidatorEditor
 	private I18nText message = new I18nTextBuffer();
 	private ValidationResultTypeCombo validationResultTypeCombo;
 	private ValidationResultType validationResultType;
-	private IAddExpressionValidatorHandler addHandler;
+	private IExpressionValidatorHandler addHandler;
 	private IExpression selectedExpression;
 	private CompositionCombo conditionOperatorCombo;
 	private Button removeExpression;
@@ -166,7 +166,7 @@ implements IExpressionValidatorEditor
 	 * @param style
 	 */
 	public ExpressionValidatorComposite(Composite parent, int style, IExpression expression,
-			IStruct struct, IAddExpressionValidatorHandler handler, Mode mode, IErrorMessageDisplayer messageDisplayer) 
+			IStruct struct, IExpressionValidatorHandler handler, Mode mode, IErrorMessageDisplayer messageDisplayer) 
 	{	
 		super(parent, style);
 		assert struct != null;

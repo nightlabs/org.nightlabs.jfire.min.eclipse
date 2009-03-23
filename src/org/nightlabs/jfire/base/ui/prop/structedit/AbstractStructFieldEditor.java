@@ -34,8 +34,8 @@ import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog;
 import org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog;
-import org.nightlabs.jfire.base.ui.prop.validation.StructFieldAddExpressionValidatorHandler;
-import org.nightlabs.jfire.base.ui.prop.validation.StructFieldAddScriptValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.StructFieldExpressionValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.StructFieldScriptValidatorHandler;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructField;
@@ -64,14 +64,14 @@ implements StructFieldEditor<F>
 		
 		@Override
 		public void run() {
-			ScriptDataFieldValidator newValidator = new ScriptDataFieldValidator(
+			ScriptDataFieldValidator<?, ?> newValidator = new ScriptDataFieldValidator(
 					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", structField); //$NON-NLS-1$
 			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, newValidator,
-					new StructFieldAddScriptValidatorHandler(structField));
+					new StructFieldScriptValidatorHandler(structField));
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
-				IScriptValidator scriptValidator = dialog.getScriptValidator();
-				ScriptDataFieldValidator validator = new ScriptDataFieldValidator(
+				IScriptValidator<?, ?> scriptValidator = dialog.getScriptValidator();
+				ScriptDataFieldValidator<?, ?> validator = new ScriptDataFieldValidator(
 						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, scriptValidator.getScript(), structField);
 				for (String key : scriptValidator.getValidationResultKeys()) {
 					validator.addValidationResult(key, scriptValidator.getValidationResult(key));
@@ -87,8 +87,8 @@ implements StructFieldEditor<F>
 	{
 		public AddExpressionValidatorAction() {
 			super();
-			setText("Add Expression Validator");
-			setToolTipText("Add an expression based valdidator");
+			setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.addExpressionValidator.text")); //$NON-NLS-1$
+			setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.action.addExpressionValidator.tooltip")); //$NON-NLS-1$
 			setId(AddExpressionValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
@@ -96,7 +96,7 @@ implements StructFieldEditor<F>
 		@Override
 		public void run() {
 			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null, 
-					getStructEditor().getStruct(), new StructFieldAddExpressionValidatorHandler(getStructField()), 
+					getStructEditor().getStruct(), new StructFieldExpressionValidatorHandler(getStructField()), 
 					Mode.STRUCT_FIELD) ;
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
@@ -143,7 +143,7 @@ implements StructFieldEditor<F>
 
 		@Override
 		public void run() {
-			IDataFieldValidator validator = (IDataFieldValidator) getSelectedObjects().get(0);
+			IDataFieldValidator<?, ?> validator = (IDataFieldValidator<?, ?>) getSelectedObjects().get(0);
 			structField.removeDataFieldValidator(validator);
 			validatorTable.refresh();
 			setChanged();
@@ -178,11 +178,11 @@ implements StructFieldEditor<F>
 
 		@Override
 		public void run() {
-			IDataFieldValidator validator = (IDataFieldValidator) getSelectedObjects().get(0);
+			IDataFieldValidator<?, ?> validator = (IDataFieldValidator<?, ?>) getSelectedObjects().get(0);
 			if (validator instanceof IScriptValidator) {
-				ScriptDataFieldValidator scriptValidator = (ScriptDataFieldValidator) validator;
+				ScriptDataFieldValidator<?, ?> scriptValidator = (ScriptDataFieldValidator<?, ?>) validator;
 				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, scriptValidator,
-						new StructFieldAddScriptValidatorHandler(structField));
+						new StructFieldScriptValidatorHandler(structField));
 				int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
 //					scriptValidator.setScript(dialog.getScript());
@@ -193,7 +193,7 @@ implements StructFieldEditor<F>
 			if (validator instanceof IExpressionValidator) {
 				IExpressionValidator expressionValidator = (IExpressionValidator) validator;
 				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(), 
-						getStructEditor().getStruct(), new StructFieldAddExpressionValidatorHandler(getStructField()), Mode.STRUCT_FIELD);
+						getStructEditor().getStruct(), new StructFieldExpressionValidatorHandler(getStructField()), Mode.STRUCT_FIELD);
 				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
 				dialog.setValidationResultType(expressionValidator.getValidationResult().getResultType());
 				int returnCode = dialog.open();

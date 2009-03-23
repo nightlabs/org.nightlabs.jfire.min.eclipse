@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
@@ -52,19 +53,20 @@ implements IScriptValidatorEditor
 	private I18nTextEditor i18nTextEditor;
 	private ValidationResultTypeCombo validationResultTypeCombo;
 	private Combo keyCombo;
-	private IScriptValidator scriptValidator;
+	private IScriptValidator<?, ?> scriptValidator;
 	private Map<String, I18nValidationResult> key2ValidationResult;
 	private I18nValidationResult currentValidationResult;
-	private IAddScriptValidatorHandler addHandler;
+	private IScriptValidatorHandler scriptHandler;
 	private Button addTemplateButton;
 	private String message;
+	private Button validateScriptButton;
 	
 	/**
 	 * @param shell
 	 * @param resourceBundle
 	 */
 	public ScriptValidatorDialog(Shell shell, ResourceBundle resourceBundle, 
-			IScriptValidator scriptValidator, IAddScriptValidatorHandler handler) 
+			IScriptValidator<?, ?> scriptValidator, IScriptValidatorHandler handler) 
 	{
 		super(shell, resourceBundle);
 		if (scriptValidator == null)
@@ -74,8 +76,8 @@ implements IScriptValidatorEditor
 			throw new IllegalArgumentException("Param handler must not be null!"); //$NON-NLS-1$
 		
 		this.scriptValidator = scriptValidator;
-		this.addHandler = handler;
-		addHandler.setScriptValidatorEditor(this);
+		this.scriptHandler = handler;
+		scriptHandler.setScriptValidatorEditor(this);
 		key2ValidationResult = new HashMap<String, I18nValidationResult>();
 	}
 	
@@ -168,7 +170,9 @@ implements IScriptValidatorEditor
 				validateOK();
 			}
 		});
-		addTemplateButton = new Button(wrapper, SWT.NONE);
+		
+		Composite buttonComp = new XComposite(wrapper, SWT.NONE,  LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
+		addTemplateButton = new Button(buttonComp, SWT.NONE);
 		addTemplateButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.button.addTemplate.text")); //$NON-NLS-1$
 		addTemplateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -176,17 +180,25 @@ implements IScriptValidatorEditor
 				addTemplatePressed();
 			}
 		});			
+		validateScriptButton = new Button(buttonComp, SWT.NONE);
+		validateScriptButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.validateScriptButton.text")); //$NON-NLS-1$
+		validateScriptButton.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				validateScriptPressed();
+			}
+		});
 		
 		setScriptValidator(scriptValidator);
 		
 		return wrapper;
 	}
 
-	public IScriptValidator getScriptValidator() {
+	public IScriptValidator<?, ?> getScriptValidator() {
 		return scriptValidator;
 	}
 	
-	private void setScriptValidator(IScriptValidator scriptValidator) 
+	private void setScriptValidator(IScriptValidator<?, ?> scriptValidator) 
 	{
 		if (scriptValidator == null)
 			throw new IllegalArgumentException("Param scriptValidator must not be null!"); //$NON-NLS-1$
@@ -197,8 +209,8 @@ implements IScriptValidatorEditor
 		if (scriptValidator.getValidationResultKeys().size() > 0) 
 		{
 			if (keyCombo != null) {
-				keyCombo.setItems(scriptValidator.getValidationResultKeys().toArray(
-						new String[scriptValidator.getValidationResultKeys().size()]));
+				String[] items = scriptValidator.getValidationResultKeys().toArray(new String[scriptValidator.getValidationResultKeys().size()]);
+				keyCombo.setItems(items);
 				keyCombo.select(0);
 			}
 			for (String key : scriptValidator.getValidationResultKeys()) {
@@ -292,16 +304,16 @@ implements IScriptValidatorEditor
 	
 	private void addTemplatePressed() 
 	{
-		if (addHandler != null) {
+		if (scriptHandler != null) {
 			if (!text.getText().isEmpty()) {
 				boolean confirm = MessageDialog.openConfirm(getShell(), 
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.overrideDialog.title"),  //$NON-NLS-1$
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.overrideDialog.message")); //$NON-NLS-1$
 				if (confirm)
-					addHandler.addTemplatePressed();
+					scriptHandler.addTemplate();
 			}
 			else {
-				addHandler.addTemplatePressed();	
+				scriptHandler.addTemplate();	
 			}
 		}
 	}
@@ -338,6 +350,10 @@ implements IScriptValidatorEditor
 		if (text.getText().isEmpty())
 			return Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.errorMessage.scriptEmpty")+addTemplateButton.getText(); //$NON-NLS-1$
 		
+//		String message = scriptHandler.validateScript(getScript());
+//		if (message != null)
+//			return "Script is not valid. Please press "+validateScriptButton.getText()+" for more details.";
+			
 		return null;
 	}
 	
@@ -359,4 +375,23 @@ implements IScriptValidatorEditor
 		super.createButtonsForButtonBar(parent);
 		validateOK();
 	}
+
+	private void validateScriptPressed() 
+	{
+		String message = scriptHandler.validateScript(getScript());
+		if (message == null)
+			MessageDialog.openInformation(getShell(), Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.dialog.valid.title"), Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.dialog.valid.message")); //$NON-NLS-1$ //$NON-NLS-2$
+		else 
+			MessageDialog.openError(getShell(), Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog.dialog.invalid.title"), message); //$NON-NLS-1$
+	}
+
+//	private transient ScriptEngine scriptEngine;
+//	private ScriptEngine getJavaScriptEngine() {
+//		if (scriptEngine == null) {
+//		    ScriptEngineManager mgr = new ScriptEngineManager(); 
+//		    ScriptEngine jsEngine = mgr.getEngineByName("JavaScript");
+//		    scriptEngine = jsEngine;
+//		}
+//		return scriptEngine;
+//	}
 }

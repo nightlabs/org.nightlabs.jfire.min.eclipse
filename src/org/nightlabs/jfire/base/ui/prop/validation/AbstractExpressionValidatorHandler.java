@@ -12,8 +12,8 @@ import org.nightlabs.jfire.prop.validation.GenericDataFieldNotEmptyExpression;
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public abstract class AbstractAddExpressionValidatorHandler 
-implements IAddExpressionValidatorHandler 
+public abstract class AbstractExpressionValidatorHandler 
+implements IExpressionValidatorHandler 
 {
 	private IExpressionValidatorEditor expressionValidatorEditor;
 	

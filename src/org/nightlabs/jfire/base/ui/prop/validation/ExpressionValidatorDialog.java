@@ -31,7 +31,7 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 	private I18nText message;
 	private ValidationResultType validationResultType;
 	private IStruct struct;
-	private IAddExpressionValidatorHandler handler;
+	private IExpressionValidatorHandler handler;
 	private Mode mode;
 	private String dialogMessage;
 	
@@ -40,7 +40,7 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 	 * @param resourceBundle
 	 */
 	public ExpressionValidatorDialog(Shell shell, ResourceBundle resourceBundle, IExpression expression,
-			IStruct struct, IAddExpressionValidatorHandler handler, Mode mode) 
+			IStruct struct, IExpressionValidatorHandler handler, Mode mode) 
 	{
 		super(shell, resourceBundle);
 		this.expression = expression;

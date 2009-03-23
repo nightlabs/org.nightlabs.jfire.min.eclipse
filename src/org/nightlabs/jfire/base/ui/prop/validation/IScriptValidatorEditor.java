@@ -17,7 +17,7 @@ public interface IScriptValidatorEditor
 	 * Returns the edited {@link IScriptValidator}.
 	 * @return the edited {@link IScriptValidator}
 	 */
-	public IScriptValidator getScriptValidator();
+	public IScriptValidator<?, ?> getScriptValidator();
 	
 	/**
 	 * Returns the current selected ValidationResultKey of the {@link IScriptValidator}.

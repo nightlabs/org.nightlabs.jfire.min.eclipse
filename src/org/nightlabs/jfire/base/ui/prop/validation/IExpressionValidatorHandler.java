@@ -7,7 +7,7 @@ package org.nightlabs.jfire.base.ui.prop.validation;
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public interface IAddExpressionValidatorHandler 
+public interface IExpressionValidatorHandler 
 {
 	/**
 	 * Sets the {@link IExpressionValidatorEditor}.

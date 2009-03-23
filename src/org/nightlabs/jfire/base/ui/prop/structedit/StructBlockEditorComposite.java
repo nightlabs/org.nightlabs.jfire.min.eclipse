@@ -29,8 +29,8 @@ import org.nightlabs.jfire.base.ui.prop.validation.DataBlockValidatorTable;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog;
 import org.nightlabs.jfire.base.ui.prop.validation.IDataChangeListener;
 import org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog;
-import org.nightlabs.jfire.base.ui.prop.validation.StructBlockAddExpressionValidatorHandler;
-import org.nightlabs.jfire.base.ui.prop.validation.StructBlockAddScriptValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.StructBlockExpressionValidatorHandler;
+import org.nightlabs.jfire.base.ui.prop.validation.StructBlockScriptValidatorHandler;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.StructBlock;
@@ -58,10 +58,10 @@ public class StructBlockEditorComposite extends XComposite
 			ScriptDataBlockValidator newValidator = new ScriptDataBlockValidator(
 					ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, "", block); //$NON-NLS-1$
 			ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, 
-					newValidator, new StructBlockAddScriptValidatorHandler(block));
+					newValidator, new StructBlockScriptValidatorHandler(block));
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
-				IScriptValidator scriptValidator = dialog.getScriptValidator();
+				IScriptValidator<?, ?> scriptValidator = dialog.getScriptValidator();
 				ScriptDataBlockValidator validator = new ScriptDataBlockValidator(
 						ScriptDataBlockValidator.SCRIPT_ENGINE_NAME, scriptValidator.getScript(), block);
 				for (String key : scriptValidator.getValidationResultKeys()) {
@@ -107,7 +107,7 @@ public class StructBlockEditorComposite extends XComposite
 		@Override
 		public void run() {
 			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null, 
-					block.getStruct(), new StructBlockAddExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
+					block.getStruct(), new StructBlockExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
 				IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
@@ -210,7 +210,7 @@ public class StructBlockEditorComposite extends XComposite
 			if (validator instanceof IScriptValidator) {
 				ScriptDataBlockValidator scriptValidator = (ScriptDataBlockValidator) validator;
 				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, scriptValidator,
-						new StructBlockAddScriptValidatorHandler(block));
+						new StructBlockScriptValidatorHandler(block));
 				int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
 //					scriptValidator.setScript(dialog.getScript());
@@ -221,7 +221,7 @@ public class StructBlockEditorComposite extends XComposite
 			if (validator instanceof IExpressionValidator) {
 				IExpressionValidator expressionValidator = (IExpressionValidator) validator;
 				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(), 
-						block.getStruct(), new StructBlockAddExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
+						block.getStruct(), new StructBlockExpressionValidatorHandler(block), Mode.STRUCT_BLOCK) ;
 				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
 				dialog.setValidationResultType(expressionValidator.getValidationResult().getResultType());
 				int returnCode = dialog.open();

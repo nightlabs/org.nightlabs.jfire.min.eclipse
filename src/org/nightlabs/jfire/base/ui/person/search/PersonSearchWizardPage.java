@@ -223,7 +223,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 						StructField<?> sf = part.getStructField();
 						String suffix = part.getStructFieldSuffix();
 						String firstPart = null;
-						if (suffix.equals("")) {
+						if (suffix.equals("")) { //$NON-NLS-1$
 							firstPart = quickSearchText;
 						}
 						else {
@@ -235,7 +235,7 @@ public class PersonSearchWizardPage extends WizardHopPage {
 									StringBuilder sb = new StringBuilder();
 									sb.append(firstPart);
 									sb.append(suffix);
-									quickSearchText = quickSearchText.replace(sb.toString(), "");
+									quickSearchText = quickSearchText.replace(sb.toString(), ""); //$NON-NLS-1$
 								}
 							}							
 						}

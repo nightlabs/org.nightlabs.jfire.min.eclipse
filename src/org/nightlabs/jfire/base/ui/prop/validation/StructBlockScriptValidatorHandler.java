@@ -1,18 +1,27 @@
 package org.nightlabs.jfire.base.ui.prop.validation;
 
+import org.nightlabs.jfire.base.idgenerator.IDGeneratorClient;
+import org.nightlabs.jfire.prop.DataBlock;
+import org.nightlabs.jfire.prop.DataBlockGroup;
+import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
+import org.nightlabs.jfire.prop.StructLocal;
+import org.nightlabs.jfire.prop.exception.DataBlockGroupNotFoundException;
+import org.nightlabs.jfire.prop.validation.IScriptValidator;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public class StructBlockAddScriptValidatorHandler 
-extends AbstractAddScriptValidatorHandler 
+public class StructBlockScriptValidatorHandler 
+extends AbstractScriptValidatorHandler 
 {
 	private StructBlock structBlock;
 	
-	public StructBlockAddScriptValidatorHandler(StructBlock structBlock) 
+	public StructBlockScriptValidatorHandler(StructBlock structBlock) 
 	{
 		if (structBlock == null)
 			throw new IllegalArgumentException("Param structBlock muts not be null!");
@@ -73,5 +82,45 @@ extends AbstractAddScriptValidatorHandler
 	private String getStructFieldVarName(StructField<?> sf) {
 		String name = sf.getName().getText().trim();
 		return name.replace(" ", "-");
+	}
+	
+	@Override
+	public String validateScript(String script) 
+	{
+		IScriptValidator validator = getScriptValidatorEditor().getScriptValidator();
+		String oldScript = validator.getScript();
+		IStruct struct = structBlock.getStruct();
+		try {
+			validator.setScript(script);
+			if (struct instanceof StructLocal) 
+			{
+				StructLocal structLocal = (StructLocal) struct; 
+				PropertySet propertySet = new PropertySet(IDGeneratorClient.getOrganisationID(), 
+						IDGeneratorClient.nextID(PropertySet.class), structLocal);
+				propertySet.inflate(struct);
+				DataBlockGroup dataBlockGroup;
+				try {
+					dataBlockGroup = propertySet.getDataBlockGroup(structBlock.getIDObj());
+					if (dataBlockGroup != null && !dataBlockGroup.isEmpty()) {
+						DataBlock dataBlock = dataBlockGroup.getDataBlocks().iterator().next();
+						ValidationResult result = validator.validate(dataBlock, structBlock);
+						if (result == null) {
+							return "result is null";
+						}
+						return null;
+					}
+					else {
+						return "DataBlockGroup is empty";
+					}
+				} catch (DataBlockGroupNotFoundException e) {
+					return e.getMessage();
+				}
+			}
+			else {
+				return "Struct is no StructLocal";	
+			}			
+		} finally {
+			validator.setScript(oldScript);
+		}
 	}
 }
