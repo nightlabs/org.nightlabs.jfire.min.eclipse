@@ -140,7 +140,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 		 * The filter send to the server.
 		 * Changed the initialisation of this field to be done lazily, otherwise subclasses won't be
 		 * able to override the #createJDOLifecycleListenerFilter() properly (The constructor of the
-		 * subclass has been executed before #createJDOLifecycleListenerFilter() is called). 
+		 * subclass has been executed before #createJDOLifecycleListenerFilter() is called).
 		 */
 		private IJDOLifecycleListenerFilter lifecycleListenerFilter;
 
@@ -171,6 +171,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				}
 
 				if (!jdoObjectIDsToLoad.isEmpty()) {
+					// Note: retrieveJDOObjects might not return all objects to the given Collection.
 					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMontitorWrapper());
 					loadedJDOObjects = jdoObjects;
 					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
@@ -360,7 +361,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				{
 					public void run()
 					{
-						fireJDOObjectsChangedEvent(jdoObjects, null, null);
+						fireJDOObjectsChangedEvent(getJDOObjects(), null, null);
 					}
 				});
 
@@ -381,13 +382,13 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 	public void clearCache()
 	{
 		assertOpen();
-		
+
 		synchronized (jdoObjectID2jdoObjectMutex)
 		{
 			JDOLifecycleManager.sharedInstance().removeLifecycleListener(lifecycleListener);
 			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), notificationListener);
 			listenersExist = false;
-			
+
 			jdoObjectID2jdoObject.clear();
 			jdoObjects = null;
 		}

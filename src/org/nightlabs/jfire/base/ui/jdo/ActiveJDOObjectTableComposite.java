@@ -58,11 +58,11 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 			input.add(element);
 		}
 	}
-	
+
 	private ActiveJDOObjectController<JDOObjectID, JDOObject> controller;
-	
+
 	private ListenerList tableListeners = new ListenerList();
-	
+
 	public ActiveJDOObjectTableComposite(Composite parent, int style) {
 		super(parent, style);
 	}
@@ -72,7 +72,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	}
 
 	protected abstract ActiveJDOObjectController<JDOObjectID, JDOObject> createActiveJDOObjectController();
-	
+
 	protected ActiveJDOObjectController<JDOObjectID, JDOObject> getActiveJDOObjectController() {
 		if (controller == null) {
 			controller = createActiveJDOObjectController();
@@ -80,7 +80,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 		}
 		return controller;
 	}
-	
+
 	protected abstract ITableLabelProvider createLabelProvider();
 
 	/**
@@ -96,6 +96,18 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 
 	private ContentProvider getContentProvider() {
 		return (ContentProvider) getTableViewer().getContentProvider();
+	}
+
+	/**
+	 * You might override this method in order to provide a consistent filtering of modified objects
+	 * according to the remote filter defined by the {@link ActiveJDOObjectController#createJDOLifecycleListenerFilter()}.
+	 *
+	 * @param loadedObject the object that is currently considered
+	 * @return <code>true</code> iff the given object shall not be displayed.
+	 */
+	protected boolean filter(JDOObject loadedObject)
+	{
+		return false;
 	}
 
 	/**
@@ -123,7 +135,15 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 							} else {
 								for (JDOObject loadedObject : loadedObjects) {
 									if (getContentProvider().containsElement(loadedObject)) {
-										getTableViewer().refresh(loadedObject, true);
+										if (filter(loadedObject))
+										{
+											getTableViewer().remove(loadedObject);
+											fireElementRemovedEvent();
+										}
+										else
+										{
+											getTableViewer().refresh(loadedObject, true);
+										}
 									} else {
 										getTableViewer().add(loadedObject);
 										getContentProvider().add(loadedObject);
@@ -167,7 +187,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 
 		controller.getJDOObjects();
 	}
-	
+
 	/**
 	 * Will cause this table to load its contents
 	 * via the {@link ActiveJDOObjectController}.
@@ -175,26 +195,26 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	public void load() {
 		getActiveJDOObjectController().getJDOObjects();
 	}
-	
+
 	protected void fireSetInputEvent() {
 		for (Object listener : tableListeners.getListeners())
 			((ActiveJDOObjectTableListener) listener).inputSet();
 	}
-	
+
 	protected void fireElementAddedEvent() {
 		for (Object listener : tableListeners.getListeners())
 			((ActiveJDOObjectTableListener) listener).elementAdded();
 	}
-	
+
 	protected void fireElementRemovedEvent() {
 		for (Object listener : tableListeners.getListeners())
 			((ActiveJDOObjectTableListener) listener).elementRemoved();
 	}
-	
+
 	public void addTableListener(ActiveJDOObjectTableListener listener) {
 		tableListeners.add(listener);
 	}
-	
+
 	public void removeTableListener(ActiveJDOObjectTableListener listener) {
 		tableListeners.add(listener);
 	}
