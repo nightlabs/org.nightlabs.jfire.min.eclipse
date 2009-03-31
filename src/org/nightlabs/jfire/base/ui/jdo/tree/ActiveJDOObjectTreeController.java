@@ -76,6 +76,10 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	protected abstract Collection<JDOObject> retrieveJDOObjects(Set<JDOObjectID> objectIDs, IProgressMonitor monitor);
 
+	/**
+	 * Creates a subclass of {@link JDOObjectTreeNode} which represents the node object of the active tree.
+	 * @return the subclass of {@link JDOObjectTreeNode} for this ActiveJDOObjectTreeController.
+	 */
 	protected abstract TreeNode createNode();
 
 	/**
@@ -85,14 +89,12 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	protected abstract void sortJDOObjects(List<JDOObject> objects);
 
-//	private List<TreeNode> rootElements = null;
 	/**
 	 * This pseudo-node is used to hold the real root elements. Its creation is synchronized via {@link #objectID2TreeNode} - ensuring
 	 * it is not created twice.
 	 */
 	private TreeNode hiddenRootNode = null;
 
-//	private Map<JDOObjectID, TreeNode> objectID2TreeNode = Collections.synchronizedMap(new HashMap<JDOObjectID, TreeNode>());
 	private Map<JDOObjectID, TreeNode> objectID2TreeNode = new HashMap<JDOObjectID, TreeNode>();
 
 	/**
@@ -126,12 +128,6 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	protected abstract Class<? extends JDOObject> getJDOObjectClass();
 	
-//	private JDOObject obj = null;
-//	protected <T extends JDOObject> Class<T> _getJDOObjectClass() {
-//		obj.getClass()
-//	}
-	
-
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
 	 * track new objects that are children of one of the objects referenced by
@@ -708,7 +704,10 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 				l.onJDOObjectsChanged(changedEvent);
 			}
 		}
-		
+	}
+	
+	protected TreeNode getTreeNode(JDOObjectID jdoObjectID) {
+		return objectID2TreeNode.get(jdoObjectID);
 	}
 
 }
