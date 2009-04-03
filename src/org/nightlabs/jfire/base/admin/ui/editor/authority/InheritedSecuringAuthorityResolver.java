@@ -32,7 +32,7 @@ public interface InheritedSecuringAuthorityResolver {
 	 * which will be used to determine whether the securing authority was inherited.
 	 * <p>
 	 * Note, that after the authority assignment has been stored, this information might have
-	 * changed on the server and the information is re-retrieve using this method.
+	 * changed on the server and the information is re-retrieved using this method.
 	 * Your implementation should not values itself, it should rather relay on the {@link Cache}.
 	 * </p>
 	 * @param monitor The monitor to report progress.
