@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.search;
 
@@ -22,11 +22,11 @@ extends AbstractSelectionZoneActionHandler
 {
 	@Override
 	public void run() {
-		Collection selectedObjects = getSearchResultProvider().getSelectedObjects();
+		Collection<?> selectedObjects = getSearchResultProvider().getSelectedObjects();
 		if (selectedObjects != null) {
 			Collection<ObjectID> selectedObjectIDs = new ArrayList<ObjectID>();
 			// before use NLJDOHelper.getObjectIDSet check if maybe already ObjectIDs are contained
-			for (Iterator it = selectedObjects.iterator(); it.hasNext(); ) {
+			for (Iterator<?> it = selectedObjects.iterator(); it.hasNext(); ) {
 				Object o = it.next();
 				if (o instanceof ObjectID) {
 					selectedObjectIDs.add((ObjectID)o);
@@ -35,7 +35,7 @@ extends AbstractSelectionZoneActionHandler
 			if (selectedObjectIDs.isEmpty()) {
 				selectedObjectIDs = NLJDOHelper.getObjectIDSet(selectedObjects);
 			}
-			Collection<Class> subjectClassesToClear = new ArrayList<Class>();
+			Collection<Class<?>> subjectClassesToClear = new ArrayList<Class<?>>();
 			subjectClassesToClear.add(getSearchResultProvider().getFactory().getResultTypeClass());
 			if (selectedObjects != null) {
 				SelectionManager.sharedInstance().notify(new NotificationEvent(

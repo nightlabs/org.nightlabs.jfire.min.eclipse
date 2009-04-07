@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -79,9 +78,7 @@ public class SelectionNotificationProxy implements ISelectionChangedListener
 		this.clearOnEmptySelection = clearOnEmptySelection;
 	}
 
-	private Set<Class> managedClasses = new HashSet<Class>();
-
-	private static final List EMPTY_LIST = Collections.unmodifiableList(new LinkedList<Class>());
+	private Set<Class<?>> managedClasses = new HashSet<Class<?>>();
 
 	public void selectionChanged(SelectionChangedEvent event)
 	{
@@ -90,14 +87,14 @@ public class SelectionNotificationProxy implements ISelectionChangedListener
 			// we clean the selection for our zone and for all classes that we have learned about so far
 			if (clearOnEmptySelection && !managedClasses.isEmpty())
 				SelectionManager.sharedInstance().notify(
-						new NotificationEvent(source, zone, EMPTY_LIST, managedClasses));
+						new NotificationEvent(source, zone, Collections.emptyList(), managedClasses));
 		}
 		else {
 			NotificationEvent e;
 			if(selection instanceof IStructuredSelection)
 			{
 				List<Object> subjects = new ArrayList<Object>();
-				Iterator i = ((IStructuredSelection)selection).iterator();
+				Iterator<?> i = ((IStructuredSelection)selection).iterator();
 				while(i.hasNext())
 				{
 					Object o = i.next();
