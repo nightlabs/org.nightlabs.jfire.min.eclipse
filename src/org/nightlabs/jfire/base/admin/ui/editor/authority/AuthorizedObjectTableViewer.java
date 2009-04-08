@@ -20,6 +20,8 @@ import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorizedObject;
+import org.nightlabs.jfire.security.UserLocal;
+import org.nightlabs.jfire.security.UserSecurityGroup;
 
 public class AuthorizedObjectTableViewer extends TableViewer
 {
@@ -39,7 +41,16 @@ public class AuthorizedObjectTableViewer extends TableViewer
 			Map.Entry<AuthorizedObject, Boolean> me = (Map.Entry<AuthorizedObject, Boolean>)element;
 			switch(columnIndex) {
 				case 0: return getCheckBoxImage(me.getValue());
-				case 1:return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), AuthorizedObjectLabelProvider.class);
+				case 1:
+					AuthorizedObject authorizedObject = me.getKey();
+					if (authorizedObject instanceof UserSecurityGroup) {
+						return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), 
+								AuthorizedObjectLabelProvider.class, "UserSecurityGroup");	//$NON-NLS-1$						
+					}
+					else if (authorizedObject instanceof UserLocal) {
+						return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), 
+								AuthorizedObjectLabelProvider.class);	//$NON-NLS-1$
+					}
 				default: return null;
 			}
 		}
