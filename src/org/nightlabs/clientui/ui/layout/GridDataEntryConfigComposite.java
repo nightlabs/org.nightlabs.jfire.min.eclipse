@@ -127,7 +127,7 @@ public class GridDataEntryConfigComposite extends XComposite {
 		
 		Label spanVerticalLabel = new Label(this, SWT.NONE);
 		spanVerticalLabel.setLayoutData(createGridData());
-		spanVerticalLabel.setText("Horz.");
+		spanVerticalLabel.setText("Vert.");
 		
 		spanHorizontalText = new Text(this, getBorderStyle());
 		spanHorizontalText.setLayoutData(createGridData());
@@ -160,26 +160,28 @@ public class GridDataEntryConfigComposite extends XComposite {
 		if (!isDisposed()) {
 			getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					updating = true;
-					try {
-						if (GridDataEntryConfigComposite.this.gridDataEntry == null) {
-							fillHorizontalCB.setSelection(false);
-							fillVerticalCB.setSelection(false);
-							grabHorizontalCB.setSelection(false);
-							grabVerticalCB.setSelection(false);
-							setEnabled(false);
-						} else {
-							setEnabled(true);
-							GridData entry = GridDataEntryConfigComposite.this.gridDataEntry.getGridData();
-							fillHorizontalCB.setSelection((entry.getHorizontalAlignment() & GridData.FILL) > 0);
-							fillVerticalCB.setSelection((entry.getVerticalAlignment() & GridData.FILL) > 0);
-							grabHorizontalCB.setSelection(entry.isGrabExcessHorizontalSpace());
-							grabVerticalCB.setSelection(entry.isGrabExcessVerticalSpace());
-							spanHorizontalText.setText(String.valueOf(entry.getHorizontalSpan()));
-							spanVerticalText.setText(String.valueOf(entry.getVerticalSpan()));
+					if (!isDisposed()) {
+						updating = true;
+						try {
+							if (GridDataEntryConfigComposite.this.gridDataEntry == null) {
+								fillHorizontalCB.setSelection(false);
+								fillVerticalCB.setSelection(false);
+								grabHorizontalCB.setSelection(false);
+								grabVerticalCB.setSelection(false);
+								setEnabled(false);
+							} else {
+								setEnabled(true);
+								GridData entry = GridDataEntryConfigComposite.this.gridDataEntry.getGridData();
+								fillHorizontalCB.setSelection((entry.getHorizontalAlignment() & GridData.FILL) > 0);
+								fillVerticalCB.setSelection((entry.getVerticalAlignment() & GridData.FILL) > 0);
+								grabHorizontalCB.setSelection(entry.isGrabExcessHorizontalSpace());
+								grabVerticalCB.setSelection(entry.isGrabExcessVerticalSpace());
+								spanHorizontalText.setText(String.valueOf(entry.getHorizontalSpan()));
+								spanVerticalText.setText(String.valueOf(entry.getVerticalSpan()));
+							}
+						} finally {
+							updating = false;
 						}
-					} finally {
-						updating = false;
 					}
 				}
 			});
