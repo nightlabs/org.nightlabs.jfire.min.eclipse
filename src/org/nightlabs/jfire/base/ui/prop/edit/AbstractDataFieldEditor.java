@@ -26,9 +26,7 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.events.ModifyEvent;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -93,12 +91,14 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		this.struct = struct;
 		try  {
 			setDataField(data);
-			if (getControl() != null && !getControl().isDisposed())
-				refresh();
 		} finally {
 			refreshing = false;
 		}
+		if (getControl() != null && !getControl().isDisposed())
+			refresh();
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getDataField()
@@ -140,7 +140,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		}
 	}
 
-	private Collection<DataFieldEditorChangedListener> changeListener = new LinkedList<DataFieldEditorChangedListener>();
+	private ListenerList changeListener = new ListenerList();
 
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
@@ -161,8 +161,10 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	protected synchronized void notifyChangeListeners() {
 		// TODO: Rewrite to noitfy listener asynchronously
 		DataFieldEditorChangedEvent evt = new DataFieldEditorChangedEvent(this);
-		for (DataFieldEditorChangedListener listener : changeListener)
-			listener.dataFieldEditorChanged(evt);
+		Object[] listeners = changeListener.getListeners();
+		for (Object listener : listeners) {
+			((DataFieldEditorChangedListener) listener).dataFieldEditorChanged(evt);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -231,7 +233,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	 * Get the struct.
 	 * @return the struct
 	 */
-	protected IStruct getStruct() {
+	public IStruct getStruct() {
 		return struct;
 	}
 

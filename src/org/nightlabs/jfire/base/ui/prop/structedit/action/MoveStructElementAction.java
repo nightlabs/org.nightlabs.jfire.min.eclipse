@@ -56,7 +56,7 @@ public class MoveStructElementAction
 		
 		if (selectedNode instanceof StructBlockNode) {
 			final StructBlock movingBlock = ((StructBlockNode) selectedNode).getBlock();
-			structLocal.moveStructBlockInOrder(movingBlock.getIDObj(), orderMoveDirection);
+			structLocal.moveStructBlockInOrder(movingBlock.getStructBlockIDObj(), orderMoveDirection);
 		} else if (selectedNode instanceof StructFieldNode) {
 			StructFieldNode fieldNode = (StructFieldNode) selectedNode;
 			final StructField<? extends DataField> movingField = fieldNode.getField();

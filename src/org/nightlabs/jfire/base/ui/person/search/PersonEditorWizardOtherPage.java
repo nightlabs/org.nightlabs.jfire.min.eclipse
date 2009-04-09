@@ -51,6 +51,7 @@ extends FullDataBlockCoverageWizardPage
 			PAGE_NAME,
 			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditorWizardOtherPage.title"), //$NON-NLS-1$
 			person,
+			true,
 			null
 		);
 		setImageDescriptor(
@@ -58,6 +59,4 @@ extends FullDataBlockCoverageWizardPage
 						JFireBasePlugin.getDefault(),
 						PersonEditorWizardOtherPage.class, null, SharedImages.ImageDimension._75x70));
 	}
-
-
 }

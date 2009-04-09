@@ -40,10 +40,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.prop.DataBlockGroup;
+import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.id.StructBlockID;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * A PropertySetEditor based on PropStructBlocks/PropDataBlocks.
@@ -78,7 +81,7 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 	private PropertySet prop;
 	private EditorStructBlockRegistry structBlockRegistry;
 
-	private IValidationResultManager validationResultManager;
+	private IValidationResultHandler validationResultHandler;
 
 	/**
 	 * Sets the current propertySet of this editor.
@@ -377,11 +380,30 @@ public class ExpandableBlocksEditor implements PropertySetEditor { // extends Sc
 		}
 	}
 
-	public void setValidationResultManager(IValidationResultManager validationResultManager) {
-		this.validationResultManager = validationResultManager;
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#setValidationResultHandler(org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler)
+	 */
+	@Override
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
+		validate();
 	}
 
-	public IValidationResultManager getValidationResultManager() {
-		return validationResultManager;
+	public IValidationResultHandler getValidationResultManager() {
+		return validationResultHandler;
+	}
+	
+	@Override
+	public List<ValidationResult> validate() {
+		if (getProp() != null) {
+			IStruct structure = getProp().getStructure(); // FIXME: This does not work when deflated
+			List<ValidationResult> validationResults = getProp().validate(structure);
+			if (validationResultHandler != null) 
+				validationResultHandler.handleValidationResults(validationResults);
+			return validationResults;
+		} else {
+			return null;
+		}
 	}
 }

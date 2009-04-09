@@ -58,7 +58,7 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 	public IWizardHopPage addWizardPage(StructBlockID[] structBlockIDs, String name, String title, String message, ImageDescriptor image) {
 		WizardHopPage page = null;
 		if (structBlockIDs == null || structBlockIDs.length == 0) {
-			page = new FullDataBlockCoverageWizardPage(name, title, propertySet, editorStructBlockRegistry);
+			page = new FullDataBlockCoverageWizardPage(name, title, propertySet, false, editorStructBlockRegistry);
 
 			if (getEntryPage() == null)
 				((FullDataBlockCoverageWizardPage) page).markPristine();

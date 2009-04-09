@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.fieldbased;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -44,6 +45,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditorChangedListener;
 import org.nightlabs.jfire.base.ui.resource.Messages;
@@ -53,6 +55,7 @@ import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.exception.DataNotFoundException;
 import org.nightlabs.jfire.prop.id.StructFieldID;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -69,6 +72,18 @@ public class FieldBasedEditor implements PropertySetEditor {
 	public static final Logger LOGGER = Logger.getLogger(FieldBasedEditor.class);
 
 	public static final String EDITORTYPE_FIELD_BASED = "field-based"; //$NON-NLS-1$
+
+	private XComposite editorWrapper;
+//	private Color wrapperSelectedColor = new Color(Display.getDefault(), 155, 155, 155);
+//	private Color wrapperNormalColor;
+
+	private XComposite editorComposite;
+
+//	private boolean selectionCallback = false;
+
+	private PropertySet propertySet;
+	
+	private IValidationResultHandler validationResultHandler;
 
 	/**
 	 *
@@ -94,8 +109,6 @@ public class FieldBasedEditor implements PropertySetEditor {
 	public void setEditorType(String editorType) {
 		this.editorType = editorType;
 	}
-
-	private PropertySet propertySet;
 
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#setProp(org.nightlabs.jfire.base.ui.prop.Property)
@@ -128,14 +141,6 @@ public class FieldBasedEditor implements PropertySetEditor {
 	public void setShowEmptyFields(boolean showEmptyFields) {
 		this.showEmptyFields = showEmptyFields;
 	}
-
-	private XComposite editorWrapper;
-//	private Color wrapperSelectedColor = new Color(Display.getDefault(), 155, 155, 155);
-//	private Color wrapperNormalColor;
-
-	private XComposite editorComposite;
-
-//	private boolean selectionCallback = false;
 
 
 	/**
@@ -335,10 +340,43 @@ public class FieldBasedEditor implements PropertySetEditor {
 		return structure;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#updatePropertySet()
+	 */
 	@Override
 	public void updatePropertySet() {
 		for (DataFieldEditor<DataField> editor : fieldEditors.values()) {
 			editor.updatePropertySet();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#setValidationResultHandler(org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler)
+	 */
+	@Override
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
+		validate();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#validate()
+	 */
+	@Override
+	public List<ValidationResult> validate() {
+		if (propertySet != null) {
+			IStruct structure = getPropStructure(new NullProgressMonitor());
+			List<ValidationResult> validationResults = propertySet.validate(structure);
+			if (validationResultHandler != null) {
+				validationResultHandler.handleValidationResults(validationResults);
+			}
+			return validationResults;
+		} else {
+			return null;
+		}
+	}
+	
 }

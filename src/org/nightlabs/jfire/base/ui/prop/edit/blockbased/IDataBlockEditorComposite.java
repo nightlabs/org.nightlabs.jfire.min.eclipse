@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.events.DisposeListener;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -34,9 +35,9 @@ public interface IDataBlockEditorComposite {
 
 	/**
 	 * 
-	 * @param validationResultManager
+	 * @param validationResultHandler The {@link IValidationResultHandler} to set.
 	 */
-	void setValidationResultManager(IValidationResultManager validationResultManager);
+	void setValidationResultHandler(IValidationResultHandler validationResultHandler);
 
 	/**
 	 * Add the given listener that will be notified of changes in the UI.

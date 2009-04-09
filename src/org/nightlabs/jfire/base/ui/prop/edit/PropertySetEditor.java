@@ -26,9 +26,12 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
  * A interface for common methods of all {@link PropertySet} editors, either
@@ -89,7 +92,7 @@ public interface PropertySetEditor {
 	public void disposeControl();
 	
 	/**
-	 * Refresh the UI representation.
+	 * Refresh the UI representation and perform a validation.
 	 * Implementors should refresh on the GUI-Thread to avoid
 	 * InvalidThreadAccessExceptions.
 	 */
@@ -100,4 +103,33 @@ public interface PropertySetEditor {
 	 * is associated with.
 	 */
 	public void updatePropertySet();
+	
+	/**
+	 * Set the {@link IValidationResultHandler} that should be invoked
+	 * with the validation-results when this editor validates its {@link PropertySet}.
+	 * <p>
+	 * A {@link PropertySetEditor} should perform a validation and report to the given
+	 * handler when it is set and a {@link PropertySet} for editing is present.
+	 * </p>
+	 * <p>
+	 * A {@link PropertySetEditor} should validate the {@link PropertySet} it edits whenever
+	 * the user changes the data, so calls to {@link #validate()} are usually not
+	 * required.
+	 * </p>  
+	 * @param validationResultHandler The handler to set.
+	 */
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler);
+
+	/**
+	 * Performs a validation of the currently edited {@link PropertySet} and
+	 * invokes the {@link ValidationResultHandler} currently set.
+	 * <p>
+	 * Note that calls to this method are usually not necessary as a user change or
+	 * a call to {@link #refreshControl()} triggers a validation that will report
+	 * to the {@link ValidationResultHandler} set.
+	 * </p>
+	 * 
+	 * @return The validation results, might be <code>null</code> when no validation results were found.
+	 */
+	public List<ValidationResult> validate();
 }

@@ -27,7 +27,9 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
@@ -50,6 +52,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentComposite;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentProvider;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
@@ -60,6 +63,7 @@ import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.exception.DataBlockGroupNotFoundException;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -108,7 +112,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 		@Override
 		public Composite createGroupContent(Composite parent) {
-			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultManager);
+			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultHandler);
 			if (changeListenerProxy != null)
 				groupEditor.addDataBlockEditorChangedListener(changeListenerProxy);
 			if (this.blockGroup != null) {
@@ -136,11 +140,18 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				groupEditor.updatePropertySet();
 			}
 		}
+		
+		/**
+		 * @return The {@link DataBlockGroupEditor} created by this provider.
+		 */
+		public DataBlockGroupEditor getGroupEditor() {
+			return groupEditor;
+		}
 	}
 
 	/**
 	 * One instance of this class is held per {@link BlockBasedEditor} and will
-	 * be added as {@link DataBlockEditorChangedListener} to each editor created.
+	 * be added as {@link DataBlockEditorChangedListener} to eachGroup editor created.
 	 * It will forward all notifications to the listeners that have been added
 	 * to the {@link BlockBasedEditor} by {@link BlockBasedEditor#addChangeListener(DataBlockEditorChangedListener)}.
 	 */
@@ -203,13 +214,13 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	/**
 	 * Stores the {@link ContentProvider} with the DataBlock-key as key.
 	 */
-	private Map<String, ContentProvider> groupContentProvider = new HashMap<String, ContentProvider>();
+	private Map<String, ContentProvider> groupContentProviders = new HashMap<String, ContentProvider>();
 	/**
 	 * Used to track whether the editor is currently refreshing.
 	 */
 	private boolean refreshing = false;
 
-	private IValidationResultManager validationResultManager;
+	private IValidationResultHandler validationResultHandler;
 
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
@@ -250,16 +261,16 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 					for (StructBlock structBlock : getOrderedStructBlocks()) {
 						DataBlockGroup blockGroup = null;
 						try {
-							blockGroup = propertySet.getDataBlockGroup(structBlock.getIDObj());
+							blockGroup = propertySet.getDataBlockGroup(structBlock.getStructBlockIDObj());
 						} catch (DataBlockGroupNotFoundException e) {
-							throw new IllegalStateException("Could not find DataBlockGroup for " + structBlock.getIDObj() + " in PropertySet although inflated just before."); //$NON-NLS-1$ //$NON-NLS-2$
+							throw new IllegalStateException("Could not find DataBlockGroup for " + structBlock.getStructBlockIDObj() + " in PropertySet although inflated just before."); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 						if (shouldDisplayStructBlock(blockGroup)) {
-							ContentProvider contentProvider = groupContentProvider.get(blockGroup.getStructBlockKey());
+							ContentProvider contentProvider = groupContentProviders.get(blockGroup.getStructBlockKey());
 							if (contentProvider == null) {
 								// If we have to create the ContentProvider it will do a refresh when constructed.
 								contentProvider = new ContentProvider(blockGroup, propertySet.getStructure());
-								groupContentProvider.put(blockGroup.getStructBlockKey(), contentProvider);
+								groupContentProviders.put(blockGroup.getStructBlockKey(), contentProvider);
 								groupedContentComposite.addGroupedContentProvider(contentProvider);
 							} else {
 								// if the provider for this blockGroup was already
@@ -404,7 +415,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 */
 	@Override
 	public void updatePropertySet() {
-		for (ContentProvider contentProvider : groupContentProvider.values()) {
+		for (ContentProvider contentProvider : groupContentProviders.values()) {
 			contentProvider.updateProp();
 		}
 		updateDisplayName();
@@ -450,23 +461,42 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 	}
 
-	/**
-	 * Set the {@link IValidationResultManager} that will be used to
-	 * report validation results to the user.
-	 *
-	 * @param validationResultManager The manager to set.
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#setValidationResultHandler(org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler)
 	 */
-	public void setValidationResultManager(IValidationResultManager validationResultManager) {
-		this.validationResultManager = validationResultManager;
+	@Override
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
+		validate();
 	}
 
 	/**
-	 * Get the {@link IValidationResultManager} that is used by this
+	 * Get the {@link IValidationResultHandler} that is used by this
 	 * {@link BlockBasedEditor} to report validation results to the user.
 	 *
-	 * @return The {@link IValidationResultManager} of this {@link BlockBasedEditor} or, <code>null</code> if none is set.
+	 * @return The {@link IValidationResultHandler} of this {@link BlockBasedEditor} or, <code>null</code> if none is set.
 	 */
-	public IValidationResultManager getValidationResultManager() {
-		return validationResultManager;
+	public IValidationResultHandler getValidationResultManager() {
+		return validationResultHandler;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#validate()
+	 */
+	@Override
+	public List<ValidationResult> validate() {
+		if (getPropertySet() != null && groupedContentComposite != null) {
+			IStruct structure = getStructure(new NullProgressMonitor());
+			ContentProvider provider = (ContentProvider) groupedContentComposite.getSelectedContentProvider();
+			List<StructBlock> blocksOfInterest = Collections.singletonList(provider.getGroupEditor().getDataBlockGroup().getStructBlock(structure));
+			List<ValidationResult> validationResults = getPropertySet().validate(structure, null, blocksOfInterest, false);
+			if (validationResultHandler != null)
+				validationResultHandler.handleValidationResults(validationResults);
+			return validationResults;
+		} else {
+			return null;
+		}
 	}
 }

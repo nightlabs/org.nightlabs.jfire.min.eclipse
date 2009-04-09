@@ -100,7 +100,7 @@ extends AbstractScriptValidatorHandler
 				propertySet.inflate(struct);
 				DataBlockGroup dataBlockGroup;
 				try {
-					dataBlockGroup = propertySet.getDataBlockGroup(structBlock.getIDObj());
+					dataBlockGroup = propertySet.getDataBlockGroup(structBlock.getStructBlockIDObj());
 					if (dataBlockGroup != null && !dataBlockGroup.isEmpty()) {
 						DataBlock dataBlock = dataBlockGroup.getDataBlocks().iterator().next();
 						ValidationResult result = validator.validate(dataBlock, structBlock);

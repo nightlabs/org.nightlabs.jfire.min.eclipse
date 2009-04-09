@@ -109,6 +109,13 @@ public interface DataFieldEditor<F extends DataField> {
 	 * @return the {@link StructField} that corresponds to the currently managed {@link DataField}.
 	 */
 	StructField<F> getStructField();
+	
+	/**
+	 * Returns the {@link IStruct} this editor operates on (set in {@link #setData(IStruct, DataField)}).
+	 * 
+	 * @return The {@link IStruct} this editor operates
+	 */
+	IStruct getStruct();
 
 	/**
 	 * Refresh the control with the data currently set.

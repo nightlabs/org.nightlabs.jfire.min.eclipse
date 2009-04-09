@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
@@ -57,22 +58,22 @@ import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
 public class DataBlockGroupEditor
 extends XComposite
 {
-	private DataBlockGroup blockGroup;
+	private DataBlockGroup dataBlockGroup;
 
 	private IStruct struct;
 
 	private List<Composite> blockComposites = new LinkedList<Composite>();
 
-	private IValidationResultManager validationResultManager;
+	private IValidationResultHandler validationResultHandler;
 
 	public DataBlockGroupEditor(
 			IStruct struct,
 			DataBlockGroup blockGroup,
 			Composite parent,
-			IValidationResultManager validationResultManager
+			IValidationResultHandler validationResultHandler
 	) {
 		super(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
-		this.blockGroup = blockGroup;
+		this.dataBlockGroup = blockGroup;
 
 		scrolledComposite = new ScrolledComposite(this, SWT.V_SCROLL);
 		scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -81,7 +82,7 @@ extends XComposite
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
 
-		this.validationResultManager = validationResultManager;
+		this.validationResultHandler = validationResultHandler;
 
 		refresh(struct, blockGroup);
 	}
@@ -92,7 +93,7 @@ extends XComposite
 	private List<DataBlockEditor> dataBlockEditors = new LinkedList<DataBlockEditor>();
 
 	public void refresh(IStruct struct, DataBlockGroup blockGroup) {
-		this.blockGroup = blockGroup;
+		this.dataBlockGroup = blockGroup;
 		this.struct = struct;
 		createDataBlockEditors(struct, content);
 		scrolledComposite.setMinSize(content.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -104,7 +105,7 @@ extends XComposite
 
 	
 	protected void createDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
-		if (blockGroup.getDataBlocks().size() == dataBlockEditors.size()) {
+		if (dataBlockGroup.getDataBlocks().size() == dataBlockEditors.size()) {
 			updateBlockEditors(_struct, wrapperComp);
 		} else {
 			reCreateDataBlockEditors(_struct, wrapperComp);
@@ -118,7 +119,7 @@ extends XComposite
 		dataBlockEditors.clear();
 		blockComposites.clear();
 
-		List<DataBlock> dataBlocks = blockGroup.getDataBlocks();
+		List<DataBlock> dataBlocks = dataBlockGroup.getDataBlocks();
 		for (int i = 0; i < dataBlocks.size(); i++) {
 			DataBlock dataBlock = dataBlocks.get(i);
 			Composite wrapper = new XComposite(wrapperComp, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA, 2);
@@ -145,10 +146,10 @@ extends XComposite
 					notifyChangeListeners(dataBlockEditorChangedEvent);
 				}
 			});
-			blockEditor.setValidationResultManager(validationResultManager);
+			blockEditor.setValidationResultManager(validationResultHandler);
 			dataBlockEditors.add(blockEditor);
 
-			if (! _struct.getStructBlock(blockGroup).isUnique()) {
+			if (! _struct.getStructBlock(dataBlockGroup).isUnique()) {
 				AddOrRemoveDataBlockGroupComposite manager = new AddOrRemoveDataBlockGroupComposite(wrapper, dataBlock, i);
 				manager.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 				manager.setListener(new AddOrRemoveDataBlockGroupComposite.Listener() {
@@ -157,8 +158,8 @@ extends XComposite
 							for (DataBlockEditor editor : dataBlockEditors)
 								editor.updatePropertySet();
 
-							blockGroup.addDataBlock(_struct.getStructBlock(blockGroup), index);
-							refresh(struct, blockGroup);
+							dataBlockGroup.addDataBlock(_struct.getStructBlock(dataBlockGroup), index);
+							refresh(struct, dataBlockGroup);
 						} catch (DataBlockUniqueException e) {
 							e.printStackTrace();
 						}
@@ -168,15 +169,15 @@ extends XComposite
 							for (DataBlockEditor editor : dataBlockEditors)
 								editor.updatePropertySet();
 
-							blockGroup.removeDataBlock(block);
-							refresh(struct, blockGroup);
+							dataBlockGroup.removeDataBlock(block);
+							refresh(struct, dataBlockGroup);
 						} catch (DataBlockRemovalException e) {
 							e.printStackTrace();
 						}
 					}
 				});
 
-				if (blockGroup.getDataBlocks().size() == 1) {
+				if (dataBlockGroup.getDataBlocks().size() == 1) {
 					manager.getRemoveButton().setEnabled(false);
 				}
 			}
@@ -184,7 +185,7 @@ extends XComposite
 	}
 	
 	protected void updateBlockEditors(final IStruct _struct, Composite wrapperComp) {
-		List<DataBlock> dataBlocks = blockGroup.getDataBlocks();
+		List<DataBlock> dataBlocks = dataBlockGroup.getDataBlocks();
 		for (int i = 0; i < dataBlocks.size(); i++) {
 			DataBlock dataBlock = dataBlocks.get(i);
 			dataBlockEditors.get(i).setData(_struct, dataBlock);
@@ -235,4 +236,10 @@ extends XComposite
 		return struct;
 	}
 
+	/**
+	 * @return The {@link DataBlockGroup} currently edited.
+	 */
+	public DataBlockGroup getDataBlockGroup() {
+		return dataBlockGroup;
+	}
 }

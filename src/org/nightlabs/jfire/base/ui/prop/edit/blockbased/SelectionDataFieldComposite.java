@@ -93,6 +93,9 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 				fieldValueCombo.removeSelectionChangedListener(selectionChangedListener);
 			}
 		});
+		if (editor.getDataField() != null) {
+			refresh();
+		}
 	}
 
 	@Override

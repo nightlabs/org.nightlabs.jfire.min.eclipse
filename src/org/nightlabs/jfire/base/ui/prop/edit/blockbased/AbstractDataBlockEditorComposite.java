@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
@@ -113,7 +114,7 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
 			if (getValidationResultManager() != null)
-				getValidationResultManager().setValidationResults(validationResults);
+				getValidationResultManager().handleValidationResults(validationResults);
 		}
 	};
 	
@@ -268,16 +269,16 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 		return dataBlockEditor;
 	}
 
-	private IValidationResultManager validationResultManager;
+	private IValidationResultHandler validationResultHandler;
 
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#setValidationResultManager(org.nightlabs.jfire.base.ui.prop.edit.blockbased.IValidationResultManager)
 	 */
-	public void setValidationResultManager(IValidationResultManager validationResultManager) {
-		this.validationResultManager = validationResultManager;
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
 	}
 
-	public IValidationResultManager getValidationResultManager() {
-		return validationResultManager;
+	public IValidationResultHandler getValidationResultManager() {
+		return validationResultHandler;
 	}
 }

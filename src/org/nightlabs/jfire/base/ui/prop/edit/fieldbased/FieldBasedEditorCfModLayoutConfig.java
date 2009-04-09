@@ -4,9 +4,12 @@
 package org.nightlabs.jfire.base.ui.prop.edit.fieldbased;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -16,21 +19,27 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.clientui.ui.layout.GridLayoutUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactoryRegistry;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorNotFoundException;
+import org.nightlabs.jfire.base.ui.prop.edit.DisplayNameEditComposite;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.exception.DataNotFoundException;
 import org.nightlabs.jfire.prop.id.StructFieldID;
+import org.nightlabs.jfire.prop.validation.ValidationResult;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -43,19 +52,40 @@ import org.nightlabs.progress.ProgressMonitor;
 public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 
 	public static final Logger LOGGER = Logger.getLogger(FieldBasedEditorCfModLayoutConfig.class);
+
+	private boolean showDisplayNameEdit;
+	private DisplayNameEditComposite displayNameEditComposite;
 	
 	private PropertySetFieldBasedEditLayoutConfigModule configModule;
 	private PropertySet propertySet;
 	private Map<StructFieldID, DataFieldEditor<DataField>> fieldEditors = new HashMap<StructFieldID, DataFieldEditor<DataField>>();
+	private Composite wrapper;
 	private Composite editorWrapper;
 	private String editorType = FieldBasedEditor.EDITORTYPE_FIELD_BASED;
 	
+	private ListenerList fieldEditorChangedListeners = new ListenerList(); 
+	
+	private IValidationResultHandler validationResultHandler;
+	
+	private List<StructField<?>> displayedStructFieldIDs = new LinkedList<StructField<?>>();
+	
 	/**
 	 * Constructs a new {@link FieldBasedEditorCfModLayoutConfig} that reads its configuration
-	 * from the given config module. 
+	 * from the given config module.
+	 * @param configModule The config module this editor can read its layout from
+	 * @param showDisplayNameEdit Whether this editor should show a control where the user can edit the display-name of the property-set 
 	 */
-	public FieldBasedEditorCfModLayoutConfig(PropertySetFieldBasedEditLayoutConfigModule configModule) {
+	public FieldBasedEditorCfModLayoutConfig(PropertySetFieldBasedEditLayoutConfigModule configModule, boolean showDisplayNameEdit) {
+		this.showDisplayNameEdit = showDisplayNameEdit;
 		setConfigModule(configModule);
+		addDataFieldEditorChangedListener(new DataFieldEditorChangedListener() {
+
+			@Override
+			public void dataFieldEditorChanged(DataFieldEditorChangedEvent event) {
+				event.getDataFieldEditor().getDataField().validate(event.getDataFieldEditor().getStruct());
+			}
+			
+		});
 	}
 	
 	/**
@@ -63,7 +93,8 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 * Note, that in order to use that editor you have to set the config module it can
 	 * read is configuration from (see {@link #setConfigModule(PropertySetFieldBasedEditLayoutConfigModule)}).   
 	 */
-	public FieldBasedEditorCfModLayoutConfig() {
+	public FieldBasedEditorCfModLayoutConfig(boolean showDisplayNameEdit) {
+		this.showDisplayNameEdit = showDisplayNameEdit;
 	}
 	
 	/**
@@ -84,8 +115,25 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	@Override
 	public Control createControl(Composite parent, boolean refresh) {
 		if (editorWrapper == null) {
+			wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE);
 			
-			editorWrapper = new XComposite(parent, SWT.NONE, LayoutDataMode.NONE);
+			if (showDisplayNameEdit) {
+				displayNameEditComposite = new DisplayNameEditComposite(wrapper, SWT.NONE);
+				displayNameEditComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				// add the listener that will update the display name control
+				addDataFieldEditorChangedListener(new DataFieldEditorChangedListener() {
+					@Override
+					public void dataFieldEditorChanged(
+							DataFieldEditorChangedEvent dataFieldEditorChangedEvent) {
+						dataFieldEditorChangedEvent.getDataFieldEditor().updatePropertySet();
+						displayNameEditComposite.refresh();
+						
+						validate();
+					}
+				});
+			}
+			
+			editorWrapper = new XComposite(wrapper, SWT.NONE);
 			
 			GridLayout gridLayout = GridLayoutUtil.createGridLayout(configModule.getGridLayout());
 			if (gridLayout == null)
@@ -96,9 +144,9 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 		if (refresh)
 			refreshControl();
 		
-		return editorWrapper;
+		return wrapper;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#disposeControl()
@@ -187,6 +235,12 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 										if (editorGD != null)
 											editorControl.setLayoutData(editorGD);
 										fieldEditors.put(structFieldID, editor);
+										addListenersToEditor(editor); // add all listeners already registered to the new editor
+										try {
+											StructField<? extends DataField> structField = propertySet.getStructure().getStructField(structFieldID);
+											displayedStructFieldIDs.add(structField);
+										} catch (Exception e) {
+										}
 									} else {
 										editor = fieldEditors.get(structFieldID);
 									}
@@ -204,6 +258,10 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 									editor.setData(propertySet.getStructure(), getDataField(structFieldID));
 								}
 							}
+						}
+						
+						if (displayNameEditComposite != null) {
+							displayNameEditComposite.setPropertySet(getPropertySet(), true);
 						}
 					}
 				}
@@ -225,7 +283,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 */
 	@Override
 	public void setPropertySet(PropertySet propertySet) {
-		this.propertySet = propertySet;
+		setPropertySet(propertySet, false);
 	}
 
 	/*
@@ -234,11 +292,23 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 */
 	@Override
 	public void setPropertySet(PropertySet propSet, boolean refresh) {
-		setPropertySet(propSet);
-		if (refresh)
+		this.propertySet = propSet;
+		if (!refresh && displayNameEditComposite != null) {
+			displayNameEditComposite.setPropertySet(propertySet, false);
+		}
+		if (refresh) {
 			refreshControl();
+		}
 	}
 
+	/**
+	 * Get the {@link PropertySet} currently edited by this editor.
+	 * @return The {@link PropertySet} currently edited by this editor.
+	 */
+	public PropertySet getPropertySet() {
+		return propertySet;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#updatePropertySet()
@@ -248,6 +318,18 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 		for (DataFieldEditor<DataField> fieldEditor : fieldEditors.values()) {
 			fieldEditor.updatePropertySet();
 		}
+		if (displayNameEditComposite != null) {
+			displayNameEditComposite.updatePropertySet();
+		}
+	}
+
+	private void addListenersToEditor(DataFieldEditor<DataField> editor) {
+		Object[] listeners = fieldEditorChangedListeners.getListeners();
+		for (Object listener : listeners) {
+			if (listener instanceof DataFieldEditorChangedListener) {
+				editor.addDataFieldEditorChangedListener((DataFieldEditorChangedListener) listener);
+			}
+		}
 	}
 	
 	// TODO: These need to be in the interface, implementation should also add the listener to new editors
@@ -256,10 +338,34 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 		for (DataFieldEditor<DataField> editor : fieldEditors.values()) {
 			editor.addDataFieldEditorChangedListener(listener);
 		}
+		fieldEditorChangedListeners.add(listener);
 	}
+	
 	public void removeDataFieldEditorChangedListener(DataFieldEditorChangedListener listener) {
 		for (DataFieldEditor<DataField> editor : fieldEditors.values()) {
 			editor.removeDataFieldEditorChangedListener(listener);
+		}
+		fieldEditorChangedListeners.remove(listener);
+	}
+	
+	@Override
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
+	}
+	
+	@Override
+	public List<ValidationResult> validate() {
+		if (getPropertySet() != null) {
+			List<ValidationResult> validationResults = getPropertySet().validate(
+					getPropStructure(new NullProgressMonitor()),
+					displayedStructFieldIDs, null, false
+			);
+			if (validationResultHandler != null) {
+				validationResultHandler.handleValidationResults(validationResults);
+			}
+			return validationResults;
+		} else {
+			return null;
 		}
 	}
 }

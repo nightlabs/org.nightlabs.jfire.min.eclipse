@@ -14,10 +14,12 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.clientui.layout.GridData;
 import org.nightlabs.clientui.layout.GridLayout;
@@ -29,13 +31,11 @@ import org.nightlabs.i18n.StaticI18nText;
 import org.nightlabs.jfire.base.ui.config.AbstractUserConfigModulePreferencePage;
 import org.nightlabs.jfire.base.ui.config.IConfigModuleController;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
-import org.nightlabs.jfire.organisation.Organisation;
-import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditConstants;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
+import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutUseCase;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 import org.nightlabs.jfire.prop.id.StructLocalID;
@@ -199,31 +199,15 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	private GridLayoutConfigComposite configComposite;
 	
 	private StructLocalID structLocalID;
+	private PropertySetFieldBasedEditLayoutUseCase editLayoutUseCase;
+	
 	
 	/**
 	 * 
 	 */
-	public PropertySetFieldBasedEditLayoutPreferencePage() {
-		setStructLocalID(StructLocalID.create(
-				Organisation.DEV_ORGANISATION_ID, 
-				Person.class.getName(), 
-				org.nightlabs.jfire.prop.Struct.DEFAULT_SCOPE, StructLocal.DEFAULT_SCOPE));
-	}
-
-	/**
-	 * @param title
-	 */
-	public PropertySetFieldBasedEditLayoutPreferencePage(String title) {
-		super(title);
-	}
-
-	/**
-	 * @param title
-	 * @param image
-	 */
-	public PropertySetFieldBasedEditLayoutPreferencePage(String title,
-			ImageDescriptor image) {
-		super(title, image);
+	public PropertySetFieldBasedEditLayoutPreferencePage(PropertySetFieldBasedEditLayoutUseCase editLayoutUseCase) {
+		setStructLocalID(editLayoutUseCase.getStructLocalID());
+		this.editLayoutUseCase = editLayoutUseCase;
 	}
 
 	public void setStructLocalID(StructLocalID structLocalID) {
@@ -232,12 +216,13 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	
 	@Override
 	protected String getConfigModuleID() {
-		// TODO: This needs to be abstract and subclasses need to define
-		// alternatively we might find a way add new PreferencePages per code and add one for each usecase on the server
-		return PropertySetFieldBasedEditConstants.USE_CASE_ID_EDIT_PERSON;
-//		if (structLocalID == null)
-//			throw new IllegalStateException("The StructLocal for this " + PropertySetFieldBasedEditLayoutPreferencePage.class.getSimpleName() + " was not set, can not create a cfModID");
-//		return PropertySetFieldBasedEditLayoutConfigModule.getStructLocalCfModID(structLocalID);
+		return editLayoutUseCase.getUseCaseID();
+//		// TODO: This needs to be abstract and subclasses need to define
+//		// alternatively we might find a way add new PreferencePages per code and add one for each usecase on the server
+//		return PropertySetFieldBasedEditConstants.USE_CASE_ID_EDIT_PERSON;
+////		if (structLocalID == null)
+////			throw new IllegalStateException("The StructLocal for this " + PropertySetFieldBasedEditLayoutPreferencePage.class.getSimpleName() + " was not set, can not create a cfModID");
+////		return PropertySetFieldBasedEditLayoutConfigModule.getStructLocalCfModID(structLocalID);
 	}
 	
 	/* (non-Javadoc)
@@ -253,7 +238,16 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	 */
 	@Override
 	protected void createPreferencePage(Composite parent) {
-		configComposite = new GridLayoutConfigComposite(parent, SWT.NONE);
+		XComposite wrapper = new XComposite(parent, SWT.None, LayoutMode.TIGHT_WRAPPER);
+		I18nText description = editLayoutUseCase.getDescription();
+		if (description != null && description.getText() != null && !description.getText().isEmpty()) {
+			Label desc = new Label(wrapper, SWT.WRAP);
+			desc.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
+			desc.setText(description.getText());
+			Label sep = new Label(wrapper, SWT.SEPARATOR | SWT.HORIZONTAL);
+			sep.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
+		}
+		configComposite = new GridLayoutConfigComposite(wrapper, SWT.NONE);
 		configComposite.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {

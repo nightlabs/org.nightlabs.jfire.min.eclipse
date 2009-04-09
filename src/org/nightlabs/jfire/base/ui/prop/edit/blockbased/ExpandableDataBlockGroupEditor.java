@@ -35,6 +35,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -64,10 +65,10 @@ extends ExpandableComposite
 			IStruct struct,
 			DataBlockGroup blockGroup,
 			Composite parent,
-			IValidationResultManager validationResultManager
+			IValidationResultHandler validationResultHandler
 	) {
 		super(parent, SWT.NONE);
-		blockGroupEditor = new DataBlockGroupEditor(struct, blockGroup, this, validationResultManager);
+		blockGroupEditor = new DataBlockGroupEditor(struct, blockGroup, this, validationResultHandler);
 
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.verticalSpacing = 0;

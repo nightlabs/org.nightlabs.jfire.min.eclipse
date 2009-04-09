@@ -29,7 +29,7 @@ public class TestPropertySetWizard extends DynamicPathWizard
 	public void addPages() {
 		page = new FullDataBlockCoverageWizardPage(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.TestPropertySetWizard.page.title"),  //$NON-NLS-1$
 				Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.TestPropertySetWizard.page.message"),  //$NON-NLS-1$
-				propertySet, editorStructBlockRegistry);
+				propertySet, true, editorStructBlockRegistry);
 		addPage(page);
 		super.addPages();
 	}

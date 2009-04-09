@@ -74,6 +74,34 @@ public class ConfigUtil
 	}
 	
 	/**
+	 * Returns the ConfigModule of the given class for the user currently logged in.
+	 * 
+	 * @param cfModClass The class of the ConfigModule to get.
+	 * @param cfModID The ConfigModule cfModID (suffix).
+	 * @param fetchGroups The fetch-groups the ConfigModule should be detached with
+	 */
+	public static <T extends ConfigModule> T getUserCfMod(
+			Class<T> cfModClass, String cfModID,
+			String[] fetchGroups, int maxFetchDepth,
+			ProgressMonitor monitor
+	)
+	{
+		try {
+			UserID userID = UserID.create(Login.getLogin().getOrganisationID(), Login.getLogin().getUserID());
+			return ConfigModuleDAO.sharedInstance().getConfigModule(
+					UserConfigSetup.getUserConfigID(userID),
+					cfModClass,
+					cfModID,
+					fetchGroups,
+					maxFetchDepth,
+					monitor
+				);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
 	 * Returns the ConfigModule of the given class for the workstation the current
 	 * user is logged on.
 	 * 

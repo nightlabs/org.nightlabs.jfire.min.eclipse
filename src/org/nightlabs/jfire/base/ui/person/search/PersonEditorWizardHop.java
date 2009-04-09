@@ -13,6 +13,7 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.config.ConfigUtil;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
+import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditConstants;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
 import org.nightlabs.progress.ProgressMonitor;
@@ -40,9 +41,10 @@ public class PersonEditorWizardHop extends WizardHop {
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				configModule = ConfigUtil.getUserCfMod(
-						PropertySetFieldBasedEditLayoutConfigModule.class, 
+						PropertySetFieldBasedEditLayoutConfigModule.class,
+						PropertySetFieldBasedEditConstants.USE_CASE_ID_EDIT_PERSON,
 						new String[] {
-							FetchPlan.ALL, PropertySetFieldBasedEditLayoutConfigModule.FETCH_GROUP_GRID_LAYOUT, 
+							FetchPlan.DEFAULT, PropertySetFieldBasedEditLayoutConfigModule.FETCH_GROUP_GRID_LAYOUT, 
 							PropertySetFieldBasedEditLayoutConfigModule.FETCH_GROUP_EDIT_LAYOUT_ENTRIES,
 							PropertySetFieldBasedEditLayoutEntry.FETCH_GROUP_STRUCT_FIELD_ID, PropertySetFieldBasedEditLayoutEntry.FETCH_GROUP_GRID_DATA}, 
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
@@ -59,21 +61,22 @@ public class PersonEditorWizardHop extends WizardHop {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		if (personalPage == null) {
-			personalPage = new PersonEditorWizardPersonalPage(person);
-			setEntryPage(personalPage);
-		} else
-			personalPage.refresh(person);
 		
 //		if (personalPage == null) {
-//			personalPage = new FieldBasedCfModLayoutConfigWizardPage();
-//			personalPage.setLayoutConfigModule(configModule);
-//			
+//			personalPage = new PersonEditorWizardPersonalPage(person);
 //			setEntryPage(personalPage);
-//			personalPage.getEditor().setPropertySet(person, false);
-//		} else {
-//			personalPage.getEditor().setPropertySet(person, true);
-//		}
+//		} else
+//			personalPage.refresh(person);
+		
+		if (personalPage == null) {
+			personalPage = new PersonEditorWizardPersonalPage();
+			personalPage.setLayoutConfigModule(configModule);
+			
+			setEntryPage(personalPage);
+			personalPage.getEditor().setPropertySet(person, false);
+		} else {
+			personalPage.getEditor().setPropertySet(person, true);
+		}
 
 		if (otherPage == null) {
 			otherPage = new PersonEditorWizardOtherPage(person);
@@ -85,8 +88,8 @@ public class PersonEditorWizardHop extends WizardHop {
 
 	public void updatePerson() {
 		if (getWizard().getContainer().getCurrentPage() == personalPage) {
-//			personalPage.getEditor().updatePropertySet();
-			personalPage.updatePropertySet();
+			personalPage.getEditor().updatePropertySet();
+//			personalPage.updatePropertySet();
 		} else if (getWizard().getContainer().getCurrentPage() == otherPage) {
 			otherPage.updatePropertySet();
 		}

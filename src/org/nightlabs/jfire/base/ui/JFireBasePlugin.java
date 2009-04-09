@@ -72,7 +72,7 @@ public class JFireBasePlugin
 		System.setProperty("org.nightlabs.jfire.idgenerator.idGeneratorClass", "org.nightlabs.jfire.base.idgenerator.IDGeneratorClient"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("org.nightlabs.jfire.security.SecurityReflector", "org.nightlabs.jfire.base.ui.security.SecurityReflectorRCP"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager", "org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleManagerRCP"); //$NON-NLS-1$ //$NON-NLS-2$
-
+		
 //		try {
 //			resourceBundle = Platform.getResourceBundle(getBundle());
 //		} catch (MissingResourceException x) {

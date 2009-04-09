@@ -37,6 +37,8 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
+import org.nightlabs.jfire.base.ui.prop.edit.ValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.exception.DataBlockGroupNotFoundException;
@@ -57,7 +59,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	private Map<StructBlockID, DataBlockGroupEditor> dataBlockGroupEditors = new HashMap<StructBlockID, DataBlockGroupEditor>();
 	private StructBlockID[] structBlockIDs;
 	private int dataBlockEditorColumnHint = 2;
-	private IValidationResultManager validationResultManager;
+	private IValidationResultHandler validationResultHandler;
 
 	XComposite wrapperComp;
 	private ValidationResult lastValidationResult = null;
@@ -103,9 +105,9 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 			}
 		}
 
-		validationResultManager = new ValidationResultManager() {
+		validationResultHandler = new ValidationResultHandler() {
 			@Override
-			public void setValidationResult(ValidationResult validationResult) {
+			public void handleValidationResult(ValidationResult validationResult) {
 				if (pristine)
 					return;
 				
@@ -151,7 +153,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		dataBlockGroupEditors.clear();
 		for (int i = 0; i < structBlockIDs.length; i++) {
 			DataBlockGroup dataBlockGroup = dataBlockGroups.get(structBlockIDs[i]);
-			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp, validationResultManager);
+			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp, validationResultHandler);
 			editor.addDataBlockEditorChangedListener(listenerProxy);
 			editor.refresh(propSet.getStructure(), dataBlockGroup);
 			dataBlockGroupEditors.put(
@@ -263,12 +265,12 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		refresh(propSet);
 	}
 
-	public void setValidationResultManager(IValidationResultManager validationResultManager) {
-		this.validationResultManager = validationResultManager;
+	public void setValidationResultManager(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
 	}
 
-	public IValidationResultManager getValidationResultManager() {
-		return validationResultManager;
+	public IValidationResultHandler getValidationResultManager() {
+		return validationResultHandler;
 	}
 	
 	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {

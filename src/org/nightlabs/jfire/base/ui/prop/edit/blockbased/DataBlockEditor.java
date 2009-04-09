@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -85,5 +86,5 @@ public interface DataBlockEditor {
 	 */
 	void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener);	
 	
-	void setValidationResultManager(IValidationResultManager validationResultManager);
+	void setValidationResultManager(IValidationResultHandler validationResultHandler);
 }

@@ -37,27 +37,37 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
+ * A composite that creates a block-based {@link PropertySetEditor} that will cover all
+ * blocks not covered in a given {@link EditorStructBlockRegistry}.
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
 public class FullDataBlockCoverageComposite extends Composite {
 
-
 	private int numColumns;
 	private EditorStructBlockRegistry structBlockRegistry;
+	
 	/**
+	 * Constructs a new {@link FullDataBlockCoverageComposite}.
+	 * 
+	 * @param parent The parent Composite for the new instance.
+	 * @param style The SWT style for the new instance.
+	 * @param propertySet The {@link PropertySet} to edit.
+	 * @param structBlockRegistry The registry where the blocks already covered can be obtained from. Might be <code>null</code>.
+	 * @param validationResultHandler Handler for validation results.
 	 */
 	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public FullDataBlockCoverageComposite(
 			Composite parent, int style,
 			PropertySet propertySet,
-			EditorStructBlockRegistry structBlockRegistry, IValidationResultManager validationResultManager
+			EditorStructBlockRegistry structBlockRegistry, IValidationResultHandler validationResultHandler
 	) {
 		super(parent, style);
 		this.numColumns = 1;
@@ -70,7 +80,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 //					propertySet.getStructLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope());
 		}
 		StructBlockID[] fullCoverageBlockIDs = this.structBlockRegistry.getUnassignedBlockKeyArray();
-		createPropEditors(validationResultManager);
+		createPropEditors(validationResultHandler);
 		List<StructBlockID>[] splitBlockIDs = new List[numColumns];
 		for (int i=0; i<numColumns; i++) {
 			splitBlockIDs[i] = new ArrayList<StructBlockID>();
@@ -100,11 +110,11 @@ public class FullDataBlockCoverageComposite extends Composite {
 
 	private List<PropertySetEditor> propEditors = new LinkedList<PropertySetEditor>();
 
-	private void createPropEditors(IValidationResultManager validationResultManager) {
+	private void createPropEditors(IValidationResultHandler validationResultHandler) {
 		propEditors.clear();
 		for (int i=0; i<numColumns; i++) {
 			BlockBasedEditor blockBasedEditor = new BlockBasedEditor(true);
-			blockBasedEditor.setValidationResultManager(validationResultManager);
+			blockBasedEditor.setValidationResultHandler(validationResultHandler);
 			propEditors.add(blockBasedEditor);
 			blockBasedEditor.addChangeListener(listenerProxy);
 		}
@@ -151,5 +161,11 @@ public class FullDataBlockCoverageComposite extends Composite {
 
 	public void removeChangeListener(DataBlockEditorChangedListener listener) {
 		listenerList.remove(listener);
+	}
+	
+	public void validate() {
+		for (PropertySetEditor propEditor : propEditors) {
+			propEditor.validate();
+		}
 	}
 }

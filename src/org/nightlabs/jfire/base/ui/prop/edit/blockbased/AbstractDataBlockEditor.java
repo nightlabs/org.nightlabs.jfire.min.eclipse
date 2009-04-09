@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
-import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
@@ -58,7 +58,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	private IStruct struct;
 	protected DataBlock dataBlock;
 	private ListenerList dataBlockEditorListeners = new ListenerList();
-	private IValidationResultManager validationResultManager;
+	private IValidationResultHandler validationResultHandler;
 	private IDataBlockEditorComposite dataBlockEditorComposite;
 
 	/**
@@ -136,17 +136,17 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#setValidationResultManager(org.nightlabs.jfire.base.ui.prop.edit.blockbased.IValidationResultManager)
 	 */
 	@Override
-	public void setValidationResultManager(IValidationResultManager validationResultManager) {
-		this.validationResultManager = validationResultManager;
-		getDataBlockEditorComposite().setValidationResultManager(validationResultManager);
+	public void setValidationResultManager(IValidationResultHandler validationResultHandler) {
+		this.validationResultHandler = validationResultHandler;
+		getDataBlockEditorComposite().setValidationResultHandler(validationResultHandler);
 		validateDataBlock();
 	}
 	
 	/**
-	 * @return The {@link IValidationResultManager} set with {@link #setValidationResultManager(IValidationResultManager)}.
+	 * @return The {@link IValidationResultHandler} set with {@link #setValidationResultManager(IValidationResultHandler)}.
 	 */
-	public IValidationResultManager getValidationResultManager() {
-		return validationResultManager;
+	public IValidationResultHandler getValidationResultManager() {
+		return validationResultHandler;
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
 			long duration = System.currentTimeMillis() - start;			
 			if (getValidationResultManager() != null) {
-				getValidationResultManager().setValidationResults(validationResults);	
+				getValidationResultManager().handleValidationResults(validationResults);
 			}
 			if (logger.isDebugEnabled()) {
 				logger.debug("Validation of of datablock "+getDataBlock()+" took "+duration+" ms!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

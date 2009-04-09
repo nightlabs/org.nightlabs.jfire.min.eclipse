@@ -28,43 +28,90 @@ package org.nightlabs.jfire.base.ui.person.search;
 
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
-import org.nightlabs.jfire.base.ui.person.edit.blockbased.special.PersonPersonalDataWizardPage;
+import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditorCfModLayoutConfigWizardPage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.person.PersonStruct;
-import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
-public class PersonEditorWizardPersonalPage extends PersonPersonalDataWizardPage {
+public class PersonEditorWizardPersonalPage
+extends FieldBasedEditorCfModLayoutConfigWizardPage {
+//extends PersonPersonalDataWizardPage {
 
-	public static final StructBlockID[] BLOCKIDS =
-		new StructBlockID[] {PersonStruct.PERSONALDATA};
-	
-	/**
-	 * @param title
-	 * @param pageName
-	 * @param titleImage
-	 */
-	public PersonEditorWizardPersonalPage(Person person) {
+//	private boolean pristine = true;
+//	
+//	public static final StructBlockID[] BLOCKIDS =
+//		new StructBlockID[] {PersonStruct.PERSONALDATA};
+
+	public PersonEditorWizardPersonalPage() {
 		super(
 				PersonEditorWizardPersonalPage.class.getName(),
 				Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditorWizardPersonalPage.title"), //$NON-NLS-1$
-				person);
+				false
+				);
 		setImageDescriptor(
 				SharedImages.getSharedImageDescriptor(
 						JFireBasePlugin.getDefault(),
 						PersonEditorWizardPersonalPage.class, null, SharedImages.ImageDimension._75x70));
-
-		// TODO: Add editor struct block registry as throw-away object
-
-//		EditorStructBlockRegistry.sharedInstance().addEditorStructBlocks(
-//			LegalEntityEditorWizard.WIZARD_EDITOR_DOMAIN,
-//			this.getClass().getName(),
-//			BLOCKIDS
-//		);
 	}
+	
+//	@Override
+//	public Control createPageContents(Composite parent) {
+//		IValidationResultHandler resultManager = new ValidationResultHandler() {
+//			@Override
+//			public void handleValidationResult(ValidationResult validationResult) {
+//				if (pristine)
+//					return;
+//
+//				if (validationResult == null)
+//					setMessage(null);
+//				else
+//					setMessage(validationResult.getMessage(), ValidationUtil.getIMessageProviderType(validationResult.getType()));
+//			}
+//		};
+//		// Register a listener, that sets pristine to false and then immediately deregisteres itself again
+//		final DataFieldEditorChangedListener[] listener = new DataFieldEditorChangedListener[1]; 
+//		listener[0] = new DataFieldEditorChangedListener() {
+//			@Override
+//			public void dataFieldEditorChanged(DataFieldEditorChangedEvent dataFieldEditorChangedEvent) {
+//				pristine = false;
+//				getEditor().removeDataFieldEditorChangedListener(listener[0]);
+//			}
+//		};
+//		getEditor().addDataFieldEditorChangedListener(listener[0]);
+//		getEditor().setValidationResultHandler(resultManager);
+//		return super.createPageContents(parent);
+//	}
+//	
+//	@Override
+//	public boolean isPageComplete() {
+//		return !pristine && super.isPageComplete();
+//	}
+//	
+//	
+//	/**
+//	 * @param title
+//	 * @param pageName
+//	 * @param titleImage
+//	 */
+//	public PersonEditorWizardPersonalPage(Person person) {
+//		super(
+//				PersonEditorWizardPersonalPage.class.getName(),
+//				Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditorWizardPersonalPage.title"), //$NON-NLS-1$
+//				person);
+//		setImageDescriptor(
+//				SharedImages.getSharedImageDescriptor(
+//						JFireBasePlugin.getDefault(),
+//						PersonEditorWizardPersonalPage.class, null, SharedImages.ImageDimension._75x70));
+//
+//		// TODO: Add editor struct block registry as throw-away object
+//
+////		EditorStructBlockRegistry.sharedInstance().addEditorStructBlocks(
+////			LegalEntityEditorWizard.WIZARD_EDITOR_DOMAIN,
+////			this.getClass().getName(),
+////			BLOCKIDS
+////		);
+//	}
 
 }

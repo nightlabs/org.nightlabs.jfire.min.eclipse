@@ -13,6 +13,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
+import org.nightlabs.jfire.base.ui.prop.edit.ValidationResultHandler;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
@@ -85,7 +86,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
 		blockBasedPersonEditor = createBlockBasedEditor();
-		blockBasedPersonEditor.setValidationResultManager(new ValidationResultManager() {
+		blockBasedPersonEditor.setValidationResultHandler(new ValidationResultHandler() {
 			/**
 			 * Used to cache the validation result because MessageManager
 			 * updates UI every time which is quite expensive. Marc
@@ -103,7 +104,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 			}
 
 			@Override
-			public void setValidationResult(ValidationResult validationResult) {
+			public void handleValidationResult(ValidationResult validationResult) {
 				if(!needUpdate(validationResult))
 					return;
 				IMessageManager messageManager = getManagedForm().getMessageManager();

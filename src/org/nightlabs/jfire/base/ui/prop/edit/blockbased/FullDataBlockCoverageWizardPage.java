@@ -26,40 +26,83 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
+import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
+import org.nightlabs.jfire.base.ui.prop.edit.ValidationResultHandler;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
+ * A {@link WizardPage} that will create a block-based editor showing
+ * all blocks that were not covered by a given {@link EditorStructBlockRegistry}.
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
  */
 public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 
+	/**
+	 * The property-set editor composite created for this page.
+	 */
 	protected FullDataBlockCoverageComposite fullDataBlockCoverageComposite;
+	/**
+	 * The currently edited property set
+	 */
 	protected PropertySet prop;
+	/**
+	 * The place where this page can see which blocks have been covered somewhere else.
+	 */
 	protected EditorStructBlockRegistry editorStructBlockRegistry;
 
 	/**
 	 * This variable is used to retain a possible validation error message until the first input by the user was made.
 	 */
-	protected boolean pristine = false;
+	protected boolean pristine = true;
+	
+	/**
+	 * Set in the constructor, defines whether a validation error blocks the page (isComplete returns false) 
+	 */
+	protected boolean blockOnValidationErrors;
 
 	/**
-	 * @param pageName
-	 * @param title
+	 * Used to schedule only one updateButtons
+	 * while the user is typing in new data like wild
+	 */
+	private Runnable scheduledUpdateRunnable = null;
+	/**
+	 * Performs an updateButtons()
+	 */
+	private Runnable updateButtonsRunnable = new Runnable() {
+		public void run() {
+			synchronized (FullDataBlockCoverageWizardPage.this) {
+				getContainer().updateButtons();
+				scheduledUpdateRunnable = null;
+			}
+		}
+	}; 
+	
+	/**
+	 * Constructs a new {@link FullDataBlockCoverageWizardPage}
+	 * 
+	 * @param pageName The name (id) of the new page.
+	 * @param title The title of the new page
+	 * @param propSet The {@link PropertySet} to edit.
+	 * @param blockOnValiationErrors Whether this page should block on validation errors, i.e. return <code>false</code> in isPageComplete.
+	 * @param editorStructBlockRegistry The registry where the blocks already covered can be obtained from. Might be <code>null</code>.
 	 */
 	public FullDataBlockCoverageWizardPage(
-			String pageName, String title, PropertySet propSet, EditorStructBlockRegistry editorStructBlockRegistry
-
-	) {
+			String pageName, String title, PropertySet propSet,
+			boolean blockOnValiationErrors,
+			EditorStructBlockRegistry editorStructBlockRegistry) 
+	{
 		super(pageName, title);
 		this.prop = propSet;
 		this.editorStructBlockRegistry = editorStructBlockRegistry;
+		this.blockOnValidationErrors = blockOnValiationErrors;
 	}
 
 	/**
@@ -67,16 +110,16 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	 */
 	@Override
 	public Control createPageContents(Composite parent) {
-		IValidationResultManager resultManager = new ValidationResultManager() {
+		IValidationResultHandler resultManager = new ValidationResultHandler() {
 			@Override
-			public void setValidationResult(ValidationResult validationResult) {
-				if (pristine)
-					return;
-
-				if (validationResult == null)
+			public void handleValidationResult(ValidationResult validationResult) {
+				if (validationResult == null) {
 					setMessage(null);
-				else
+				}
+				else {
 					setMessage(validationResult.getMessage(), ValidationUtil.getIMessageProviderType(validationResult.getType()));
+				}
+				scheduleUpdateButtons();
 			}
 		};
 		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry, resultManager);
@@ -95,11 +138,29 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 		return fullDataBlockCoverageComposite;
 	}
 
+	private void scheduleUpdateButtons() {
+		synchronized (this) {
+			if (scheduledUpdateRunnable == null) {
+				scheduledUpdateRunnable = updateButtonsRunnable;
+				getControl().getDisplay().asyncExec(updateButtonsRunnable);
+			}
+		}
+	}
+	
 	@Override
 	public boolean isPageComplete() {
-		return !pristine && super.isPageComplete();
+		if (blockOnValidationErrors)
+			return !hasValidationError();
+		return true;
 	}
 
+	private boolean hasValidationError() {
+		if (prop != null) {
+			return prop.hasValidationError(prop.getStructure());
+		}
+		return false;
+	}
+	
 	/**
 	 * See {@link FullDataBlockCoverageComposite#updatePropertySet()}
 	 */
@@ -121,12 +182,19 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	public void onShow() {
 		super.onShow();
 		refresh(prop);
+		if (fullDataBlockCoverageComposite != null && !fullDataBlockCoverageComposite.isDisposed()) {
+			fullDataBlockCoverageComposite.getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					fullDataBlockCoverageComposite.validate();
+				}
+			});
+		}
 	}
 
 	@Override
 	public void onHide() {
-		super.onHide();
 		updatePropertySet();
+		super.onHide();
 	}
 
 	public void markPristine() {
