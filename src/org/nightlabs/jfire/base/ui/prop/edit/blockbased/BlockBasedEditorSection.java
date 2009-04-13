@@ -130,7 +130,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		});
 	}
 
-	public void setPropertySet(final PropertySet property, final IStruct struct) {
+	public void setPropertySet(final PropertySet property) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if(property == null)
