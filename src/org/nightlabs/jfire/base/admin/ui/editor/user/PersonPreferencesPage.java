@@ -96,7 +96,7 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 //				if (user.getPerson() == null)
 //					user.setPerson(new Person(user.getOrganisationID(), PropertySet.TEMPORARY_PROP_ID));
 
-				userPropertiesSection.setPropertySet(user.getPerson(), controller.getStructLocal());
+				userPropertiesSection.setPropertySet(user.getPerson());
 				updateGui(controller);
 				switchToContent();
 			}

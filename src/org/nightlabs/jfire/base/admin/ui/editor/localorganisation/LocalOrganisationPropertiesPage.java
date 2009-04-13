@@ -119,7 +119,7 @@ public class LocalOrganisationPropertiesPage extends EntityEditorPageWithProgres
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (organisationPropertiesSection != null && !organisationPropertiesSection.getSection().isDisposed())
-				organisationPropertiesSection.setPropertySet(controller.getControllerObject().getPerson(), controller.getStructLocal());
+				organisationPropertiesSection.setPropertySet(controller.getControllerObject().getPerson());
 				switchToContent();
 			}
 		});
