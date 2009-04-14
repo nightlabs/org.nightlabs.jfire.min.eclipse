@@ -612,36 +612,35 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 */
 	protected boolean checkForSelfCausedChange(DirtyObjectID dirtyObjectID) {
 		// if JDO versioning is enabled for this object, we compare the version to the one we have locally
-		if (dirtyObjectID.getObjectVersion() != null) {
-			Object currentlyManagedObjectVersion = JDOHelper.getVersion(getControllerObject());
-			Object notifiedVersion = dirtyObjectID.getObjectVersion();
-			if (logger.isDebugEnabled())
-				logger.debug("checkForSelfCausedChange comparing versions. currentlyManagedObjectVersion: " + currentlyManagedObjectVersion + ", notifiedVersion: " + notifiedVersion); //$NON-NLS-1$ //$NON-NLS-2$
-			return notifiedVersion.equals(currentlyManagedObjectVersion);
-		}
-
-//		// TODO: WORKAROUND: Notifications currently produce too many sourceSessionIDs,
-//		// so we check if the current sessionID is in the sourceSessionIDs and not if
-//		// it is the only one, see issue: https://www.jfire.org/modules/bugs/view.php?id=471
-//		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
-//			if (sessionID.equals(Cache.sharedInstance().getSessionID()))
-//				return true;
+// Versioning doesn't work reliably because 1-1-relationships do not cause the root-object of the object-graph to be
+// updated. Kai & Marco ;-)
+//		if (dirtyObjectID.getObjectVersion() != null) {
+//			Object currentlyManagedObjectVersion = JDOHelper.getVersion(getControllerObject());
+//			Object notifiedVersion = dirtyObjectID.getObjectVersion();
+//			if (logger.isDebugEnabled())
+//				logger.debug("checkForSelfCausedChange comparing versions. currentlyManagedObjectVersion: " + currentlyManagedObjectVersion + ", notifiedVersion: " + notifiedVersion); //$NON-NLS-1$ //$NON-NLS-2$
+//			return notifiedVersion.equals(currentlyManagedObjectVersion);
 //		}
-//		return false;
-//		return true;
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("checkForSelfCausedChange looking for sourceSessionIDs."); //$NON-NLS-1$
 			logger.debug("Cache sessionID is: " + Cache.sharedInstance().getSessionID()); //$NON-NLS-1$
 		}
-		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
-			if (!sessionID.equals(Cache.sharedInstance().getSessionID())) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Found non-matching sourceSessionID: " + sessionID + ", treated as froreign change"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				return false;
-			}
-		}
-		return true;
+		// There is a change by someone else, if our session-id is either not in the set of sourceSessionIDs or if there is
+		// additionally another sessionID. Kai & Marco ;-)
+		String mySessionID = Cache.sharedInstance().getSessionID();
+		return dirtyObjectID.getSourceSessionIDs().contains(mySessionID) && dirtyObjectID.getSourceSessionIDs().size() == 1;
+
+		// Very inefficient code doing the same as the one efficient line above. Kai & Marco ;-)
+//		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
+//			if (!sessionID.equals(Cache.sharedInstance().getSessionID())) {
+//				if (logger.isDebugEnabled()) {
+//					logger.debug("Found non-matching sourceSessionID: " + sessionID + ", treated as froreign change"); //$NON-NLS-1$ //$NON-NLS-2$
+//				}
+//				return false;
+//			}
+//		}
+//		return true;
 	}
 
 	/**
