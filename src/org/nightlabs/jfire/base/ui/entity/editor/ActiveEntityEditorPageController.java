@@ -6,6 +6,7 @@ package org.nightlabs.jfire.base.ui.entity.editor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.jdo.JDOHelper;
 
@@ -38,6 +39,7 @@ import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
+import org.nightlabs.util.CollectionUtil;
 import org.nightlabs.util.Util;
 
 /**
@@ -306,7 +308,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					return;
 
 				Object controllerObjectID = JDOHelper.getObjectId(controllerObject);
-				ArrayList<DirtyObjectID> reverseSubjects = new ArrayList<DirtyObjectID>(notificationEvent.getSubjects());
+				Set<DirtyObjectID> dirtyObjectIDs = CollectionUtil.castSet(notificationEvent.getSubjects());
+				ArrayList<DirtyObjectID> reverseSubjects = new ArrayList<DirtyObjectID>( dirtyObjectIDs );
 				Collections.reverse(reverseSubjects);
 				for (DirtyObjectID dirtyObjectID : reverseSubjects) {
 					if (controllerObjectID.equals(dirtyObjectID.getObjectID())) {
