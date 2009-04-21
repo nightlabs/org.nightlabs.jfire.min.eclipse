@@ -23,6 +23,18 @@ import org.nightlabs.jfire.security.User;
 public class UserSearchDialog
 extends ResizableTrayDialog
 {
+	private int flags;
+	/**
+	 * @param parentShell
+	 * @param searchText
+	 */
+	public UserSearchDialog(Shell parentShell, String searchText, int flags) {
+		super(parentShell, Messages.RESOURCE_BUNDLE);
+		this.searchText = searchText;
+		this.flags = flags;
+		setShellStyle(getShellStyle() | SWT.RESIZE);
+	}
+	
 	/**
 	 * @param parentShell
 	 * @param searchText
@@ -52,7 +64,10 @@ extends ResizableTrayDialog
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{
-		userSearchComposite = new UserSearchComposite(parent, SWT.NONE);
+		if (flags != 0)
+			userSearchComposite = new UserSearchComposite(parent, SWT.NONE, flags);
+		else
+			userSearchComposite = new UserSearchComposite(parent, SWT.NONE);
 		if (searchText != null && !searchText.trim().equals("")) { //$NON-NLS-1$
 			userSearchComposite.getUserIDText().setText(searchText);
 		}
