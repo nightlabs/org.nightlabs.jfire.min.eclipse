@@ -60,15 +60,14 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.table.TableSortSelectionListener;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.organisation.Organisation;
-import org.nightlabs.jfire.organisation.OrganisationManager;
-import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
+import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.server.Server;
-import org.nightlabs.jfire.server.ServerManager;
-import org.nightlabs.jfire.server.ServerManagerUtil;
+import org.nightlabs.jfire.server.ServerManagerRemote;
 import org.nightlabs.jfire.servermanager.config.J2eeServerTypeRegistryConfigModule;
 import org.nightlabs.jfire.servermanager.config.J2eeServerTypeRegistryConfigModule.J2eeRemoteServer;
 import org.nightlabs.util.CollectionUtil;
@@ -217,13 +216,13 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				try {
-					ServerManager serverManager = ServerManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+					ServerManagerRemote serverManager = JFireEjb3Factory.getRemoteBean(ServerManagerRemote.class, Login.getLogin().getInitialContextProperties());
 					j2eeRemoteServers = serverManager.getJ2eeRemoteServers();
 					serverType2j2eeRemoteServerMap = new HashMap<String, J2eeRemoteServer>(j2eeRemoteServers.size());
 					for (J2eeServerTypeRegistryConfigModule.J2eeRemoteServer remoteServer : j2eeRemoteServers)
 						serverType2j2eeRemoteServerMap.put(remoteServer.getJ2eeServerType(), remoteServer);
 
-					OrganisationManager organisationManager = OrganisationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+					OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 					final Collection<Organisation> orgs = organisationManager.getOrganisationsFromRootOrganisation(
 							true, FETCH_GROUPS_ORGANISATION, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
 					orgs.add(UNKNOWN_ORGANISATION);

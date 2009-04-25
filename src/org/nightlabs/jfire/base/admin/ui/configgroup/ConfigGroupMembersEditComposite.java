@@ -38,10 +38,10 @@ import org.eclipse.swt.widgets.Display;
 import org.nightlabs.ModuleException;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.config.Config;
-import org.nightlabs.jfire.config.ConfigManager;
-import org.nightlabs.jfire.config.ConfigManagerUtil;
+import org.nightlabs.jfire.config.ConfigManagerRemote;
 import org.nightlabs.jfire.config.ConfigSetup;
 import org.nightlabs.jfire.config.dao.ConfigSetupDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
@@ -199,9 +199,9 @@ private ConfigGroupModel model;
 	{
 		if (model != null && model.configGroupID.equals(configGroupID))
 			return;
-		
+
 		configSetup = null;
-		
+
 		model = new ConfigGroupModel();
 		model.configGroupID = configGroupID;
 		model.assignedConfigs = new HashSet<Config>(getConfigSetup().getConfigsForGroup(configGroupID.configKey));
@@ -284,26 +284,26 @@ private ConfigGroupModel model;
 
 	public void save() throws ModuleException, RemoteException {
 		try {
-			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			ConfigManagerRemote configManager = JFireEjb3Factory.getRemoteBean(ConfigManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			for (Config config : model.addedConfigs) {
 				getConfigSetup().moveConfigToGroup(config, model.configGroupID.configKey);
 			}
-			
+
 			for (Config config : model.removedConfigs) {
 				getConfigSetup().moveConfigToGroup(config, null);
 			}
-			
+
 			model.assignedConfigs.addAll(model.addedConfigs);
 			model.notAssignedConfigs.addAll(model.removedConfigs);
 			model.assignedConfigs.removeAll(model.removedConfigs);
 			model.notAssignedConfigs.removeAll(model.addedConfigs);
 			model.addedConfigs.clear();
 			model.removedConfigs.clear();
-			
+
 			configManager.storeConfigSetup(getConfigSetup().getModifiedConfigs());
 			getConfigSetup().clearModifiedConfigs();
 			configSetup = null;
-			
+
 			// TODO: Now get all modified and restore
 		} catch (Throwable e) {
 			throw new RuntimeException(e);

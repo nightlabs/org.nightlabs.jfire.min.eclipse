@@ -27,9 +27,9 @@
 package org.nightlabs.jfire.base.admin.ui.organisation.registration;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.organisation.OrganisationManager;
-import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
+import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de
@@ -59,13 +59,11 @@ public class RegisterOrganisationWizard extends Wizard
 	public boolean performFinish()
 	{
 		try {
-			OrganisationManager organisationManager = OrganisationManagerUtil
-					.getHome(Login.getLogin().getInitialContextProperties()).create();
+			OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			organisationManager.beginRegistration(
 					registerOrganisationPage.getAnonymousInitialContextFactory(),
 					registerOrganisationPage.getInitialContextURL(),
 					registerOrganisationPage.getOrganisationID());
-			organisationManager.remove();
 			return true;
 		} catch (RuntimeException x) {
 			throw x;

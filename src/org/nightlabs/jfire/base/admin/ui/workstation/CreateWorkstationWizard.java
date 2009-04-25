@@ -30,23 +30,23 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.workstation.Workstation;
-import org.nightlabs.jfire.workstation.WorkstationManager;
-import org.nightlabs.jfire.workstation.WorkstationManagerUtil;
+import org.nightlabs.jfire.workstation.WorkstationManagerRemote;
 import org.nightlabs.jfire.workstation.id.WorkstationID;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateWorkstationWizard extends DynamicPathWizard implements INewWizard 
+public class CreateWorkstationWizard extends DynamicPathWizard implements INewWizard
 {
 	private CreateWorkstationPage createWorkstationPage;
 	private WorkstationID createdWorkstationID;
-	
+
 	public CreateWorkstationWizard() {
 		super();
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationWizard.wizardTitle")); //$NON-NLS-1$
@@ -64,8 +64,8 @@ public class CreateWorkstationWizard extends DynamicPathWizard implements INewWi
 			WorkstationID workstationID = WorkstationID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), createWorkstationPage.getWorkstationID());
 			workstation = new Workstation(workstationID.organisationID, workstationID.workstationID);
 			workstation.setDescription(createWorkstationPage.getWorkstationDescription());
-			
-			WorkstationManager workstationManager = WorkstationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+
+			WorkstationManagerRemote workstationManager = JFireEjb3Factory.getRemoteBean(WorkstationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			workstationManager.storeWorkstation(workstation, false, null, -1);
 			createdWorkstationID = workstationID;
 			return true;
@@ -77,7 +77,7 @@ public class CreateWorkstationWizard extends DynamicPathWizard implements INewWi
 	public WorkstationID getCreatedWorkstationID() {
 		return createdWorkstationID;
 	}
-	
+
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// do nothing

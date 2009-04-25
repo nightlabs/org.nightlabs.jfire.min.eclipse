@@ -82,7 +82,7 @@ public class CreateUserGroupPage extends DynamicPathWizardPage implements Formul
 				updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDMissing")); //$NON-NLS-1$
 			else {
 				// TODO: Check for already existing UserSecurityGroup as this is no subclass of user anymore
-//				JFireSecurityManager userManager = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+//				JFireSecurityManagerRemote = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
 //				if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserGroupID())))
 //					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupPage.errorUserGroupIDConflict")); //$NON-NLS-1$
 //				else

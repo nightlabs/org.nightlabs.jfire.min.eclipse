@@ -38,10 +38,10 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.base.ui.wizard.IDynamicPathWizardPage;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.config.ConfigManager;
-import org.nightlabs.jfire.config.ConfigManagerUtil;
+import org.nightlabs.jfire.config.ConfigManagerRemote;
 import org.nightlabs.jfire.config.UserConfigSetup;
 
 /**
@@ -61,7 +61,7 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 				configGroupWizard.getDynamicWizardDialog().update();
 			}
 		};
-		
+
 		public EntryPage(AddConfigGroupWizard configGroupWizard, String title) {
 			super(EntryPage.class.getName(), title);
 			this.configGroupWizard = configGroupWizard;
@@ -70,14 +70,14 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 		@Override
 		public Control createPageContents(Composite parent) {
 			wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
-			
+
 			groupIDText = new LabeledText(wrapper, Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.AddConfigGroupWizard.groupID.caption")); //$NON-NLS-1$
 			groupIDText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			groupIDText.getTextControl().addModifyListener(modifyListener);
 			groupNameText = new LabeledText(wrapper, Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.AddConfigGroupWizard.groupName.caption")); //$NON-NLS-1$
 			groupNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			groupNameText.getTextControl().addModifyListener(modifyListener);
-			
+
 			return wrapper;
 		}
 
@@ -86,22 +86,22 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 			return (!"".equals(groupIDText.getTextControl().getText())) && //$NON-NLS-1$
 						 (!"".equals(groupNameText.getTextControl().getText()));  //$NON-NLS-1$
 		}
-		
+
 		public LabeledText getGroupIDText() {
 			return groupIDText;
 		}
-		
+
 		public LabeledText getGroupNameText() {
 			return groupNameText;
 		}
 	}
-	
+
 	public AddConfigGroupWizard() {
 		super();
 	}
 
 	private EntryPage entryPage;
-	
+
 	@Override
 	public IDynamicPathWizardPage createWizardEntryPage() {
 		entryPage = new EntryPage(this, Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.AddConfigGroupWizard.entryPage.title"));  //$NON-NLS-1$
@@ -111,7 +111,7 @@ public class AddConfigGroupWizard extends DynamicPathWizard {
 	@Override
 	public boolean performFinish() {
 		try {
-			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			ConfigManagerRemote configManager = JFireEjb3Factory.getRemoteBean(ConfigManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			configManager.addConfigGroup(
 				entryPage.getGroupIDText().getTextControl().getText(),
 				UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG,

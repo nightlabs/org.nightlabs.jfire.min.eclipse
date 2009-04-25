@@ -45,10 +45,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.organisation.OrganisationManager;
-import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
+import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 import org.nightlabs.jfire.servermanager.createorganisation.CreateOrganisationProgress;
 import org.nightlabs.jfire.servermanager.createorganisation.CreateOrganisationProgressID;
 import org.nightlabs.jfire.servermanager.createorganisation.CreateOrganisationStatus;
@@ -103,7 +103,7 @@ public class CreateOrganisationWizard extends Wizard implements INewWizard
 									new Object[] { organisationID, organisationDisplayName } ),
 							100);
 
-					OrganisationManager organisationManager = OrganisationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+					OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 					CreateOrganisationProgressID createOrganisationProgressID = organisationManager.createOrganisationAsync(
 							organisationID,
 							organisationDisplayName,
@@ -229,5 +229,5 @@ public class CreateOrganisationWizard extends Wizard implements INewWizard
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// do nothing
 	}
-	
+
 }

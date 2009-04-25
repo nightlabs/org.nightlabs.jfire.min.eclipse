@@ -27,9 +27,9 @@
 package org.nightlabs.jfire.base.admin.ui.configgroup;
 
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.config.ConfigManager;
-import org.nightlabs.jfire.config.ConfigManagerUtil;
+import org.nightlabs.jfire.config.ConfigManagerRemote;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.security.SecurityReflector;
 
@@ -41,14 +41,14 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 
 	private CreateConfigGroupPage createConfigGroupPage;
 	private ConfigID createdConfigID;
-	
+
 	public CreateConfigGroupWizard(String configGroupType, String configGroupWizardTitle, String configGroupPageTitle) {
 		super();
 		setWindowTitle(configGroupWizardTitle);
 		createConfigGroupPage = new CreateConfigGroupPage(configGroupPageTitle, configGroupType);
 		addPage(createConfigGroupPage);
 	}
-	
+
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
@@ -56,10 +56,10 @@ public class CreateConfigGroupWizard extends DynamicPathWizard {
 	public boolean performFinish() {
 		try {
 			ConfigID configID = ConfigID.create(
-					SecurityReflector.getUserDescriptor().getOrganisationID(), 
+					SecurityReflector.getUserDescriptor().getOrganisationID(),
 					createConfigGroupPage.getConfigGroupKey(),
 					createConfigGroupPage.getConfigGroupType());
-			ConfigManager configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			ConfigManagerRemote configManager = JFireEjb3Factory.getRemoteBean(ConfigManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			configManager.addConfigGroup(
 					configID.configKey,
 					configID.configType,

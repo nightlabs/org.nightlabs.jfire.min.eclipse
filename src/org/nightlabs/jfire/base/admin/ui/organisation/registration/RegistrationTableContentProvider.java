@@ -34,9 +34,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.organisation.OrganisationManager;
-import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
+import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 import org.nightlabs.jfire.organisation.RegistrationStatus;
 
 /**
@@ -55,13 +55,13 @@ public class RegistrationTableContentProvider
 	public void loadData()
 	{
 		try {
-			OrganisationManager organisationManager = OrganisationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			Collection<Object> registrationStatusCollection =
-					organisationManager.getPendingRegistrations(
-							new String[]{FetchPlan.DEFAULT, RegistrationStatus.FETCH_GROUP_USERS}, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
+			OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
+			Collection<RegistrationStatus> registrationStatusCollection = organisationManager.getPendingRegistrations(
+					new String[]{ FetchPlan.DEFAULT, RegistrationStatus.FETCH_GROUP_USERS },
+					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT
+			);
 
 			registrationStatus = registrationStatusCollection.toArray();
-			organisationManager.remove();
 		} catch (RuntimeException x) {
 			ExceptionHandlerRegistry.asyncHandleException(x);
 			throw x;
@@ -71,9 +71,7 @@ public class RegistrationTableContentProvider
 		}
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-	 */
+	@Override
 	public Object[] getElements(Object inputElement)
 	{
 		if (inputElement != this || registrationStatus == null)
@@ -82,16 +80,12 @@ public class RegistrationTableContentProvider
 		return registrationStatus;
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
+	@Override
 	public void dispose()
 	{
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 	{
 	}

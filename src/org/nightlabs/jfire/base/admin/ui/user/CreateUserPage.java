@@ -38,11 +38,11 @@ import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
-import org.nightlabs.jfire.base.JFireEjbFactory;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerRemote;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.id.UserID;
 
@@ -73,7 +73,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   @Override
   public Control createPageContents(Composite parent) {
   	Formular f = new Formular(parent, SWT.NONE, this);
-  	
+
   	userID = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.userID.labelText"), null); //$NON-NLS-1$
   	autogenerateNameCheckbox = f.addCheckBox(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.checkbox.autogenerateName"), false); //$NON-NLS-1$
   	name = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.name.labelText"), null); //$NON-NLS-1$
@@ -82,7 +82,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
   	password0.setEchoChar('*');
   	password1 = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.passwordConfirmation.labelText"), null); //$NON-NLS-1$
   	password1.setEchoChar('*');
-  	
+
   	// listeners
   	autogenerateNameCheckbox.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {}
@@ -90,13 +90,13 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 				name.setEnabled(!autogenerateNameCheckbox.getSelection());
 			}
   	});
-  	
+
   	verifyInput();
   	setControl(f);
-  	
+
   	return f;
   }
-  
+
   private void verifyInput()
   {
     try
@@ -110,7 +110,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
       else {
       	// TODO we should ask for a list of all userIDs and cache it here - so we don't need to ask the server again and again
       	// especially, all expensive work should be done asynchronously - not on the UI thread!
-      	JFireSecurityManager userManager = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+      	JFireSecurityManagerRemote userManager = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
       	if (userManager.userIDAlreadyRegistered(UserID.create(Login.getLogin().getOrganisationID(), getUserID())) == true)
       		updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.user.CreateUserPage.errorUserIDCollision")); //$NON-NLS-1$
       	else if("".equals(getPassword0()) || "".equals(getPassword1())) //$NON-NLS-1$ //$NON-NLS-2$
@@ -124,7 +124,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
       throw new RuntimeException(e);
     }
   }
-  
+
   /**
    * Get the user name
    * @return the user name
@@ -168,7 +168,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 	{
 		return userID.getText();
 	}
-	
+
 	/**
 	 * Returns whether the user name should be generated automatically or not.
 	 * @return whether the user name should be generated automatically or not.
@@ -184,6 +184,6 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 	{
 		verifyInput();
 	}
-	
-	
+
+
 }

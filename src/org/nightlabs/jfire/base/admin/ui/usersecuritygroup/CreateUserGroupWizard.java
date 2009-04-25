@@ -103,7 +103,7 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 //			newGroup.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
 //			newGroup.getPerson().deflate();
 
-//			JFireSecurityManager userManager = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+//			JFireSecurityManagerRemote = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
 ////			userManager.saveUser(newGroup, null);
 //			userManager.storeUser(newGroup, null, false, null, 1);
 			UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(

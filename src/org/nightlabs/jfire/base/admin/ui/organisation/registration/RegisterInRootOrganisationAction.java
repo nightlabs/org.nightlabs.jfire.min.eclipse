@@ -30,9 +30,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.organisation.OrganisationManager;
-import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
+import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 
 
 /**
@@ -68,7 +68,7 @@ public class RegisterInRootOrganisationAction implements IWorkbenchWindowActionD
 	public void run(IAction action)
 	{
 		try {
-			OrganisationManager om = OrganisationManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+			OrganisationManagerRemote om = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			om.registerInRootOrganisation(true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

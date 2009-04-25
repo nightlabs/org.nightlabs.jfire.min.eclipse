@@ -43,25 +43,25 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.exceptionhandler.ExceptionHandlerRegistry;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
-import org.nightlabs.jfire.organisation.OrganisationManager;
-import org.nightlabs.jfire.organisation.OrganisationManagerUtil;
+import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 import org.nightlabs.jfire.organisation.RegistrationStatus;
 import org.nightlabs.l10n.NumberFormatter;
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de
  */
-public class PendingOrganisationRegistrationsView 
+public class PendingOrganisationRegistrationsView
 extends LSDViewPart
 {
 	/**
 	 * LOG4J logger used by this class
 	 */
 	private static final Logger logger = Logger.getLogger(PendingOrganisationRegistrationsView.class);
-	
+
 	public static final String ID_VIEW = PendingOrganisationRegistrationsView.class.getName();
 
 	private TableViewer viewer;
@@ -74,7 +74,7 @@ extends LSDViewPart
   private Button cancelButton;
   private Button ackButton;
   private Button reloadButton;
-  
+
   private RegistrationStatus[] selectedRegistrationStati = null;
 
 	public PendingOrganisationRegistrationsView()
@@ -87,18 +87,15 @@ extends LSDViewPart
 		{
 			try {
 				logger.debug("accept button clicked!"); //$NON-NLS-1$
-				
+
 				if (selectedRegistrationStati != null) {
 					for (int i = 0; i < selectedRegistrationStati.length; ++i) {
 						RegistrationStatus rs = selectedRegistrationStati[i];
 						if (rs.getCloseDT() == null &&
 								RegistrationStatus.DIRECTION_INCOMING.equals(rs.getDirection()))
 						{
-							OrganisationManager organisationManager =
-									OrganisationManagerUtil.getHome(
-											Login.getLogin().getInitialContextProperties()).create();
+							OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 							organisationManager.acceptRegistration(rs.getOrganisationID());
-							organisationManager.remove();
 						}
 					}
 				}
@@ -116,18 +113,15 @@ extends LSDViewPart
 		{
 			try {
 				logger.debug("cancel button clicked!"); //$NON-NLS-1$
-				
+
 				if (selectedRegistrationStati != null) {
 					for (int i = 0; i < selectedRegistrationStati.length; ++i) {
 						RegistrationStatus rs = selectedRegistrationStati[i];
 						if (rs.getCloseDT() == null &&
 								RegistrationStatus.DIRECTION_OUTGOING.equals(rs.getDirection()))
 						{
-							OrganisationManager organisationManager =
-									OrganisationManagerUtil.getHome(
-											Login.getLogin().getInitialContextProperties()).create();
+							OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 							organisationManager.cancelRegistration(rs.getOrganisationID());
-							organisationManager.remove();
 						}
 					}
 				}
@@ -138,25 +132,22 @@ extends LSDViewPart
 			}
 		}
 	};
-	
+
 	protected SelectionListener rejectButton_selectionListener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
 				logger.debug("reject button clicked!"); //$NON-NLS-1$
-				
+
 				if (selectedRegistrationStati != null) {
 					for (int i = 0; i < selectedRegistrationStati.length; ++i) {
 						RegistrationStatus rs = selectedRegistrationStati[i];
 						if (rs.getCloseDT() == null &&
 								RegistrationStatus.DIRECTION_INCOMING.equals(rs.getDirection()))
 						{
-							OrganisationManager organisationManager =
-									OrganisationManagerUtil.getHome(
-											Login.getLogin().getInitialContextProperties()).create();
+							OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 							organisationManager.rejectRegistration(rs.getOrganisationID());
-							organisationManager.remove();
 						}
 					}
 				}
@@ -167,23 +158,20 @@ extends LSDViewPart
 			}
 		}
 	};
-	
+
 	protected SelectionListener ackButton_selectionListener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent arg0)
 		{
 			try {
 				logger.debug("ack button clicked!"); //$NON-NLS-1$
-				
+
 				if (selectedRegistrationStati != null) {
 					for (int i = 0; i < selectedRegistrationStati.length; ++i) {
 						RegistrationStatus rs = selectedRegistrationStati[i];
 						if (rs.getCloseDT() != null) {
-							OrganisationManager organisationManager =
-									OrganisationManagerUtil.getHome(
-											Login.getLogin().getInitialContextProperties()).create();
+							OrganisationManagerRemote organisationManager = JFireEjb3Factory.getRemoteBean(OrganisationManagerRemote.class, Login.getLogin().getInitialContextProperties());
 							organisationManager.ackRegistration(rs.getOrganisationID());
-							organisationManager.remove();
 						}
 					}
 				}
@@ -214,13 +202,13 @@ extends LSDViewPart
 		viewer.setInput(contentProvider);
 		selectionChanged();
 	}
-	
+
 	protected void selectionChanged()
 	{
 		int direction_we_count = 0;
 		int direction_they_count = 0;
 		int closed_count = 0;
-		
+
 		if (selectedRegistrationStati != null) {
 			for (int i = 0; i < selectedRegistrationStati.length; ++i) {
 				RegistrationStatus rs = selectedRegistrationStati[i];
@@ -266,10 +254,10 @@ extends LSDViewPart
 			Composite composite = parent;
 	//		TabFolder composite = new TabFolder(parent, SWT.NULL);
 			composite.setLayout(new GridLayout());
-	
+
 			Composite buttonBar = new Composite(composite, SWT.NULL);
 			buttonBar.setLayout(new GridLayout(5, false));
-	
+
 			acceptButton = new Button(buttonBar, SWT.NULL);
 			acceptButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.accept")); //$NON-NLS-1$
 			acceptButton.addSelectionListener(acceptButton_selectionListener);
@@ -281,11 +269,11 @@ extends LSDViewPart
 			cancelButton = new Button(buttonBar, SWT.NULL);
 			cancelButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.cancel")); //$NON-NLS-1$
 			cancelButton.addSelectionListener(cancelButton_selectionListener);
-			
+
 			ackButton = new Button(buttonBar, SWT.NULL);
 			ackButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.acknowledge")); //$NON-NLS-1$
 			ackButton.addSelectionListener(ackButton_selectionListener);
-			
+
 			reloadButton = new Button(buttonBar, SWT.NULL);
 			reloadButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.button.text.reload")); //$NON-NLS-1$
 			reloadButton.addSelectionListener(reloadButton_selectionListener);
@@ -295,20 +283,20 @@ extends LSDViewPart
 			viewer = new TableViewer(composite, SWT.BORDER | SWT.H_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
 			viewer.setContentProvider(contentProvider);
 			viewer.setLabelProvider(labelProvider);
-			
+
 			viewer.addSelectionChangedListener(viewer_selectionChangedListener);
-	
+
 			Table t = viewer.getTable();
 			t.setHeaderVisible(true);
 			t.setLinesVisible(true);
-	
+
 			GridData tgd = new GridData(GridData.FILL_BOTH);
 			tgd.horizontalSpan = 2;
 			tgd.verticalSpan = 1;
-	
+
 			t.setLayoutData(tgd);
 			t.setLayout(new WeightedTableLayout(new int[] {1, 1, 1, 1, 1, 1, 1}));
-	
+
 			// Add the columns to the table
 			new TableColumn(t, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.organisationIDTableColumn")); //$NON-NLS-1$
 			new TableColumn(t, SWT.LEFT).setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView.directionTableColumn")); //$NON-NLS-1$
@@ -325,11 +313,11 @@ extends LSDViewPart
 			ExceptionHandlerRegistry.asyncHandleException(x);
 			throw new RuntimeException(x);
 		}
-		
+
 		// DEBUG ///////////////////////////////
 		if (logger.isDebugEnabled()) {
 			logger.debug(NumberFormatter.formatInt(2384, 10));
-			logger.debug(NumberFormatter.formatFloat(2349.95752, 3));			
+			logger.debug(NumberFormatter.formatFloat(2349.95752, 3));
 		}
 		// end DEBUG ///////////////////////////////
 	}
