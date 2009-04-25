@@ -29,10 +29,10 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.query.QueryCollection;
-import org.nightlabs.jfire.base.JFireEjbFactory;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerRemote;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
@@ -52,20 +52,20 @@ extends XComposite
 	public static final int FLAG_TYPE_USER_GROUP = 8;
 	public static final int FLAG_TYPE_ORGANISATION = 16;
 	public static final int FLAG_SEARCH_BUTTON = 32;
-	
-	
+
+
 	private int flags = 0;
-	
+
 	public UserSearchComposite(Composite parent, int style) {
 		this(parent, style, FLAG_TYPES_ALL);
 	}
-	
+
 	public UserSearchComposite(Composite parent, int style, int flags) {
 		super(parent, style);
 		this.flags = flags;
 		createComposite(this);
 	}
-	
+
 	protected boolean _useAllTypes() {
 		return (flags & FLAG_TYPES_ALL) > 0;
 	}
@@ -93,18 +93,18 @@ extends XComposite
 		return (flags & FLAG_SEARCH_BUTTON) > 0;
 	}
 
-	
+
 
  	private Text userIDText = null;
 	public Text getUserIDText() {
 		return userIDText;
 	}
-	
+
 	private Text nameText = null;
 	public Text getNameText() {
 		return nameText;
 	}
-	
+
 //	private Text userTypeText = null;
 //	public Text getUserTypeText() {
 //		return userTypeText;
@@ -114,28 +114,28 @@ extends XComposite
 	public Combo getUserTypeCombo() {
 		return userTypeCombo;
 	}
-	
+
 	private UserTable userTable = null;
 	public UserTable getUserTable() {
 		return userTable;
 	}
-	
+
 	private User selectedUser = null;
 	public User getSelectedUser() {
 		return selectedUser;
 	}
-	
+
 	public Collection<User> getSelectedUsers() {
 		return userTable.getSelectedElements();
 	}
-	
+
 	protected void createComposite(Composite parent)
 	{
 		XComposite searchComp = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		searchComp.getGridLayout().numColumns = isShowSearchButton() ? 4 : 3;
 		searchComp.getGridLayout().makeColumnsEqualWidth = false;
 		searchComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		userIDText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.userID")); //$NON-NLS-1$
 		nameText = createTextSearchEntry(searchComp, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.name")); //$NON-NLS-1$
 //		userTypeText = createTextSearchEntry(searchComp, Messages.getString("security.UserSearchComposite.userType")); //$NON-NLS-1$
@@ -159,7 +159,7 @@ extends XComposite
 				userTypeCombo.select(0);
 			}
 		}
-		
+
 		if (isShowSearchButton()) {
 			Button searchButton = new Button(searchComp, SWT.PUSH);
 			searchButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
@@ -171,13 +171,13 @@ extends XComposite
 				}
 			});
 		}
-				
+
 		userTable = new UserTable(parent, SWT.NONE, true, isMultiSelelect() ? AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER : AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 		userTable.setLinesVisible(true);
 		userTable.setHeaderVisible(true);
 		userTable.addSelectionChangedListener(userTableSelectionListener);
 	}
-	
+
 	protected Text createTextSearchEntry(Composite parent, String labelString)
 	{
 		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -187,11 +187,11 @@ extends XComposite
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		return text;
 	}
-	
+
 	protected UserQuery getUserQuery()
 	{
 		UserQuery userQuery = new UserQuery();
-		
+
 		if (!nameText.getText().trim().equals("")) //$NON-NLS-1$
 			userQuery.setName(nameText.getText());
 
@@ -200,7 +200,7 @@ extends XComposite
 
 //		if (!userTypeText.getText().trim().equals("")) //$NON-NLS-1$
 //			userQuery.setUserType(userTypeText.getText());
-		
+
 		if (userTypeCombo.getSelectionIndex() != -1 && !userTypeCombo.getText().trim().equals("")) //$NON-NLS-1$
 			userQuery.setUserTypes(Collections.singleton(userTypeCombo.getText()));
 		else if (!useAllTypes()) {
@@ -210,10 +210,10 @@ extends XComposite
 			}
 			userQuery.setUserTypes(types);
 		}
-		
+
 		return userQuery;
 	}
-	
+
 	public void searchPressed()
 	{
 		userTable.setInput(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.input_loading")); //$NON-NLS-1$
@@ -221,7 +221,7 @@ extends XComposite
 			@Override
 			protected IStatus run(ProgressMonitor monitor){
 				try {
-					JFireSecurityManager um = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+					JFireSecurityManagerRemote um = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
 					final QueryCollection<UserQuery> queries =
 						new QueryCollection<UserQuery>(User.class);
 					Display.getDefault().syncExec(new Runnable(){
@@ -249,7 +249,7 @@ extends XComposite
 //		job.setPriority(Job.SHORT);
 		job.schedule();
 	}
-	
+
 	private ISelectionChangedListener userTableSelectionListener = new ISelectionChangedListener(){
 		public void selectionChanged(SelectionChangedEvent event) {
 			if (!event.getSelection().isEmpty() && event.getSelection() instanceof StructuredSelection) {
@@ -269,5 +269,5 @@ extends XComposite
 			ISelectionChangedListener listener) {
 		userTable.removeSelectionChangedListener(listener);
 	}
-	
+
 }

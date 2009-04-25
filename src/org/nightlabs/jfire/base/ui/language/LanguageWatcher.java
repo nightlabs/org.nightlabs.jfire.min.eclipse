@@ -38,12 +38,13 @@ import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 import org.nightlabs.jfire.language.Language;
 import org.nightlabs.jfire.language.LanguageException;
-import org.nightlabs.jfire.language.LanguageManagerUtil;
+import org.nightlabs.jfire.language.LanguageManagerRemote;
 import org.nightlabs.l10n.GlobalL10nSettings;
 import org.nightlabs.language.LanguageCf;
 
@@ -52,7 +53,7 @@ import org.nightlabs.language.LanguageCf;
  * the clients language on the server if not existent
  * and to ask the user to restart the client if it was
  * not started with his language. ...really? Marco :-)
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class LanguageWatcher implements LoginStateListener {
@@ -107,13 +108,11 @@ public class LanguageWatcher implements LoginStateListener {
 		 * languages that are missing on the server.
 		 */
 		protected void syncLanguages() {
-			org.nightlabs.jfire.language.LanguageManager remoteLanguageManager = null;
+			org.nightlabs.jfire.language.LanguageManagerRemote remoteLanguageManager = null;
 			try {
 				LanguageManager localLanguageManager = LanguageManager.sharedInstance();
 
-				remoteLanguageManager = LanguageManagerUtil.getHome(
-						Login.getLogin().getInitialContextProperties()
-				).create();
+				remoteLanguageManager = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, Login.getLogin().getInitialContextProperties());
 
 				// download all languages known to the organisation on the server
 				Collection languages = remoteLanguageManager.getLanguages();

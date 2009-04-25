@@ -20,12 +20,10 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jdo.ObjectIDUtil;
-import org.nightlabs.jfire.base.JFireEjbFactory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.prop.IStruct;
-import org.nightlabs.jfire.prop.PropertyManager;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
@@ -48,7 +46,6 @@ public class StructEditor {
 	private TreeNode lastSelection;
 	private boolean ignoreChangeEvent;
 
-	private PropertyManager propertyManager;
 	private IStruct currentStruct;
 	private StructEditorComposite structEditorComposite;
 	private ListenerList changeListeners;
@@ -61,7 +58,6 @@ public class StructEditor {
 	 */
 	public StructEditor() {
 		changeListeners = new ListenerList();
-		propertyManager = getPropertyManager();
 		this.structBlockEditor = new StructBlockEditor();
 	}
 
@@ -79,7 +75,7 @@ public class StructEditor {
 			structTree = new StructTree(this);
 			structEditorComposite = new StructEditorComposite(parent, style, this, structTree);
 			languageChooser = structEditorComposite.getLanguageChooser();
-			
+
 			structTree.addSelectionChangedListener(new ISelectionChangedListener() {
 				@SuppressWarnings("unchecked") //$NON-NLS-1$
 				public void selectionChanged(SelectionChangedEvent event) {
@@ -106,7 +102,7 @@ public class StructEditor {
 					StructFieldFactoryRegistry structFieldFactoryRegistry = StructFieldFactoryRegistry.sharedInstance();
 
 					boolean enabled = true;
-					
+
 					if (selected instanceof StructFieldNode) {
 						StructField field = ((StructFieldNode) selected).getField();
 						StructFieldEditor editor = structField2structFieldEditorMap.get(field);
@@ -118,7 +114,7 @@ public class StructEditor {
 						structEditorComposite.setPartEditor(editor);
 						editor.setData(field);
 						currentStructPartEditor = editor;
-						enabled = field.getStructBlock().isLocal(); 
+						enabled = field.getStructBlock().isLocal();
 						// save the data of the editor to make it able to be restored later
 						editor.saveData();
 					} else if (selected instanceof StructBlockNode) {
@@ -257,17 +253,14 @@ public class StructEditor {
 //
 //	};
 
-	private PropertyManager getPropertyManager() {
-		if (propertyManager == null) {
-			try {
-				propertyManager = JFireEjbFactory.getBean(PropertyManager.class, Login.getLogin().getInitialContextProperties());
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-		}
-		return propertyManager;
-	}
+//	private PropertyManagerRemote getPropertyManager() {
+//		try {
+//			return JFireEjb3Factory.getRemoteBean(PropertyManagerRemote.class, Login.getLogin().getInitialContextProperties());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	private org.nightlabs.jfire.prop.ModifyListener partEditorModifyListener = new org.nightlabs.jfire.prop.ModifyListener() {
 		@Override
@@ -276,7 +269,7 @@ public class StructEditor {
 			structTree.refreshSelected();
 		}
 	};
-	
+
 	public void setChanged(boolean changed) {
 		this.changed = changed;
 		if (changed)

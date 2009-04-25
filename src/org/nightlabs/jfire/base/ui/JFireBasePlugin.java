@@ -29,9 +29,6 @@ package org.nightlabs.jfire.base.ui;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.config.ConfigManager;
-import org.nightlabs.jfire.config.ConfigManagerUtil;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -42,17 +39,17 @@ public class JFireBasePlugin
 {
 	public static final String PLUGIN_ID = "org.nightlabs.jfire.base.ui"; //$NON-NLS-1$
 	public static final String ZONE_ADMIN = JFireBasePlugin.class.getName() + "#ZONE_ADMIN"; //$NON-NLS-1$
-	
-	
+
+
 	//The shared instance.
 	private static JFireBasePlugin plugin;
 //	//Resource bundle.
 //	private ResourceBundle resourceBundle;
-	
+
 	/**
 	 * The constructor registeres this plugin
 	 * as LoginStateListener.
-	 * 
+	 *
 	 */
 	public JFireBasePlugin() {
 		super();
@@ -72,7 +69,7 @@ public class JFireBasePlugin
 		System.setProperty("org.nightlabs.jfire.idgenerator.idGeneratorClass", "org.nightlabs.jfire.base.idgenerator.IDGeneratorClient"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("org.nightlabs.jfire.security.SecurityReflector", "org.nightlabs.jfire.base.ui.security.SecurityReflectorRCP"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager", "org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleManagerRCP"); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 //		try {
 //			resourceBundle = Platform.getResourceBundle(getBundle());
 //		} catch (MissingResourceException x) {
@@ -95,36 +92,6 @@ public class JFireBasePlugin
 		return plugin;
 	}
 
-//	/**
-//	 * Returns the string from the plugin's resource bundle,
-//	 * or 'key' if not found.
-//	 */
-//	public static String getResourceString(String key) {
-//		ResourceBundle bundle = JFireBasePlugin.getDefault().getResourceBundle();
-//		try {
-//			return (bundle != null) ? bundle.getString(key) : key;
-//		} catch (MissingResourceException e) {
-//			return key;
-//		}
-//	}
-
-//	/**
-//	 * Returns the plugin's resource bundle,
-//	 */
-//	public ResourceBundle getResourceBundle() {
-//		return resourceBundle;
-//	}
-
-	public static ConfigManager getConfigManager() {
-		try {
-			return ConfigManagerUtil.getHome(
-					Login.getLogin().getInitialContextProperties()
-			).create();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path.

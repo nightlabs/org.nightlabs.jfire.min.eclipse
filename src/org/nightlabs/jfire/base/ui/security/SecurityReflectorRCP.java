@@ -9,7 +9,7 @@ import javax.naming.InitialContext;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.nightlabs.jfire.base.JFireEjbFactory;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
@@ -18,7 +18,7 @@ import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.security.AuthorizedObjectRefLifecycleListenerFilter;
-import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerRemote;
 import org.nightlabs.jfire.security.NoUserException;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.id.AuthorityID;
@@ -68,7 +68,6 @@ extends SecurityReflector
 
 	private Map<AuthorityID, Set<RoleID>> cache_authorityID2roleIDSet = new HashMap<AuthorityID, Set<RoleID>>();
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	protected synchronized Set<RoleID> _getRoleIDs(AuthorityID authorityID) throws NoUserException
 	{
@@ -77,7 +76,7 @@ extends SecurityReflector
 			return result;
 
 		try {
-			JFireSecurityManager jfireSecurityManager = JFireEjbFactory.getBean(JFireSecurityManager.class, _getInitialContextProperties());
+			JFireSecurityManagerRemote jfireSecurityManager = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, _getInitialContextProperties());
 			result = jfireSecurityManager.getRoleIDs(authorityID);
 		} catch (NoUserException e) {
 			throw e;

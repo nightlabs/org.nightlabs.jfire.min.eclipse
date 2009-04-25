@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jdo.JDOHelper;
+import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
@@ -60,6 +61,7 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.inheritance.FieldMetaData;
 import org.nightlabs.inheritance.InheritanceManager;
 import org.nightlabs.jfire.base.JFireBaseEAR;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.editlock.EditLockHandle;
@@ -67,10 +69,11 @@ import org.nightlabs.jfire.base.ui.editlock.EditLockMan;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.preferences.LSDPreferencePage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.config.ConfigManager;
-import org.nightlabs.jfire.config.ConfigManagerUtil;
+import org.nightlabs.jfire.config.ConfigGroup;
+import org.nightlabs.jfire.config.ConfigManagerRemote;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.dao.ConfigModuleDAO;
+import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.config.id.ConfigModuleID;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.notification.NotificationEvent;
@@ -790,31 +793,30 @@ extends LSDPreferencePage
 	 * 		to cause the page to re-display the recently stored ConfigModule.
 	 */
 	protected void storeModule(boolean doUpdateGUI) {
-		ConfigManager configManager = null;
+		ConfigManagerRemote configManager;
 		try {
-			configManager = ConfigManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
-			ConfigModule storedConfigModule = configManager.storeConfigModule(
-					getConfigModuleController().getConfigModule(), true, getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[] {}),
-					getConfigModuleController().getConfigModuleMaxFetchDepth()
-			);
-
-			Cache.sharedInstance().put(null, storedConfigModule, getConfigModuleController().getConfigModuleFetchGroups(),
-					getConfigModuleController().getConfigModuleMaxFetchDepth()
-			);
-//			getConfigModuleController().setConfigModule(Utils.cloneSerializable(storedConfigModule));
-			getConfigModuleController().setConfigModule(storedConfigModule);
-			if (doUpdateGUI) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						if (getControl() != null && !getControl().isDisposed())
-							updatePreferencePage();
-					}
-				});
-			}
-			recentlySaved = true;
-		} catch (Throwable e) {
+			configManager = JFireEjb3Factory.getRemoteBean(ConfigManagerRemote.class, Login.getLogin().getInitialContextProperties());
+		} catch (LoginException e) {
 			throw new RuntimeException(e);
 		}
+		ConfigModule storedConfigModule = configManager.storeConfigModule(
+				getConfigModuleController().getConfigModule(), true, getConfigModuleController().getConfigModuleFetchGroups().toArray(new String[] {}),
+				getConfigModuleController().getConfigModuleMaxFetchDepth()
+		);
+
+		Cache.sharedInstance().put(null, storedConfigModule, getConfigModuleController().getConfigModuleFetchGroups(),
+				getConfigModuleController().getConfigModuleMaxFetchDepth()
+		);
+		getConfigModuleController().setConfigModule(storedConfigModule);
+		if (doUpdateGUI) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					if (getControl() != null && !getControl().isDisposed())
+						updatePreferencePage();
+				}
+			});
+		}
+		recentlySaved = true;
 	}
 
 	@Override

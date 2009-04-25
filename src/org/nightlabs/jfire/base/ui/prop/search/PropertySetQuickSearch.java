@@ -40,7 +40,6 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jdo.ui.search.SearchFilterProvider;
 import org.nightlabs.jdo.ui.search.SearchResultFetcher;
-import org.nightlabs.jfire.prop.PropertyManager;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
 
 /**
@@ -50,7 +49,7 @@ import org.nightlabs.jfire.prop.search.PropSearchFilter;
  * called when the user hits the button.
  * {@link #getSearchFilter()} will return an instance of
  * {@link org.nightlabs.jfire.base.ui.person.util.PersonSearchFilter}
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class PropertySetQuickSearch implements SearchFilterProvider {
@@ -58,15 +57,13 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	 * LOG4J logger used by this class
 	 */
 //	private static final Logger logger = Logger.getLogger(PropertySetQuickSearch.class);
-	
+
 	private XComposite wrapperComposite;
 //	private Button quickButton;
 	private String buttonText;
 	private PropSearchFilter personSearchFilter;
 	private SearchResultFetcher resultFetcher;
-	
-	protected PropertyManager propManager;
-	
+
 	/**
 	 * Construct a PropertySetQuickSearch with buttonText as label for the Button,
 	 * @param buttonText
@@ -74,11 +71,11 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	public PropertySetQuickSearch(String buttonText) {
 		this.buttonText = buttonText;
 	}
-	
+
 	/**
 	 * Construct a PropertySetQuickSearch with button-text and an optional (null possible)
 	 * PersonSearchResultFetcher for callback on user interaction.
-	 * 
+	 *
 	 * @param buttonText
 	 * @param resultFetcher
 	 */
@@ -89,7 +86,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 
 	/**
 	 * Default implementation creates a wrapper Composite with a Button.
-	 * 
+	 *
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#createComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	public Composite createComposite(Composite parent) {
@@ -133,14 +130,14 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 		comp.setLayoutData(gd);
 		return wrapperComposite;
 	}
-	
+
 	public Composite getComposite() {
 		return wrapperComposite;
 	}
 
 	/**
 	 * Returns and optionally recreates a the PersonSearchFilter.
-	 * 
+	 *
 	 * @param refresh
 	 * @return
 	 */
@@ -150,23 +147,23 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 		}
 		return personSearchFilter;
 	}
-	
+
 	/**
 	 * Calls the PersonSearchResultFetcher.
-	 * 
+	 *
 	 * @param evt
 	 */
 	protected void quickSearchButtonPressed(SelectionEvent evt) {
 		if (resultFetcher == null)
 			return;
-		
+
 		resultFetcher.searchTriggered(this);
 	}
-	
+
 	/**
 	 * Set the buttonText. Has no affect to the Button
 	 * when {@link #getComposite(Composite)} was called before.
-	 * 
+	 *
 	 * @param txt
 	 */
 	public void setButtonText(String txt) {
@@ -175,7 +172,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 
 	/**
 	 * Return the buttonText.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getButtonText() {
@@ -185,12 +182,12 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	/**
 	 * Default implementation will always return a fresh and empty
 	 * PersonSearchFilter.
-	 * 
+	 *
 	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getSearchFilter()
 	 */
 	public SearchFilter getSearchFilter() {
 		return getSearchFilter(true);
 	}
-	
+
 
 }

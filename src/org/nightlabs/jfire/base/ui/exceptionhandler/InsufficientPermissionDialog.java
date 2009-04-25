@@ -21,11 +21,11 @@ import org.nightlabs.base.ui.exceptionhandler.DefaultErrorDialog;
 import org.nightlabs.base.ui.exceptionhandler.ErrorItem;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.JFireEjbFactory;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerRemote;
 import org.nightlabs.jfire.security.Role;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.id.RoleID;
@@ -139,24 +139,24 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 					monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionDialog.job.loadingRoleGroups.name"), 1); //$NON-NLS-1$
 					try {
 						Set<Role> roles = getRoles(errorItem.getContext().getRequiredRoleIDs());
-	
+
 						Set<RoleGroup> roleGroupSet = new HashSet<RoleGroup>();
 						for (Role role : roles) {
 							roleGroupSet.addAll(role.getRoleGroups());
 						}
-	
+
 						final List<RoleGroup> roleGroupList = new ArrayList<RoleGroup>(roleGroupSet);
 						Collections.sort(roleGroupList, roleGroupComparator);
-	
+
 						final Job thisJob = this;
 						requiredRoleGroupList.getDisplay().asyncExec(new Runnable() {
 							public void run() {
 								if (loadRoleGroupsJob != thisJob)
 									return;
-	
+
 								if (requiredRoleGroupList.isDisposed())
 									return;
-	
+
 								requiredRoleGroupList.removeAll();
 								requiredRoleGroupList.addElements(roleGroupList);
 
@@ -165,7 +165,7 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 								getShell().setSize(newSize);
 							}
 						});
-	
+
 						return Status.OK_STATUS;
 					} finally {
 						monitor.worked(1);
@@ -194,7 +194,7 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 		}
 
 		if (!roleIDs.isEmpty()) {
-			JFireSecurityManager m = JFireEjbFactory.getBean(JFireSecurityManager.class, Login.getLogin().getInitialContextProperties());
+			JFireSecurityManagerRemote m = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
 			Set<Role> retrievedRoles = m.getRolesForRequiredRoleIDs(roleIDs);
 			roles.addAll(retrievedRoles);
 			Cache.sharedInstance().putAll(InsufficientPermissionDialog.class.getName(), retrievedRoles, (String[])null, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);

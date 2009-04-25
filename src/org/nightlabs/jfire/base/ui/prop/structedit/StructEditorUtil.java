@@ -1,14 +1,13 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.structedit;
 
-import java.rmi.RemoteException;
 import java.util.Collection;
 
-import org.nightlabs.jfire.base.JFireEjbFactory;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.prop.PropertyManager;
+import org.nightlabs.jfire.prop.PropertyManagerRemote;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 import org.nightlabs.jfire.prop.id.StructID;
 import org.nightlabs.jfire.prop.id.StructLocalID;
@@ -19,39 +18,23 @@ import org.nightlabs.jfire.prop.id.StructLocalID;
  */
 public class StructEditorUtil {
 
-	public static PropertyManager getPropertyManager() {
+	public static PropertyManagerRemote getPropertyManager() {
 		try {
-			return JFireEjbFactory.getBean(PropertyManager.class, Login.getLogin().getInitialContextProperties());
+			return JFireEjb3Factory.getRemoteBean(PropertyManagerRemote.class, Login.getLogin().getInitialContextProperties());
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public static Collection<StructID> getAvailableStructIDs() {
-		try {
-			return getPropertyManager().getAvailableStructIDs();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+		return getPropertyManager().getAvailableStructIDs();
 	}
-	
+
 	public static Collection<StructLocalID> getAvailableStructLocalIDs() {
-		try {
-			return getPropertyManager().getAvailableStructLocalIDs();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+		return getPropertyManager().getAvailableStructLocalIDs();
 	}
-	
+
 	public static long getDataFieldInstanceCount(StructFieldID structFieldID) {
-		try {
-			return getPropertyManager().getDataFieldInstanceCount(structFieldID);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+		return getPropertyManager().getDataFieldInstanceCount(structFieldID);
 	}
 }

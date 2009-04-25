@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.jdo.FetchPlan;
+import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
@@ -58,12 +59,11 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.ui.search.EarlySearchFilterProvider;
 import org.nightlabs.jdo.ui.search.SearchFilterProvider;
 import org.nightlabs.jdo.ui.search.SearchResultFetcher;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.person.search.StaticPersonSearchFilterProvider;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.prop.PropertyManager;
-import org.nightlabs.jfire.prop.PropertyManagerHome;
-import org.nightlabs.jfire.prop.PropertyManagerUtil;
+import org.nightlabs.jfire.prop.PropertyManagerRemote;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.dao.PropertySetDAO;
 import org.nightlabs.jfire.prop.id.PropertySetID;
@@ -229,7 +229,6 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * that will search using the {@link PropertyManager}.
 	 */
 	private SearchResultFetcher resultFetcher = new SearchResultFetcher() {
-		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void searchTriggered(final SearchFilterProvider filterProvider) {
 			logger.debug("Search triggered, getting PersonManager"); //$NON-NLS-1$
 			Display.getDefault().asyncExec(new Runnable() {
@@ -237,15 +236,14 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 					resultTable.setInput(new String[] {Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.statusMessage.searching")}); //$NON-NLS-1$
 				}
 			});
-			PropertyManagerHome home = null;
-			PropertyManager propertyManager = null;
+
+			PropertyManagerRemote propertyManager;
 			try {
-				home = PropertyManagerUtil.getHome(Login.getLogin().getInitialContextProperties());
-				propertyManager = home.create();
-			} catch (Exception e) {
-				logger.error("Error creating PersonManagerUtil.",e); //$NON-NLS-1$
-				throw new RuntimeException(e);
+				propertyManager = JFireEjb3Factory.getRemoteBean(PropertyManagerRemote.class, Login.getLogin().getInitialContextProperties());
+			} catch (LoginException e1) {
+				throw new RuntimeException(e1);
 			}
+
 			logger.debug("Have PersonManager searching"); //$NON-NLS-1$
 			final ObjectCarrier<PropSearchFilter> oc = new ObjectCarrier<PropSearchFilter>();
 			Display.getDefault().syncExec(new Runnable() {
@@ -404,7 +402,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		}
 	}
 
-	public String getSearchText() 
+	public String getSearchText()
 	{
 		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
 			if (staticTab.getFilterProvider() instanceof StaticPersonSearchFilterProvider) {
@@ -414,7 +412,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		}
 		return null;
 	}
-	
+
 	public boolean addSearchTextModifyListener(ModifyListener listener) {
 		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
 			if (staticTab.getFilterProvider() instanceof EarlySearchFilterProvider) {
@@ -425,7 +423,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		}
 		return false;
 	}
-	
+
 	public boolean removeSearchTextModifyListener(ModifyListener listener) {
 		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
 			if (staticTab.getFilterProvider() instanceof EarlySearchFilterProvider) {
@@ -435,8 +433,8 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			}
 		}
 		return false;
-	}	
-	
+	}
+
 	/**
 	 * Creates a Button in the given Composite that will trigger {@link #performSearch()}
 	 * when selected.

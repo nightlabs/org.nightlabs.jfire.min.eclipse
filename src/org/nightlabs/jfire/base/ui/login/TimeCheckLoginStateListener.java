@@ -10,9 +10,9 @@ import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.server.ServerManager;
-import org.nightlabs.jfire.server.ServerManagerUtil;
+import org.nightlabs.jfire.server.ServerManagerRemote;
 import org.nightlabs.l10n.DateFormatter;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -45,7 +45,7 @@ public class TimeCheckLoginStateListener implements LoginStateListener
 					return Status.CANCEL_STATUS;
 				}
 
-				ServerManager m = ServerManagerUtil.getHome(Login.getLogin().getInitialContextProperties()).create();
+				ServerManagerRemote m = JFireEjb3Factory.getRemoteBean(ServerManagerRemote.class, Login.getLogin().getInitialContextProperties());
 				long startServerRequest = System.currentTimeMillis();
 				final Date serverTime = m.getServerTime();
 				long stopServerRequest = System.currentTimeMillis();

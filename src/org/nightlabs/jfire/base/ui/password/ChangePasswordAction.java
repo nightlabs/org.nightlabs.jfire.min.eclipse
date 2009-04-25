@@ -9,11 +9,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
-import org.nightlabs.jfire.base.JFireEjbFactory;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.security.JFireSecurityManager;
+import org.nightlabs.jfire.security.JFireSecurityManagerRemote;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.UserLocal;
 
@@ -35,7 +35,7 @@ public class ChangePasswordAction extends LSDWorkbenchWindowActionDelegate {
 					throw new RuntimeException(e);
 				}
 			};
-			
+
 			@Override
 			protected Control createDialogArea(Composite parent) {
 				Control dialogArea = super.createDialogArea(parent);
@@ -43,10 +43,10 @@ public class ChangePasswordAction extends LSDWorkbenchWindowActionDelegate {
 				return dialogArea;
 			}
 		};
-		
+
 		if (dialog.open() != Window.OK)
 			return;
-		
+
 		IInputValidator newPasswordValidator = new IInputValidator() {
 			@Override
 			public String isValid(String password) {
@@ -59,10 +59,10 @@ public class ChangePasswordAction extends LSDWorkbenchWindowActionDelegate {
 			}
 		};
 		String newPassword = ChangePasswordDialog.openDialog(RCPUtil.getActiveShell(), newPasswordValidator, null);
-		if (newPassword == null) 
+		if (newPassword == null)
 			return; // User canceled or somehow else entered no new and confirmed password -> do nothing
 		try {
-			JFireSecurityManager um = JFireEjbFactory.getBean(JFireSecurityManager.class, SecurityReflector.getInitialContextProperties());
+			JFireSecurityManagerRemote um = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, SecurityReflector.getInitialContextProperties());
 			um.setUserPassword(newPassword);
 			Login.sharedInstance().setPassword(newPassword);
 			MessageDialog.openInformation(RCPUtil.getActiveShell(), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.passwordChanged.title"), Messages.getString("org.nightlabs.jfire.base.ui.password.ChangePasswordAction.dialog.passwordChanged.message")); //$NON-NLS-1$ //$NON-NLS-2$
