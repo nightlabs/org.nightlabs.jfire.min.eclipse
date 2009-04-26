@@ -27,18 +27,15 @@
 package org.nightlabs.jfire.base.ui.login;
 
 import java.net.SocketTimeoutException;
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.ejb.EJBException;
 import javax.naming.CommunicationException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -69,8 +66,7 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.JFireRCDLDelegate;
-import org.nightlabs.jfire.classloader.JFireRCLBackend;
-import org.nightlabs.jfire.classloader.JFireRCLBackendUtil;
+import org.nightlabs.jfire.classloader.JFireRCLBackendRemote;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
@@ -424,6 +420,7 @@ extends AbstractEPProcessor
 		try {
 			needRestart = JFireJ2EEPlugin.getDefault().updateManifest();
 		} catch (Exception e) {
+			logger.error(e, e);
 			needRestart = false;
 		}
 		if (needRestart) {
@@ -1158,41 +1155,45 @@ extends AbstractEPProcessor
 		loginResult.setException(null);
 
 		// verify login
-		JFireRCLBackend jfireCLBackend = null;
-		if (jfireCLBackend == null) {
+		JFireRCLBackendRemote jfireRCLBackend = null;
+		if (jfireRCLBackend == null) {
 			try {
 				Login.logger.debug(Thread.currentThread().getContextClassLoader());
 				Login.logger.debug(JFireBasePlugin.class.getClassLoader());
 				Login.logger.debug("**********************************************************"); //$NON-NLS-1$
 				Login.logger.debug("Create testing login"); //$NON-NLS-1$
-				jfireCLBackend = JFireRCLBackendUtil.getHome(
-						_loginData.getInitialContextProperties()).create();
+				InitialContext initialContext = new InitialContext(_loginData.getInitialContextProperties());
+				try {
+					jfireRCLBackend = (JFireRCLBackendRemote) initialContext.lookup("ejb/byRemoteInterface/" + JFireRCLBackendRemote.class.getName());
+				} finally {
+					initialContext.close();
+				}
 				Login.logger.debug("**********************************************************"); //$NON-NLS-1$
 				loginResult.setSuccess(true);
-			} catch (RemoteException remoteException) {
-				Throwable cause = remoteException.getCause();
-				if (cause != null && cause.getCause() instanceof EJBException) {
-					EJBException ejbE = (EJBException)cause.getCause();
-					if (ejbE != null) {
-						if (ejbE.getCausedByException() instanceof SecurityException)
-							// SecurityException authentication failure
-							loginResult.setWasAuthenticationErr(true);
-					}
-				}
-				else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
-					loginResult.setWasAuthenticationErr(true);
-					loginResult.setException(remoteException);
-				}
-				else {
-					if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
-						loginResult.setWasAuthenticationErr(true);
-						loginResult.setSuccess(false);
-					}
-					else {
-						loginResult.setException(remoteException);
-						loginResult.setSuccess(false);
-					}
-				}
+//			} catch (RemoteException remoteException) {
+//				Throwable cause = remoteException.getCause();
+//				if (cause != null && cause.getCause() instanceof EJBException) {
+//					EJBException ejbE = (EJBException)cause.getCause();
+//					if (ejbE != null) {
+//						if (ejbE.getCausedByException() instanceof SecurityException)
+//							// SecurityException authentication failure
+//							loginResult.setWasAuthenticationErr(true);
+//					}
+//				}
+//				else if (cause != null && ExceptionUtils.indexOfThrowable(cause, LoginException.class) >= 0) {
+//					loginResult.setWasAuthenticationErr(true);
+//					loginResult.setException(remoteException);
+//				}
+//				else {
+//					if (ExceptionUtils.indexOfThrowable(cause, SecurityException.class) >= 0) {
+//						loginResult.setWasAuthenticationErr(true);
+//						loginResult.setSuccess(false);
+//					}
+//					else {
+//						loginResult.setException(remoteException);
+//						loginResult.setSuccess(false);
+//					}
+//				}
 			} catch (Exception x) {
 				if (x instanceof CommunicationException) {
 					loginResult.setWasCommunicationErr(true);
