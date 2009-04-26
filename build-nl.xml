@@ -1,0 +1,15 @@
+<project default="build">
+	<target name="build">
+		<delete>
+			<fileset dir="${project.dir}/src/org/nightlabs/classloader">
+				<include name="*"/>
+				<exclude name="README.txt"/>
+			</fileset>
+		</delete>
+		<copy todir="${project.dir}/src/org/nightlabs/classloader" verbose="true" failonerror="true" overwrite="true">
+			<fileset dir="../DelegatingClassLoader/src/org/nightlabs/classloader">
+				<include name="*"/>
+			</fileset>
+		</copy>
+	</target>
+</project>
