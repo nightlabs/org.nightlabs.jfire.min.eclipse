@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.nightlabs.rmissl.jar" sourcepath="/org.nightlabs.rmissl"/>
-	<classpathentry exported="true" kind="lib" path="lib/JFireIntegrationJBoss.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbossall-client.jar" sourcepath="/home/marco/java/jboss-4.2.0.GA-src"/>
 	<classpathentry exported="true" kind="lib" path="lib/JFireRCLBackend.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JFireRCLBackendBean.jar"/>
