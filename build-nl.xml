@@ -1,15 +1,46 @@
 <project default="build">
 	<target name="build">
 		<delete>
-			<fileset dir="${project.dir}/src/org/nightlabs/classloader">
+			<fileset dir="src/org/nightlabs/classloader">
 				<include name="*"/>
 				<exclude name="README.txt"/>
 			</fileset>
 		</delete>
-		<copy todir="${project.dir}/src/org/nightlabs/classloader" verbose="true" failonerror="true" overwrite="true">
+		<copy todir="src/org/nightlabs/classloader" verbose="true" failonerror="true" overwrite="true">
 			<fileset dir="../DelegatingClassLoader/src/org/nightlabs/classloader">
 				<include name="*"/>
 			</fileset>
+		</copy>
+		
+		<!--
+		  TODO dirty workaround! We need to think about a clean solution - there are many different target platforms.
+		-->
+		<mkdir dir="dist"/>
+		<jar
+			destfile="dist/org.nightlabs.jfire.base.j2ee.osgi_0.9.7.local.jar"
+			manifest="META-INF/MANIFEST.MF"
+		>
+			<fileset dir="bin" includes="**/*"/>
+			<fileset dir="." includes="hookconfigurators.properties"/>
+		</jar>
+		
+		<copy
+			failonerror="false"
+			todir="../target-rcp-jfire-max-win32/target/plugins"
+		>
+			<fileset dir="dist" includes="*.jar" />
+		</copy>
+		<copy
+			failonerror="false"
+			todir="../target-rcp-jfire-max-linux-gtk-x86_64/target/plugins"
+		>
+			<fileset dir="dist" includes="*.jar" />
+		</copy>
+		<copy
+			failonerror="false"
+			todir="../target-rcp-jfire-max-linux-gtk-x86/target/plugins"
+		>
+			<fileset dir="dist" includes="*.jar" />
 		</copy>
 	</target>
 </project>
