@@ -139,13 +139,13 @@ extends LSDPreferencePage
 	 * This <code>Button</code> is only instantiated, if we're currently editing a group's ConfigModule.
 	 * Otherwise, the {@link #inheritMemberConfigModule} will be created instead.
 	 */
-	private Button checkBoxAllowOverwrite;
+	private Button checkBoxAllowOverride;
 
 	/**
 	 * This <code>InheritanceToggleButton</code> is only instantiated, if we're currently editing
 	 * a member's ConfigModule (i.e. <b>not</b> in group context).
 	 *
-	 * @see #checkBoxAllowOverwrite
+	 * @see #checkBoxAllowOverride
 	 */
 	private InheritanceToggleButton inheritMemberConfigModule;
 
@@ -494,14 +494,14 @@ extends LSDPreferencePage
 	 */
 	public void updateConfigHeader() {
 		if (getConfigModuleController().getConfigModule().isGroupConfigModule()) {
-			if (checkBoxAllowOverwrite == null || checkBoxAllowOverwrite.isDisposed())
+			if (checkBoxAllowOverride == null || checkBoxAllowOverride.isDisposed())
 				return;
 
-			checkBoxAllowOverwrite.setSelection(
+			checkBoxAllowOverride.setSelection(
 					(getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).getWritableByChildren()
 					& FieldMetaData.WRITABLEBYCHILDREN_YES) != 0);
 
-			checkBoxAllowOverwrite.setBackground(header.getBackground());
+			checkBoxAllowOverride.setBackground(header.getBackground());
 		} else {
 
 			if (inheritMemberConfigModule == null || inheritMemberConfigModule.isDisposed())
@@ -538,28 +538,28 @@ extends LSDPreferencePage
 	 * @see #createConfigMemberHeader(Composite)
 	 */
 	protected void createConfigGroupHeader(Composite parent) {
-		checkBoxAllowOverwrite = new Button(parent, SWT.CHECK);
-		checkBoxAllowOverwrite.setSelection(
+		checkBoxAllowOverride = new Button(parent, SWT.CHECK);
+		checkBoxAllowOverride.setSelection(
 				(getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).getWritableByChildren()
 						& FieldMetaData.WRITABLEBYCHILDREN_YES) != 0
 						);
-		checkBoxAllowOverwrite.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.WhetherGroupAllowsConfigOverwrite")); //$NON-NLS-1$
+		checkBoxAllowOverride.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage.WhetherGroupAllowsConfigOverwrite")); //$NON-NLS-1$
 
-		checkBoxAllowOverwrite.addSelectionListener(new SelectionAdapter() {
+		checkBoxAllowOverride.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (getConfigModuleController().getConfigModule() == null || ! getConfigModuleController().getConfigModule().isGroupConfigModule())
 					return;
 
-				setConfigChanged(true);
 				getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).setWritableByChildren(
-						checkBoxAllowOverwrite.getSelection() == true ? FieldMetaData.WRITABLEBYCHILDREN_YES
-																													:	FieldMetaData.WRITABLEBYCHILDREN_NO);
+						checkBoxAllowOverride.getSelection() == true ? FieldMetaData.WRITABLEBYCHILDREN_YES
+								:	FieldMetaData.WRITABLEBYCHILDREN_NO);
+				setConfigChanged(true);
 			}
 		});
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
-		checkBoxAllowOverwrite.setLayoutData(gd);
+		checkBoxAllowOverride.setLayoutData(gd);
 	}
 
 	/**
@@ -594,7 +594,8 @@ extends LSDPreferencePage
 						return;
 
 					boolean selected = inheritMemberConfigModule.getSelection();
-					getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.class.getName()).setValueInherited(selected);
+					getConfigModuleController().getConfigModule().getFieldMetaData(
+							ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).setValueInherited(selected);
 
 //				FIXME: The first time inheritance is triggered, the valueInherited value is here set to true (look deeper)
 					if (selected)
@@ -641,8 +642,8 @@ extends LSDPreferencePage
 					else
 					{
 						setBodyContentEditable(true);
-						getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).setValueInherited(false);
-						setConfigChanged(true);
+//						getConfigModuleController().getConfigModule().getFieldMetaData(ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).setValueInherited(false);
+//						setConfigChanged(true);
 					}
 				}
 			});
