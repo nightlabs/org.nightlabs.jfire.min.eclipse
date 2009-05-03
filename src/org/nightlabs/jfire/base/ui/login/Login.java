@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.ejb.EJBAccessException;
 import javax.naming.CommunicationException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -1168,8 +1169,11 @@ extends AbstractEPProcessor
 				} finally {
 					initialContext.close();
 				}
+				jfireRCLBackend.ping("testLogin");
 				Login.logger.debug("**********************************************************"); //$NON-NLS-1$
 				loginResult.setSuccess(true);
+			} catch (EJBAccessException x) {
+				loginResult.setWasAuthenticationErr(true);
 //			} catch (RemoteException remoteException) {
 //				Throwable cause = remoteException.getCause();
 //				if (cause != null && cause.getCause() instanceof EJBException) {
