@@ -7,7 +7,8 @@ Bundle-ClassPath: org.nightlabs.jfire.base.j2ee.jar,
  lib/jbossall-client.jar,
  lib/JFireRCLBackend.jar,
  lib/JFireRCLBackendBean.jar,
- lib/JFireRemoteClassLoader.jar
+ lib/JFireRemoteClassLoader.jar,
+ lib/jboss-ejb3x.jar
 Bundle-Activator: org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -19,6 +20,8 @@ Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.nightlabs.base.ui
 Export-Package: EDU.oswego.cs.dl.util.concurrent,
  EDU.oswego.cs.dl.util.concurrent.misc,
+ javax.annotation,
+ javax.annotation.security,
  javax.ejb,
  javax.ejb.spi,
  javax.enterprise.deploy.model,
@@ -29,6 +32,7 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  javax.enterprise.deploy.spi.exceptions,
  javax.enterprise.deploy.spi.factories,
  javax.enterprise.deploy.spi.status,
+ javax.interceptor,
  javax.jms,
  javax.management,
  javax.management.j2ee,
