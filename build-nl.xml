@@ -19,9 +19,9 @@
 		<delete failonerror="false" verbose="true" dir="bin" />
 		<mkdir dir="bin"/>
 		<path id="compileCP">
-			<fileset dir="../target-rcp-jfire-max-win32/target/plugins" includes="**/*.jar"/>
-			<fileset dir="../target-rcp-jfire-max-linux-gtk-x86_64/target/plugins" includes="**/*.jar"/>
-			<fileset dir="../target-rcp-jfire-max-linux-gtk-x86/target/plugins" includes="**/*.jar"/>
+			<fileset dir=".." includes="target-rcp-jfire-max-win32/target/plugins/org.eclipse.osgi*.jar"/>
+			<fileset dir=".." includes="target-rcp-jfire-max-linux-gtk-x86_64/target/plugins/org.eclipse.osgi*.jar"/>
+			<fileset dir=".." includes="target-rcp-jfire-max-linux-gtk-x86/target/plugins/org.eclipse.osgi*.jar"/>
 		</path>
 		<javac debug="true" encoding="UTF-8" source="6" target="6" destdir="bin" classpathref="compileCP">
 			<src path="src"/>
