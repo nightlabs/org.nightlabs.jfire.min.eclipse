@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.querystore;
+package org.nightlabs.jfire.base.querystore.ui.table;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -54,7 +54,7 @@ public class QueryStoreEditDialog extends TitleAreaDialog
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.shellTitle")); //$NON-NLS-1$
+		newShell.setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.QueryStoreEditDialog.shellTitle")); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class QueryStoreEditDialog extends TitleAreaDialog
 		gd.horizontalSpan = 2;
 		languageChooser.setLayoutData(gd);
 		publicAvailableButton = new Button(wrapper, SWT.CHECK);
-		publicAvailableButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.queryPubliclyAvailableButton")); //$NON-NLS-1$
+		publicAvailableButton.setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.QueryStoreEditDialog.queryPubliclyAvailableButton")); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.RIGHT;
 		publicAvailableButton.setLayoutData(gd);
@@ -81,7 +81,7 @@ public class QueryStoreEditDialog extends TitleAreaDialog
 		});
 		
 		Label nameLabel = new Label(wrapper, SWT.NONE);
-		nameLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.queryNameLabel")); //$NON-NLS-1$
+		nameLabel.setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.QueryStoreEditDialog.queryNameLabel")); //$NON-NLS-1$
     nameEditor = new I18nTextEditor(wrapper, languageChooser);
     nameEditor.setI18nText(editedStore.getName());
     gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -89,7 +89,7 @@ public class QueryStoreEditDialog extends TitleAreaDialog
     nameEditor.setLayoutData(gd);
     
 		Label descriptionLabel = new Label(wrapper, SWT.NONE);
-		descriptionLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.queryDescriptionLabel")); //$NON-NLS-1$
+		descriptionLabel.setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.QueryStoreEditDialog.queryDescriptionLabel")); //$NON-NLS-1$
 		gd = new GridData();
 		gd.verticalAlignment = SWT.TOP;
 		descriptionLabel.setLayoutData(gd);
@@ -101,8 +101,8 @@ public class QueryStoreEditDialog extends TitleAreaDialog
 		descriptionEditor.setLayoutData(gd);
 
     applyDialogFont(wrapper);
-		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.dialogDescription")); //$NON-NLS-1$
-		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.querystore.QueryStoreEditDialog.dialogTitle")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.QueryStoreEditDialog.dialogDescription")); //$NON-NLS-1$
+		setTitle(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.QueryStoreEditDialog.dialogTitle")); //$NON-NLS-1$
 		
 		nameEditor.setFocus();
     return wrapper;

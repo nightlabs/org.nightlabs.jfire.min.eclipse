@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.querystore;
+package org.nightlabs.jfire.base.querystore.ui.table;
 
 import java.util.Collection;
 
@@ -32,38 +32,38 @@ import org.nightlabs.util.NLLocale;
 
 /**
  * FIXME: It should not be possible to press OK after this dialog is created!
- * 
+ *
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
 public class SaveQueryStoreDialog extends TitleAreaDialog
 {
 	private QueryStore selectedQueryConfiguration;
-	private BaseQueryStoreInActiveTableComposite storeTable; 
+	private BaseQueryStoreInActiveTableComposite storeTable;
 	private Collection<BaseQueryStore> existingQueries;
 	private boolean errorMsgSet = false;
-	
+
 	private static final int CREATE_NEW_QUERY = IDialogConstants.CLIENT_ID + 1;
-	
+
 	public SaveQueryStoreDialog(Shell parentShell, Collection<BaseQueryStore> existingQueries)
 	{
 		super(parentShell);
 		assert existingQueries != null;
 		this.existingQueries = existingQueries;
 	}
-	
+
 	@Override
 	protected int getShellStyle()
 	{
 		return super.getShellStyle() | SWT.RESIZE;
 	}
-	
+
 	@Override
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.ShellTitle")); //$NON-NLS-1$
+		newShell.setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.ShellTitle")); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{
@@ -77,52 +77,52 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 			{
 				okPressed();
 			}
-			
+
 		});
 		storeTable.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			private QueryStore currentlySelectedElement;
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
 				final QueryStore newSelection = storeTable.getFirstSelectedElement();
-				
+
 				// set okButton status
 				okButton.setEnabled(newSelection != null);
-				
+
 				// if we clicked on the already selected element
 				if (currentlySelectedElement != null && currentlySelectedElement == newSelection)
 				{
 					return;
 				}
-				
+
 				currentlySelectedElement = storeTable.getFirstSelectedElement();
-				
+
 				if (errorMsgSet)
 				{
-					setErrorMessage(null);					
+					setErrorMessage(null);
 				}
 			}
 		});
 		storeTable.setInput(existingQueries);
-		
-		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.title")); //$NON-NLS-1$
-		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.description")); //$NON-NLS-1$
+
+		setTitle(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.description")); //$NON-NLS-1$
 		return wrapper;
 	}
-	
+
 	private Button okButton;
-	
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent)
 	{
-		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
+		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
 		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,	false);
 		okButton.setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
 	}
-	
+
 	@Override
 	protected void buttonPressed(int buttonId)
 	{
@@ -132,24 +132,24 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 			QueryStore createdStore = createNewQueryStore();
 			if (createdStore == null)
 				return;
-			
+
 			okPressed();
 		}
 	}
-	
+
 	private QueryStore createNewQueryStore()
 	{
 		final User owner = UserDAO.sharedInstance().getUser(
 			SecurityReflector.getUserDescriptor().getUserObjectID(),
-			new String[] { FetchPlan.DEFAULT, User.FETCH_GROUP_NAME }, 
+			new String[] { FetchPlan.DEFAULT, User.FETCH_GROUP_NAME },
 			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor()
 			);
-		
-		final BaseQueryStore queryStore = new BaseQueryStore(owner, 
+
+		final BaseQueryStore queryStore = new BaseQueryStore(owner,
 			IDGenerator.nextID(BaseQueryStore.class), null);
-		
-		queryStore.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
-		
+
+		queryStore.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
+
 		existingQueries.add(queryStore);
 		storeTable.setInput(existingQueries);
 		storeTable.setSelection(new StructuredSelection(queryStore));
@@ -161,37 +161,37 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		if (! selectedStore.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()) )
 		{
 			errorMsgSet = true;
-			setErrorMessage(Messages.getString("org.nightlabs.jfire.base.ui.querystore.SaveQueryStoreDialog.cannotChangeNotOwnerError")); //$NON-NLS-1$
+			setErrorMessage(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.cannotChangeNotOwnerError")); //$NON-NLS-1$
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean changeName(QueryStore selectedStore)
 	{
 		final QueryStoreEditDialog inputDialog = new QueryStoreEditDialog(
 			getShell(), selectedStore);
-		
+
 		if (inputDialog.open() != Window.OK)
 			return false;
-		
+
 		selectedStore.setPubliclyAvailable(inputDialog.isPubliclyAvailable());
 		return true;
 	}
-	
+
 	@Override
 	protected void okPressed()
 	{
 		selectedQueryConfiguration = storeTable.getFirstSelectedElement();
 		if (! checkForRights(selectedQueryConfiguration))
 			return;
-		
+
 		if (! changeName(selectedQueryConfiguration))
 			return;
-		
+
 		super.okPressed();
 	}
-	
+
 	public QueryStore getSelectedQueryStore()
 	{
 		return selectedQueryConfiguration;
