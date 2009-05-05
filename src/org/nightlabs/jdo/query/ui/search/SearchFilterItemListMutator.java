@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,23 +24,25 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.search;
-
+package org.nightlabs.jdo.query.ui.search;
 
 
 /**
- * Common interface to handle triggers of searches.
- * 
- * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
+ * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public interface SearchResultFetcher {
+public interface SearchFilterItemListMutator {
+	
 	/**
-	 * Will be called when a search is triggered.
-	 * The criteriaBuilder will provide a SearchFilter.
-	 * Fetchers have to perform the search themselves
-	 * within this method.
+	 * Will be called when a new
+	 * SearchFilterItemEditor has to be created
+	 * and added to the list.<br/>
+	 * Most implementations will look like:
+	 * <pre>
+	 * 	list.addItemEditor(new MyInheritorOfSearchFilterItemEditor())
+	 * </pre>
 	 * 
-	 * @param filterProvider The provider to get the search criteria to search with.
+	 * @param list The list the editor should be added
 	 */
-	public void searchTriggered(SearchFilterProvider filterProvider);
+	public void addItemEditor(SearchFilterItemList list);
+	
 }

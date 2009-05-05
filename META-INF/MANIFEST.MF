@@ -4,11 +4,11 @@ Bundle-Name: JDO Plugin
 Bundle-SymbolicName: org.nightlabs.jdo.query.ui;singleton:=true
 Bundle-Version: 0.9.7.qualifier
 Bundle-ClassPath: .
-Bundle-Activator: org.nightlabs.jdo.ui.JdoPlugin
+Bundle-Activator: org.nightlabs.jdo.query.ui.JdoPlugin
 Bundle-Vendor: NightLabs.org
 Bundle-Localization: plugin
-Export-Package: org.nightlabs.jdo.ui;uses:="org.eclipse.ui.plugin,org.osgi.framework",
- org.nightlabs.jdo.ui.search
+Export-Package: org.nightlabs.jdo.query.ui;uses:="org.eclipse.ui.plugin,org.osgi.framework",
+ org.nightlabs.jdo.query.ui.search
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.nightlabs.base.ui,

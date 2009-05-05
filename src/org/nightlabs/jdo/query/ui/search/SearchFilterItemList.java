@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,7 +24,7 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.search;
+package org.nightlabs.jdo.query.ui.search;
 
 import java.util.ArrayList;
 import java.util.Iterator;

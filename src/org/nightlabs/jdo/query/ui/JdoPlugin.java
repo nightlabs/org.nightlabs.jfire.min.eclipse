@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,58 +24,73 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.search;
+package org.nightlabs.jdo.query.ui;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
- * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * The main plugin class to be used in the desktop.
  */
-public abstract class SearchFilterItemEditor {
-	
+public class JdoPlugin extends AbstractUIPlugin {
+	//The shared instance.
+	private static JdoPlugin plugin;
+//	//Resource bundle.
+//	private ResourceBundle resourceBundle;
+
 	/**
-	 * After the first call this method should always
-	 * return the same control. So from the second call
-	 * the parent parameter should be neglected.
-	 * 
-	 * @param parent
-	 * @return
+	 * The constructor.
 	 */
-	public abstract Control getControl(Composite parent);
-	
-	/**
-	 * Should return the SearchFilterItem this
-	 * editor has build.
-	 * 
-	 * @return
-	 */
-	public abstract SearchFilterItem getSearchFilterItem();
-	
-	/**
-	 * Will be called when the
-	 * editor is closed. It should be
-	 * used for cleanup (removing listeners),
-	 * not for disposing widgets.
-	 */
-	public abstract void close();
-	
-	/**
-	 * Creates a new instance of the current class.
-	 * 
-	 * @return
-	 */
-	public SearchFilterItemEditor newInstance() {
-		SearchFilterItemEditor newEditor = null;
-		try {
-			newEditor = this.getClass().newInstance();
-		} catch (Throwable t) {
-			IllegalStateException ill = new IllegalStateException("Could not create new instance of SearchFilterItemEditor "+this); //$NON-NLS-1$
-			ill.initCause(t);
-			throw ill;
-		}
-		return newEditor;
+	public JdoPlugin() {
+		super();
+		plugin = this;
+//		try {
+//			resourceBundle = ResourceBundle.getBundle("org.nightlabs.jdo.query.ui.plugin"); //$NON-NLS-1$
+//		} catch (MissingResourceException x) {
+//			resourceBundle = null;
+//		}
 	}
-	
+
+	/**
+	 * This method is called upon plug-in activation
+	 */
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+	}
+
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+	}
+
+	/**
+	 * Returns the shared instance.
+	 */
+	public static JdoPlugin getDefault() {
+		return plugin;
+	}
+
+//	/**
+//	 * Returns the string from the plugin's resource bundle,
+//	 * or 'key' if not found.
+//	 */
+//	public static String getResourceString(String key) {
+//		ResourceBundle bundle = JdoPlugin.getDefault().getResourceBundle();
+//		try {
+//			return (bundle != null) ? bundle.getString(key) : key;
+//		} catch (MissingResourceException e) {
+//			return key;
+//		}
+//	}
+
+//	/**
+//	 * Returns the plugin's resource bundle,
+//	 */
+//	public ResourceBundle getResourceBundle() {
+//		return resourceBundle;
+//	}
 }

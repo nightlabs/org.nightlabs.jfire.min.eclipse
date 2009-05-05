@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,37 +24,23 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.search;
+package org.nightlabs.jdo.query.ui.search;
 
-import org.eclipse.swt.widgets.Composite;
+
 
 /**
- * Default implementation of a item-based SearchFilterProvider.
+ * Common interface to handle triggers of searches.
  * 
- * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public abstract class ItemBasedSearchFilterProvider extends
-		AbstractItemBasedSearchFilterProvider {
-
-	public ItemBasedSearchFilterProvider(SearchFilterItemListMutator listMutator) {
-		super(listMutator);
-	}
-
-	@Override
-	public AbstractItemBasedSearchFilterProviderComposite createProviderComposite(
-			Composite parent,
-			int style,
-			SearchFilterProvider searchFilterProvider,
-			SearchFilterItemListMutator listMutator,
-			SearchResultFetcher resultFetcher
-		) {
-		return new ItemBasedSearchFilterProviderComposite(
-				parent,
-				style,
-				searchFilterProvider,
-				listMutator,
-				resultFetcher
-			);
-	}
-
+public interface SearchResultFetcher {
+	/**
+	 * Will be called when a search is triggered.
+	 * The criteriaBuilder will provide a SearchFilter.
+	 * Fetchers have to perform the search themselves
+	 * within this method.
+	 * 
+	 * @param filterProvider The provider to get the search criteria to search with.
+	 */
+	public void searchTriggered(SearchFilterProvider filterProvider);
 }

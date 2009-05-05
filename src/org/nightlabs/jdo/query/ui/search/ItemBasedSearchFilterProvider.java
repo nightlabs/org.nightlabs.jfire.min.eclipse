@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,73 +24,37 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui;
+package org.nightlabs.jdo.query.ui.search;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
+import org.eclipse.swt.widgets.Composite;
 
 /**
- * The main plugin class to be used in the desktop.
+ * Default implementation of a item-based SearchFilterProvider.
+ * 
+ * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class JdoPlugin extends AbstractUIPlugin {
-	//The shared instance.
-	private static JdoPlugin plugin;
-//	//Resource bundle.
-//	private ResourceBundle resourceBundle;
+public abstract class ItemBasedSearchFilterProvider extends
+		AbstractItemBasedSearchFilterProvider {
 
-	/**
-	 * The constructor.
-	 */
-	public JdoPlugin() {
-		super();
-		plugin = this;
-//		try {
-//			resourceBundle = ResourceBundle.getBundle("org.nightlabs.jdo.ui.plugin"); //$NON-NLS-1$
-//		} catch (MissingResourceException x) {
-//			resourceBundle = null;
-//		}
+	public ItemBasedSearchFilterProvider(SearchFilterItemListMutator listMutator) {
+		super(listMutator);
 	}
 
-	/**
-	 * This method is called upon plug-in activation
-	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+	public AbstractItemBasedSearchFilterProviderComposite createProviderComposite(
+			Composite parent,
+			int style,
+			SearchFilterProvider searchFilterProvider,
+			SearchFilterItemListMutator listMutator,
+			SearchResultFetcher resultFetcher
+		) {
+		return new ItemBasedSearchFilterProviderComposite(
+				parent,
+				style,
+				searchFilterProvider,
+				listMutator,
+				resultFetcher
+			);
 	}
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static JdoPlugin getDefault() {
-		return plugin;
-	}
-
-//	/**
-//	 * Returns the string from the plugin's resource bundle,
-//	 * or 'key' if not found.
-//	 */
-//	public static String getResourceString(String key) {
-//		ResourceBundle bundle = JdoPlugin.getDefault().getResourceBundle();
-//		try {
-//			return (bundle != null) ? bundle.getString(key) : key;
-//		} catch (MissingResourceException e) {
-//			return key;
-//		}
-//	}
-
-//	/**
-//	 * Returns the plugin's resource bundle,
-//	 */
-//	public ResourceBundle getResourceBundle() {
-//		return resourceBundle;
-//	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jdo.ui.search;
+package org.nightlabs.jdo.query.ui.search;
 
 import org.eclipse.swt.events.ModifyListener;
 

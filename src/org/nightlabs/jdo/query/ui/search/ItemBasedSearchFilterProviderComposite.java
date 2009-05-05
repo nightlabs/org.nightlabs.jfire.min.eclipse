@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,38 +24,40 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.search;
+package org.nightlabs.jdo.query.ui.search;
 
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.jdo.search.SearchFilter;
 
 /**
- * Common interface to handle different scenarios of
- * searching entities with the SearchFilter framework.
+ * Default implementation of an ItemBased SearchFilterProviderComposite.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public interface SearchFilterProvider {
-	
+public class ItemBasedSearchFilterProviderComposite extends
+		AbstractItemBasedSearchFilterProviderComposite {
+
 	/**
-	 * Should create and return a GUI-representation of this
-	 * SearchFilterProvider as Composite.
-	 * 
 	 * @param parent
-	 * @return
+	 * @param style
+	 * @param searchFilterProvider
+	 * @param listMutator
+	 * @param resultFetcher
+	 * @param login
 	 */
-	public Composite createComposite(Composite parent);
-	
+	public ItemBasedSearchFilterProviderComposite(Composite parent, int style,
+			SearchFilterProvider searchFilterProvider,
+			SearchFilterItemListMutator listMutator,
+			SearchResultFetcher resultFetcher) {
+		super(parent, style, searchFilterProvider, listMutator, resultFetcher);
+	}
+
 	/**
-	 * Should return the Composite created in {@link #createComposite(Composite)}.
-	 * @return
+	 * @see org.nightlabs.jdo.query.ui.search.AbstractItemBasedSearchFilterProviderComposite#createSearchFilterItemList(org.eclipse.swt.widgets.Composite, int)
 	 */
-	public Composite getComposite();
-	
-	/**
-	 * Return the {@link SearchFilter} build up by this SearchFilterProvider.
-	 * 
-	 * @return
-	 */
-	public SearchFilter getSearchFilter();
+	@Override
+	public SearchFilterItemList createSearchFilterItemList(Composite parent,
+			int style) {
+		return new SearchFilterItemList(parent, style);
+	}
+
 }

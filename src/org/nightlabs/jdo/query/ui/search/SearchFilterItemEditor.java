@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * org.nightlabs.jdo.ui - NightLabs Eclipse utilities for JDO                     *
+ * org.nightlabs.jdo.query.ui - NightLabs Eclipse utilities for JDO                     *
  * Copyright (C) 2004-2005 NightLabs - http://NightLabs.org                    *
  *                                                                             *
  * This library is free software; you can redistribute it and/or               *
@@ -24,25 +24,58 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jdo.ui.search;
+package org.nightlabs.jdo.query.ui.search;
 
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jdo.search.SearchFilterItem;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public interface SearchFilterItemListMutator {
+public abstract class SearchFilterItemEditor {
 	
 	/**
-	 * Will be called when a new
-	 * SearchFilterItemEditor has to be created
-	 * and added to the list.<br/>
-	 * Most implementations will look like:
-	 * <pre>
-	 * 	list.addItemEditor(new MyInheritorOfSearchFilterItemEditor())
-	 * </pre>
+	 * After the first call this method should always
+	 * return the same control. So from the second call
+	 * the parent parameter should be neglected.
 	 * 
-	 * @param list The list the editor should be added
+	 * @param parent
+	 * @return
 	 */
-	public void addItemEditor(SearchFilterItemList list);
+	public abstract Control getControl(Composite parent);
+	
+	/**
+	 * Should return the SearchFilterItem this
+	 * editor has build.
+	 * 
+	 * @return
+	 */
+	public abstract SearchFilterItem getSearchFilterItem();
+	
+	/**
+	 * Will be called when the
+	 * editor is closed. It should be
+	 * used for cleanup (removing listeners),
+	 * not for disposing widgets.
+	 */
+	public abstract void close();
+	
+	/**
+	 * Creates a new instance of the current class.
+	 * 
+	 * @return
+	 */
+	public SearchFilterItemEditor newInstance() {
+		SearchFilterItemEditor newEditor = null;
+		try {
+			newEditor = this.getClass().newInstance();
+		} catch (Throwable t) {
+			IllegalStateException ill = new IllegalStateException("Could not create new instance of SearchFilterItemEditor "+this); //$NON-NLS-1$
+			ill.initCause(t);
+			throw ill;
+		}
+		return newEditor;
+	}
 	
 }
