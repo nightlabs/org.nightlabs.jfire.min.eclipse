@@ -15,6 +15,19 @@
 		<!--
 		  TODO dirty workaround! We need to think about a clean solution - there are many different target platforms.
 		-->
+		<!-- first compile -->
+		<delete failonerror="false" verbose="true" dir="bin" />
+		<mkdir dir="bin"/>
+		<path id="compileCP">
+			<fileset dir="../target-rcp-jfire-max-win32/target/plugins" includes="**/*.jar"/>
+			<fileset dir="../target-rcp-jfire-max-linux-gtk-x86_64/target/plugins" includes="**/*.jar"/>
+			<fileset dir="../target-rcp-jfire-max-linux-gtk-x86/target/plugins" includes="**/*.jar"/>
+		</path>
+		<javac debug="true" encoding="UTF-8" source="6" target="6" destdir="bin" classpathref="compileCP">
+			<src path="src"/>
+		</javac>
+
+		<!-- then JAR it -->
 		<mkdir dir="dist"/>
 		<jar
 			destfile="dist/org.nightlabs.jfire.base.j2ee.osgi_0.9.7.local.jar"
@@ -24,6 +37,7 @@
 			<fileset dir="." includes="hookconfigurators.properties"/>
 		</jar>
 		
+		<!-- and finally deploy -->
 		<copy
 			failonerror="false"
 			todir="../target-rcp-jfire-max-win32/target/plugins"
