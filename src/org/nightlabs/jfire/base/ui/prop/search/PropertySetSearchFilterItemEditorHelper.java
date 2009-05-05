@@ -45,7 +45,7 @@ public interface PropertySetSearchFilterItemEditorHelper {
 	
 	/**
 	 * Will be called to return results within
-	 * {@link org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getSearchFilterItem()}
+	 * {@link org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#getSearchFilterItem()}
 	 * @return
 	 */
 	public SearchFilterItem getSearchFilterItem();

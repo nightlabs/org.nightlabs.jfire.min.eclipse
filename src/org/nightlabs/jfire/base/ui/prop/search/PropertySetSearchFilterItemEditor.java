@@ -44,8 +44,8 @@ import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.job.Job;
+import org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor;
 import org.nightlabs.jdo.search.SearchFilterItem;
-import org.nightlabs.jdo.ui.search.SearchFilterItemEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
@@ -74,7 +74,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	private Combo comboSearchField;
 
 	/**
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getControl(org.eclipse.swt.widgets.Composite, int)
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#getControl(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
 	public Control getControl(Composite parent) {
@@ -154,7 +154,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	/**
 	 * Delegates to the current PropertySetSearchFilterItemEditorHelper.
 	 *
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#getSearchFilterItem()
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#getSearchFilterItem()
 	 */
 	@Override
 	public SearchFilterItem getSearchFilterItem() {
@@ -208,7 +208,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	}
 
 	/**
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterItemEditor#close()
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#close()
 	 */
 	@Override
 	public void close() {

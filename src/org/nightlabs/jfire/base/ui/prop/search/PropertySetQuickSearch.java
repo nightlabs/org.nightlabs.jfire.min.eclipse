@@ -37,9 +37,9 @@ import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.SelectableComposite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.jdo.query.ui.search.SearchFilterProvider;
+import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
-import org.nightlabs.jdo.ui.search.SearchFilterProvider;
-import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
 
 /**
@@ -87,7 +87,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	/**
 	 * Default implementation creates a wrapper Composite with a Button.
 	 *
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#createComposite(org.eclipse.swt.widgets.Composite)
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#createComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	public Composite createComposite(Composite parent) {
 		wrapperComposite = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -183,7 +183,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	 * Default implementation will always return a fresh and empty
 	 * PersonSearchFilter.
 	 *
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getSearchFilter()
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#getSearchFilter()
 	 */
 	public SearchFilter getSearchFilter() {
 		return getSearchFilter(true);

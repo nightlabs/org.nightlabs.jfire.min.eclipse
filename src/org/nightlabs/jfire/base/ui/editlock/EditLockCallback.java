@@ -6,7 +6,7 @@ public abstract class EditLockCallback
 {
 	/**
 	 * After there was no user-activity for a certain time (i.e. the EditLock was not reacquired by a follow-up call to
-	 * {@link EditLockMan#acquireEditLock(org.nightlabs.jfire.editLock.id.EditLockTypeID, org.nightlabs.jdo.ui.ObjectID, String, EditLockCallback, org.eclipse.swt.widgets.Shell, IProgressMonitor)}),
+	 * {@link EditLockMan#acquireEditLock(org.nightlabs.jfire.editLock.id.EditLockTypeID, org.nightlabs.jdo.query.ui.ObjectID, String, EditLockCallback, org.eclipse.swt.widgets.Shell, IProgressMonitor)}),
 	 * this method will be called. Depending on the return value, different actions take place:
 	 * <ul>
 	 * <li>{@link InactivityAction#DIALOG_ABOUT_TO_EXPIRE}: A dialog is presented to notify the user about the existing locks. If the user does

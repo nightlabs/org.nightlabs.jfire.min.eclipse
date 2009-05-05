@@ -1,8 +1,8 @@
 package org.nightlabs.jfire.base.ui.prop.search;
 
+import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jdo.search.SearchFilterItem;
-import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
 

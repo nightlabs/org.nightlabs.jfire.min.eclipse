@@ -28,8 +28,8 @@ package org.nightlabs.jfire.base.ui.person.search;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.jdo.ui.search.SearchFilterProvider;
-import org.nightlabs.jdo.ui.search.SearchResultFetcher;
+import org.nightlabs.jdo.query.ui.search.SearchFilterProvider;
+import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite;
 import org.nightlabs.jfire.base.ui.prop.PropertySetTable;
 import org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemListMutator;

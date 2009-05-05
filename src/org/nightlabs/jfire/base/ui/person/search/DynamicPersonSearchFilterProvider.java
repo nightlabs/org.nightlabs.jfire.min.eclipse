@@ -26,9 +26,9 @@
 
 package org.nightlabs.jfire.base.ui.person.search;
 
+import org.nightlabs.jdo.query.ui.search.SearchFilterItemListMutator;
+import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
-import org.nightlabs.jdo.ui.search.SearchFilterItemListMutator;
-import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.prop.search.DynamicPropertySetSearchFilterProvider;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
 

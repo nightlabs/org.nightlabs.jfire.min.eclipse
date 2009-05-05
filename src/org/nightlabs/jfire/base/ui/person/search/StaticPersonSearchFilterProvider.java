@@ -39,10 +39,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.jdo.query.ui.search.EarlySearchFilterProvider;
+import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jdo.search.SearchFilterItem;
-import org.nightlabs.jdo.ui.search.EarlySearchFilterProvider;
-import org.nightlabs.jdo.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -101,7 +101,7 @@ implements EarlySearchFilterProvider
 	}
 	
 	/**
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getComposite(org.eclipse.swt.widgets.Composite)
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#getComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	public Composite createComposite(Composite parent) {
 		wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -137,7 +137,7 @@ implements EarlySearchFilterProvider
 	}
 
 	/**
-	 * @see org.nightlabs.jdo.ui.search.SearchFilterProvider#getPersonSearchFilter()
+	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#getPersonSearchFilter()
 	 */
 	public SearchFilter getSearchFilter() {
 		return buildPersonSearchFilter();
@@ -281,7 +281,7 @@ implements EarlySearchFilterProvider
 	}
 
 	/* (non-Javadoc)
-	 * @see org.nightlabs.jdo.ui.search.EarlySearchFilterProvider#addSearchTextModifyListener(org.eclipse.swt.events.ModifyListener)
+	 * @see org.nightlabs.jdo.query.ui.search.EarlySearchFilterProvider#addSearchTextModifyListener(org.eclipse.swt.events.ModifyListener)
 	 */
 	@Override
 	public void addSearchTextModifyListener(ModifyListener listener) {
@@ -294,7 +294,7 @@ implements EarlySearchFilterProvider
 	}
 
 	/* (non-Javadoc)
-	 * @see org.nightlabs.jdo.ui.search.EarlySearchFilterProvider#removeSearchTextModifyListener(org.eclipse.swt.events.ModifyListener)
+	 * @see org.nightlabs.jdo.query.ui.search.EarlySearchFilterProvider#removeSearchTextModifyListener(org.eclipse.swt.events.ModifyListener)
 	 */
 	@Override
 	public void removeSearchTextModifyListener(ModifyListener listener) {
