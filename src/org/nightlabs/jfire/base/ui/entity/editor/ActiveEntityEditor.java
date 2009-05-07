@@ -171,9 +171,6 @@ extends EntityEditor
 	 * Get the title for this editor from the {@link #retrieveEntityForEditorTitle(ProgressMonitor) previously retrieved} entity.
 	 * If this method returns <code>null</code>, the editor-title is not changed.
 	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * </p>
-	 * <p>
 	 * Override this method, as well as {@link #retrieveEntityForEditorTitle(ProgressMonitor)}, to
 	 * determine a nice editor-title.
 	 * </p>
@@ -182,10 +179,7 @@ extends EntityEditor
 	 * @return <code>null</code> or the title for this editor.
 	 * @see #retrieveEntityForEditorTitle(ProgressMonitor)
 	 */
-	protected String getEditorTitleFromEntity(Object entity)
-	{
-		return null;
-	}
+	protected abstract String getEditorTitleFromEntity(Object entity);
 
 	/**
 	 * Obtain the data that is needed for displaying the correct editor title.
@@ -198,9 +192,6 @@ extends EntityEditor
 	 * {@link #getEditorTitleFromEntity(Object)} is called for every non-<code>null</code> result.
 	 * </p>
 	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * </p>
-	 * <p>
 	 * Override this method, as well as {@link #getEditorTitleFromEntity(Object)}, to
 	 * determine a nice editor-title.
 	 * </p>
@@ -210,10 +201,6 @@ extends EntityEditor
 	 *		{@link #getEditorTitleFromEntity(Object)} method.
 	 * @see #getEditorTitleFromEntity(Object)
 	 */
-	protected Object retrieveEntityForEditorTitle(ProgressMonitor monitor)
-	{
-		monitor.done();
-		return null;
-	}
+	protected abstract Object retrieveEntityForEditorTitle(ProgressMonitor monitor);
 
 }
