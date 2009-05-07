@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.querystore.ui.overview;
+package org.nightlabs.jfire.querystore.ui.overview;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,12 +52,12 @@ import org.nightlabs.jfire.base.ui.overview.Entry;
 import org.nightlabs.jfire.base.ui.overview.EntryViewer;
 import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.querystore.ui.BaseQueryStoreActiveTableComposite;
 import org.nightlabs.jfire.querystore.ui.QueryStoreEditDialog;
+import org.nightlabs.jfire.querystore.ui.resource.Messages;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.Util;

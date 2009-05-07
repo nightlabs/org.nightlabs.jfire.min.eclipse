@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.querystore.ui.resource;
+package org.nightlabs.jfire.querystore.ui.resource;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

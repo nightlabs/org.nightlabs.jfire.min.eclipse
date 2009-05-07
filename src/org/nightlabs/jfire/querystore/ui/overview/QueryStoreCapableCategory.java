@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.querystore.ui.overview;
+package org.nightlabs.jfire.querystore.ui.overview;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;

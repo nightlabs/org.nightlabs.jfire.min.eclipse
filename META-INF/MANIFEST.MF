@@ -10,5 +10,5 @@ Require-Bundle: org.eclipse.ui,
  org.nightlabs.jfire.base.ui;bundle-version="0.9.7"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-LazyStart: true
-Export-Package: org.nightlabs.jfire.base.querystore.ui.overview,
- org.nightlabs.jfire.querystore.ui
+Export-Package: org.nightlabs.jfire.querystore.ui,
+ org.nightlabs.jfire.querystore.ui.overview

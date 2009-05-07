@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.querystore.ui.overview;
+package org.nightlabs.jfire.querystore.ui.overview;
 
 import org.nightlabs.jfire.base.ui.overview.Category;
 import org.nightlabs.jfire.base.ui.overview.DefaultCategoryFactory;
