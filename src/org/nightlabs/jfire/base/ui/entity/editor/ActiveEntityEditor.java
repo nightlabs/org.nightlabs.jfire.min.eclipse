@@ -129,10 +129,9 @@ extends EntityEditor
 				if (loadTitleJob != thisJob)
 					return Status.CANCEL_STATUS;
 
-				System.err.println("**********");
 				Object entity = retrieveEntityForEditorTitle(monitor);
+				addChangeListener(entity);
 				if (entity != null) {
-					addChangeListener(entity);
 					final String title = getEditorTitleFromEntity(entity);
 					if (title != null) {
 						Display.getDefault().asyncExec(new Runnable() {
