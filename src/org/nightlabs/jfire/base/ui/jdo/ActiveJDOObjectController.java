@@ -99,6 +99,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 		if (!jdoObjectsChangedListeners.isEmpty()) {
 			Object[] listeners = jdoObjectsChangedListeners.getListeners();
 			for (Object listener : listeners) {
+				@SuppressWarnings("unchecked")
 				JDOObjectsChangedListener<JDOObjectID, JDOObject> l = (JDOObjectsChangedListener<JDOObjectID, JDOObject>) listener;
 				l.onJDOObjectsChanged(event);
 			}
@@ -164,6 +165,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 
 				HashSet<JDOObjectID> jdoObjectIDsToLoad = new HashSet<JDOObjectID>();
 				for (DirtyObjectID dirtyObjectID : event.getDirtyObjectIDs()) {
+					@SuppressWarnings("unchecked")
 					JDOObjectID jdoObjectID = (JDOObjectID) dirtyObjectID.getObjectID();
 					// only load it, if it's really new - i.e. we don't have it yet!
 					if (!jdoObjectID2jdoObject.containsKey(jdoObjectID))
@@ -177,6 +179,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
 					if (jdoObjects != null) {
 						for (JDOObject jdoObject : jdoObjects) {
+							@SuppressWarnings("unchecked")
 							JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
 							ignoredJDOObjectIDs.remove(jdoObjectID);
 							jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
@@ -228,6 +231,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				Map<JDOObjectID, JDOObject> _deletedJDOObjects = null;
 				for (SubjectCarrier subjectCarrier : (List<? extends SubjectCarrier>)notificationEvent.getSubjectCarriers()) {
 					DirtyObjectID dirtyObjectID = (DirtyObjectID) subjectCarrier.getSubject();
+					@SuppressWarnings("unchecked")
 					JDOObjectID jdoObjectID = (JDOObjectID) dirtyObjectID.getObjectID();
 
 					if (JDOLifecycleState.DELETED.equals(dirtyObjectID.getLifecycleState())) {
@@ -246,6 +250,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
 					loadedJDOObjects = jdoObjects;
 					for (JDOObject jdoObject : jdoObjects) {
+						@SuppressWarnings("unchecked")
 						JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
 						ignoredJDOObjectIDs.remove(jdoObjectID);
 						jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
@@ -351,8 +356,11 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 						jdoObjectID2jdoObject = new HashMap<JDOObjectID, JDOObject>();
 
 					jdoObjectID2jdoObject.clear();
-					for (JDOObject jdoObject : jdoObjects)
-						jdoObjectID2jdoObject.put((JDOObjectID) JDOHelper.getObjectId(jdoObject), jdoObject);
+					for (JDOObject jdoObject : jdoObjects) {
+						@SuppressWarnings("unchecked")
+						JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
+						jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
+					}
 
 					createJDOObjectList();
 				} // synchronized (jdoObjectID2jdoObjectMutex) {
@@ -361,6 +369,13 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				{
 					public void run()
 					{
+						if (closed) {
+							// Even though fireJDOObjectsChangedEvent(...) checks the closed state,
+							// we'll get an exception due to the call to getJDOObjects(). Hence we check hre again.
+							logger.warn("getJDOObjects.job.run: already closed: " + ActiveJDOObjectController.this); //$NON-NLS-1$
+							return;
+						}
+
 						fireJDOObjectsChangedEvent(getJDOObjects(), null, null);
 					}
 				});
