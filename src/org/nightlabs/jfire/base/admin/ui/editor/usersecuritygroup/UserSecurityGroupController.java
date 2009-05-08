@@ -25,7 +25,6 @@ package org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup;
 
 import javax.jdo.FetchPlan;
 
-import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -57,10 +56,10 @@ public class UserSecurityGroupController extends ActiveEntityEditorPageControlle
 
 	private static final long serialVersionUID = -1651161683093714800L;
 
-	/**
-	 * LOG4J logger used by this class
-	 */
-	private static final Logger logger = Logger.getLogger(UserSecurityGroupController.class);
+//	/**
+//	 * LOG4J logger used by this class
+//	 */
+//	private static final Logger logger = Logger.getLogger(UserSecurityGroupController.class);
 
 	/**
 	 * The userSecurityGroup id.
@@ -98,7 +97,7 @@ public class UserSecurityGroupController extends ActiveEntityEditorPageControlle
 			monitor.done();
 		}
 	}
-	
+
 	@Override
 	protected UserSecurityGroup storeEntity(UserSecurityGroup controllerObject, ProgressMonitor monitor) {
 		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupController.job.savingUserSecurityGroup"), 6); //$NON-NLS-1$
@@ -120,7 +119,7 @@ public class UserSecurityGroupController extends ActiveEntityEditorPageControlle
 	protected String[] getEntityFetchGroups() {
 		return FETCH_GROUPS_USER_SECURITY_GROUP;
 	}
-	
+
 	/**
 	 * Get the userID.
 	 * @return the userID

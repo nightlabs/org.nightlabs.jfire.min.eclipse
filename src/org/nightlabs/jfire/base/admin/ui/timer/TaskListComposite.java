@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -34,7 +35,6 @@ import org.nightlabs.base.ui.notification.SelectionManager;
 import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.table.AbstractInvertableTableSorter;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.table.TableSortSelectionListener;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -54,7 +54,7 @@ public class TaskListComposite
 		extends AbstractTableComposite<Task>
 {
 	protected static class TaskListContentProvider
-			extends TableContentProvider
+			extends ArrayContentProvider
 	{
 	}
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -25,7 +26,6 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
@@ -37,7 +37,7 @@ public class RoleGroupTableViewer extends TableViewer
 	/**
 	 * Content provider for role groups.
 	 */
-	private final class RoleGroupsContentProvider extends TableContentProvider
+	private final class RoleGroupsContentProvider extends ArrayContentProvider
 	{
 		/* (non-Javadoc)
 		 * @see org.nightlabs.base.ui.table.TableContentProvider#getElements(java.lang.Object)

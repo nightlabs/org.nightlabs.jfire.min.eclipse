@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.admin.ui.editor.authority;
 
 import java.util.Map;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -15,7 +16,6 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.editor.user.CheckboxEditingSupport;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
@@ -44,11 +44,11 @@ public class AuthorizedObjectTableViewer extends TableViewer
 				case 1:
 					AuthorizedObject authorizedObject = me.getKey();
 					if (authorizedObject instanceof UserSecurityGroup) {
-						return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), 
-								AuthorizedObjectLabelProvider.class, "UserSecurityGroup");	//$NON-NLS-1$						
+						return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(),
+								AuthorizedObjectLabelProvider.class, "UserSecurityGroup");	//$NON-NLS-1$
 					}
 					else if (authorizedObject instanceof UserLocal) {
-						return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(), 
+						return SharedImages.getSharedImage(BaseAdminPlugin.getDefault(),
 								AuthorizedObjectLabelProvider.class);	//$NON-NLS-1$
 					}
 				default: return null;
@@ -113,7 +113,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 		getTable().setLayout(tlayout);
 		getTable().setHeaderVisible(true);
 
-		setContentProvider(new TableContentProvider());
+		setContentProvider(new ArrayContentProvider());
 		setLabelProvider(new AuthorizedObjectLabelProvider(this));
 	}
 }

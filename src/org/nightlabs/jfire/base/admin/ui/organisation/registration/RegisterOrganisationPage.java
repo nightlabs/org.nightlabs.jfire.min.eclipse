@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -55,7 +56,6 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractInvertableTableSorter;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.table.TableSortSelectionListener;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
@@ -83,7 +83,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 	}
 
 	private TableViewer organisationTable;
-	private TableContentProvider organisationTableContentProvider = new TableContentProvider() {
+	private ArrayContentProvider organisationTableContentProvider = new ArrayContentProvider() {
 		private Organisation[] organisations = null;
 		private String[] messages = null;
 		@Override
@@ -212,7 +212,6 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 
 		new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.RegisterOrganisationPage.loadOrganisationsJob.name")) { //$NON-NLS-1$
 			@Override
-			@SuppressWarnings("unchecked") //$NON-NLS-1$
 			protected IStatus run(IProgressMonitor monitor)
 			{
 				try {

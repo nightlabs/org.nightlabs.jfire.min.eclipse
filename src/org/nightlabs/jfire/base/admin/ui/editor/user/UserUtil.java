@@ -32,12 +32,12 @@ import org.nightlabs.base.ui.notification.IDirtyStateManager;
  */
 public class UserUtil
 {
-	/**
-	 * LOG4J logger used by this class
-	 */
-	private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger
-			.getLogger(UserUtil.class);
-	
+//	/**
+//	 * LOG4J logger used by this class
+//	 */
+//	private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger
+//			.getLogger(UserUtil.class);
+//
 //	/**
 //	 * Get a display name for a user.
 //	 * @param user The user to get the name for
@@ -63,7 +63,7 @@ public class UserUtil
 //		else
 //			return user.getUserID();
 //	}
-	
+
 	/**
 	 * Returns an {@link IDirtyStateManager} that delegates markDirty/markUndirty events to the given section.
 	 * @param section The section to which the events should be delegated.

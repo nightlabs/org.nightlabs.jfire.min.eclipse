@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.jdo.JDOHelper;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,7 +16,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.ui.config.ConfigSetupRegistry;
 import org.nightlabs.jfire.base.ui.config.ConfigSetupVisualiser;
@@ -27,11 +27,11 @@ import org.nightlabs.progress.NullProgressMonitor;
 
 
 public class ConfigGroupMembersTable extends AbstractTableComposite<Config> {
-	
+
 	private IDirtyStateManager dirtyStateManager;
 	private ConfigGroupModel model = null;
 	private String columnLabel = null;
-	
+
 	public ConfigGroupMembersTable(Composite parent, int style, IDirtyStateManager dirtyStateManager, String columnLabel) {
 		super(parent, SWT.NONE, false, SWT.CHECK);
 		this.dirtyStateManager = dirtyStateManager;
@@ -57,8 +57,8 @@ public class ConfigGroupMembersTable extends AbstractTableComposite<Config> {
 				return visualiser.getKeyObjectName((ConfigID) JDOHelper.getObjectId(config));
 			}
 		});
-		
-		tableViewer.setContentProvider(new TableContentProvider() {
+
+		tableViewer.setContentProvider(new ArrayContentProvider() {
 			@Override
 			public Object[] getElements(Object inputElement) {
 				ConfigID configGroupID = (ConfigID) inputElement;
@@ -67,7 +67,7 @@ public class ConfigGroupMembersTable extends AbstractTableComposite<Config> {
 				return configs.toArray(new Object[configs.size()]);
 			}
 		});
-		
+
 		addCheckStateChangedListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -79,14 +79,14 @@ public class ConfigGroupMembersTable extends AbstractTableComposite<Config> {
 						model.addedConfigs.add(config);
 					else
 						model.removedConfigs.remove(config);
-					
+
 				} else {
 					if (model.assignedConfigs.contains(config))
 						model.removedConfigs.add(config);
 					else
 						model.addedConfigs.remove(config);
 				}
-				
+
 				if (! (model.addedConfigs.isEmpty() && model.removedConfigs.isEmpty()) )
 					dirtyStateManager.markDirty();
 				else
@@ -94,7 +94,7 @@ public class ConfigGroupMembersTable extends AbstractTableComposite<Config> {
 			}
 		});
 	}
-	
+
 	public void setModel(ConfigGroupModel model) {
 		this.model = model;
 		super.setInput(model.configGroupID);

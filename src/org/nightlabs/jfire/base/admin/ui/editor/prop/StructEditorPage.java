@@ -1,6 +1,5 @@
 package org.nightlabs.jfire.base.admin.ui.editor.prop;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -20,7 +19,7 @@ import org.nightlabs.jfire.prop.IStruct;
 public class StructEditorPage
 extends EntityEditorPageWithProgress
 {
-	private static Logger logger = Logger.getLogger(StructEditorPage.class);
+//	private static Logger logger = Logger.getLogger(StructEditorPage.class);
 	/**
 	 * The Factory is registered to the extension-point and creates
 	 * new instances of {@link StructEditorPage}.
@@ -34,7 +33,7 @@ extends EntityEditorPageWithProgress
 			return new StructLocalEditorPageController(editor);
 		}
 	}
-	
+
 	public StructEditorPage(FormEditor editor) {
 		super(editor, StructEditorPage.class.getName(), Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.prop.StructEditorPage.pageName")); //$NON-NLS-1$
 	}
@@ -43,13 +42,13 @@ extends EntityEditorPageWithProgress
 	public StructEditorSection getStructEditorSection() {
 		return structEditorSection;
 	}
-	
+
 	@Override
 	protected void addSections(Composite parent) {
 		structEditorSection = new StructEditorSection(this, getStructEditorPageController(), parent);
 		getManagedForm().addPart(structEditorSection);
 	}
-	
+
 	protected AbstractStructEditorPageController<? extends IStruct> getStructEditorPageController() {
 		return (AbstractStructEditorPageController<IStruct>) getPageController();
 	}
@@ -66,7 +65,7 @@ extends EntityEditorPageWithProgress
 			}
 		});
 	}
-	
+
 	@Override
 	protected String getPageFormTitle() {
 		return Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.prop.StructEditorPage.pageTitle"); //$NON-NLS-1$

@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -14,7 +15,6 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.UserSecurityGroup;
@@ -24,7 +24,7 @@ public class UserSecurityGroupTableViewer extends TableViewer {
 	/**
 	 * Content provider for user groups.
 	 */
-	private final class UserSecurityGroupContentProvider extends TableContentProvider
+	private final class UserSecurityGroupContentProvider extends ArrayContentProvider
 	{
 		/* (non-Javadoc)
 		 * @see org.nightlabs.base.ui.table.TableContentProvider#getElements(java.lang.Object)
