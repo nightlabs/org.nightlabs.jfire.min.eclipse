@@ -50,9 +50,9 @@ import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
 public abstract class AbstractStructFieldEditor<F extends StructField>
 extends AbstractStructPartEditor<F>
-implements StructFieldEditor<F> 
+implements StructFieldEditor<F>
 {
-	class AddScriptValidatorAction extends Action 
+	class AddScriptValidatorAction extends Action
 	{
 		public AddScriptValidatorAction() {
 			super();
@@ -61,7 +61,8 @@ implements StructFieldEditor<F>
 			setId(AddScriptValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
-		
+
+		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			ScriptDataFieldValidator<?, ?> newValidator = new ScriptDataFieldValidator(
@@ -83,7 +84,7 @@ implements StructFieldEditor<F>
 		}
 	}
 
-	class AddExpressionValidatorAction extends Action 
+	class AddExpressionValidatorAction extends Action
 	{
 		public AddExpressionValidatorAction() {
 			super();
@@ -92,11 +93,12 @@ implements StructFieldEditor<F>
 			setId(AddExpressionValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
-		
+
+		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
-			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null, 
-					getStructEditor().getStruct(), new StructFieldExpressionValidatorHandler(getStructField()), 
+			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null,
+					getStructEditor().getStruct(), new StructFieldExpressionValidatorHandler(getStructField()),
 					Mode.STRUCT_FIELD) ;
 			int returnCode = dialog.open();
 			if (returnCode == Window.OK) {
@@ -109,13 +111,13 @@ implements StructFieldEditor<F>
 					validator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);
 					getStructField().addDataFieldValidator(validator);
 					validatorTable.setInput(getStructField().getDataFieldValidators());
-					setChanged();					
+					setChanged();
 				}
 			}
 		}
-	}	
-	
-	class DeleteValidatorAction extends SelectionAction 
+	}
+
+	class DeleteValidatorAction extends SelectionAction
 	{
 		public DeleteValidatorAction() {
 			super();
@@ -124,7 +126,7 @@ implements StructFieldEditor<F>
 			setId(DeleteValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.DELETE_16x16);
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
 		 */
@@ -150,7 +152,7 @@ implements StructFieldEditor<F>
 		}
 	}
 
-	class EditValidatorAction extends SelectionAction 
+	class EditValidatorAction extends SelectionAction
 	{
 		public EditValidatorAction() {
 			super();
@@ -159,7 +161,7 @@ implements StructFieldEditor<F>
 			setId(EditValidatorAction.class.getName());
 			setImageDescriptor(SharedImages.EDIT_16x16);
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
 		 */
@@ -192,7 +194,7 @@ implements StructFieldEditor<F>
 			}
 			if (validator instanceof IExpressionValidator) {
 				IExpressionValidator expressionValidator = (IExpressionValidator) validator;
-				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(), 
+				ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, expressionValidator.getExpression(),
 						getStructEditor().getStruct(), new StructFieldExpressionValidatorHandler(getStructField()), Mode.STRUCT_FIELD);
 				dialog.setMessage(expressionValidator.getValidationResult().getI18nValidationResultMessage());
 				dialog.setValidationResultType(expressionValidator.getValidationResult().getResultType());
@@ -201,16 +203,16 @@ implements StructFieldEditor<F>
 					IExpression expression = dialog.getExpressionValidatorComposite().getExpression();
 					I18nText message = dialog.getExpressionValidatorComposite().getMessage();
 					ValidationResultType validationResultType = dialog.getExpressionValidatorComposite().getValidationResultType();
-					expressionValidator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);					
+					expressionValidator.getValidationResult().getI18nValidationResultMessage().copyFrom(message);
 					expressionValidator.getValidationResult().setValidationResultType(validationResultType);
 					expressionValidator.setExpression(expression);
 					validatorTable.refresh();
-					setChanged();					
+					setChanged();
 				}
 			}
 		}
 	}
-	
+
 	private Composite specialComposite;
 	private I18nTextEditor fieldNameEditor;
 	private StructEditor structEditor;
@@ -221,16 +223,16 @@ implements StructFieldEditor<F>
 	private Group editorGroup;
 	private ChildStatusController childStatusController;
 	private DataFieldValidatorTable validatorTable;
-	
+
 	protected Shell getShell() {
 		return editorGroup.getShell();
 	}
-	
+
 	public void setChanged() {
 //		getStructEditor().setChanged(true);
 		notifyModifyListeners();
 	}
-	
+
 	public Composite createComposite(Composite parent, int style, StructEditor structEditor, LanguageChooser languageChooser) {
 		this.childStatusController = new ChildStatusController();
 		this.languageChooser = languageChooser;
@@ -241,25 +243,25 @@ implements StructFieldEditor<F>
 		XComposite.configureLayout(LayoutMode.ORDINARY_WRAPPER, gl);
 		editorGroup.setLayout(gl);
 		((GridLayout)editorGroup.getLayout()).marginTop = 15;
-				
+
 		fieldNameEditor = new I18nTextEditor(editorGroup, this.languageChooser, Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.fieldNameEditor.caption")); //$NON-NLS-1$
 		fieldNameEditor.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		new Label(editorGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		specialComposite = createSpecialComposite(editorGroup, style);
 		if (specialComposite != null && !specialComposite.isDisposed()) {
-			specialComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));	
+			specialComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		}
-		
+
 		errorComp = new ErrorComposite(editorGroup);
 		errorComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		ToolBarSectionPart sectionPart = new ToolBarSectionPart(new FormToolkit(editorGroup.getDisplay()), editorGroup, Section.TITLE_BAR, Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.AbstractStructFieldEditor.section.validators.title")); //$NON-NLS-1$
 		validatorTable = new DataFieldValidatorTable(sectionPart.getSection(), SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
 		validatorTable.setLayoutData(new GridData(GridData.FILL_BOTH));
 		sectionPart.getSection().setClient(validatorTable);
-		
+
 		final EditValidatorAction editAction = new EditValidatorAction();
 		sectionPart.registerAction(new AddExpressionValidatorAction(), true);
 		sectionPart.registerAction(new AddScriptValidatorAction(), true);
@@ -267,7 +269,7 @@ implements StructFieldEditor<F>
 		sectionPart.registerAction(editAction, true);
 		sectionPart.setSelectionProvider(validatorTable);
 		sectionPart.updateToolBarManager();
-		
+
 		validatorTable.addDoubleClickListener(new IDoubleClickListener(){
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -281,31 +283,31 @@ implements StructFieldEditor<F>
 //				setChanged();
 //			}
 //		});
-		
+
 		return editorGroup;
 	}
-	
+
 	public void setErrorMessage(String error) {
 		this.errorMessage = error;
 		errorComp.setErrorMessage(error);
 	}
-	
+
 	protected StructEditor getStructEditor() {
 		return structEditor;
 	}
-	
+
 	protected F getStructField() {
 		return structField;
 	}
-	
+
 	public I18nTextEditor getFieldNameEditor() {
 		return fieldNameEditor;
 	}
-	
+
 	public LanguageChooser getLanguageChooser() {
 		return languageChooser;
 	}
-	
+
 	public Composite getComposite() {
 		return editorGroup;
 	}
@@ -313,7 +315,7 @@ implements StructFieldEditor<F>
 	public void setData(F field) {
 		if (editorGroup == null)
 			throw new IllegalStateException("You have to call createComposite(...) prior to calling setData(...)"); //$NON-NLS-1$
-		
+
 		if (field == null)
 		{
 			fieldNameEditor.reset();
@@ -323,7 +325,7 @@ implements StructFieldEditor<F>
 				specialComposite.dispose();
 			return;
 		}
-		
+
 //		fieldNameEditor.setEnabled(true);
 		setEnabled(true);
 		fieldNameEditor.setI18nText(field.getName(), EditMode.DIRECT);
@@ -343,52 +345,52 @@ implements StructFieldEditor<F>
 		validatorTable.setInput(structField.getDataFieldValidators());
 		setSpecialData(field);
 	}
-	
+
 	protected abstract void setSpecialData(F field);
-	
+
 	@Override
 	public void setFocus() {
 		if (!getFieldNameEditor().isDisposed())
 			getFieldNameEditor().setFocus();
 	}
-	
+
 	/**
 	 * Extendors should create struct field specific gui in this method and render the
 	 * data of the struct field since this method is called every time a new struct
 	 * field is selected.
-	 * 
+	 *
 	 * @param parent
 	 * @param style
 	 * @return
 	 */
 	protected abstract Composite createSpecialComposite(Composite parent, int style);
-	
+
 	/**
 	 * This method is intended to be overridden if the managed struct field supports validation.
 	 * Extendors should save their data in order to restore it upon a call to {@link #restoreData()}:
 	 * This happens if validation fails and the user wants to discard the changes.
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.structedit.StructFieldEditor#saveData()
 	 */
 	public void saveData() {
 		// do nothing by default
 	}
-	
+
 	/**
 	 * This method is intended to be overriden if the managed struct field supports validation.
 	 * Extendors should restore the data previously saved by {@link #saveData()}.
 	 * This method is called if validation fails and the user wants to discard the changes.
-	 * 
+	 *
 	 * @see org.nightlabs.jfire.base.ui.prop.structedit.StructFieldEditor#restoreData()
 	 */
 	public void restoreData() {
 		// do nothing by default
 	}
-	
+
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-	
+
 	/**
 	 * This method is intended to be overriden by struct editors that require validation
 	 * and should return a boolean indicating whether the user input is valid for the
@@ -398,7 +400,7 @@ implements StructFieldEditor<F>
 	public boolean validateInput() {
 		return true; // no validation done by default
 	}
-		
+
 	public void setEnabled(boolean enabled) {
 		if (editorGroup != null) {
 			if (editorGroup.isEnabled() != enabled) {
@@ -413,18 +415,18 @@ class ErrorComposite extends XComposite {
 	private Image errorImage;
 	private Label errorLabel;
 	private Label errorImageLabel;
-	
+
 	public ErrorComposite(Composite parent) {
 		super(parent, SWT.NONE, LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
-		
+
 		errorImage = JFireBasePlugin.getImageDescriptor("icons/Validation_error.gif").createImage(); //$NON-NLS-1$
-		
+
 		errorImageLabel = new Label(this, SWT.NONE);
 		errorLabel = new Label(this, SWT.NONE);
 		errorImageLabel.setImage(errorImage);
 		errorLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
 		setVisible(false);
-		
+
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				if (errorImage != null)
@@ -432,7 +434,7 @@ class ErrorComposite extends XComposite {
 			}
 		});
 	}
-	
+
 	protected void setErrorMessage(String error) {
 		if (error == null || error.equals("")) { //$NON-NLS-1$
 			setVisible(false);

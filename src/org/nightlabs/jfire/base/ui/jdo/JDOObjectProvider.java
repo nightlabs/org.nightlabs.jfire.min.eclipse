@@ -41,6 +41,7 @@ import org.nightlabs.util.Util;
  * @deprecated Please use {@link BaseJDOObjectDAO} for future client development
  */
 @Deprecated
+@SuppressWarnings("unchecked")
 public abstract class JDOObjectProvider
 {
 	private Cache cache = Cache.sharedInstance();
@@ -204,7 +205,7 @@ public abstract class JDOObjectProvider
 			throw new RuntimeException(x);
 		}
 	}
-	
+
 	protected Cache getCache() {
 		return cache;
 	}

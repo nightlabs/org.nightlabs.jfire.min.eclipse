@@ -41,6 +41,7 @@ import org.nightlabs.jfire.person.PersonStruct;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
+@SuppressWarnings("unchecked")
 public class PersonStructOrderConfigModule extends ConfigModule {
 	private static final long serialVersionUID = 1L;
 
@@ -50,10 +51,10 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 	public static class PersonStructOrderMapEntry {
 		public PersonStructOrderMapEntry() {
 		}
-		
+
 		private String key;
 		private int priority;
-		
+
 		public String getKey() {
 			return key;
 		}
@@ -67,21 +68,21 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 			this.priority = priority;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public PersonStructOrderConfigModule() {
 		super();
 	}
-	
+
 	@Override
 	public void init() throws InitException {
 		super.init();
 	}
-	
+
 	private List structBlockDisplayOrderList;
-	
+
 	/**
 	 * Not to be called, just for serialization.
 	 * Will always recreate the structBlockDisplayOrderList;
@@ -112,9 +113,9 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		this.structBlockDisplayOrderList = structBlockDisplayOrderList;
 		setChanged();
 	}
-	
+
 	private List structFieldDisplayOrderList;
-	
+
 	/**
 	 * Not to be called, just for serialization.
 	 * Will always recreate the structFieldDisplayOrderList;
@@ -134,7 +135,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		}
 		if (structFieldDisplayOrderList == null)
 			structFieldDisplayOrderList = new ArrayList();
-		
+
 		return structFieldDisplayOrderList;
 	}
 	/**
@@ -145,17 +146,17 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		this.structFieldDisplayOrderList = structFieldDisplayOrderList;
 		setChanged();
 	}
-	
+
 	/**
 	 * key: String PersonStructBlock.getPrimaryKey<br/>
 	 * value: Integer priority
 	 */
 	private Map structBlockDisplayOrder;
-	
+
 	/**
 	 * Returns a Map of (String,Integer) of
 	 * priorities mapped to PersonStructBlockKeys
-	 * 
+	 *
 	 * @return
 	 */
 	public Map structBlockDisplayOrder() {
@@ -173,23 +174,23 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		}
 		return structBlockDisplayOrder;
 	}
-	
+
 	public void setStructBlockDisplayOrder(Map displayOrder) {
 		this.structBlockDisplayOrder = displayOrder;
 	}
-	
-	
+
+
 	/**
 	 * key: String StructField.getPrimaryKey<br/>
 	 * value: Integer priority
 	 */
 	private Map structFieldDisplayOrder;
-	
+
 	/**
 	/**
 	 * Returns a Map of (String,Integer) of
 	 * priorities mapped to PersonStructFieldKeys
-	 * 
+	 *
 	 * @return
 	 */
 	public Map structFieldDisplayOrder() {
@@ -206,7 +207,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		}
 		return structFieldDisplayOrder;
 	}
-	
+
 	public void setStructFieldDisplayOrder(Map displayOrder) {
 		this.structFieldDisplayOrder = displayOrder;
 		setChanged();
@@ -228,9 +229,9 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		Map result = new HashMap();
 		return result;
 	}
-	
+
 	private static PersonStructOrderConfigModule sharedInstance;
-	
+
 	/**
 	 * Catches ConfigException and throws an IllegalStateException
 	 * instead Config
@@ -248,5 +249,5 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 		}
 		return sharedInstance;
 	}
-	
+
 }

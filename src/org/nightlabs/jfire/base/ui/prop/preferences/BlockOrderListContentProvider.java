@@ -41,16 +41,17 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
+@SuppressWarnings("unchecked")
 public class BlockOrderListContentProvider implements IStructuredContentProvider
 {
 	public BlockOrderListContentProvider() {
 	}
-	
+
 	public Map structBlockDisplayOrder;
 	private List structBlockDisplayOrderEntryList;
-	
+
 	public class Entry implements Map.Entry {
-		
+
 		private Map.Entry entry;
 		public Entry(Map.Entry entry) {
 			this.entry = entry;
@@ -72,7 +73,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 				return internalValue;
 		}
 
-		
+
 		private Object internalValue;
 		/**
 		 * @see java.util.Map.Entry#setValue(java.lang.Object)
@@ -80,9 +81,9 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 		public Object setValue(Object value) {
 			return internalValue = value;
 		}
-		
+
 	}
-	
+
 	protected void refreshOrder() {
 		Set entrySet = structBlockDisplayOrder.entrySet();
 		structBlockDisplayOrderEntryList = new LinkedList();
@@ -93,7 +94,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 		}
 		sortList();
 	}
-	
+
 	protected void sortList() {
 		// sort it
 		Collections.sort(structBlockDisplayOrderEntryList,new Comparator() {
@@ -112,7 +113,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 				return 0;
 			}
 		});
-		
+
 	}
 	/**
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
@@ -142,8 +143,8 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 			sortList();
 //		sortList();
 	}
-	
-	
+
+
 	public void moveUp(int priority) {
 		structBlockDisplayOrderEntryList.hashCode();
 		for (Iterator iter = structBlockDisplayOrderEntryList.iterator(); iter.hasNext();) {
@@ -169,7 +170,7 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 		}
 		sortList();
 	}
-	
+
 	public Map getStructBlockOrder() {
 		Map result = new HashMap();
 		for (Iterator iter = structBlockDisplayOrderEntryList.iterator(); iter.hasNext();) {
@@ -178,5 +179,5 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 		}
 		return result;
 	}
-	
+
 }
