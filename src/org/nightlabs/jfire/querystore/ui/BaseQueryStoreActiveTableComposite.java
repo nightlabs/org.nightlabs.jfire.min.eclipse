@@ -36,7 +36,6 @@ import org.nightlabs.progress.ProgressMonitor;
  *
  * @author Marius Heinzmann - marius[at]nightlabs[dot]com
  */
-@SuppressWarnings("unchecked") //$NON-NLS-1$
 public class BaseQueryStoreActiveTableComposite
 	extends ActiveJDOObjectTableComposite<QueryStoreID, BaseQueryStore>
 {
@@ -228,7 +227,6 @@ class BaseQueryStoreActiveController
 		this.resultType = resultType;
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	protected Class<? extends BaseQueryStore> getJDOObjectClass()
 	{

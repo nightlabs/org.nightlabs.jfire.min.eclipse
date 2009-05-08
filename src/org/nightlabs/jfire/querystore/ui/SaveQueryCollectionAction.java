@@ -107,7 +107,6 @@ public class SaveQueryCollectionAction
 		fetchStoredQueries.schedule();
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected void chooseQueryCollection(Collection<BaseQueryStore> storedQueries,
 		SearchEntryViewer<?, ?> viewer)
 	{
