@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.jdo.tree;
 
@@ -10,7 +10,7 @@ import org.nightlabs.jdo.ObjectID;
 
 /**
  * Event handler that applies the changes found in an {@link JDOTreeNodesChangedEvent} to a {@link TreeViewer}.
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
@@ -18,7 +18,8 @@ public class JDOTreeNodesChangedEventHandler {
 
 	public JDOTreeNodesChangedEventHandler() {
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public static void handle(TreeViewer treeViewer, JDOTreeNodesChangedEvent<? extends ObjectID, ? extends JDOObjectTreeNode> changedEvent) {
 		if (treeViewer.getTree().isDisposed())
 			return;
