@@ -27,7 +27,6 @@
 package org.nightlabs.jfire.base.ui.config;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -53,15 +52,15 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	 * LOG4J logger used by this class
 	 */
 	private static final Logger logger = Logger.getLogger(ConfigPreferencePageRegistry.class);
-	
+
 	private ConfigPreferenceNode preferencesRootNode;
-	
+
 	/**
 	 * key: String id<br/>
 	 * value: ConfigPreferenceNode preferenceNode
 	 */
 	private Map<String, ConfigPreferenceNode> preferenceNodesByIDs;
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor#getExtensionPointID()
 	 */
@@ -70,13 +69,13 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	{
 		return "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Returns a new ConfigPreferenceNode to wich all registered
 	 * {@link AbstractConfigModulePreferencePage}s
 	 * are children. This will contain new
 	 * instances of PreferencePages.
-	 * 
+	 *
 	 * @return A new ConfigPreferenceNode
 	 */
 	public ConfigPreferenceNode getPreferencesRootNode() {
@@ -132,22 +131,28 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 				null,
 				null
 		);
-		
+
 		preferenceNodesByIDs = new HashMap<String, ConfigPreferenceNode>();
 		super.process();
-		
-		for (Iterator iter = preferenceNodesByIDs.values().iterator(); iter.hasNext();) {
-			ConfigPreferenceNode node = (ConfigPreferenceNode) iter.next();
+
+		for (ConfigPreferenceNode node : preferenceNodesByIDs.values()) {
 			ConfigPreferenceNode parentNode = preferenceNodesByIDs.get(node.getCategoryID());
-			if (parentNode != null)
-				parentNode.addChild(node);
-			else
-				preferencesRootNode.addChild(node);
+			if (parentNode != null) parentNode.addChild(node);
+			else                    preferencesRootNode.addChild(node);
 		}
+
+//		for (Iterator iter = preferenceNodesByIDs.values().iterator(); iter.hasNext();) {
+//			ConfigPreferenceNode node = (ConfigPreferenceNode) iter.next();
+//			ConfigPreferenceNode parentNode = preferenceNodesByIDs.get(node.getCategoryID());
+//			if (parentNode != null)
+//				parentNode.addChild(node);
+//			else
+//				preferencesRootNode.addChild(node);
+//		}
 	}
-	
+
 	private static ConfigPreferencePageRegistry sharedInstance;
-	
+
 	public static ConfigPreferencePageRegistry sharedInstance() {
 		if (sharedInstance == null)
 			sharedInstance = new ConfigPreferencePageRegistry();

@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.config;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,6 +42,8 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.config.ConfigSetup;
+import org.nightlabs.jfire.config.UserConfigSetup;
+import org.nightlabs.jfire.config.WorkstationConfigSetup;
 import org.nightlabs.jfire.config.dao.ConfigSetupDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.config.id.ConfigSetupID;
@@ -62,50 +63,50 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	private static final String VISUALISER_ELEMENT = "visualiser"; //$NON-NLS-1$
 
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.configsetupvisualiser"; //$NON-NLS-1$
-	
+
 	private static final String[] CONFIG_SETUP_FETCH_GROUPS = new String[]
 	  { FetchPlan.DEFAULT, ConfigSetup.FETCH_GROUP_CONFIG_MODULE_CLASSES };
 //	private static final String[] DEFAULT_FETCH_GROUP_CONFIGS = new String[]
 //    { FetchPlan.DEFAULT, Config.FETCH_GROUP_CONFIG_GROUP };
-	
+
 	/**
 	 * IMPORTANT: The following registry does only work correctly if the following properties are true...<br>
-	 * 
+	 *
 	 * <p>There can be at most one ConfigSetup linked to a given <code>Objectclass</code> in the JDO-Datastore.</p>
 	 * <p>This means that there is at most one ConfigSetup with the <code>configType</code> (exclusive)or
 	 * 		<code>groupConfigType</code> equal to <code>Objectclass</code>.</p>
 	 */
-	
+
 	/**
 	 * key: String ConfigSetup.configType
 	 * value: ConfigSetup configSetup
 	 */
-	private Map<String, ConfigSetup> configSetupsByType = null;
-	
+	private final Map<String, ConfigSetup> configSetupsByType = null;
+
 	/**
 	 * key: String ConfigSetup.groupConfigType
 	 */
-	private Map<String, ConfigSetup> configSetupsByGroupType = null;
-	
+	private final Map<String, ConfigSetup> configSetupsByGroupType = null;
+
 	/**
 	 * key: String configSetupType
 	 * value: ConfigSetupVisualiser setupVisualiser
 	 */
-	private Map<String, ConfigSetupVisualiser> setupVisualiserByType = new HashMap<String, ConfigSetupVisualiser>();
-	
+	private final Map<String, ConfigSetupVisualiser> setupVisualiserByType = new HashMap<String, ConfigSetupVisualiser>();
+
 	/**
 	 * key: String configSetupType
 	 * value: ConfigPreferencesNode mergedTreeNode
 	 */
-	private Map<String, ConfigPreferenceNode> mergedTreeNodes = new HashMap<String, ConfigPreferenceNode>();
-	
+	private final Map<String, ConfigPreferenceNode> mergedTreeNodes = new HashMap<String, ConfigPreferenceNode>();
+
 	/**
-	 * 
+	 *
 	 */
 	public ConfigSetupRegistry() {
 		super();
 	}
-	
+
 	/**
 	 * Returns a merged tree of ConfigPreferenceNodes.
 	 * The set contains all registered PreferencePages that edit a ConfigModule
@@ -120,7 +121,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 		ConfigSetup setup = ConfigSetupDAO.sharedInstance().getConfigSetupForConfigType(configID, monitor);
 		if (setup == null)
 			throw new NoSetupPresentException("No Setup found related to this configID: "+configID); //$NON-NLS-1$
-		
+
 		ConfigPreferenceNode rootNode = mergedTreeNodes.get(scope+setup.getConfigSetupType());
 		if (rootNode != null)
 			return rootNode;
@@ -130,22 +131,20 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 		Set<String> mergeModules = new HashSet<String>();
 		mergeModules.addAll(setup.getConfigModuleClasses());
 
-		for (Iterator iter = registeredRootNode.getChildren().iterator(); iter.hasNext();) {
-			ConfigPreferenceNode childNode = (ConfigPreferenceNode) iter.next();
-			// recursively merge
+		// Merge recursively
+		for (ConfigPreferenceNode childNode : registeredRootNode.getChildren())
 			mergeSetupNodes(setup, mergeModules, childNode, rootNode);
-		}
 
-		// for all remaining classes add a null-Node
-		for (Iterator iter = mergeModules.iterator(); iter.hasNext();) {
-			String moduleClassName = (String) iter.next();
+		// For all remaining classes add a null-Node
+		for (String moduleClassName : mergeModules) {
 			ConfigPreferenceNode node = new ConfigPreferenceNode("", moduleClassName, "", rootNode, null, null, null); //$NON-NLS-1$ //$NON-NLS-2$
 			rootNode.addChild(node);
 		}
+
 		mergedTreeNodes.put(scope+setup.getConfigSetupType(), rootNode);
 		return rootNode;
 	}
-	
+
 	/**
 	 * Private helper that recursively adds registrations of ConfigPreferencePages
 	 * to a new ConfigPreferenceNode if the given ConfigSetup has a registration
@@ -161,30 +160,55 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	{
 		String nodeClassName = orgNode.getConfigModuleClass() != null ? orgNode.getConfigModuleClass().getName() : "";  //$NON-NLS-1$
 		boolean hasRegistration = setup.getConfigModuleClasses().contains(nodeClassName);
-//			(orgNode.createPreferencePage() != null) &&
-		if (hasRegistration) {
+
+		if (hasRegistration) { // <-- Needs additional checking here to determine if we should add the item into the tree (see comments below).
 			mergeModules.remove(nodeClassName);
-			ConfigPreferenceNode newNode = new ConfigPreferenceNode(
-					orgNode.getConfigPreferenceID(),
-					orgNode.getConfigPreferenceName(),
-					orgNode.getCategoryID(),
-					newNodeParent,
-					orgNode.getElement(),
-					orgNode.getPreferencePage(),
-					null // FIXME: insert here the modID stuff?
-				);
-			newNodeParent.addChild(newNode);
-			for (Iterator iter = orgNode.getChildren().iterator(); iter.hasNext();) {
-				ConfigPreferenceNode child = (ConfigPreferenceNode) iter.next();
-				mergeSetupNodes(setup, mergeModules, child, newNode);
+
+			// >> ]Kai >> From observation:
+			// It seems here that is not enough to just check the class name against the registry in the ConfigSetup. For example,
+			// BOTH UserConfigSetup and WorkstationConfigSetup have the same class name 'org.nightlabs.jfire.accounting.pay.config.ModeOfPaymentConfigModule'
+			// in their registries. And since the ModeOfPaymentConfigModule for BOTH User and Workstation have the same class name, it incidentally follows
+			// that we loaded both of them as well.
+			// --> We can definitely check the instance of the ConfigSetup to determine whether it is a User or Workstation ConfigSetup.
+			// --> However, if we can get access to orgNode's ConfigModule, then we can immediately query through its getConfigType(), to see if it is attached to
+			//     either the UserConfigSetup or the WorkstationConfigSetup. But I cant seem to be able to get the ConfigModule from the given parameters.
+			//
+			// Now, without having to load the ConfigModule, we can use the following fact (sounds like a work around):
+			//   That there exists a mutually exclusive behaviour between the User and Workstation pages. That is, the page displaying 'User Configuration Settings'
+			//   should not display options with 'Workstation'-related items on its treenodes. And similarly, the 'Workstation Feature Configuration' should not
+			//   display options with 'User'-related items.
+			//
+			// Thus, we add an additional checking for this 'mutually exclusive' behaviour, based only on the information we currently have:
+			//   - Using the fact of the mutually exclusive and specific conditions between Workstation (org.nightlabs.jfire.workstation.Workstation)
+			//     and User (org.nightlabs.jfire.security.User).
+			String orgConfigPrefID = orgNode.getConfigPreferenceID();
+			boolean isMutuallyExclusive = setup instanceof UserConfigSetup && !orgConfigPrefID.contains("Workstation")
+			                              || setup instanceof WorkstationConfigSetup && !orgConfigPrefID.contains("User");
+
+			if (isMutuallyExclusive) {
+				ConfigPreferenceNode newNode = new ConfigPreferenceNode(
+						orgNode.getConfigPreferenceID(),
+						orgNode.getConfigPreferenceName(),
+						orgNode.getCategoryID(),
+						newNodeParent,
+						orgNode.getElement(),
+						orgNode.getPreferencePage(),
+						null // FIXME: insert here the modID stuff?
+					);
+
+				newNodeParent.addChild(newNode);
+
+				for (ConfigPreferenceNode child : orgNode.getChildren())
+					mergeSetupNodes(setup, mergeModules, child, newNode);
 			}
+
 		}
 	}
-	
+
 	/**
 	 * Listener for changes of ConfigSetups.
 	 */
-	private NotificationListener setupChangeListener = new NotificationAdapterJob() {
+	private final NotificationListener setupChangeListener = new NotificationAdapterJob() {
 		public void notify(NotificationEvent notificationEvent) {
 			if (notificationEvent.getFirstSubject() instanceof DirtyObjectID) {
 				DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
@@ -201,8 +225,8 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 			}
 		}
 	};
-	
-	
+
+
 	/**
 	 * Returns a ConfigSetupVisualiser for the ConfigSetup of the given
 	 * configSetupType or null if none can be found.
@@ -210,7 +234,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	public ConfigSetupVisualiser getVisualiser(String configSetupType) {
 		return setupVisualiserByType.get(configSetupType);
 	}
-	
+
 	/**
 	 * Returns the visualiser assosiated to the ConfigSetup the given Config
 	 * is part of, or null if it can't be found.
@@ -256,18 +280,18 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 			setupVisualiserByType.put(configSetupType, visualiser);
 		}
 	}
-	
+
 	public class NoSetupPresentException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public NoSetupPresentException() {
 			super();
 		}
-		
+
 		public NoSetupPresentException(String message) {
 			super(message);
 		}
-		
+
 		public NoSetupPresentException(String message, Throwable cause) {
 			super(message, cause);
 		}

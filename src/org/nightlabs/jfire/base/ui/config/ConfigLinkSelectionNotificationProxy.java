@@ -55,15 +55,15 @@ import org.nightlabs.progress.NullProgressMonitor;
  * of configuration-link objecttypes was selected.
  * This set of objecttypes can be configured through the
  * conifgtypeset extension-point.
- * 
+ *
  * @see org.nightlabs.jfire.base.ui.config.ConfigTypeRegistry
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  *
  */
 public class ConfigLinkSelectionNotificationProxy extends
 		SelectionNotificationProxy {
-	
+
 	/**
 	 * LOG4J logger used by this class
 	 */
@@ -92,11 +92,11 @@ public class ConfigLinkSelectionNotificationProxy extends
 	 * @return
 	 */
 	private Object buildNotificationSubject(Object object) {
-		Class objectClass = null;
+		Class<?> objectClass = null;
 		ObjectID objectID = null;
 		if (object instanceof ObjectID) {
 			// ask jdo service for object class name
-			Class jdoObjectClass = JDOObjectID2PCClassMap.sharedInstance().getPersistenceCapableClass(object);
+			Class<?> jdoObjectClass = JDOObjectID2PCClassMap.sharedInstance().getPersistenceCapableClass(object);
 			if (jdoObjectClass != null) {
 				objectClass = jdoObjectClass;
 				objectID = (ObjectID)object;
@@ -115,11 +115,11 @@ public class ConfigLinkSelectionNotificationProxy extends
 		else
 			// silently do nothing
 			return null;
-		
+
 		// Exit when no registration on the current class is found
 		if (!ConfigSetupDAO.sharedInstance().containsRegistrationForLinkClass(objectClass, new NullProgressMonitor()))
 			return null;
-		
+
 		// TODO: Ensure here always the current users organisationID can be used
 		// if not, extend configTypeSet extensionpoint and registry with
 		// interface ConfigLinkIDProvider
@@ -129,28 +129,28 @@ public class ConfigLinkSelectionNotificationProxy extends
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public void selectionChanged(SelectionChangedEvent event)
 	{
 		// first do the notification of the selected object itself
 		super.selectionChanged(event);
-		
+
 		// no check for config-links
-    ISelection selection = event.getSelection();
-    if(!selection.isEmpty())
-    {
+		ISelection selection = event.getSelection();
+		if(!selection.isEmpty())
+		{
 			NotificationEvent e = null;
-    	if(selection instanceof IStructuredSelection)
-    	{
-    		List subjects = new ArrayList();
-    		Iterator i = ((IStructuredSelection)selection).iterator();
-    		while(i.hasNext())
-    		{
-    			Object o = buildNotificationSubject(i.next());
+			if(selection instanceof IStructuredSelection)
+			{
+				List<Object> subjects = new ArrayList<Object>();
+				Iterator<?> i = ((IStructuredSelection)selection).iterator();
+				while(i.hasNext())
+				{
+					Object o = buildNotificationSubject(i.next());
 					if (o != null)
 						subjects.add(o);
-    		}
+				}
 				if (subjects.size() < 1)
 					return;
 				SubjectCarrier[] subjectCarriers = new SubjectCarrier[subjects.size()];
@@ -158,9 +158,9 @@ public class ConfigLinkSelectionNotificationProxy extends
 					subjectCarriers[j] = new SubjectCarrier(subjects.get(j));
 					subjectCarriers[j].setInheritanceIgnored(ignoreInheritance);
 				}
-        e = new NotificationEvent(source, zone, subjectCarriers);
-    	}
-    	SelectionManager.sharedInstance().notify(e);
-    }
+				e = new NotificationEvent(source, zone, subjectCarriers);
+			}
+			SelectionManager.sharedInstance().notify(e);
+		}
 	}
 }

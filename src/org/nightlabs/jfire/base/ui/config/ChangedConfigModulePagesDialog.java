@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.config;
 
@@ -45,7 +45,7 @@ extends ResizableTitleAreaDialog
 
 	protected static class ContentProvider implements ITreeContentProvider {
 		Map<Config, Set<PageModulePair>> updatedModules = null;
-		
+
 		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof Map) {
@@ -65,7 +65,7 @@ extends ResizableTitleAreaDialog
 				if (updatedModules.get(element) != null)
 					return true;
 			}
-				
+
 			return false;
 		}
 
@@ -83,7 +83,7 @@ extends ResizableTitleAreaDialog
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 	}
-	
+
 	protected static class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 		@Override
 		public String getText(Object element) {
@@ -91,31 +91,31 @@ extends ResizableTitleAreaDialog
 				return ((Config) element).getConfigKey();
 //			return ((PageModulePair) element).getUpdatedConfigModule().getCfModKey();
 			return ((PageModulePair) element).getCorrespondingPage().getTitle();
-		}		
+		}
 	}
-	
+
 	protected class PageModulePair {
-		private AbstractConfigModulePreferencePage page;
-		private ConfigModule updatedConfigModule;
-		
+		private final AbstractConfigModulePreferencePage page;
+		private final ConfigModule updatedConfigModule;
+
 		public PageModulePair(AbstractConfigModulePreferencePage page, ConfigModule updatedModule) {
 			this.page = page;
 			this.updatedConfigModule = updatedModule;
 		}
-		
+
 		public AbstractConfigModulePreferencePage getCorrespondingPage() {
 			return page;
 		}
-		
+
 		public ConfigModule getUpdatedConfigModule() {
 			return updatedConfigModule;
 		}
 	}
 
-	private Map<Config, Set<PageModulePair>> updatedConfigs = new HashMap<Config, Set<PageModulePair>>();
+	private final Map<Config, Set<PageModulePair>> updatedConfigs = new HashMap<Config, Set<PageModulePair>>();
 
 	private TreeViewer treeViewer;
-	
+
 	private static ChangedConfigModulePagesDialog sharedInstance = null;
 
 	@Override
@@ -123,7 +123,7 @@ extends ResizableTitleAreaDialog
 		super.configureShell(newShell);
 		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.title")); //$NON-NLS-1$
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#create()
 	 */
@@ -131,21 +131,21 @@ extends ResizableTitleAreaDialog
 	public void create() {
 		super.create();
 		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.titlearea.title")); //$NON-NLS-1$
-		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.message")); //$NON-NLS-1$		
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.config.ChangedConfigModulePagesDialog.message")); //$NON-NLS-1$
 	}
 
 	@Override
 	protected Point getInitialSize() {
 		return new Point(400, 300);
 	}
-	
+
 	/**
 	 * Adds an updated {@link ConfigModule} to the dialog , which asks the user to mark the modules that
 	 * shall be updated from the server. If no dialog is open, a new one is created.
 	 * <p>
 	 * This method must be called on the GUI Thread!
 	 * </p>
-	 * 
+	 *
 	 * @param page the {@link AbstractConfigModulePreferencePage}, which may be updated
 	 * @param updatedModule the updated {@link ConfigModule}
 	 * @param correspondingConfig the config corresponding to the changed module
@@ -192,7 +192,7 @@ extends ResizableTitleAreaDialog
 	@Override
 	protected void okPressed() {
 		StructuredSelection selected = (StructuredSelection) treeViewer.getSelection();
-		for (Iterator it = selected.iterator(); it.hasNext();) {
+		for (Iterator<?> it = selected.iterator(); it.hasNext();) {
 			Object markedEntry = it.next();
 			if (markedEntry instanceof Config) {
 				Config markedConfig = (Config) markedEntry;
@@ -224,13 +224,13 @@ extends ResizableTitleAreaDialog
 				TreeItem item = (TreeItem) e.item;
 				setCheckedStatus(item);
 			}
-			
+
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// Following the javadoc, this should be called on a double click... well it isn't.
 				TreeItem item = (TreeItem) e.item;
 				setCheckedStatus(item);
 			}
-			
+
 			private void setCheckedStatus(TreeItem item) {
 				boolean checkedStatus = item.getChecked();
 				if (item.getData() instanceof Config) {
@@ -255,14 +255,14 @@ extends ResizableTitleAreaDialog
 								break;
 							}
 						}
-						
+
 						if (allChecked)
 							correspConfig.setChecked(true);
 					}
 				} // item == PageConfigModulePair
 			}
 		});
-		
+
 //		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 //			public void selectionChanged(SelectionChangedEvent event) {
 //				StructuredSelection selection = (StructuredSelection) event.getSelection();

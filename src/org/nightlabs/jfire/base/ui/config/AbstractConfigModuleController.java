@@ -29,7 +29,7 @@ public abstract class AbstractConfigModuleController
 implements IConfigModuleController
 {
 	private static final Logger logger = Logger.getLogger(AbstractConfigModuleController.class);
-	
+
 	public AbstractConfigModuleController(AbstractConfigModulePreferencePage preferencePage) {
 		this.preferencePage = preferencePage;
 	}
@@ -38,21 +38,21 @@ implements IConfigModuleController
 	public ConfigID getConfigID() {
 		return configID;
 	}
-	
+
 	private String configModuleID;
 	public String getConfigModuleID() {
 		return configModuleID;
 	}
-	
+
 	public void setConfigID(ConfigID configID, boolean useNotAsPreferencePage, String configModuleID) {
 		this.configID = configID;
 		this.configModuleID = configModuleID;
-		
+
 		if (useNotAsPreferencePage) {
 			getPreferencePage().doSetControl = true;
 		}
 	}
-	
+
 	private ConfigModule configModule = null;
 	public ConfigModule getConfigModule() {
 		return configModule;
@@ -61,8 +61,8 @@ implements IConfigModuleController
 		this.configModule = configModule;
 		fireConfigModuleChanged();
 	}
-	
-	private ListenerList listeners = new ListenerList();
+
+	private final ListenerList listeners = new ListenerList();
 	public void addConfigModuleChangedListener(IConfigModuleChangedListener listener) {
 		listeners.add(listener);
 	}
@@ -75,7 +75,7 @@ implements IConfigModuleController
 			l.configModuleChanged(getConfigModule());
 		}
 	}
-	
+
 	/**
 	 * Will be called to determine whether the given ConfigModule is allowed
 	 * to be edited. The default implementation will return false only when
@@ -83,7 +83,7 @@ implements IConfigModuleController
 	 * configuration.
 	 * This method is costly, since it calls {@link #checkIfIsGroupMember(ConfigModule)}, which needs
 	 * to fetch data from the datastore.
-	 * 
+	 *
 	 * @param configModule the {@link ConfigModule} to be checked whether it is editable or not.
 	 * @return Whether the <code>configModule</code> is allowed to be edited.
 	 */
@@ -93,7 +93,7 @@ implements IConfigModuleController
 				configModule.getFieldMetaData(ConfigModule.FIELD_NAME_FIELDMETADATA_CONFIGMODULE).isWritable()
 				|| ! checkIfIsGroupMember(configModule);
 	}
-	
+
 	/**
 	 * Checks if the configModule is member of a configGroup
 	 */
@@ -102,11 +102,11 @@ implements IConfigModuleController
 				configID, new String[] {
 					FetchPlan.DEFAULT,
 					Config.FETCH_GROUP_CONFIG_GROUP
-				}, 
+				},
 				NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor());
 		return config.getConfigGroup() != null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.config.IConfigModuleController#getGroupConfigModule(org.nightlabs.jfire.config.ConfigModule)
@@ -118,12 +118,12 @@ implements IConfigModuleController
 				getConfigModuleMaxFetchDepth(), new NullProgressMonitor()
 			);
 	}
-	
+
 	/**
 	 * This is the default Set of fetch groups needed for any ConfigModule it contains:
 	 * {@link FetchPlan#DEFAULT}, {@link ConfigModule#FETCH_GROUP_FIELDMETADATAMAP},
 	 * {@link ConfigModule#FETCH_GROUP_CONFIG}.
-	 * 
+	 *
 	 * If subclasses want to extend these default fetch groups they need to overwrite
 	 * {@link #getConfigModuleFetchGroups()}.
 	 */
@@ -134,10 +134,10 @@ implements IConfigModuleController
 	 * {@link #CONFIG_MODULE_FETCH_GROUPS}. <br>
 	 * Subclasses are intended to create a new set from this one and extend it with the fetch groups
 	 * covering the fields their class extended {@link ConfigModule} with. <p>
-	 * 
+	 *
 	 * Note: To prevent the growth of this set, as it is being used in different contexts, the returned set is
 	 * unmodifiable!
-	 * 
+	 *
 	 * @return an unmodifiable Set of Strings containing the default ConfigModule fetch groups ({@value #CONFIG_MODULE_FETCH_GROUPS}.
 	 */
 	public static Set<String> getCommonConfigModuleFetchGroups() {
@@ -146,32 +146,32 @@ implements IConfigModuleController
 			CONFIG_MODULE_FETCH_GROUPS.add(ConfigModule.FETCH_GROUP_FIELDMETADATAMAP);
 			CONFIG_MODULE_FETCH_GROUPS.add(ConfigModule.FETCH_GROUP_CONFIG);
 		}
-		
+
 		return Collections.unmodifiableSet(CONFIG_MODULE_FETCH_GROUPS);
 	}
-	
+
 	/**
 	 * Returns the unlimited fetch depth. If subclasses need to restrict the fetch depth, then
 	 * they need overwrite this method.
-	 * 
+	 *
 	 * @return the unlimited fetch depth.
 	 */
 	public int getConfigModuleMaxFetchDepth() {
 		return NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT;
 	}
-	
+
 	/**
 	 * Fetches and returns the ConfigModule of the Config with {@link ConfigID} == <code>configID</code> from the
 	 * cache with ConfigModuleClass == <code>getPreferencePage().getConfigModuleClassName()</code>,
 	 * cfModID == <code>getPreferencePage().getConfigModuleCfModID()</code>,
 	 * the FetchGroups returned by <code>getPreferencePage().getConfigModuleFetchGroups()</code> and the FetchDepth returned by
 	 * <code>getPreferencePage().getConfigModuleMaxFetchDepth()</code>.
-	 * 
+	 *
 	 * @param monitor the monitor showing the progress of the operation.
 	 * @return the ConfigModule of the Config with ID = <code>configID</code> and the parameter as set
 	 * 	by the abstract getters (e.g. <code>getPreferencePage().getConfigModuleClassName()</code>).
 	 */
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
+//	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public ConfigModule retrieveConfigModule(ProgressMonitor monitor)
 	{
 		if (getConfigID() == null)
@@ -200,29 +200,29 @@ implements IConfigModuleController
 					monitor
 					);
 		}
-		
+
 		return Util.cloneSerializable(res);
 	}
-	
+
 	private AbstractConfigModulePreferencePage preferencePage = null;
 	public AbstractConfigModulePreferencePage getPreferencePage() {
 		return preferencePage;
 	}
-	
+
 	/**
 	 * Sets the current version of the {@link ConfigModule} to display and updates the page
 	 * accordingly.
 	 * The given ConfigModule should be a copy of the one from the cache, otherwise changes to this
 	 * module will corrupt the state of the one in the cache! Use {@link Util#cloneSerializable(Object)}
 	 * to create a copy.
-	 * 
+	 *
 	 * @param configModule The {@link ConfigModule} to set.
 	 */
 	public void updateGuiWith(ConfigModule configModule)
 	{
 		if (configModule == null)
 			throw new RuntimeException("The ConfigModule configModule passed to updateGuiWith(configModule) must not be null!"); //$NON-NLS-1$
-		
+
 		try {
 			ConfigID newConfigID = (ConfigID) JDOHelper.getObjectId(configModule.getConfig());
 			if (newConfigID != null && ! newConfigID.equals(getConfigID()))
@@ -235,7 +235,7 @@ implements IConfigModuleController
 		getPreferencePage().currentConfigIsGroupMember = checkIfIsGroupMember(configModule);
 		getPreferencePage().currentConfigModuleIsEditable = canEdit(configModule);
 		getPreferencePage().configChanged = false;
-		
+
 		getPreferencePage().updateConfigHeader();
 		getPreferencePage().updatePreferencePage();
 		getPreferencePage().setEditable(getPreferencePage().currentConfigModuleIsEditable);

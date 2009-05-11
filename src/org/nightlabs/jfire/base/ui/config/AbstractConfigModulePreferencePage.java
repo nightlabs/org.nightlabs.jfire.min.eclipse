@@ -79,6 +79,7 @@ import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
+import org.nightlabs.util.CollectionUtil;
 
 /**
  * An abstract PreferencePage for ConfigModules.
@@ -210,10 +211,10 @@ extends LSDPreferencePage
 	 * Implicit Listener for the cache. This is needed in order to get notified when the
 	 * {@link #currentConfigModule} changed in the database and to reflect this change in the GUI.
 	 */
-	private NotificationListener changeListener = new NotificationAdapterJob() {
+	private final NotificationListener changeListener = new NotificationAdapterJob() {
 
 		public void notify(NotificationEvent notificationEvent) {
-			Set<DirtyObjectID> dirtyObjectIDs = notificationEvent.getSubjects();
+			Set<DirtyObjectID> dirtyObjectIDs = CollectionUtil.castSet( notificationEvent.getSubjects() );
 			ConfigModuleID currentModuleID = (ConfigModuleID) JDOHelper.getObjectId(
 					getConfigModuleController().getConfigModule());
 //		 there aren't many open ConfigModulePages showing the same kind of ConfigModule, this loop is
@@ -852,7 +853,7 @@ extends LSDPreferencePage
 	 * A list of listeners that shall be triggered if this module changes.
 	 * (see {@link #notifyConfigChangedListeners()})
 	 */
-	private List<ConfigPreferenceChangedListener> configChangedListeners =
+	private final List<ConfigPreferenceChangedListener> configChangedListeners =
 							new ArrayList<ConfigPreferenceChangedListener>();
 
 	/**

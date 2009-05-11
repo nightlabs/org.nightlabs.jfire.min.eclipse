@@ -42,20 +42,20 @@ public class ConfigPreferenceNode {
 
 	private String configPreferenceID;
 	private String configPreferenceName;
-	private IConfigurationElement element;
-	private Class configModuleClass;
-	private String configModuleCfModID;
+	private final IConfigurationElement element;
+	private Class<?> configModuleClass;
+	private final String configModuleCfModID;
 	private String categoryID;
 	private ConfigPreferenceNode parent;
-	private List<ConfigPreferenceNode> children =
+	private final List<ConfigPreferenceNode> children =
 		new ArrayList<ConfigPreferenceNode>();
-	
-	private AbstractConfigModulePreferencePage preferencePage;
-	
+
+	private final AbstractConfigModulePreferencePage preferencePage;
+
 	private Image icon;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public ConfigPreferenceNode(
 		String configPreferenceID,
@@ -75,57 +75,57 @@ public class ConfigPreferenceNode {
 		this.configModuleCfModID = configModuleCfModID;
 		this.preferencePage = preferencePage;
 	}
-	
+
 	public ConfigPreferenceNode getParent() {
 		return parent;
 	}
-	
+
 	public void setParent(ConfigPreferenceNode parent) {
 		this.parent = parent;
 	}
-	
-	public List getChildren() {
+
+	public List<ConfigPreferenceNode> getChildren() {
 		return children;
 	}
-	
+
 	public void addChild(ConfigPreferenceNode child) {
 		children.add(child);
 		child.setParent(this);
 	}
-	
+
 	public String getConfigPreferenceID() {
 		return configPreferenceID;
 	}
-	
+
 	public void setConfigPreferenceID(String configPreferenceID) {
 		this.configPreferenceID = configPreferenceID;
 	}
-	
+
 	public String getConfigPreferenceName() {
 		return configPreferenceName;
 	}
-	
+
 	public void setConfigPreferenceName(String configPreferenceName) {
 		this.configPreferenceName = configPreferenceName;
 	}
-	
+
 	public String getCategoryID() {
 		return categoryID;
 	}
-	
+
 	public void setCategoryID(String categoryID) {
 		this.categoryID = categoryID;
 	}
-	
+
 	public Image getIcon() {
 		return icon;
 	}
-	
+
 	public void setIcon(Image icon) {
 		this.icon = icon;
 	}
 
-	public Class getConfigModuleClass() {
+	public Class<?> getConfigModuleClass() {
 		if (configModuleClass == null) {
 			if (Login.isLoggedIn() && preferencePage != null && preferencePage.getConfigModuleController() != null) {
 				configModuleClass = preferencePage.getConfigModuleController().getConfigModuleClass();
@@ -133,20 +133,20 @@ public class ConfigPreferenceNode {
 		}
 		return configModuleClass;
 	}
-	
+
 	public String getConfigModuleCfModID() {
 		return configModuleCfModID;
 	}
-	
+
 	public IConfigurationElement getElement() {
 		return element;
 	}
-	
+
 	/**
 	 * Creates a new {@link AbstractConfigModulePreferencePage} by invoking
 	 * {@link IConfigurationElement#createExecutableExtension(String)} of
 	 * the element of the contributing extension.
-	 * 
+	 *
 	 * @return A new {@link AbstractConfigModulePreferencePage}.
 	 * @throws CoreException If something fails.
 	 */
@@ -157,5 +157,5 @@ public class ConfigPreferenceNode {
 	public AbstractConfigModulePreferencePage getPreferencePage() {
 		return preferencePage;
 	}
-	
+
 }
