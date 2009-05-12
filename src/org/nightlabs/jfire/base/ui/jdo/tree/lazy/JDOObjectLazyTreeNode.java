@@ -23,8 +23,8 @@ public class JDOObjectLazyTreeNode
 
 	private Controller activeJDOObjectLazyTreeController;
 	private JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller> parent;
-	private JDOObjectID jdoObjectID;
-	private JDOObject jdoObject;
+	private volatile JDOObjectID jdoObjectID;
+	private volatile JDOObject jdoObject;
 
 	public void setActiveJDOObjectLazyTreeController(Controller activeJDOObjectLazyTreeController)
 	{
@@ -73,12 +73,12 @@ public class JDOObjectLazyTreeNode
 		return jdoObject;
 	}
 
-	private int childNodeCount = -1;
+	private volatile long childNodeCount = -1;
 
-	public int getChildNodeCount() {
+	public long getChildNodeCount() {
 		return childNodeCount;
 	}
-	public void setChildNodeCount(int childCount) {
+	public void setChildNodeCount(long childCount) {
 		this.childNodeCount = childCount;
 	}
 
@@ -103,6 +103,7 @@ public class JDOObjectLazyTreeNode
 	{
 		this.childNodes = childNodes;
 		this.childNodes_ro = null;
+		this.childNodeCount = childNodes == null ? 0 : childNodes.size();
 
 		if (logger.isDebugEnabled())
 			logger.debug("setChildNodes: childNodes.size()=\"" + (childNodes == null ? null : childNodes.size()) + "\" this.jdoObjectID=\"" + JDOHelper.getObjectId(this.jdoObject) + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -125,6 +126,7 @@ public class JDOObjectLazyTreeNode
 
 		childNodes.add(childNode);
 		this.childNodes_ro = null;
+		this.childNodeCount = childNodes == null ? 0 : childNodes.size();
 
 		if (logger.isDebugEnabled())
 			logger.debug("addChildNode: added childNode! childNode.jdoObjectID=\"" + JDOHelper.getObjectId(childNode.getJdoObject()) + "\" this.jdoObjectID=\"" + JDOHelper.getObjectId(this.jdoObject) + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -150,10 +152,16 @@ public class JDOObjectLazyTreeNode
 
 		boolean res = childNodes.remove(childNode);
 		this.childNodes_ro = null;
+		this.childNodeCount = childNodes == null ? 0 : childNodes.size();
 
 		if (logger.isDebugEnabled())
 			logger.debug("removeChildNode: removed childNode (return " + res + ")! childNode.jdoObjectID=\"" + JDOHelper.getObjectId(childNode.getJdoObject()) + "\" this.jdoObjectID=\"" + JDOHelper.getObjectId(this.jdoObject) + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 		return res;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(this)) + '[' + jdoObjectID  + ']';
 	}
 }

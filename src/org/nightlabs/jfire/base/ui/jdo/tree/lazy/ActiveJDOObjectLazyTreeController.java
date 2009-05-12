@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
@@ -25,7 +27,6 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
@@ -52,23 +53,13 @@ import org.nightlabs.notification.NotificationListener;
  * @param <JDOObject> The type of the JDO object used
  * @param <TreeNode> The type of {@link JDOObjectLazyTreeNode} used to hold the data
  */
-@SuppressWarnings("unchecked") //$NON-NLS-1$
 public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends ObjectID, JDOObject, TreeNode extends JDOObjectLazyTreeNode>
 {
 	private static final Logger logger = Logger.getLogger(ActiveJDOObjectLazyTreeController.class);
 
-	protected abstract Collection<JDOObjectID> retrieveChildObjectIDs(JDOObjectID parentID, JDOObject parent, IProgressMonitor monitor);
+	protected abstract Collection<JDOObjectID> retrieveChildObjectIDs(JDOObjectID parentID, IProgressMonitor monitor);
 
-	protected abstract Map<JDOObjectID, Integer> retrieveChildCount(Map<JDOObjectID, JDOObject> parentID2parent, IProgressMonitor monitor);
-
-//	/**
-//	 * Retrieve the children of the given parent element.
-//	 * If the parent is null this method should return the root element of the tree structure.
-//	 *
-//	 * @param parent <code>null</code> for the root elements or the parent element for which to load the children.
-//	 * @return The children of the the JDOObject with the given parentID, but never <code>null</code>.
-//	 */
-//	protected abstract Collection<JDOObject> retrieveChildren(JDOObjectID parentID, JDOObject parent, IProgressMonitor monitor);
+	protected abstract Map<JDOObjectID, Long> retrieveChildCount(Set<JDOObjectID> parentIDs, IProgressMonitor monitor);
 
 	/**
 	 * This method is called on a worker thread and must retrieve JDO objects for
@@ -85,13 +76,6 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	 * @return the subclass of {@link JDOObjectLazyTreeNode} for this ActiveJDOObjectLazyTreeController.
 	 */
 	protected abstract TreeNode createNode();
-
-	/**
-	 * Sort the retrieved JDOObjects in a custom manner. (Manipulate the list)
-	 *
-	 * @param objects The objects to sort
-	 */
-	protected abstract void sortJDOObjects(List<JDOObject> objects);
 
 	/**
 	 * This pseudo-node is used to hold the real root elements. Its creation is synchronized via {@link #objectID2TreeNode} - ensuring
@@ -214,6 +198,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 				node.setJdoObject(retrievedObject);
 			}
 			for (Entry<JDOObjectID, TreeNode> deletedEntry : deletedNodes.entrySet()) {
+				// TODO getJdoObject() might return null in a lazy tree!
 				JDOObjectID parentID = (JDOObjectID) treeNodeParentResolver.getParentObjectID(deletedEntry.getValue().getJdoObject());
 				TreeNode parentNode = objectID2TreeNode.get(parentID);
 				objectID2TreeNode.remove(deletedEntry.getKey());
@@ -244,23 +229,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			super(name);
 		}
 
-//		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void notify(NotificationEvent notificationEvent) {
 			handleChangeNotification(notificationEvent, getProgressMonitor());
 		}
 	};
 
-	@SuppressWarnings("deprecation") //$NON-NLS-1$
 	protected void registerJDOLifecycleListener()
-	{
-		registerJDOLifecycleListeners();
-	}
-
-	/**
-	 * @deprecated Use {@link #registerJDOLifecycleListener()} instead! This method will soon be removed!
-	 */
-	@Deprecated
-	protected void registerJDOLifecycleListeners()
 	{
 		if (lifecycleListener != null) {
 			if (logger.isDebugEnabled())
@@ -273,19 +247,20 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		Set<JDOObjectID> activeParentObjectIDs = getActiveParentObjectIDs();
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("registerJDOLifecycleListeners: creating and registering JDOLifecycleListener for " + activeParentObjectIDs.size() + " activeParentObjectIDs:"); //$NON-NLS-1$ //$NON-NLS-2$
-			for (JDOObjectID jdoObjectID : activeParentObjectIDs)
-				logger.debug("  - " + jdoObjectID); //$NON-NLS-1$
+			logger.debug("registerJDOLifecycleListeners: creating and registering JDOLifecycleListener for " + activeParentObjectIDs.size() + " activeParentObjectIDs"); //$NON-NLS-1$ //$NON-NLS-2$
+			if (logger.isTraceEnabled()) {
+				for (JDOObjectID jdoObjectID : activeParentObjectIDs)
+					logger.trace("  - " + jdoObjectID); //$NON-NLS-1$
+			}
 		}
 
 		lifecycleListener = createJDOLifecycleListener(activeParentObjectIDs);
 		JDOLifecycleManager.sharedInstance().addLifecycleListener(lifecycleListener);
 	}
 
-	@SuppressWarnings("deprecation") //$NON-NLS-1$
 	protected void registerChangeListener() {
 		if (changeListener == null) {
-			changeListener = new ChangeListener(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectLazyTreeController.loadingChanges")); //$NON-NLS-1$
+			changeListener = new ChangeListener("Loading changes");
 			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClass(), changeListener);
 		}
 	}
@@ -321,7 +296,6 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			return filter;
 		}
 
-//		@SuppressWarnings("unchecked") //$NON-NLS-1$
 		public void notify(JDOLifecycleEvent event)
 		{
 			if (logger.isDebugEnabled())
@@ -483,27 +457,40 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	}
 
 	/**
+	 * @deprecated I think that's not necessary. Will be removed.
+	 */
+	@Deprecated
+	public TreeNode getHiddenRootNode()
+	{
+		synchronized (objectID2TreeNode) {
+			if (hiddenRootNode == null)
+				hiddenRootNode = createNode();
+
+			return hiddenRootNode;
+		}
+	}
+
+	/**
 	 * Get the number of either root-nodes, if <code>parent == null</code>, or child-nodes
 	 * of the specified parent. Alternatively, this method can return <code>-1</code>,
 	 * if the data is not yet available. In this case, a new {@link Job} will be spawned to load the data.
 	 *
-	 * @param _parent
 	 * @param _parent the parent node or <code>null</code>.
 	 */
-	public int getNodeCount(TreeNode _parent)
+	public long getNodeCount(TreeNode _parent)
 	{
 		if (_parent != null && _parent == hiddenRootNode)
 			throw new IllegalArgumentException("Why the hell is the hiddenRootNode passed to this method?! If this ever happens - maybe we should map it to null here?"); //$NON-NLS-1$
 
 		if (logger.isDebugEnabled())
-			logger.debug("getNodeCount: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : JDOHelper.getObjectId(_parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("getNodeCount: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : _parent.getJdoObjectID()) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 
 		synchronized (objectID2TreeNode) {
 			if (hiddenRootNode == null)
 				hiddenRootNode = createNode();
 		}
 
-		int nodeCount = -1;
+		long nodeCount = -1;
 
 		registerChangeListener();
 
@@ -511,7 +498,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			_parent = hiddenRootNode;
 		}
 
-		addActiveParentObjectID((JDOObjectID)JDOHelper.getObjectId(_parent.getJdoObject()), true);
+		addActiveParentObjectID((JDOObjectID)_parent.getJdoObjectID(), true);
 		nodeCount = _parent.getChildNodeCount();
 
 		if (nodeCount >= 0) {
@@ -524,10 +511,407 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		if (logger.isDebugEnabled())
 			logger.debug("getNodeCount: returning -1 and spawning Job."); //$NON-NLS-1$
 
-		// enqueue in the todo-list (which is synchronized)
-		treeNodesWaitingForChildCountRetrieval.add(_parent);
+		Job job = new Job("Loading child count") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor)
+			{
+				if (logger.isDebugEnabled())
+					logger.debug("getNodeCount.Job#run: entered"); //$NON-NLS-1$
 
-//		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectLazyTreeController.loadingChildNodeCountJob")) { //$NON-NLS-1$
+				// Give it some time to collect objects in the treeNodesWaitingForChildCountRetrieval
+				// before we start processing them.
+				try { Thread.sleep(500); } catch (InterruptedException x) { } // ignore InterruptedException
+
+				Set<TreeNode> parentTreeNodes;
+				synchronized(treeNodesWaitingForChildCountRetrieval) {
+					jobChildCountRetrieval = null;
+					parentTreeNodes = new HashSet<TreeNode>(treeNodesWaitingForChildCountRetrieval);
+					treeNodesWaitingForChildCountRetrieval.clear();
+				}
+				Set<JDOObjectID> parentObjectIDs = new HashSet<JDOObjectID>(parentTreeNodes.size());
+				boolean retrieveRootCount = false;
+				final Set<TreeNode> parentsToRefresh = new HashSet<TreeNode>();
+
+				for (TreeNode treeNode : parentTreeNodes) {
+					// Check, if it is still necessary - the number of children might have already been fetched.
+					// Thus, we should prevent calling the retrieve methods twice.
+					if (treeNode.getChildNodeCount() >= 0) {
+						parentsToRefresh.add(treeNode == hiddenRootNode ? null : treeNode); // still force refresh - even though we prevent loading.
+						continue;
+					}
+
+					if (treeNode == hiddenRootNode) {
+						retrieveRootCount = true;
+					}
+					else {
+						JDOObjectID parentJDOID = (JDOObjectID) treeNode.getJdoObjectID();
+						parentObjectIDs.add(parentJDOID);
+					}
+				}
+
+				if (retrieveRootCount) {
+					Set<JDOObjectID> s = new HashSet<JDOObjectID>(1);
+					s.add(null);
+					Map<JDOObjectID, Long> parentOID2childCount = retrieveChildCount(
+							s, new SubProgressMonitor(monitor, 50) // TODO correct % numbers!
+					);
+					Long count = parentOID2childCount.get(null);
+					if (count == null)
+						throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!");
+
+					hiddenRootNode.setChildNodeCount(count);
+					parentsToRefresh.add(null);
+				}
+
+				if (!parentObjectIDs.isEmpty()) {
+					Map<JDOObjectID, Long> parentOID2childCount = retrieveChildCount(parentObjectIDs, new SubProgressMonitor(monitor, 50)); // TODO correct % numbers!
+
+					synchronized (objectID2TreeNode) {
+						for (Map.Entry<JDOObjectID, Long> me : parentOID2childCount.entrySet()) {
+							JDOObjectID parentJDOID = me.getKey();
+							if (parentJDOID == null)
+								throw new IllegalStateException("retrieveChildCount(...) returned a null key (parent-OID) in its result map even though no null element (parent-OID) was passed to it! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!");
+
+							Long childCount = me.getValue();
+							if (childCount == null)
+								throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!");
+
+							TreeNode parentTreeNode = objectID2TreeNode.get(parentJDOID);
+							if (parentTreeNode == null)
+								throw new IllegalStateException("Cannot find TreeNode for parentJDOID: " + parentJDOID);
+
+							parentTreeNode.setChildNodeCount(childCount.longValue());
+							parentsToRefresh.add(parentTreeNode);
+						}
+
+					} // synchronized (objectID2TreeNode) {
+				}
+
+				Display.getDefault().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						fireJDOObjectsChangedEvent(new JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode>(this, parentsToRefresh));
+					}
+				});
+
+				return Status.OK_STATUS;
+			}
+		};
+
+		synchronized(treeNodesWaitingForChildCountRetrieval) {
+			// enqueue in the todo-list
+			treeNodesWaitingForChildCountRetrieval.add(_parent);
+
+			// and launch a new job, if there is none active (don't do this always in order to prevent millions of jobs to be queued).
+			if (jobChildCountRetrieval == null) {
+				jobChildCountRetrieval = job;
+				job.setRule(schedulingRule_jobChildCountRetrieval);
+				job.schedule();
+			}
+		}
+		return -1;
+	}
+
+	private Job jobChildCountRetrieval = null;
+	private Set<TreeNode> treeNodesWaitingForChildCountRetrieval = new HashSet<TreeNode>();
+
+	private ISchedulingRule schedulingRule_jobChildCountRetrieval = new SelfConflictingSchedulingRule();
+	private ISchedulingRule schedulingRule_jobChildObjectIDRetrieval = new SelfConflictingSchedulingRule();
+	private ISchedulingRule schedulingRule_jobObjectRetrieval = new SelfConflictingSchedulingRule();
+
+	private static class SelfConflictingSchedulingRule implements ISchedulingRule
+	{
+		@Override
+		public boolean contains(ISchedulingRule rule) {
+			return this == rule;
+		}
+		@Override
+		public boolean isConflicting(ISchedulingRule rule) {
+			return this == rule;
+		}
+	};
+
+	private Job jobObjectRetrieval = null;
+	private Set<TreeNode> treeNodesWaitingForObjectRetrieval = new HashSet<TreeNode>();
+
+	/**
+	 * This method returns either a root-node, if <code>parent == null</code> or a child of the given
+	 * <code>parent</code> (if non-<code>null</code>). Alternatively, this method can return <code>null</code>,
+	 * if the data is not yet available. In this case, a new {@link Job} will be spawned to load the data.
+	 * <p>
+	 * If a {@link TreeNode} is returned, it might be partially loaded (only the ID)!!! In this case, another
+	 * Job is spawned and the real object loaded as well.
+	 * </p>
+	 *
+	 * @param _parent the parent node or <code>null</code>.
+	 * @return a {@link TreeNode} or <code>null</code>, if data is not yet ready.
+	 */
+	public TreeNode getNode(TreeNode _parent, int index)
+	{
+		if (_parent != null && _parent == hiddenRootNode)
+			throw new IllegalArgumentException("Why the hell is the hiddenRootNode passed to this method?! If this ever happens - maybe we should map it to null here?"); //$NON-NLS-1$
+
+		if (logger.isDebugEnabled())
+			logger.debug("getNode: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : _parent.getJdoObjectID()) + "\" index=" + index); //$NON-NLS-1$ //$NON-NLS-2$
+
+		synchronized (objectID2TreeNode) {
+			if (hiddenRootNode == null)
+				hiddenRootNode = createNode();
+		}
+
+		TreeNode node = null;
+
+		registerChangeListener();
+
+		if (_parent == null) {
+			_parent = hiddenRootNode;
+		}
+
+		addActiveParentObjectID(
+				(JDOObjectID)_parent.getJdoObjectID(), // this is null in case of hiddenRootNode
+				true
+		);
+		List<TreeNode> childNodes = _parent.getChildNodes();
+
+		if (childNodes != null) {
+			if (index >= childNodes.size()) {
+				logger.warn("getNode: index >= childNodes.size() :: " + index + " >= " + childNodes.size(), new Exception("StackTrace")); //$NON-NLS-1$
+			}
+			else
+				node = childNodes.get(index);
+		}
+
+		if (node != null && node.getJdoObject() != null) {
+			if (logger.isDebugEnabled())
+				logger.debug("getNode: returning previously loaded complete child-node."); //$NON-NLS-1$
+
+			return node;
+		}
+
+		if (node == null) {
+			if (logger.isDebugEnabled())
+				logger.debug("getNode: returning null and spawning Job."); //$NON-NLS-1$
+
+			final TreeNode parent = _parent;
+
+			Job job1 = new Job("Loading children") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor)
+				{
+					if (logger.isDebugEnabled())
+						logger.debug("getNode.job1#run: entered for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+
+					final Set<TreeNode> parentsToRefresh = new HashSet<TreeNode>();
+					parentsToRefresh.add(parent == hiddenRootNode ? null : parent);
+					List<TreeNode> loadedNodes = null;
+
+					// In the mean-time, the data for this parentTreeNode might already be retrieved - check it again (prevent multiple
+					// calls to the retrieveChildObjectIDs(...) method for the same parent).
+					if (parent.getChildNodes() != null) {
+						if (logger.isDebugEnabled())
+							logger.debug("getNode.job1#run: children already loaded for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\". Skipping!"); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+					else {
+						JDOObjectID parentJDOID = (JDOObjectID) parent.getJdoObjectID();
+
+						if (logger.isDebugEnabled())
+							logger.debug("getNode.job1#run: retrieving children for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+
+						Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parentJDOID, monitor);
+
+						if (jdoObjectIDs == null)
+							throw new IllegalStateException("Your implementation of retrieveChildObjectIDs(...) returned null! The error is probably in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName()); //$NON-NLS-1$
+
+
+						loadedNodes = new ArrayList<TreeNode>(jdoObjectIDs.size());
+
+						synchronized (objectID2TreeNode) {
+							for (JDOObjectID jdoObjectID : jdoObjectIDs) {
+								TreeNode tn = objectID2TreeNode.get(jdoObjectID);
+								if (tn != null && parent != tn.getParent()) { // parent changed, completely replace!
+									if (logger.isDebugEnabled())
+										logger.debug("getNode.job1#run: treeNode's parent changed! objectID=\"" + jdoObjectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+
+									TreeNode p = (TreeNode) tn.getParent();
+									parentsToRefresh.add(p == hiddenRootNode ? null : p);
+									if (p != null)
+										p.removeChildNode(tn);
+
+									objectID2TreeNode.remove(jdoObjectID);
+									tn = null;
+								}
+
+								if (tn == null) {
+									if (logger.isTraceEnabled())
+										logger.trace("getNode.job1#run: creating node for objectID=\"" + jdoObjectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+
+									tn = createNode();
+									tn.setActiveJDOObjectLazyTreeController(ActiveJDOObjectLazyTreeController.this);
+								}
+								else {
+									if (logger.isTraceEnabled())
+										logger.trace("getNode.job1#run: reusing existing node for objectID=\"" + jdoObjectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+								}
+
+								tn.setJdoObjectID(jdoObjectID);
+								tn.setParent(parent);
+								objectID2TreeNode.put(jdoObjectID, tn);
+								loadedNodes.add(tn);
+							}
+
+							parent.setChildNodes(loadedNodes);
+						} // synchronized (objectID2TreeNode) {
+
+					}
+
+					final List<TreeNode> loadedNodes_final = loadedNodes;
+
+					Display.getDefault().asyncExec(new Runnable()
+					{
+						public void run()
+						{
+							fireJDOObjectsChangedEvent(new JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode>(this, parentsToRefresh, loadedNodes_final));
+						}
+					});
+
+					return Status.OK_STATUS;
+				}
+			};
+			job1.setRule(schedulingRule_jobChildObjectIDRetrieval);
+			job1.schedule();
+		}
+		else {
+			if (logger.isDebugEnabled())
+				logger.debug("getNode: returning previously loaded INcomplete child-node and spawning Job."); //$NON-NLS-1$
+
+			Job job2 = new Job("Loading tree nodes' objects") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor)
+				{
+					if (logger.isDebugEnabled())
+						logger.debug("getNode.job2#run: entered"); //$NON-NLS-1$
+
+					// Give it some time to collect objects in the treeNodesWaitingForObjectRetrieval
+					// before we start processing them.
+					try { Thread.sleep(500); } catch (InterruptedException x) { } // ignore InterruptedException
+
+					Set<TreeNode> nodesWaitingForObjectRetrieval;
+					synchronized (treeNodesWaitingForObjectRetrieval) {
+						jobObjectRetrieval = null;
+						nodesWaitingForObjectRetrieval = new HashSet<TreeNode>(treeNodesWaitingForObjectRetrieval);
+						treeNodesWaitingForObjectRetrieval.clear();
+					}
+
+					Set<JDOObjectID> jdoObjectIDs = new HashSet<JDOObjectID>(nodesWaitingForObjectRetrieval.size());
+					for (TreeNode treeNode : nodesWaitingForObjectRetrieval) {
+						jdoObjectIDs.add((JDOObjectID) treeNode.getJdoObjectID());
+					}
+
+					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDs, monitor);
+					Set<JDOObjectID> ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDs);
+
+					final List<TreeNode> loadedTreeNodes = new ArrayList<TreeNode>(jdoObjects.size());
+					final Map<JDOObjectID, TreeNode> ignoredJDOObjects = new HashMap<JDOObjectID, TreeNode>();
+					final Map<JDOObjectID, TreeNode> deletedJDOObjects = null;
+
+					synchronized (objectID2TreeNode) {
+
+						for (JDOObject jdoObject : jdoObjects) {
+							JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
+							ignoredJDOObjectIDs.remove(jdoObjectID);
+							TreeNode treeNode = objectID2TreeNode.get(jdoObjectID);
+							if (treeNode == null)
+								logger.warn("getNode.job2#run: There is no TreeNode existing for objectID=\"" + jdoObjectID + "\"!", new IllegalStateException("StackTrace"));
+							else {
+								treeNode.setJdoObject(jdoObject);
+								loadedTreeNodes.add(treeNode);
+							}
+						}
+						for (JDOObjectID jdoObjectID : ignoredJDOObjectIDs) {
+							TreeNode treeNode = objectID2TreeNode.get(jdoObjectID);
+							if (treeNode == null)
+								logger.warn("getNode.job2#run: There is no TreeNode existing for objectID=\"" + jdoObjectID + "\"!", new IllegalStateException("StackTrace"));
+							else
+								ignoredJDOObjects.put(jdoObjectID, treeNode);
+						}
+					} // synchronized (objectID2TreeNode) {
+
+					Display.getDefault().asyncExec(new Runnable()
+					{
+						public void run()
+						{
+							fireJDOObjectsChangedEvent(new JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode>(this, loadedTreeNodes, ignoredJDOObjects, deletedJDOObjects));
+						}
+					});
+
+					return Status.OK_STATUS;
+				}
+			};
+
+			synchronized (treeNodesWaitingForObjectRetrieval) {
+				treeNodesWaitingForObjectRetrieval.add(node);
+				if (jobObjectRetrieval == null) {
+					jobObjectRetrieval = job2;
+					job2.setRule(schedulingRule_jobObjectRetrieval);
+					job2.schedule();
+				}
+			}
+		}
+
+		return node;
+	}
+
+//	/**
+//	 * This method returns either root-nodes, if <code>parent == null</code> or children of the given
+//	 * <code>parent</code> (if non-<code>null</code>). Alternatively, this method can return <code>null</code>,
+//	 * if the data is not yet available. In this case, a new {@link Job} will be spawned to load the data.
+//	 *
+//	 * @param _parent the parent node or <code>null</code>.
+//	 * @return a list of {@link TreeNode}s or <code>null</code>, if data is not yet ready.
+//	 * @deprecated Will soon be removed!
+//	 */
+//	@Deprecated
+//	private List<TreeNode> getNodes(TreeNode _parent)
+//	{
+//		if (_parent != null && _parent == hiddenRootNode)
+//			throw new IllegalArgumentException("Why the hell is the hiddenRootNode passed to this method?! If this ever happens - maybe we should map it to null here?"); //$NON-NLS-1$
+//
+//		if (logger.isDebugEnabled())
+//			logger.debug("getNodes: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : JDOHelper.getObjectId(_parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+//
+//		synchronized (objectID2TreeNode) {
+//			if (hiddenRootNode == null)
+//				hiddenRootNode = createNode();
+//		}
+//
+//		List<TreeNode> nodes = null;
+//
+//		registerChangeListener();
+//
+//		if (_parent == null) {
+//			_parent = hiddenRootNode;
+//		}
+//
+//		addActiveParentObjectID(
+//				(JDOObjectID)JDOHelper.getObjectId(_parent.getJdoObject()), // this is null in case of hiddenRootNode
+//				true
+//		);
+//		nodes = _parent.getChildNodes();
+//
+//		if (nodes != null) {
+//			if (logger.isDebugEnabled())
+//				logger.debug("getNodes: returning previously loaded child-nodes."); //$NON-NLS-1$
+//
+//			return nodes;
+//		}
+//
+//		final TreeNode parent = _parent;
+//
+//		if (logger.isDebugEnabled())
+//			logger.debug("getNodes: returning null and spawning Job."); //$NON-NLS-1$
+//
+//		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectLazyTreeController.loadingChildNodesJob")) { //$NON-NLS-1$
 //			@Override
 //			protected IStatus run(IProgressMonitor monitor)
 //			{
@@ -541,7 +925,8 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 //					if (logger.isDebugEnabled())
 //						logger.debug("getNodes.Job#run: retrieving children for parentTreeNode.jdoObjectID=\"" + (parent == null ? null : JDOHelper.getObjectId(parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 //
-//					int count = retrieveChildCount(parentID2parent, monitor);
+//					// TODO needs different implementation!
+//					Collection<JDOObject> jdoObjects = null;// retrieveChildren(parentJDOID, parentJDO, monitor);
 //
 //					if (jdoObjects == null)
 //						throw new IllegalStateException("Your implementation of retrieveChildren(...) returned null! The error is probably in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName()); //$NON-NLS-1$
@@ -611,151 +996,10 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 //				return Status.OK_STATUS;
 //			}
 //		};
+//		job.setRule(schedulingRule);
 //		job.schedule();
-		return -1;
-	}
-
-	private Set<TreeNode> treeNodesWaitingForChildCountRetrieval = Collections.synchronizedSet(new HashSet<TreeNode>());
-
-
-	/**
-	 * This method returns either root-nodes, if <code>parent == null</code> or children of the given
-	 * <code>parent</code> (if non-<code>null</code>). Alternatively, this method can return <code>null</code>,
-	 * if the data is not yet available. In this case, a new {@link Job} will be spawned to load the data.
-	 *
-	 * @param _parent the parent node or <code>null</code>.
-	 * @return a list of {@link TreeNode}s or <code>null</code>, if data is not yet ready.
-	 */
-	public List<TreeNode> getNodes(TreeNode _parent)
-	{
-		if (_parent != null && _parent == hiddenRootNode)
-			throw new IllegalArgumentException("Why the hell is the hiddenRootNode passed to this method?! If this ever happens - maybe we should map it to null here?"); //$NON-NLS-1$
-
-		if (logger.isDebugEnabled())
-			logger.debug("getNodes: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : JDOHelper.getObjectId(_parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-
-		synchronized (objectID2TreeNode) {
-			if (hiddenRootNode == null)
-				hiddenRootNode = createNode();
-		}
-
-		List<TreeNode> nodes = null;
-
-		registerChangeListener();
-
-		if (_parent == null) {
-//			addActiveParentObjectID(null, true);
-//			nodes = rootElements;
-			_parent = hiddenRootNode;
-		}
-//		else {
-//			addActiveParentObjectID((JDOObjectID)JDOHelper.getObjectId(_parent.getJdoObject()), true);
-//			nodes = parent.getChildNodes();
-//		}
-
-		addActiveParentObjectID((JDOObjectID)JDOHelper.getObjectId(_parent.getJdoObject()), true);
-		nodes = _parent.getChildNodes();
-
-		if (nodes != null) {
-			if (logger.isDebugEnabled())
-				logger.debug("getNodes: returning previously loaded child-nodes."); //$NON-NLS-1$
-
-			return nodes;
-		}
-
-		final TreeNode parent = _parent;
-
-		if (logger.isDebugEnabled())
-			logger.debug("getNodes: returning null and spawning Job."); //$NON-NLS-1$
-
-		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectLazyTreeController.loadingChildNodesJob")) { //$NON-NLS-1$
-			@Override
-			protected IStatus run(IProgressMonitor monitor)
-			{
-				if (logger.isDebugEnabled())
-					logger.debug("getNodes.Job#run: entered for parentTreeNode.jdoObjectID=\"" + (parent == null ? null : JDOHelper.getObjectId(parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-
-				synchronized (objectID2TreeNode) {
-					JDOObject parentJDO = parent == null ? null : (JDOObject) parent.getJdoObject();
-					JDOObjectID parentJDOID = (JDOObjectID) JDOHelper.getObjectId(parentJDO);
-
-					if (logger.isDebugEnabled())
-						logger.debug("getNodes.Job#run: retrieving children for parentTreeNode.jdoObjectID=\"" + (parent == null ? null : JDOHelper.getObjectId(parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-
-					// TODO needs different implementation!
-					Collection<JDOObject> jdoObjects = null;// retrieveChildren(parentJDOID, parentJDO, monitor);
-
-					if (jdoObjects == null)
-						throw new IllegalStateException("Your implementation of retrieveChildren(...) returned null! The error is probably in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName()); //$NON-NLS-1$
-
-					List<JDOObject> jdoObjectList;
-					if (jdoObjects instanceof List)
-						jdoObjectList = (List<JDOObject>) jdoObjects;
-					else
-						jdoObjectList = new ArrayList<JDOObject>(jdoObjects);
-
-					sortJDOObjects(jdoObjectList);
-
-					final Set<TreeNode> parentsToRefresh = new HashSet<TreeNode>();
-					parentsToRefresh.add(parent == hiddenRootNode ? null : parent);
-
-					final List<TreeNode> loadedNodes = new ArrayList<TreeNode>(jdoObjectList.size());
-					for (JDOObject jdoObject : jdoObjectList) {
-						JDOObjectID objectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
-						TreeNode tn = objectID2TreeNode.get(objectID);
-						if (tn != null && parent != tn.getParent()) { // parent changed, completely replace!
-							if (logger.isDebugEnabled())
-								logger.debug("getNodes.Job#run: treeNode's parent changed! objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-
-							TreeNode p = (TreeNode) tn.getParent();
-							parentsToRefresh.add(p == hiddenRootNode ? null : p);
-							if (p != null)
-								p.removeChildNode(tn);
-
-							objectID2TreeNode.remove(objectID);
-							tn = null;
-						}
-
-						if (tn == null) {
-							if (logger.isDebugEnabled())
-								logger.debug("getNodes.Job#run: creating node for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-
-							tn = createNode();
-							tn.setActiveJDOObjectLazyTreeController(ActiveJDOObjectLazyTreeController.this);
-						}
-						else {
-							if (logger.isDebugEnabled())
-								logger.debug("getNodes.Job#run: reusing existing node for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-						}
-
-						tn.setJdoObject(jdoObject);
-						tn.setParent(parent);
-						objectID2TreeNode.put(objectID, tn);
-						loadedNodes.add(tn);
-					}
-
-//					if (parent == null)
-//						rootElements = loadedNodes;
-//					else
-//						parent.setChildNodes(loadedNodes);
-
-					parent.setChildNodes(loadedNodes);
-
-					Display.getDefault().asyncExec(new Runnable()
-					{
-						public void run()
-						{
-							fireJDOObjectsChangedEvent(new JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode>(this, parentsToRefresh, loadedNodes));
-						}
-					});
-				} // synchronized (objectID2TreeNode) {
-
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
-		return null;
-	}
+//		return null;
+//	}
 
 	private ListenerList treeNodesChangedListeners = new ListenerList();
 
@@ -786,44 +1030,43 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		treeNodesChangedListeners.remove(listener);
 	}
 
-//	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void fireJDOObjectsChangedEvent(JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent)
 	{
 		if (logger.isDebugEnabled()) {
 			logger.debug(
 					"fireJDOObjectsChangedEvent: changedEvent.parentsToRefresh.size()=" + //$NON-NLS-1$
 					(changedEvent.getParentsToRefresh() == null ? null : changedEvent.getParentsToRefresh().size()));
-			if (changedEvent.getParentsToRefresh() != null) {
+			if (logger.isTraceEnabled() && changedEvent.getParentsToRefresh() != null) {
 				for (TreeNode treeNode : changedEvent.getParentsToRefresh()) {
 					if (treeNode == null)
-						logger.debug("    parentTreeNode=null"); //$NON-NLS-1$
+						logger.trace("    parentTreeNode=null"); //$NON-NLS-1$
 					else
-						logger.debug("    parentTreeNode.jdoObjectID=" + JDOHelper.getObjectId(treeNode.getJdoObject())); //$NON-NLS-1$
+						logger.trace("    parentTreeNode.jdoObjectID=" + treeNode.getJdoObjectID()); //$NON-NLS-1$
 				}
 			}
 
 			logger.debug(
 					"fireJDOObjectsChangedEvent: changedEvent.ignoredJDOObjects.size()=" + //$NON-NLS-1$
 					(changedEvent.getIgnoredJDOObjects() == null ? null : changedEvent.getIgnoredJDOObjects().size()));
-			if (changedEvent.getIgnoredJDOObjects() != null) {
+			if (logger.isTraceEnabled() && changedEvent.getIgnoredJDOObjects() != null) {
 				for (Map.Entry<JDOObjectID, TreeNode> me : changedEvent.getIgnoredJDOObjects().entrySet())
-					logger.debug("    " + me.getKey()); //$NON-NLS-1$
+					logger.trace("    " + me.getKey()); //$NON-NLS-1$
 			}
 
 			logger.debug(
 					"fireJDOObjectsChangedEvent: changedEvent.loadedTreeNodes.size()=" + //$NON-NLS-1$
 					(changedEvent.getLoadedTreeNodes() == null ? null : changedEvent.getLoadedTreeNodes().size()));
-			if (changedEvent.getLoadedTreeNodes() != null) {
+			if (logger.isTraceEnabled() && changedEvent.getLoadedTreeNodes() != null) {
 				for (TreeNode treeNode : changedEvent.getLoadedTreeNodes())
-					logger.debug("    " + JDOHelper.getObjectId(treeNode.getJdoObject())); //$NON-NLS-1$
+					logger.trace("    " + treeNode.getJdoObjectID()); //$NON-NLS-1$
 			}
 
 			logger.debug(
 					"fireJDOObjectsChangedEvent: changedEvent.deletedJDOObjects.size()=" + //$NON-NLS-1$
 					(changedEvent.getDeletedJDOObjects() == null ? null : changedEvent.getDeletedJDOObjects().size()));
-			if (changedEvent.getDeletedJDOObjects() != null) {
+			if (logger.isTraceEnabled() && changedEvent.getDeletedJDOObjects() != null) {
 				for (Map.Entry<JDOObjectID, TreeNode> me : changedEvent.getDeletedJDOObjects().entrySet())
-					logger.debug("    " + me.getKey()); //$NON-NLS-1$
+					logger.trace("    " + me.getKey()); //$NON-NLS-1$
 			}
 		}
 

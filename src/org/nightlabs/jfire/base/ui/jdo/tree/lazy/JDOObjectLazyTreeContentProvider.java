@@ -1,18 +1,22 @@
 package org.nightlabs.jfire.base.ui.jdo.tree.lazy;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
+import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.nightlabs.jdo.ObjectID;
 
-public abstract class JDOObjectLazyTreeContentProvider
+public class JDOObjectLazyTreeContentProvider
 <JDOObjectID extends ObjectID,
 JDOObject,
 TreeNode extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, ? extends ActiveJDOObjectLazyTreeController<JDOObjectID, JDOObject, TreeNode>>>
 implements ILazyTreeContentProvider
 {
+	private static final Logger logger = Logger.getLogger(JDOObjectLazyTreeContentProvider.class);
 	private TreeViewer treeViewer;
 	private ActiveJDOObjectLazyTreeController<JDOObjectID, JDOObject, TreeNode> controller = null;
 
@@ -32,7 +36,26 @@ implements ILazyTreeContentProvider
 
 	@Override
 	public Object getParent(Object element) {
-		return null;
+		if (logger.isTraceEnabled())
+			logger.trace("getParent: entered for element=" + element);
+
+		TreeNode child = null;
+		if (element instanceof ActiveJDOObjectLazyTreeController) {
+			// nothing
+		}
+		else if (element instanceof String) {
+			// nothing
+		}
+		else {
+			child = naiveCast(child, element);
+		}
+		if (child == null)
+			return null;
+
+		if (logger.isDebugEnabled())
+			logger.debug("getParent: child.oid=" + child.getJdoObjectID());
+
+		return child.getParent();
 	}
 
 	@Override
@@ -49,15 +72,18 @@ implements ILazyTreeContentProvider
 			parent = naiveCast(parent, element);
 		}
 
-		int realChildCount;
-		List<TreeNode> children = getController().getNodes(parent);
-		if (children == null) // loading
+		long realChildCount;
+		long childCount = getController().getNodeCount(parent);
+		if (childCount < 0) // loading
 			realChildCount = 1; // the "Loading..." message
 		else
-			realChildCount = children.size();
+			realChildCount = childCount;
+
+		if (logger.isDebugEnabled())
+			logger.debug("updateChildCount: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " childCount=" + childCount);
 
 		if (realChildCount != currentChildCount)
-			getTreeViewer().setChildCount(element, realChildCount);
+			getTreeViewer().setChildCount(element, (int)realChildCount);
 	}
 
 	@Override
@@ -74,30 +100,87 @@ implements ILazyTreeContentProvider
 			parent = naiveCast(parent, parentElement);
 		}
 
-		List<TreeNode> children = getController().getNodes(parent);
-		if (children == null) // loading
+		if (parent != null) {
+			TreeNode n = parent;
+			while (n != null) {
+				if (collapsedNodes.contains(n)) // WORKAROUND for bug in TreeViewer: it calls updateElement for all children when collapsing a node. Strange but true.
+					return;
+
+				@SuppressWarnings("unchecked")
+				TreeNode p = (TreeNode) n.getParent();
+				n = p;
+			}
+		}
+
+		TreeNode child = getController().getNode(parent, index);
+		if (child == null) { // loading
+			if (logger.isDebugEnabled())
+				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " :: Child is not yet loaded!");
+
 			getTreeViewer().replace(parentElement, index, LOADING);
+		}
 		else {
-			final TreeNode child = children.get(index);
-			treeViewer.getTree().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					getTreeViewer().replace(parentElement, index, child);
-					getTreeViewer().setChildCount(child, 1);
-				}
-			});
+			if (child.getJdoObject() == null)
+				getTreeViewer().replace(parentElement, index, String.format(LOADING_OBJECT_ID, child.getJdoObjectID()));
+			else
+				getTreeViewer().replace(parentElement, index, child);
+
+			long childChildNodeCount = getController().getNodeCount(child);
+
+			if (logger.isDebugEnabled())
+				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " child.oid=" + child.getJdoObjectID() + " child.childCount=" + childChildNodeCount);
+
+			if (childChildNodeCount < 0)
+				childChildNodeCount = 1; // the "Loading..." message
+
+			getTreeViewer().setChildCount(child, (int)childChildNodeCount);
 		}
 	}
 
 	private static final String LOADING = "Loading...";
+	private static final String LOADING_OBJECT_ID = "Loading %s ...";
 
 	@Override
 	public void dispose() {
 		// nothing
 	}
 
+	/**
+	 * This field is a WORKAROUND for a bug in the TreeViewer: It calls {@link #updateElement(Object, int)} for
+	 * all children when collapsing a node. Totally unnecessary and highly inefficient :-( but fortunately possible
+	 * to work-around it.
+	 */
+	private Set<TreeNode> collapsedNodes = new HashSet<TreeNode>();
+
+	private ITreeViewerListener treeViewerListener = new ITreeViewerListener() {
+		public void treeCollapsed(org.eclipse.jface.viewers.TreeExpansionEvent event) {
+			@SuppressWarnings("unchecked")
+			TreeNode node = (TreeNode) event.getElement();
+
+			logger.error("treeCollapsed: node=" + node);
+			collapsedNodes.add(node);
+		}
+		public void treeExpanded(org.eclipse.jface.viewers.TreeExpansionEvent event) {
+			@SuppressWarnings("unchecked")
+			TreeNode node = (TreeNode) event.getElement();
+
+			logger.error("treeExpanded: node=" + node);
+			if (collapsedNodes.remove(node))
+				getTreeViewer().refresh();
+		}
+	};
+
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		if (this.treeViewer != null) {
+			this.treeViewer.removeTreeListener(treeViewerListener);
+		}
+
 		this.treeViewer = (TreeViewer) viewer;
+		this.collapsedNodes.clear();
+		if (this.treeViewer != null) {
+			this.treeViewer.addTreeListener(treeViewerListener);
+		}
 
 		ActiveJDOObjectLazyTreeController<JDOObjectID, JDOObject, TreeNode> controller = null;
 		if (newInput instanceof ActiveJDOObjectLazyTreeController) {

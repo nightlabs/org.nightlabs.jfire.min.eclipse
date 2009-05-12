@@ -16,8 +16,7 @@ import org.nightlabs.jdo.ObjectID;
  */
 public class JDOTreeNodesChangedEventHandler {
 
-	public JDOTreeNodesChangedEventHandler() {
-	}
+	protected JDOTreeNodesChangedEventHandler() { }
 
 	@SuppressWarnings("unchecked")
 	public static void handle(TreeViewer treeViewer, JDOTreeNodesChangedEvent<? extends ObjectID, ? extends JDOObjectTreeNode> changedEvent) {

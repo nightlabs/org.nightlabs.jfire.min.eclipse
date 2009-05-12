@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.jdo.tree.lazy;
 
@@ -33,46 +33,46 @@ import java.util.Set;
 public class JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode> extends EventObject {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Set<TreeNode> parentsToRefresh;
 	private List<TreeNode> loadedTreeNodes;
 	private Map<JDOObjectID, TreeNode> ignoredJDOObjects;
 	private Map<JDOObjectID, TreeNode> deletedJDOObjects;
 
-	/**
-	 * 
-	 */
 	public JDOLazyTreeNodesChangedEvent(Object source) {
 		super(source);
 	}
 
-	
+	public JDOLazyTreeNodesChangedEvent(Object source, Set<TreeNode> parentsToRefresh) {
+		this(source, parentsToRefresh, null, null, null);
+	}
+
 	public JDOLazyTreeNodesChangedEvent(Object source, Set<TreeNode> parentsToRefresh, List<TreeNode> loadedTreeNodes) {
 		this(source, parentsToRefresh, loadedTreeNodes, null, null);
 	}
-	
+
 	public JDOLazyTreeNodesChangedEvent(Object source, List<TreeNode> loadedTreeNodes, Map<JDOObjectID, TreeNode> ignoredJDOObjects, Map<JDOObjectID, TreeNode> deletedJDOObjects) {
 		this(source, null, loadedTreeNodes, ignoredJDOObjects, deletedJDOObjects);
 	}
-	
+
 	public JDOLazyTreeNodesChangedEvent(Object source, Set<TreeNode> parentsToRefresh, List<TreeNode> loadedTreeNodes, Map<JDOObjectID, TreeNode> ignoredJDOObjects, Map<JDOObjectID, TreeNode> deletedJDOObjects) {
 		super(source);
-		
+
 		if (parentsToRefresh == null)
 			this.parentsToRefresh = Collections.emptySet();
 		else
 			this.parentsToRefresh = Collections.unmodifiableSet(parentsToRefresh);
-		
+
 		if (loadedTreeNodes == null)
 			this.loadedTreeNodes = Collections.emptyList();
 		else
 			this.loadedTreeNodes = Collections.unmodifiableList(loadedTreeNodes);
-		
+
 		if (ignoredJDOObjects == null)
 			this.ignoredJDOObjects = Collections.emptyMap();
 		else
 			this.ignoredJDOObjects = Collections.unmodifiableMap(ignoredJDOObjects);
-		
+
 		if (deletedJDOObjects == null)
 			this.deletedJDOObjects = Collections.emptyMap();
 		else
@@ -134,7 +134,7 @@ public class JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode> extends EventOb
 	public void setParentsToRefresh(Set<TreeNode> parentsToRefresh) {
 		this.parentsToRefresh = parentsToRefresh;
 	}
-	
-	
+
+
 
 }
