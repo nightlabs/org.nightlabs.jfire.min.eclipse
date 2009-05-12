@@ -157,14 +157,18 @@ implements ILazyTreeContentProvider
 			@SuppressWarnings("unchecked")
 			TreeNode node = (TreeNode) event.getElement();
 
-			logger.error("treeCollapsed: node=" + node);
+			if (logger.isDebugEnabled())
+				logger.debug("treeViewerListener.treeCollapsed: node=" + node);
+
 			collapsedNodes.add(node);
 		}
 		public void treeExpanded(org.eclipse.jface.viewers.TreeExpansionEvent event) {
 			@SuppressWarnings("unchecked")
 			TreeNode node = (TreeNode) event.getElement();
 
-			logger.error("treeExpanded: node=" + node);
+			if (logger.isDebugEnabled())
+				logger.debug("treeViewerListener.treeExpanded: node=" + node);
+
 			if (collapsedNodes.remove(node))
 				getTreeViewer().refresh();
 		}
