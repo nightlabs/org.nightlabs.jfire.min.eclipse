@@ -25,18 +25,17 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import javax.jdo.FetchPlan;
 
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
-import org.nightlabs.base.ui.entity.editor.EntityEditor;
+import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditor;
 import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
 import org.nightlabs.jfire.security.id.UserID;
-import org.nightlabs.progress.NullProgressMonitor;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * A form editor for {@link User}s.
@@ -44,7 +43,8 @@ import org.nightlabs.progress.NullProgressMonitor;
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class UserEditor extends EntityEditor implements IConfigSetupEditor, ICloseOnLogoutEditorPart
+public class UserEditor extends ActiveEntityEditor
+implements IConfigSetupEditor, ICloseOnLogoutEditorPart
 {
 	/**
 	 * The editor id.
@@ -69,31 +69,50 @@ public class UserEditor extends EntityEditor implements IConfigSetupEditor, IClo
 		super.firePropertyChange(PROP_TITLE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#getTitle()
-	 */
-	@Override
-	public String getTitle()
-	{
-		if(getEditorInput() == null)
-			return super.getTitle();
-		UserID userID = ((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID();
-		// given that the User had to be loaded to be shown in the tree, this should not take long.
-		User user = UserDAO.sharedInstance().getUser(userID, new String[] {FetchPlan.DEFAULT}, 1, new NullProgressMonitor());
-		if (user.getName() != null && !"".equals(user.getName())) //$NON-NLS-1$
-			return user.getName();
 
-		return user.getUserID();
+	// :: --- [ ~~ ActiveEntiyEditor ] -------------------------------------------------------------------------->>---|
+	@Override
+	protected String getEditorTitleFromEntity(Object entity) {
+		if (entity instanceof User) {
+			User user = (User)entity;
+			if (user.getName() != null && !"".equals(user.getName()))	return user.getName();
+		}
+
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#getTitleImage()
-	 */
 	@Override
-	public Image getTitleImage()
-	{
-		return super.getTitleImage();
+	protected Object retrieveEntityForEditorTitle(ProgressMonitor monitor) {
+		return UserDAO.sharedInstance().getUser(getUserID(), new String[] {FetchPlan.DEFAULT}, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 	}
+	// :: --- [ ~~ ActiveEntiyEditor ] --------------------------------------------------------------------------<<---|
+
+
+//	/* (non-Javadoc)
+//	 * @see org.eclipse.ui.part.WorkbenchPart#getTitle()
+//	 */
+//	@Override
+//	public String getTitle()
+//	{
+//		if(getEditorInput() == null)
+//			return super.getTitle();
+//		UserID userID = ((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID();
+//		// given that the User had to be loaded to be shown in the tree, this should not take long.
+//		User user = UserDAO.sharedInstance().getUser(userID, new String[] {FetchPlan.DEFAULT}, 1, new NullProgressMonitor());
+//		if (user.getName() != null && !"".equals(user.getName())) //$NON-NLS-1$
+//			return user.getName();
+//
+//		return user.getUserID();
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.eclipse.ui.part.WorkbenchPart#getTitleImage()
+//	 */
+//	@Override
+//	public Image getTitleImage()
+//	{
+//		return super.getTitleImage();
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#getTitleToolTip()
@@ -102,7 +121,7 @@ public class UserEditor extends EntityEditor implements IConfigSetupEditor, IClo
 	public String getTitleToolTip()
 	{
 		// TODO: Better tool-tip
-		return ((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID().userID;
+		return getUserID().userID; // ((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID().userID;
 	}
 
 	public ConfigID getConfigID() {
@@ -110,6 +129,6 @@ public class UserEditor extends EntityEditor implements IConfigSetupEditor, IClo
 	}
 
 	public UserID getUserID() {
-		return (((JDOObjectEditorInput<UserID>)getEditorInput()).getJDOObjectID());
+		return ((UserEditorInput)getEditorInput()).getJDOObjectID();
 	}
 }

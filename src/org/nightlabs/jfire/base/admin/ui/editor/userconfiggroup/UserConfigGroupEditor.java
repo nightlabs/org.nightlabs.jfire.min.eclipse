@@ -21,15 +21,15 @@ implements IConfigSetupEditor, ICloseOnLogoutEditorPart
 	 * The editor id.
 	 */
 	public static final String EDITOR_ID = UserConfigGroupEditor.class.getName();
-	
+
 	public UserConfigGroupEditor() {
 		super();
 	}
 
 	public ConfigID getConfigID() {
-		return ((JDOObjectEditorInput<ConfigID>) getEditorInput()).getJDOObjectID();
+		return (ConfigID)((JDOObjectEditorInput<?>) getEditorInput()).getJDOObjectID();
 	}
-	
+
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);

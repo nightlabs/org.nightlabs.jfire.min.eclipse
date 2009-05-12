@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.admin.ui.editor.prop;
 
@@ -16,7 +16,7 @@ implements ICloseOnLogoutEditorPart
 {
 
 	/**
-	 * 
+	 *
 	 */
 	public StructLocalEditor() {
 		super();
@@ -26,8 +26,8 @@ implements ICloseOnLogoutEditorPart
 	public String getTitle() {
 		if(getEditorInput() == null)
 			return super.getTitle();
-		
-		final StructLocalID structID = ((JDOObjectEditorInput<StructLocalID>)getEditorInput()).getJDOObjectID();
+
+		final StructLocalID structID = (StructLocalID)((JDOObjectEditorInput<?>)getEditorInput()).getJDOObjectID();
 		return structID.linkClass.substring(structID.linkClass.lastIndexOf(".")+1); //$NON-NLS-1$
 	}
 }
