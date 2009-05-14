@@ -58,6 +58,11 @@ public class JDOLazyTreeNodesChangedEventHandler {
 								if (logger.isDebugEnabled())
 									logger.debug("handle.deferredRefreshJob.run: Calling treeViewer.refresh() now: " + treeViewer);
 
+								// WORKAROUND BEGIN - otherwise it refreshes only a few items - not all
+								treeViewer.getTree().getParent().layout(true);
+								// WORKAROUND END
+
+//								treeViewer.refresh();
 								treeViewer.refresh(true); // a tree with SWT.VIRTUAL needs to be always refreshed completely (since it refreshes the visible items only, anyway).
 							}
 
