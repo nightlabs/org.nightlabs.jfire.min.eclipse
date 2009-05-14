@@ -108,6 +108,7 @@ public class JFireLoginHandler implements ILoginHandler {
 //						defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
 //						defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
 						defaultData.setDefaultValues();
+						defaultData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory"); // TODO need a jboss-independent solution! Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco.
 					}
 
 					LoginData lastUsed = latestConfig.getLoginData();
