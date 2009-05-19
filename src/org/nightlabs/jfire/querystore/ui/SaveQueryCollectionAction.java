@@ -14,10 +14,10 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.overview.EntryViewer;
 import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
+import org.nightlabs.jfire.querystore.ui.resource.Messages;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -83,7 +83,7 @@ public class SaveQueryCollectionAction
 
 		final Class<?> resultType = viewer.getTargetType();
 
-		Job fetchStoredQueries = new Job(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryCollectionAction.jobTitleFetchingQueryStores")) //$NON-NLS-1$
+		Job fetchStoredQueries = new Job(Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryCollectionAction.jobTitleFetchingQueryStores")) //$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception
@@ -118,7 +118,7 @@ public class SaveQueryCollectionAction
 		final QueryStore queryToSave = dialog.getSelectedQueryStore();
 		queryToSave.setQueryCollection(viewer.getManagedQueries());
 
-		Job saveQueryJob = new Job(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryCollectionAction.jobTitleSavingQueryStore") + queryToSave.getName().getText()) //$NON-NLS-1$
+		Job saveQueryJob = new Job(Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryCollectionAction.jobTitleSavingQueryStore") + queryToSave.getName().getText()) //$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception

@@ -11,10 +11,10 @@ import org.eclipse.swt.widgets.Table;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.util.JFaceUtil;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.querystore.ui.BaseQueryStoreActiveTableComposite.BaseQueryStoreColumnLabelProvider;
+import org.nightlabs.jfire.querystore.ui.resource.Messages;
 
 /**
  * Simple Table for BaseQueryStores with 3 columns (name, public, owner). This table does not update
@@ -63,7 +63,7 @@ public class BaseQueryStoreInActiveTableComposite
 	protected void createTableColumns(final TableViewer tableViewer, Table table)
 	{
 		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnQueryName")); //$NON-NLS-1$
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnQueryName")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreActiveTableComposite.BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
@@ -74,7 +74,7 @@ public class BaseQueryStoreInActiveTableComposite
 		});
 
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnIsPublic")); //$NON-NLS-1$
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnIsPublic")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
@@ -90,7 +90,7 @@ public class BaseQueryStoreInActiveTableComposite
 			@Override
 			public String getToolTipText(Object element)
 			{
-				return Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnToolTipIsPublic"); //$NON-NLS-1$
+				return Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnToolTipIsPublic"); //$NON-NLS-1$
 			}
 
 			@Override
@@ -101,7 +101,7 @@ public class BaseQueryStoreInActiveTableComposite
 		});
 
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnCreator")); //$NON-NLS-1$
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnCreator")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override

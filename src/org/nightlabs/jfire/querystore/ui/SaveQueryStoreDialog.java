@@ -20,10 +20,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.QueryStore;
+import org.nightlabs.jfire.querystore.ui.resource.Messages;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.dao.UserDAO;
@@ -61,7 +61,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		newShell.setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.ShellTitle")); //$NON-NLS-1$
+		newShell.setText(Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.ShellTitle")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -107,8 +107,8 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		});
 		storeTable.setInput(existingQueries);
 
-		setTitle(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.title")); //$NON-NLS-1$
-		setMessage(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.description")); //$NON-NLS-1$
+		setTitle(Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.description")); //$NON-NLS-1$
 		return wrapper;
 	}
 
@@ -117,7 +117,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 	@Override
 	protected void createButtonsForButtonBar(Composite parent)
 	{
-		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
+		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
 		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,	false);
 		okButton.setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
@@ -148,7 +148,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		final BaseQueryStore queryStore = new BaseQueryStore(owner,
 			IDGenerator.nextID(BaseQueryStore.class), null);
 
-		queryStore.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
+		queryStore.getName().setText(NLLocale.getDefault().getLanguage(), Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.standardNewQueryName")); //$NON-NLS-1$
 
 		existingQueries.add(queryStore);
 		storeTable.setInput(existingQueries);
@@ -161,7 +161,7 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 		if (! selectedStore.getOwnerID().equals(SecurityReflector.getUserDescriptor().getUserObjectID()) )
 		{
 			errorMsgSet = true;
-			setErrorMessage(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.SaveQueryStoreDialog.cannotChangeNotOwnerError")); //$NON-NLS-1$
+			setErrorMessage(Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.cannotChangeNotOwnerError")); //$NON-NLS-1$
 			return false;
 		}
 		return true;

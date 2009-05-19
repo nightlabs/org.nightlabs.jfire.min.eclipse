@@ -21,7 +21,6 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectTableComposite;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
@@ -29,6 +28,7 @@ import org.nightlabs.jfire.query.store.QueryStore;
 import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.query.store.id.QueryStoreID;
 import org.nightlabs.jfire.query.store.jdo.filter.BaseQueryStoreLifecycleFilter;
+import org.nightlabs.jfire.querystore.ui.resource.Messages;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -90,7 +90,7 @@ public class BaseQueryStoreActiveTableComposite
 	{
 		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnCreator")); //$NON-NLS-1$
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnCreator")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
@@ -111,7 +111,7 @@ public class BaseQueryStoreActiveTableComposite
 	{
 		TableViewerColumn viewerColumn;
 		viewerColumn = new TableViewerColumn(tableViewer, SWT.CENTER);
-		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnIsPublic")); //$NON-NLS-1$
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnIsPublic")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
@@ -127,7 +127,7 @@ public class BaseQueryStoreActiveTableComposite
 			@Override
 			public String getToolTipText(Object element)
 			{
-				return Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnToolTipIsPublic"); //$NON-NLS-1$
+				return Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnToolTipIsPublic"); //$NON-NLS-1$
 			}
 
 			@Override
@@ -145,7 +145,7 @@ public class BaseQueryStoreActiveTableComposite
 	protected TableViewerColumn createNameColumn(final TableViewer tableViewer)
 	{
 		TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.base.querystore.ui.table.BaseQueryStoreInActiveTableComposite.columnQueryName")); //$NON-NLS-1$
+		viewerColumn.getColumn().setText(Messages.getString("org.nightlabs.jfire.querystore.ui.BaseQueryStoreInActiveTableComposite.columnQueryName")); //$NON-NLS-1$
 		viewerColumn.setLabelProvider(new BaseQueryStoreColumnLabelProvider()
 		{
 			@Override
