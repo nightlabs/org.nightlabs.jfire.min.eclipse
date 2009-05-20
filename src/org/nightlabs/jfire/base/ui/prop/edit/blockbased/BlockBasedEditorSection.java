@@ -14,7 +14,6 @@ import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.ValidationResultHandler;
-import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
@@ -27,7 +26,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	/**
 	 * The person editor used in this section.
 	 */
-	private BlockBasedEditor blockBasedPersonEditor;
+	private BlockBasedEditor blockBasedEditor;
 
 	/**
 	 * The person editor control showed in this section.
@@ -63,7 +62,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	public void commit(boolean onSave)
 	{
 		super.commit(onSave);
-		blockBasedPersonEditor.updatePropertySet();
+		blockBasedEditor.updatePropertySet();
 	}
 
 	private static String VALIDATION_RESULT_MESSAGE_KEY = "validationResultMessageKey"; //$NON-NLS-1$
@@ -85,8 +84,8 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		createDescriptionControl(section, toolkit, sectionDescriptionText);
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
-		blockBasedPersonEditor = createBlockBasedEditor();
-		blockBasedPersonEditor.setValidationResultHandler(new ValidationResultHandler() {
+		blockBasedEditor = createBlockBasedEditor();
+		blockBasedEditor.setValidationResultHandler(new ValidationResultHandler() {
 			/**
 			 * Used to cache the validation result because MessageManager
 			 * updates UI every time which is quite expensive. Marc
@@ -116,14 +115,14 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 				}
 			}
 		});
-		blockBasedPersonEditorControl = blockBasedPersonEditor.createControl(container, false);
+		blockBasedPersonEditorControl = blockBasedEditor.createControl(container, false);
 		blockBasedPersonEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH));
-		blockBasedPersonEditor.addChangeListener(new DataBlockEditorChangedListener() {
+		blockBasedEditor.addChangeListener(new DataBlockEditorChangedListener() {
 			public void dataBlockEditorChanged(DataBlockEditorChangedEvent changedEvent) {
 				markDirty();
 			}
 		});
-		blockBasedPersonEditor.addDisplayNameChangedListener(new DisplayNameChangedListener() {
+		blockBasedEditor.addDisplayNameChangedListener(new DisplayNameChangedListener() {
 			public void displayNameChanged(DisplayNameChangedEvent changedEvent) {
 				markDirty();
 			}
@@ -135,7 +134,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 			public void run() {
 				if(property == null)
 					return;
-				blockBasedPersonEditor.setPropertySet(property, true);
+				blockBasedEditor.setPropertySet(property, true);
 			}
 		});
 	}
@@ -149,6 +148,6 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	}
 
 	public void setDisplayNameChangedListener(DisplayNameChangedListener listener) {
-		blockBasedPersonEditor.addDisplayNameChangedListener(listener);
+		blockBasedEditor.addDisplayNameChangedListener(listener);
 	}
 }

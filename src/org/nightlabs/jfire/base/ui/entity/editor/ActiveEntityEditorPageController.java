@@ -463,12 +463,29 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			oldControllerObject = controllerObject;
 			if (logger.isDebugEnabled())
 				logger.debug("Old controllerObject: " + oldControllerObject); //$NON-NLS-1$
-			controllerObject = storeEntity(controllerObject, new SubProgressMonitor(monitor, 100));
+			EntityType newControllerObject = storeEntity(controllerObject, new SubProgressMonitor(monitor, 50));
+			if (newControllerObject != null) {
+				controllerObject = Util.cloneSerializable(newControllerObject);
+				monitor.worked(50);
+			}
+			else {
+				Object oid = JDOHelper.getObjectId(oldControllerObject);
+				if (oid == null)
+					throw new IllegalStateException("storeEntity(...) returned null, but the controllerObject seems not to be a JDO object! JDOHelper.getObjectId(oldControllerObject) returned null for " + oldControllerObject);
+
+				Cache.sharedInstance().removeByObjectID(oid, false);
+				newControllerObject = retrieveEntity(new SubProgressMonitor(monitor, 50));
+				if (newControllerObject == oldControllerObject)
+					throw new IllegalStateException("Cache eviction obviously failed! newControllerObject == oldControllerObject (same instance!)");
+
+				controllerObject = Util.cloneSerializable(newControllerObject);
+			}
+
 			if (logger.isDebugEnabled())
 				logger.debug("storeEntity returned: " + controllerObject); //$NON-NLS-1$
 			// we don't put the result into the Cache, as the Cache will be notified
 			// of the change and the change listener will put the object into the cache
-			controllerObject = Util.cloneSerializable(controllerObject);
+//			controllerObject = Util.cloneSerializable(controllerObject); // done above
 			if (logger.isDebugEnabled())
 				logger.debug("Controller object after clone: " + getControllerObject()); //$NON-NLS-1$
 			setStale(false);
@@ -554,9 +571,10 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * Subclasses need to implement the storing of the given controller object here.
 	 * Usually this will be a call to the DAO object. The saved object (newly retrieved from the server)
 	 * should be returned.
+	 * Alternatively you can return null, in this case the cache is automatically evicted and the object will get reloaded.
 	 * @param controllerObject The controllerObject to store.
 	 * @param monitor The monitor to use.
-	 * @return The controllers object.
+	 * @return The controllers object. (may return null)
 	 */
 	protected abstract EntityType storeEntity(EntityType controllerObject, ProgressMonitor monitor);
 
