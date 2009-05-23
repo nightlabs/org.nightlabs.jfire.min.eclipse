@@ -2,14 +2,14 @@ package org.nightlabs.jfire.base.ui.login;
 
 import java.io.Serializable;
 
+import org.nightlabs.concurrent.DeadLockException;
+import org.nightlabs.concurrent.RWLockable;
 import org.nightlabs.j2ee.LoginData;
-import org.nightlabs.util.DeadLockException;
-import org.nightlabs.util.RWLockable;
 
 /**
  * This class holds a single login configuration without the password. It is intended to be used in {@link LoginConfigModule} to
  * be able to store multiple login identities to let the user select the one to be used for the next login.
- * 
+ *
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Marius Heinzmann -- Marius[at]NightLabs[dot]de
  */
@@ -74,10 +74,10 @@ implements Serializable, Cloneable, RWLockable
 		try {
 			if (!currentlySaving)
 				return loginData;
-	
+
 			if (loginData == null)
 				return null;
-	
+
 			LoginData res = new LoginData(loginData);
 			res.setPassword(null);
 			if (res.getAdditionalParams() != null)

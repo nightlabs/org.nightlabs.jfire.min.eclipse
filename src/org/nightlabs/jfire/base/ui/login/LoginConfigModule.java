@@ -30,15 +30,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.nightlabs.concurrent.RWLock;
 import org.nightlabs.config.ConfigModule;
 import org.nightlabs.config.InitException;
 import org.nightlabs.j2ee.LoginData;
-import org.nightlabs.util.RWLock;
 
 /**
  * This class holds all user specific data relevant for login in into JFire. It holds a list of
  * {@link LoginConfiguration}s that may be presented to the user upon login to reuse.
- * 
+ *
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
