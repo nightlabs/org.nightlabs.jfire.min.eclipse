@@ -34,12 +34,12 @@ import java.util.List;
 
 import org.eclipse.osgi.baseadaptor.BaseData;
 import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
-import org.nightlabs.classloader.ClassDataLoaderDelegate;
-import org.nightlabs.classloader.ClassLoaderDelegate;
-import org.nightlabs.classloader.ClassLoadingDelegator;
-import org.nightlabs.classloader.IClassLoaderDelegate;
-import org.nightlabs.classloader.IClassLoadingDelegator;
-import org.nightlabs.classloader.LogUtil;
+import org.nightlabs.classloader.delegating.ClassDataLoaderDelegate;
+import org.nightlabs.classloader.delegating.ClassLoaderDelegate;
+import org.nightlabs.classloader.delegating.ClassLoadingDelegator;
+import org.nightlabs.classloader.delegating.IClassLoaderDelegate;
+import org.nightlabs.classloader.delegating.IClassLoadingDelegator;
+import org.nightlabs.classloader.delegating.LogUtil;
 
 /**
  * 

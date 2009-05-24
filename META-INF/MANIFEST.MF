@@ -6,6 +6,6 @@ Bundle-Version: 0.9.7.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: NightLabs.org
 Fragment-Host: org.eclipse.osgi
-Export-Package: org.nightlabs.classloader,
+Export-Package: org.nightlabs.classloader.delegating,
  org.nightlabs.classloader.osgi,
  org.nightlabs.jfire.base.j2ee.osgi
