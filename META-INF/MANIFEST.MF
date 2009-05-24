@@ -14,7 +14,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.nightlabs.base.ui,
- javax.jdo;resolution:=optional;visibility:=reexport
+ javax.jdo;resolution:=optional;visibility:=reexport,
+ org.nightlabs.jfire.classloader.remote
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.nightlabs.base.ui
@@ -325,6 +326,4 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.jnp.interfaces.jnp,
  org.jnp.server,
  org.nightlabs.jfire.base.j2ee,
- org.nightlabs.jfire.classloader,
- org.nightlabs.jfire.classloader.test,
  org.omg.stub.javax.ejb

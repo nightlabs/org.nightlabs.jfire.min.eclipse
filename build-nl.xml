@@ -11,12 +11,15 @@
 	</target>
 	
 	<target name="clean" depends="revertManifest">
+		<!--
 		<delete failonerror="false" file="lib/JFireRCLBackend.jar" />
 		<delete failonerror="false" file="lib/JFireRCLBackendBean.jar" />
 		<delete failonerror="false" file="lib/JFireRemoteClassLoader.jar" />
+		-->
 	</target>
 	
 	<target name="build" depends="init, clean">
+		<!--
 		<jar destfile="lib/JFireRCLBackend.jar">
 			<fileset dir="../JFireRCLBackend/bin" includes="**/*"/>
 		</jar>
@@ -26,5 +29,6 @@
 		<jar destfile="lib/JFireRemoteClassLoader.jar">
 			<fileset dir="../JFireRemoteClassLoader/bin" includes="**/*"/>
 		</jar>
+		-->
 	</target>
 </project>

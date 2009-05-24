@@ -3,13 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/jboss-ejb3x.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbossall-client.jar" sourcepath="/home/marco/java/jboss-4.2.0.GA-src"/>
-	<classpathentry exported="true" kind="lib" path="lib/JFireRCLBackend.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/JFireRCLBackendBean.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/JFireRemoteClassLoader.jar" sourcepath="/JFireRemoteClassLoader/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JFireRCLBackend"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JFireRCLBackendBean"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JFireRemoteClassLoader"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
