@@ -48,7 +48,6 @@ import org.nightlabs.jfire.base.login.JFireSecurityConfiguration;
 import org.nightlabs.jfire.base.ui.login.JFireLoginHandler;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.LoginAbortedException;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -166,7 +165,7 @@ extends AbstractApplication
 			// This is done by IOUtil.getUserTempDir().
 
 			File classLoaderCacheDir = new File(IOUtil.createUserTempDir("jfire.", null), "classloader.cache"); //$NON-NLS-1$ //$NON-NLS-2$
-			org.nightlabs.jfire.classloader.JFireRCDLDelegate.createSharedInstance(
+			org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate.createSharedInstance(
 					icp,
 					classLoaderCacheDir).setFilter(RemoteResourceFilterRegistry.sharedInstance());
 //		} catch (LoginException e) {
