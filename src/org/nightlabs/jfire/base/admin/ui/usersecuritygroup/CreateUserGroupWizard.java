@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
 
 import java.rmi.RemoteException;
 
-import javax.ejb.CreateException;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
@@ -59,7 +58,7 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 //	private BlockBasedPropertySetEditorWizardHop propertySetEditorWizardHop;
 
 	public CreateUserGroupWizard()
-	throws LoginException, NamingException, RemoteException, CreateException
+	throws LoginException, NamingException, RemoteException
 	{
 		super();
 

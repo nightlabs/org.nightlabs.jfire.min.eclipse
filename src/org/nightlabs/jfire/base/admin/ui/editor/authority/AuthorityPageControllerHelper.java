@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.CreateException;
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOHelper;
 import javax.naming.NamingException;

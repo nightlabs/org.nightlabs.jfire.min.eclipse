@@ -29,7 +29,6 @@ package org.nightlabs.jfire.base.admin.ui.organisation.create;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import javax.ejb.CreateException;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
@@ -66,7 +65,7 @@ public class CreateOrganisationWizard extends Wizard implements INewWizard
 	private CreateOrganisationPage coPage;
 
 	public CreateOrganisationWizard()
-	throws LoginException, NamingException, RemoteException, CreateException
+	throws LoginException, NamingException, RemoteException
 	{
 		super();
 		setNeedsProgressMonitor(true);
