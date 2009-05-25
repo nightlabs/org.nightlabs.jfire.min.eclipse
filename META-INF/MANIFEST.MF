@@ -15,13 +15,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.update.configurator,
  org.eclipse.update.core,
  org.eclipse.core.runtime,
- org.nightlabs.jfire.base.j2ee;visibility:=reexport,
+ org.nightlabs.jfire.base.j2ee,
  org.nightlabs.jfire.base.intro.ui,
  org.eclipse.nebula.widgets.pshelf;visibility:=reexport,
  org.nightlabs.eclipse.ui.dialog;visibility:=reexport,
- org.nightlabs.clientui.ui,
- org.nightlabs.jfire.classloader.remote
-Eclipse-RegisterBuddy: org.nightlabs.config, org.nightlabs.jfire.base.j2ee
+ org.nightlabs.clientui.ui
+Eclipse-RegisterBuddy: org.nightlabs.config
 Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui,
