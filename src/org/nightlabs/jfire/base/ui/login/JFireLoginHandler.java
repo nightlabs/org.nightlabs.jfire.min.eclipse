@@ -62,94 +62,91 @@ public class JFireLoginHandler implements ILoginHandler {
 	{
 		// if the user specified the necessary parameters and the login succeeds, we don't show any login dialog
 		try {
-			if (autoLoginWithParams) {
-				String[] args = NLBasePlugin.getDefault().getApplication().getArguments();
-				for (int i = 0; i < args.length; i++) {
-					String arg = args[i];
-					String val = i + 1 < args.length ? args[i + 1] : null;
-
-					if ("--login.userID".equals(arg)) //$NON-NLS-1$
-						loginData.setUserID(val);
-					else if ("--login.password".equals(arg)) //$NON-NLS-1$
-						loginData.setPassword(val);
-					else if ("--login.organisationID".equals(arg)) //$NON-NLS-1$
-						loginData.setOrganisationID(val);
-					else if ("--login.workstationID".equals(arg)) //$NON-NLS-1$
-						loginData.setWorkstationID(val);
-					else if ("--login.initialContextFactory".equals(arg)) //$NON-NLS-1$
-						loginData.setInitialContextFactory(val);
-					else if ("--login.serverURL".equals(arg)) //$NON-NLS-1$
-						loginData.setProviderURL(val);
-				}
-
-				autoLoginWithParams = false;
-			}
-
 			// generate new SessionID (this has to be done everytime some logs in)
 			Base62Coder coder = Base62Coder.sharedInstance();
 			loginData.setSessionID(
 					coder.encode(System.currentTimeMillis(), 1) + '-' +
 					coder.encode((long)(Math.random() * 14776335), 1)); // 14776335 is the highest value encoded in 4 digits ("zzzz")
 
-			if (loginData.getPassword() != null) {
-				// login parameters were given via startup parameters
-				//  -> initialise to last used configuration values if none were given
+			// login parameters were given via startup parameters
+			//  -> initialise to last used configuration values if none were given
 
-				loginConfigModule.acquireWriteLock();
-				try {
-					LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
+			loginConfigModule.acquireWriteLock();
+			try {
+				LoginConfiguration latestConfig = loginConfigModule.getLatestLoginConfiguration();
 
-					if (latestConfig == null) {
-						// there is no last configuration -> initialise with default values (describe local JBoss server)
-						latestConfig = new LoginConfiguration();
-						latestConfig.setLoginConfigModule(loginConfigModule);
-						LoginData defaultData = latestConfig.getLoginData();
+				if (latestConfig == null) {
+					// there is no last configuration -> initialise with default values (describe local JBoss server)
+					latestConfig = new LoginConfiguration();
+					latestConfig.setLoginConfigModule(loginConfigModule);
+					LoginData defaultData = latestConfig.getLoginData();
 //						defaultData.setInitialContextFactory(LoginData.DEFAULT_INITIAL_CONTEXT_FACTORY);
 //						defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
 //						defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
-						defaultData.setDefaultValues();
-						defaultData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory"); // TODO need a jboss-independent solution! Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco.
-					}
-
-					LoginData lastUsed = latestConfig.getLoginData();
-
-					if (loginData.getUserID() == null || "".equals(loginData.getUserID())) //$NON-NLS-1$
-						loginData.setUserID(lastUsed.getUserID());
-
-					if (loginData.getOrganisationID() == null || "".equals(loginData.getOrganisationID())) //$NON-NLS-1$
-						loginData.setOrganisationID(lastUsed.getOrganisationID());
-
-					if (loginData.getWorkstationID() == null || "".equals(loginData.getWorkstationID())) //$NON-NLS-1$
-						loginData.setWorkstationID(lastUsed.getWorkstationID());
-
-					if (loginData.getInitialContextFactory() == null || "".equals(loginData.getInitialContextFactory())) //$NON-NLS-1$
-						loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
-
-					if (loginData.getProviderURL() == null || "".equals(loginData.getProviderURL())) //$NON-NLS-1$
-						loginData.setProviderURL(lastUsed.getProviderURL());
-
-					if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol())) //$NON-NLS-1$
-						loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
-
-					loginConfigModule.setLatestLoginConfiguration(loginData, null);
-
-					// perform a test login
-					Login.AsyncLoginResult res = Login.testLogin(loginData);
-					if (res.isSuccess()) {
-						BeanUtils.copyProperties(loginResult, res);
-						return;
-					}
-					else if (res.isWasAuthenticationErr())
-						throw new LoginException("Authentication error"); //$NON-NLS-1$
-					else if (res.getException() != null)
-						throw res.getException();
-					else if ((res.getMessage() != null))
-						throw new LoginException(res.getMessage());
-					else
-						throw new LoginException("Login failed and I have no idea, why!!!"); //$NON-NLS-1$
-				} finally {
-					loginConfigModule.releaseLock();
+					defaultData.setDefaultValues();
+					defaultData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory"); // TODO need a jboss-independent solution! Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco.
 				}
+
+				LoginData lastUsed = latestConfig.getLoginData();
+
+				if (loginData.getUserID() == null || "".equals(loginData.getUserID())) //$NON-NLS-1$
+					loginData.setUserID(lastUsed.getUserID());
+
+				if (loginData.getOrganisationID() == null || "".equals(loginData.getOrganisationID())) //$NON-NLS-1$
+					loginData.setOrganisationID(lastUsed.getOrganisationID());
+
+				if (loginData.getWorkstationID() == null || "".equals(loginData.getWorkstationID())) //$NON-NLS-1$
+					loginData.setWorkstationID(lastUsed.getWorkstationID());
+
+				if (loginData.getInitialContextFactory() == null || "".equals(loginData.getInitialContextFactory())) //$NON-NLS-1$
+					loginData.setInitialContextFactory(lastUsed.getInitialContextFactory());
+
+				if (loginData.getProviderURL() == null || "".equals(loginData.getProviderURL())) //$NON-NLS-1$
+					loginData.setProviderURL(lastUsed.getProviderURL());
+
+				if (loginData.getSecurityProtocol() == null || "".equals(loginData.getSecurityProtocol())) //$NON-NLS-1$
+					loginData.setSecurityProtocol(lastUsed.getSecurityProtocol());
+
+				loginConfigModule.setLatestLoginConfiguration(loginData, null);
+
+				if (autoLoginWithParams) {
+					String[] args = NLBasePlugin.getDefault().getApplication().getArguments();
+					for (int i = 0; i < args.length; i++) {
+						String arg = args[i];
+						String val = i + 1 < args.length ? args[i + 1] : null;
+
+						if ("--login.userID".equals(arg)) //$NON-NLS-1$
+							loginData.setUserID(val);
+						else if ("--login.password".equals(arg)) //$NON-NLS-1$
+							loginData.setPassword(val);
+						else if ("--login.organisationID".equals(arg)) //$NON-NLS-1$
+							loginData.setOrganisationID(val);
+						else if ("--login.workstationID".equals(arg)) //$NON-NLS-1$
+							loginData.setWorkstationID(val);
+						else if ("--login.initialContextFactory".equals(arg)) //$NON-NLS-1$
+							loginData.setInitialContextFactory(val);
+						else if ("--login.serverURL".equals(arg)) //$NON-NLS-1$
+							loginData.setProviderURL(val);
+					}
+					autoLoginWithParams = false;
+				}
+
+				// perform a test login
+				Login.AsyncLoginResult res = Login.testLogin(loginData);
+				if (res.isSuccess()) {
+					BeanUtils.copyProperties(loginResult, res);
+					return;
+				}
+				else if (res.isWasAuthenticationErr())
+					throw new LoginException("Authentication error"); //$NON-NLS-1$
+				else if (res.getException() != null)
+					throw res.getException();
+				else if ((res.getMessage() != null))
+					throw new LoginException(res.getMessage());
+				else
+					throw new LoginException("Login failed and I have no idea, why!!!"); //$NON-NLS-1$
+			} finally {
+				loginConfigModule.releaseLock();
 			}
 		} catch (Throwable x) {
 			// sth. went wrong => log and show normal login dialog
