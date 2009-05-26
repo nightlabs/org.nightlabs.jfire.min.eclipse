@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.nightlabs.jfire.base.intro.ui,
  org.eclipse.nebula.widgets.pshelf;visibility:=reexport,
  org.nightlabs.eclipse.ui.dialog;visibility:=reexport,
- org.nightlabs.clientui.ui
+ org.nightlabs.clientui.ui,
+ javax.jdo;bundle-version="2.3.0";resolution:=optional;visibility:=reexport
 Eclipse-RegisterBuddy: org.nightlabs.config
 Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.base.login,
