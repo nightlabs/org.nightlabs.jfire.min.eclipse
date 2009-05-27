@@ -757,9 +757,11 @@ public class LoginDialog extends TitleAreaDialog
 			if (found)
 				return cause;
 
-			Throwable newCause = ExceptionUtils.getCause(e);
-			if (cause == newCause) // really strange, but I just had an eternal loop because the cause of an exception was itself.
-				return null;
+			Throwable newCause = ExceptionUtils.getCause(cause);
+			// not strange at all if you get the cause auf e all the time. Marc
+//			Throwable newCause = ExceptionUtils.getCause(e);
+//			if (cause == newCause) // really strange, but I just had an eternal loop because the cause of an exception was itself.
+//				return null;
 
 			cause = newCause;
 		}
