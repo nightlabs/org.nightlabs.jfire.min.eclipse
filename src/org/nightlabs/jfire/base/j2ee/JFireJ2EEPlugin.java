@@ -27,6 +27,7 @@ package org.nightlabs.jfire.base.j2ee;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,11 +36,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -47,16 +50,19 @@ import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate;
 import org.nightlabs.util.IOUtil;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class JFireJ2EEPlugin extends AbstractUIPlugin {
+public class JFireJ2EEPlugin
+//extends AbstractUIPlugin
+implements BundleActivator
+{
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.nightlabs.jfire.base.j2ee";
@@ -71,24 +77,76 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 		plugin = this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+	private Bundle bundle;
+
+	public Bundle getBundle() {
+		return bundle;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
+	@Override
+	public void start(BundleContext context) throws Exception {
+		this.bundle = context.getBundle();
+//		super.start(context);
+	}
+
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		super.stop(context);
+//		super.stop(context);
 	}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// BEGIN: Must be exactly the same as in org.nightlabs.jfire.base.j2ee.osgi.RemoteClassLoadingHook
+	private String minusHexEncode(String plain) {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		Writer w = new OutputStreamWriter(bout, Charset.forName("UTF-8"));
+		try {
+			w.write(plain);
+			w.close();
+		} catch (IOException e) {
+			// writing into an in-memory-stream should never fail
+			throw new RuntimeException(e);
+		}
+
+		StringBuffer sb = new StringBuffer();
+		for (byte bb : bout.toByteArray()) {
+			int i = 0xff & bb;
+			if (minusHexLiteralAllowed(i))
+				sb.append((char)i); // this *MUST* be casted to char, because the sb.append(char) method must be called - not sb.append(int) - the result is quite different!
+			else {
+				sb.append('-');
+				String s = Integer.toHexString(i);
+				if (s.length() == 1) {
+					sb.append('0');
+					sb.append(s);
+				}
+				else if (s.length() == 2) {
+					sb.append(s);
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	private boolean minusHexLiteralAllowed(int c)
+	{
+		return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+	}
+
+	private File getJ2eePluginRuntimeDir()
+	{
+		File tempDir = new File(System.getProperty("java.io.tmpdir"));
+
+		String userName = System.getProperty("user.name");
+		String encodedUserName = minusHexEncode(userName);
+
+		File j2eePluginRuntimeDir = new File(new File(tempDir, "jfire." + encodedUserName), "org.nightlabs.jfire.base.j2ee");
+		j2eePluginRuntimeDir = j2eePluginRuntimeDir.getAbsoluteFile();
+		return j2eePluginRuntimeDir;
+	}
+//END: Must be exactly the same as in org.nightlabs.jfire.base.j2ee.osgi.RemoteClassLoadingHook
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 	/**
 	 * Returns the shared instance
@@ -134,8 +192,34 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 		}
 	}
 
+	private void copyJ2eePluginToRuntimeDir(Bundle bundle, File j2eePluginRuntimeDir) throws IOException
+	{
+		Path path = new Path(".");
+		URL foundURL = FileLocator.find(bundle, path, null);
+		URL realURL = FileLocator.resolve(foundURL);
+		// For a reason which I do not completely understand, this simple code even works
+		// when launching JFire from the workspace - i.e. it copies the 'bin' and 'src' subdirs.
+		// Thus the plugin in the runtime directory does not look like it does when a real
+		// productive (stand-alone) system is started outside of the IDE. IMHO it shouldn't really find
+		// classes, but it does ;-) Yeah; it's working - yabbadabbadoo!!! Marco.
+		if ("file".equalsIgnoreCase(realURL.getProtocol())) {
+			IOUtil.copyDirectory(new File(realURL.getPath()), j2eePluginRuntimeDir);
+		}
+		else // TODO probably we should later extend this to work with the j2ee-plugin being a JAR-file (extract it into the runtime-dir).
+			throw new UnsupportedOperationException("Protocol not yet supported! URL: " + realURL);
+	}
+
 	/**
 	 * This method rewrites (if necessary) the MANIFEST.MF of this plugin (i.e. <code>org.nightlabs.jfire.base.j2ee</code>).
+	 * <p>
+	 * Since 2009-05-27, this method does not touch the original MANIFEST.MF anymore, but instead creates a runtime-version
+	 * of the <code>org.nightlabs.jfire.base.j2ee</code> plug-in. If this runtime-version exists, it is installed immediately
+	 * on OSGI-start by the class <code>org.nightlabs.jfire.base.j2ee.osgi.RemoteClassLoadingHook</code>.
+	 * </p>
+	 * <p>
+	 * This new mechanism employing a runtime-copy of the j2ee plugin makes it possible to have a system-wide read-only
+	 * JFire-installation.
+	 * </p>
 	 *
 	 * @return <code>true</code>, if the file had to be modified (and thus a reboot of the RCP is necessary).
 	 * @throws IOException
@@ -145,19 +229,53 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 	throws IOException, URISyntaxException
 	{
 		System.out.println("****************************************************************");
+		boolean changed = false;
 
 		// find the MANIFEST.MF
 		File manifestFile;
 		{
 			// Bundle bundle = Platform.getBundle(PLUGIN_ID);
 			Bundle bundle = getBundle();
-			Path path = new Path("META-INF/MANIFEST.MF");
-			URL fileURL = FileLocator.find(bundle, path, null);
-			URL realURL = FileLocator.resolve(fileURL);
-			if (!realURL.getProtocol().equalsIgnoreCase("file"))
-				throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee is not deployed as directory-plugin. Its URL protocol is "+realURL.getProtocol());
+//			Path path = new Path("META-INF/MANIFEST.MF");
+//			URL fileURL = FileLocator.find(bundle, path, null);
+//			URL realURL = FileLocator.resolve(fileURL);
+//
+//			if (!realURL.getProtocol().equalsIgnoreCase("file"))
+//				throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee is not deployed as directory-plugin. Its URL protocol is "+realURL.getProtocol());
+//
+//			manifestFile = new File(realURL.getPath());
 
-			manifestFile = new File(realURL.getPath());
+			File j2eePluginRuntimeDir = getJ2eePluginRuntimeDir();
+			if (!j2eePluginRuntimeDir.isDirectory()) {
+				boolean successful = false;
+				try {
+					j2eePluginRuntimeDir.mkdirs();
+					if (!j2eePluginRuntimeDir.isDirectory())
+						throw new IllegalStateException("Creation of directory failed: " + j2eePluginRuntimeDir);
+
+					copyJ2eePluginToRuntimeDir(bundle, j2eePluginRuntimeDir);
+
+					successful = true;
+				} finally {
+					if (!successful) // clean up in case it was only partially created.
+						IOUtil.deleteDirectoryRecursively(j2eePluginRuntimeDir);
+				}
+				changed = true;
+
+				manifestFile = new File(j2eePluginRuntimeDir, "META-INF/MANIFEST.MF");
+			}
+			else {
+				String bundleLocation = bundle.getLocation();
+				if (!bundleLocation.startsWith("file:"))
+					throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee is not loaded from its runtime-location, even though that location exists! Its loaded location is " + bundleLocation);
+
+				URL realURL = new URL(bundleLocation);
+				manifestFile = new File(realURL.getPath(), "META-INF/MANIFEST.MF");
+			}
+
+//			if (!realURL.getProtocol().equalsIgnoreCase("file"))
+//				throw new IllegalStateException("The plugin org.nightlabs.jfire.j2ee is not deployed as directory-plugin. Its URL protocol is "+realURL.getProtocol());
+
 			if (!manifestFile.exists())
 				throw new IllegalStateException("The plugin's MANIFEST.MF does not exist: " + manifestFile.getAbsolutePath());
 		}
@@ -193,11 +311,12 @@ public class JFireJ2EEPlugin extends AbstractUIPlugin {
 		Set<String> currentPublishedRemotePackages = JFireRCDLDelegate.sharedInstance().getPublishedRemotePackages();
 
 		// diff the last and the new ones
-		boolean changed = false;
-		for (String currPkg : currentPublishedRemotePackages) {
-			if (!lastPublishedRemotePackages.contains(currPkg)) {
-				changed = true; // there is a new one on the server which we don't have yet locally
-				break;
+		if (!changed) {
+			for (String currPkg : currentPublishedRemotePackages) {
+				if (!lastPublishedRemotePackages.contains(currPkg)) {
+					changed = true; // there is a new one on the server which we don't have yet locally
+					break;
+				}
 			}
 		}
 

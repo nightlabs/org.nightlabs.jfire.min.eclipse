@@ -31,8 +31,9 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
-import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
-import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegateFilter;
 
 /**
@@ -45,13 +46,41 @@ import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegateFilter;
  * @author Marco Schulze - marco at nightlabs dot de
  */
 public class RemoteResourceFilterRegistry
-extends AbstractEPProcessor
 implements JFireRCDLDelegateFilter
 {
 	private static RemoteResourceFilterRegistry _sharedInstance = null;
 
+	public synchronized void process() {
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		if (registry != null)
+		{
+			IExtensionPoint extensionPoint = registry.getExtensionPoint(getExtensionPointID());
+			if (extensionPoint == null) {
+				throw new IllegalStateException("Unable to resolve extension-point: " + getExtensionPointID()); //$NON-NLS-1$
+			}
+
+			IExtension[] extensions = extensionPoint.getExtensions();
+			// For each extension ...
+			for (int i = 0; i < extensions.length; i++) {
+				IExtension extension = extensions[i];
+				IConfigurationElement[] elements =
+					extension.getConfigurationElements();
+				// For each member of the extension ...
+				for (int j = 0; j < elements.length; j++) {
+					IConfigurationElement element = elements[j];
+					try {
+						processElement(extension, element);
+					} catch (Throwable e) { // we must catch Throwable instead of Exception since we often have NoClassDefFoundErrors (during first start or when server's class configuration changes)
+						// Only log the error and continue
+						System.err.println("Error processing extension element. The element is located in an extension in bundle: " + extension.getNamespaceIdentifier()); //$NON-NLS-1$
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
 	public static RemoteResourceFilterRegistry sharedInstance()
-	throws EPProcessorException
 	{
 		if (_sharedInstance == null) {
 			synchronized (RemoteResourceFilterRegistry.class) {
@@ -65,8 +94,6 @@ implements JFireRCDLDelegateFilter
 		return _sharedInstance;
 	}
 
-// TODO is supported by Eclipse's compiler but not by Sun's	@Override
-// it should be sth. like @Implement anyway - but that's not yet known by Java
 	public String getExtensionPointID()
 	{
 		return "org.nightlabs.jfire.base.j2ee.remoteResourceFilter";
@@ -74,17 +101,11 @@ implements JFireRCDLDelegateFilter
 
 	private LinkedList<Pattern> exclusionPatterns = new LinkedList<Pattern>();
 
-// TODO is supported by Eclipse's compiler but not by Sun's	@Override
-// it should be sth. like @Implement anyway - but that's not yet known by Java
 	public void processElement(IExtension extension, IConfigurationElement element)
 			throws Exception
 	{
-		try {
 			String pattern = element.getAttribute("pattern");
 			exclusionPatterns.add(Pattern.compile(pattern));
-		} catch (Throwable t) {
-			throw new EPProcessorException("Extension to "+getExtensionPointID()+" by extension "+extension.getContributor().getName()+" has errors!", t);
-		}
 	}
 
 	public boolean includeResource(String name)
@@ -96,5 +117,4 @@ implements JFireRCDLDelegateFilter
 		}
 		return true;
 	}
-
 }
