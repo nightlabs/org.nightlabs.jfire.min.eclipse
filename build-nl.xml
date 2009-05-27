@@ -1,6 +1,6 @@
 <project default="build">
 	<target name="build">
-		<delete>
+		<delete verbose="true">
 			<fileset dir="src/org/nightlabs/classloader">
 				<include name="*"/>
 				<exclude name="README.txt"/>
