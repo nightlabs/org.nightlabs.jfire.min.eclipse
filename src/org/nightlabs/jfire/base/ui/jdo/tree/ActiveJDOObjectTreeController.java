@@ -707,7 +707,9 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	}
 
 	protected TreeNode getTreeNode(JDOObjectID jdoObjectID) {
-		return objectID2TreeNode.get(jdoObjectID);
+		synchronized (objectID2TreeNode) {
+			return objectID2TreeNode.get(jdoObjectID);
+		}
 	}
 
 }
