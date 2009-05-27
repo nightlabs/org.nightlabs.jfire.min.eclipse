@@ -19,11 +19,12 @@
 				<include name="*"/>
 			</fileset>
 		</copy>
-		
+
 		<!--
 		  TODO dirty workaround! We need to think about a clean solution - there are many different target platforms.
-		-->
-		<!-- first compile -->
+This workaround is IMHO not necessary anymore since a clean solution exists in target-rcp-jfire-min-rcl.
+		->
+		<!- first compile ->
 		<delete failonerror="false" verbose="true" dir="bin" />
 		<mkdir dir="bin"/>
 		<path id="compileCP">
@@ -35,7 +36,7 @@
 			<src path="src"/>
 		</javac>
 
-		<!-- then JAR it -->
+		<!- then JAR it ->
 		<mkdir dir="dist"/>
 		<jar
 			destfile="dist/org.nightlabs.jfire.base.j2ee.osgi_0.9.7.local.jar"
@@ -45,7 +46,7 @@
 			<fileset dir="." includes="hookconfigurators.properties"/>
 		</jar>
 		
-		<!-- and finally deploy -->
+		<!- and finally deploy ->
 		<copy
 			failonerror="false"
 			todir="../target-rcp-jfire-max-win32/target/plugins"
@@ -64,5 +65,6 @@
 		>
 			<fileset dir="dist" includes="*.jar" />
 		</copy>
+-->
 	</target>
 </project>
