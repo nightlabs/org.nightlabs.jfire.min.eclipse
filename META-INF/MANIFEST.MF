@@ -11,7 +11,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.nightlabs.config,
  org.nightlabs.base,
- org.nightlabs.jfire.classloader.remote;visibility:=reexport
+ org.nightlabs.jfire.classloader.remote;visibility:=reexport,
+ org.apache.log4j
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.nightlabs.config, org.nightlabs.base
