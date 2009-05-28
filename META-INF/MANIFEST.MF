@@ -10,6 +10,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.nightlabs.config,
+ org.nightlabs.base,
  org.nightlabs.base.ui;visibility:=reexport,
  org.nightlabs.jdo.query.ui;visibility:=reexport,
  org.eclipse.update.configurator,
