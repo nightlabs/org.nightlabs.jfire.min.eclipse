@@ -127,6 +127,11 @@
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor$SelectionStructFieldEditorFactory"
             factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.SelectionStructField.name"/>
         <propStructField
+            class="org.nightlabs.jfire.prop.structfield.MultiSelectionStructField"
+            description="%org.nightlabs.jfire.prop.structfield.MultiSelectionStructField.description"
+            editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor$MultiSelectionStructFieldEditorFactory"
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.MultiSelectionStructField.name"/>
+        <propStructField
             class="org.nightlabs.jfire.prop.structfield.RegexStructField"
             description="%org.nightlabs.jfire.prop.structfield.RegexStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.RegexStructFieldEditor$RegexStructFieldEditorFactory"
@@ -164,6 +169,7 @@
     <extension point="org.nightlabs.jfire.base.ui.propDataFieldEditorFactory">
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.TextDataFieldEditor$Factory"/>
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.SelectionDataFieldEditor$Factory"/>
+        <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.MultiSelectionDataFieldEditor$Factory"/>
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor$Factory"/>
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.DateDataFieldEditor$Factory"/>
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.NumberDataFieldEditor$Factory"/>
