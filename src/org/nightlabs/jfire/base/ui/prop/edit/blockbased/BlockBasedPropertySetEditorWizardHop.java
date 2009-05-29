@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.core.runtime.ListenerList;
@@ -134,12 +131,12 @@ public class BlockBasedPropertySetEditorWizardHop extends WizardHop {
 		return editorScope;
 	}
 
-	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {
-		@Override
-		public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
-			notifyChangeListeners(dataBlockEditorChangedEvent);
-		}
-	};
+//	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {
+//		@Override
+//		public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
+//			notifyChangeListeners(dataBlockEditorChangedEvent);
+//		}
+//	};
 
 	private ListenerList listenerList = new ListenerList();
 

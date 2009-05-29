@@ -36,11 +36,11 @@ import org.nightlabs.jfire.prop.i18n.MultiSelectionStructFieldValueName;
 import org.nightlabs.jfire.prop.structfield.MultiSelectionStructField;
 import org.nightlabs.jfire.prop.structfield.MultiSelectionStructFieldValue;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
+import org.nightlabs.jfire.prop.structfield.StructFieldValue;
 import org.nightlabs.language.LanguageCf;
 
 /**
  * @author Marc Klinger - marc[at]nightlabs[dot]de
- * TODO: i18n
  */
 public class MultiSelectionStructFieldEditor extends AbstractStructFieldEditor<MultiSelectionStructField> 
 {
@@ -103,7 +103,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		langChooser.addLanguageChangeListener(this);
 
 		XComposite wrapper = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
-		new Label(wrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.possibleValuesLabel.text")); //$NON-NLS-1$
+		new Label(wrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.possibleValuesLabel.text")); //$NON-NLS-1$
 
 		structFieldValueTable = new MultiSelectionStructFieldValueTable(wrapper, AbstractListComposite.getDefaultWidgetStyle(this), editor.modifyListener);
 		structFieldValueTable.setCurrentLanguage(currLanguage);
@@ -119,7 +119,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		new Label(wrapper, SWT.NONE);
 
 		addValueButton = new Button(wrapper, SWT.NONE);
-		addValueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.addValueButton.text")); //$NON-NLS-1$
+		addValueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.addValueButton.text")); //$NON-NLS-1$
 		addValueButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -128,7 +128,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		});
 
 		remValueButton = new Button(wrapper, SWT.NONE);
-		remValueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.removeValueButton.text")); //$NON-NLS-1$
+		remValueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.removeValueButton.text")); //$NON-NLS-1$
 		remValueButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -137,7 +137,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		});
 
 		moveUpButton = new Button(wrapper, SWT.NONE);
-		moveUpButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.moveUp.text"));  //$NON-NLS-1$
+		moveUpButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.button.moveUp.text"));  //$NON-NLS-1$
 		moveUpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -146,7 +146,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		});
 		
 		moveDownButton = new Button(wrapper, SWT.NONE);
-		moveDownButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.moveDown.text"));  //$NON-NLS-1$
+		moveDownButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.button.moveDown.text"));  //$NON-NLS-1$
 		moveDownButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -155,7 +155,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		});
 		
 		setDefaultButton = new Button(wrapper, SWT.NONE);
-		setDefaultButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.default.text")); //$NON-NLS-1$
+		setDefaultButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.button.default.text")); //$NON-NLS-1$
 		setDefaultButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -170,7 +170,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		});
 
 		removeDefaultButton = new Button(wrapper, SWT.NONE);
-		removeDefaultButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.button.remove.text")); //$NON-NLS-1$
+		removeDefaultButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.button.remove.text")); //$NON-NLS-1$
 		removeDefaultButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -202,7 +202,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 		}
 		
 		emptySelectionCheckbox = new Button(wrapper, SWT.CHECK);
-		emptySelectionCheckbox.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.checkbox.allowEmptySelection.text")); //$NON-NLS-1$
+		emptySelectionCheckbox.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.checkbox.allowEmptySelection.text")); //$NON-NLS-1$
 		emptySelectionCheckbox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -239,7 +239,7 @@ class MultiSelectionStructFieldEditComposite extends XComposite implements Langu
 	private void addNewValue() {
 		MultiSelectionStructFieldValue value = selectionField.newStructFieldValue();
 		MultiSelectionStructFieldValueName valueName = value.getValueName();
-		valueName.setText(currLanguage.getLanguageID(), Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.newValue.text")); //$NON-NLS-1$
+		valueName.setText(currLanguage.getLanguageID(), Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.newValue.text")); //$NON-NLS-1$
 
 		structFieldValueTable.refresh();
 		structFieldValueTable.setSelectedElements(Collections.singletonList(value));
@@ -362,8 +362,11 @@ class MultiSelectionStructFieldValueTable extends AbstractTableComposite<MultiSe
 			@Override
 			public String getText(Object element) {
 				Set<MultiSelectionStructFieldValue> defValue = structField.getDefaultValues();
-				String suffix = defValue != null && defValue.contains(element) ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.[Standard]") : ""; //$NON-NLS-1$ //$NON-NLS-2$
-				return ((MultiSelectionStructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID()) + suffix;
+				String text = ((StructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID());
+				if(defValue != null && defValue.contains(element))
+					return String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.[Standard]"), text); //$NON-NLS-1$
+				else
+					return text;
 			}
 		});
 	}

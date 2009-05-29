@@ -1,26 +1,18 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.nightlabs.jdo.ObjectIDUtil;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- *
  */
 public abstract class AbstractDataBlockEditorFactory implements DataBlockEditorFactory {
 
 	private String bundleName;
 	private StructBlockID structBlockID;
 	
-	/**
-	 * 
-	 */
 	public AbstractDataBlockEditorFactory() {
 	}
 
@@ -46,5 +38,4 @@ public abstract class AbstractDataBlockEditorFactory implements DataBlockEditorF
 			structBlockID = (StructBlockID) ObjectIDUtil.createObjectID(structBlockIDStr);
 		}
 	}
-
 }

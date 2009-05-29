@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import java.util.Collections;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -23,7 +24,6 @@ import org.nightlabs.base.ui.language.LanguageChangeListener;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.ModifyListener;
 import org.nightlabs.jfire.prop.IStruct.OrderMoveDirection;
@@ -39,6 +39,7 @@ public class SelectionStructFieldEditor extends AbstractStructFieldEditor<Select
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public StructFieldEditor createStructFieldEditor() {
 			return new SelectionStructFieldEditor();
 		}
@@ -323,13 +324,16 @@ class StructFieldValueTable extends AbstractTableComposite<StructFieldValue>
 
 	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
-		tableViewer.setContentProvider(new TableContentProvider());
+		tableViewer.setContentProvider(new ArrayContentProvider());
 		tableViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
 				StructFieldValue defValue = structField.getDefaultValue();
-				String suffix = defValue != null && defValue.equals(element) ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.[Standard]") : ""; //$NON-NLS-1$ //$NON-NLS-2$
-				return ((StructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID()) + suffix;
+				String text = ((StructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID());
+				if(defValue != null && defValue.equals(element))
+					return String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.SelectionStructFieldEditor.[Standard]"), text); //$NON-NLS-1$
+				else
+					return text;
 			}
 		});
 	}

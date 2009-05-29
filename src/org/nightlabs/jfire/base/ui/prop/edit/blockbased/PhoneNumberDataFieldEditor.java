@@ -15,7 +15,6 @@ import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.PhoneNumberDataField;
 import org.nightlabs.util.NLLocale;

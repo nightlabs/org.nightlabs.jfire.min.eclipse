@@ -36,7 +36,6 @@ import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedEvent;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener;
 import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
