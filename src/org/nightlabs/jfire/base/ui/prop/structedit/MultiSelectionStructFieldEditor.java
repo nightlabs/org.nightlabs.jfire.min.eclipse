@@ -362,7 +362,7 @@ class MultiSelectionStructFieldValueTable extends AbstractTableComposite<MultiSe
 			@Override
 			public String getText(Object element) {
 				Set<MultiSelectionStructFieldValue> defValue = structField.getDefaultValues();
-				String text = ((StructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID());
+				String text = ((MultiSelectionStructFieldValue) element).getValueName().getText(currentLanguage.getLanguageID());
 				if(defValue != null && defValue.contains(element))
 					return String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.MultiSelectionStructFieldEditor.[Standard]"), text); //$NON-NLS-1$
 				else
