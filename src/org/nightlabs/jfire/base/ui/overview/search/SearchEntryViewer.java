@@ -105,6 +105,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	private XComposite toolbarAndAdvancedSearchWrapper = null;
 	private SashForm sashform = null;
 	private ToolItem searchItem = null;
+	/************By Yo**************/
+	private ToolItem resetItem = null;
 	private ToolBar searchTextToolBar = null;
 
 	public Composite createComposite(Composite parent)
@@ -325,7 +327,12 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		searchItem = new ToolItem(searchTextToolBar, SWT.DROP_DOWN);
 		searchItem.setImage(SharedImages.SEARCH_16x16.createImage());
 		searchItem.addSelectionListener(searchItemListener);
-
+		
+		resetItem = new ToolItem(searchTextToolBar, SWT.PUSH);
+		resetItem.setToolTipText("Clear all criterias");
+		resetItem.setText("Clear All");
+		resetItem.addSelectionListener(resetItemListener);
+		
 		XComposite rangeWrapper = new XComposite(toolBarWrapper, SWT.NONE,
 				LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.NONE, 2);
 		Label limitLabel = new Label(rangeWrapper, SWT.NONE);
@@ -425,6 +432,17 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			}
 		}.schedule();
 	}
+	
+	/**
+	 * Performs a reseting with all criteria.
+	 */
+	public void doReset()
+	{
+		for (Section advancedSearchSection : advancedSearchSections) {
+			AbstractQueryFilterComposite client = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
+			client.resetData();
+		}
+	}
 
 	/**
 	 * The actual search should be done here. It is advised to do it via the DAOs.
@@ -466,6 +484,15 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		{
 			if (e.detail != SWT.ARROW)
 				search();
+		}
+	};
+	
+	private SelectionListener resetItemListener = new SelectionAdapter()
+	{
+		@Override
+		public void widgetSelected(SelectionEvent e)
+		{
+			doReset();
 		}
 	};
 

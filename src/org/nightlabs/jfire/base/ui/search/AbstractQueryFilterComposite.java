@@ -152,6 +152,11 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 */
 	protected abstract void createComposite();
 
+	/**
+	 * Subclasses have to implement this method and do all UIs & event handlings for all controls that handle query data
+	 */
+	public abstract void resetData();
+	
 	@Override
 	public void setActive(boolean active)
 	{
