@@ -36,7 +36,6 @@ import org.nightlabs.jfire.prop.i18n.MultiSelectionStructFieldValueName;
 import org.nightlabs.jfire.prop.structfield.MultiSelectionStructField;
 import org.nightlabs.jfire.prop.structfield.MultiSelectionStructFieldValue;
 import org.nightlabs.jfire.prop.structfield.SelectionStructField;
-import org.nightlabs.jfire.prop.structfield.StructFieldValue;
 import org.nightlabs.language.LanguageCf;
 
 /**
