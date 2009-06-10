@@ -49,7 +49,6 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate;
 import org.nightlabs.util.IOUtil;
 import org.osgi.framework.Bundle;
@@ -57,13 +56,14 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
+ * @author Alexander Bieber
+ * @author Marco Schulze
+ * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public class JFireJ2EEPlugin
-//extends AbstractUIPlugin
 implements BundleActivator
 {
-
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.nightlabs.jfire.base.j2ee";
 
@@ -73,26 +73,34 @@ implements BundleActivator
 	/**
 	 * The constructor
 	 */
-	public JFireJ2EEPlugin() {
+	public JFireJ2EEPlugin() 
+	{
 		plugin = this;
 	}
 
 	private Bundle bundle;
 
-	public Bundle getBundle() {
+	public Bundle getBundle() 
+	{
 		return bundle;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception 
+	{
 		this.bundle = context.getBundle();
-//		super.start(context);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception 
+	{
 		plugin = null;
-//		super.stop(context);
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,21 +200,54 @@ implements BundleActivator
 		}
 	}
 
+	/**
+	 * Returns a file for the contents of the specified bundle.  Depending 
+	 * on how the bundle is installed the returned file may be a directory or a jar file 
+	 * containing the bundle content.  
+	 * 
+	 * @param bundle the bundle
+	 * @return a file with the contents of the bundle
+	 * @throws IOException if an error occurs during the resolution
+	 * 
+	 * @since org.eclipse.equinox.common 3.4
+	 * 
+	 * XXX: taken from Equinox 3.4 class FileLocator without any changes (Marc)
+	 */
+	private static File getBundleFile(Bundle bundle) throws IOException {
+		URL rootEntry = bundle.getEntry("/"); //$NON-NLS-1$
+		rootEntry = FileLocator.resolve(rootEntry);
+		if ("file".equals(rootEntry.getProtocol())) //$NON-NLS-1$
+			return new File(rootEntry.getPath());
+		if ("jar".equals(rootEntry.getProtocol())) { //$NON-NLS-1$
+			String path = rootEntry.getPath();
+			if (path.startsWith("file:")) {
+				// strip off the file: and the !/
+				path = path.substring(5, path.length() - 2);
+				return new File(path);
+			}
+		}
+		throw new IOException("Unknown protocol"); //$NON-NLS-1$
+	}
+	
+	
+	/**
+	 * Copy the bundle if it is deployed as directory or extract it if it is deployed as a jar. 
+	 * @param bundle The bundle
+	 * @param j2eePluginRuntimeDir The target directory
+	 * @throws IOException In case of an error
+	 */
 	private void copyJ2eePluginToRuntimeDir(Bundle bundle, File j2eePluginRuntimeDir) throws IOException
 	{
-		Path path = new Path(".");
-		URL foundURL = FileLocator.find(bundle, path, null);
-		URL realURL = FileLocator.resolve(foundURL);
-		// For a reason which I do not completely understand, this simple code even works
-		// when launching JFire from the workspace - i.e. it copies the 'bin' and 'src' subdirs.
-		// Thus the plugin in the runtime directory does not look like it does when a real
-		// productive (stand-alone) system is started outside of the IDE. IMHO it shouldn't really find
-		// classes, but it does ;-) Yeah; it's working - yabbadabbadoo!!! Marco.
-		if ("file".equalsIgnoreCase(realURL.getProtocol())) {
-			IOUtil.copyDirectory(new File(realURL.getPath()), j2eePluginRuntimeDir);
+		File bundleFile = getBundleFile(bundle);
+		if(bundleFile.isDirectory()) {
+			// packaged as directory
+			IOUtil.copyDirectory(bundleFile, j2eePluginRuntimeDir);
+		} else if(bundleFile.isFile()) {
+			// packaged as jar file
+			IOUtil.unzipArchive(bundleFile, j2eePluginRuntimeDir);
+		} else {
+			throw new IOException("Invalid file type: "+bundleFile.getAbsolutePath());
 		}
-		else // TODO probably we should later extend this to work with the j2ee-plugin being a JAR-file (extract it into the runtime-dir).
-			throw new UnsupportedOperationException("Protocol not yet supported! URL: " + realURL);
 	}
 
 	/**
