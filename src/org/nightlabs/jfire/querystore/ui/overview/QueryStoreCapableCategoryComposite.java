@@ -465,6 +465,7 @@ class FilteredQueryStoreComposite
 				storedQueries.add(Util.cloneSerializable(query));
 			}
 			searchEntryViewer.getQueryProvider().loadQueries(storedQueries);
+			searchEntryViewer.search(); //Added by Chairat to fix the issue https://www.jfire.org/modules/bugs/view.php?id=1128
 		}
 	};
 
