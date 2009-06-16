@@ -32,7 +32,7 @@ import java.util.HashMap;
 /**
  * @author Alexander Bieber
  * @deprecated Get rid of this class. See this issue for details: https://www.jfire.org/modules/bugs/view.php?id=1161 (Marc)
- * 		A COPY OF THIS CLASS EXISTS IN org.nightlabs.jfire.base.ui
+ * 		THE ORIGINAL COPY OF THIS CLASS EXISTS IN JFireBaseClientLib
  */
 @Deprecated
 public class JFireSecurityConfigurationEntry implements Serializable {
@@ -42,23 +42,23 @@ public class JFireSecurityConfigurationEntry implements Serializable {
 	public static final String MODULE_CONTROL_FLAG_SUFFICIENT = "sufficient"; //$NON-NLS-1$
 	public static final String MODULE_CONTROL_FLAG_OPTIONAL = "optional"; //$NON-NLS-1$
 	public static final String MODULE_CONTROL_FLAG_NONE = ""; //$NON-NLS-1$
-	
-	
+
+
 	private String applicationName = ""; //$NON-NLS-1$
 	private String loginModuleName = ""; //$NON-NLS-1$
 	private String controlFlag = null;
 	private HashMap<String, ?> options = null;
-	
+
 	public JFireSecurityConfigurationEntry() { }
-	
+
 	public JFireSecurityConfigurationEntry(String applicationName, String loginModule){
 		this(applicationName,loginModule,MODULE_CONTROL_FLAG_NONE,null);
 	}
-	
+
 	public JFireSecurityConfigurationEntry(String applicationName, String loginModule, String controlFlag){
 		this(applicationName,loginModule,controlFlag,null);
 	}
-	
+
 	public JFireSecurityConfigurationEntry(String applicationName, String loginModule, String controlFlag, HashMap<String, ?> options){
 		this.applicationName = applicationName;
 		this.loginModuleName = loginModule;
@@ -68,9 +68,9 @@ public class JFireSecurityConfigurationEntry implements Serializable {
 		else
 			this.options = options;
 	}
-	
-	
-	
+
+
+
 	public String getApplicationName() {
 		return applicationName;
 	}
