@@ -330,7 +330,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		
 		resetItem = new ToolItem(searchTextToolBar, SWT.PUSH);
 		resetItem.setToolTipText("Clear all criterias");
-		resetItem.setText("Clear All");
+		resetItem.setImage(SharedImages.RESET_16x16.createImage());
 		resetItem.addSelectionListener(resetItemListener);
 		
 		XComposite rangeWrapper = new XComposite(toolBarWrapper, SWT.NONE,
