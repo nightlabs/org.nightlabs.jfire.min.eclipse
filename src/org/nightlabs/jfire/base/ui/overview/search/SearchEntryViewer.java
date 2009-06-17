@@ -50,7 +50,6 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.base.ui.util.RCPUtil;
-import org.nightlabs.jdo.query.AbstractJDOQuery;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.DefaultQueryProvider;
 import org.nightlabs.jdo.query.QueryCollection;
@@ -443,6 +442,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		for (AbstractSearchQuery searchQuery : getQueryProvider().getManagedQueries()) {
 			searchQuery.clearQuery();
 		}
+//		for (Section advancedSearchSection : advancedSearchSections) {
+//			AbstractQueryFilterComposite client = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
+//			client
+//		}
 	}
 
 	/**
