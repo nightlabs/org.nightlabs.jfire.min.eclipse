@@ -28,7 +28,7 @@ extends AbstractInlineDataFieldComposite<MultiSelectionDataFieldEditor>
 {
 	private Composite wrapper;
 	private final ModifyListener modifyListener;
-	
+
 	public MultiSelectionDataFieldComposite(final MultiSelectionDataFieldEditor editor, Composite parent, int style, final ModifyListener modifyListener)
 	{
 		super(parent, style, editor);
@@ -41,7 +41,7 @@ extends AbstractInlineDataFieldComposite<MultiSelectionDataFieldEditor>
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#_refresh()
 	 */
 	@Override
-	protected void _refresh() 
+	protected void _refresh()
 	{
 		if(wrapper != null) {
 			wrapper.dispose();

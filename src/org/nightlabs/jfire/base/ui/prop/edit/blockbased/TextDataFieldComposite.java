@@ -47,22 +47,22 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 
 	private Text fieldText;
 	private ModifyListener modifyListener;
-	
+
 	public TextDataFieldComposite(AbstractDataFieldEditor<DataFieldType> editor, Composite parent, int style, ModifyListener modListener, GridLayout gl) {
 		super(parent, style, editor);
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
-		
+
 		fieldText = new Text(this, createTextStyle());
 		fieldText.setEnabled(true);
 		fieldText.setLayoutData(createTextLayoutData());
 		this.modifyListener = modListener;
 		fieldText.addModifyListener(modifyListener);
-		
+
 		if (gl != null)
 			setLayout(gl);
 	}
-	
+
 	/**
 	 * Assumes to have a parent composite with GridLaout and
 	 * adds it own GridData.
@@ -70,16 +70,16 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 	public TextDataFieldComposite(AbstractDataFieldEditor<DataFieldType> editor, Composite parent, int style, ModifyListener modListener) {
 		this(editor, parent, style, modListener, null);
 	}
-	
+
 	protected int createTextStyle() {
 		if (isMultiLine())  {
 			return getTextBorderStyle() | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL;
 		} else {
 			 return getTextBorderStyle();
 		}
-		
+
 	}
-	
+
 	protected Object createTextLayoutData() {
 		if (isMultiLine()) {
 			GridData gd = new GridData(GridData.FILL_BOTH);
@@ -90,11 +90,11 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 			return textData;
 		}
 	}
-	
+
 	protected int getTextBorderStyle() {
 		return getBorderStyle();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#_refresh()
 	 */
@@ -105,7 +105,19 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		else
 			fieldText.setText(getEditor().getDataField().getI18nText().getText());
 	}
-	
+
+	@Override
+	protected void handleManagedBy(String managedBy) {
+//		super.handleManagedBy(managedBy);
+		// The super method disables the whole composite thus making it impossible to select (and copy to clipboard) some text.
+		// Thus, we make the text read-only.
+		fieldText.setEditable(managedBy == null);
+		if (managedBy != null)
+			setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+		else
+			setToolTipText(null);
+	}
+
 	private boolean isMultiLine() {
 		StructField<?> structField = getEditor().getStructField();
 		if (structField instanceof TextStructField) {
@@ -113,7 +125,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		}
 		return false;
 	}
-	
+
 	private int getLineCount() {
 		StructField<?> structField = getEditor().getStructField();
 		if (structField instanceof TextStructField) {
@@ -121,11 +133,11 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		}
 		return 1;
 	}
-	
+
 	public String getText() {
 		return fieldText.getText();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.swt.widgets.Widget#dispose()
 	 */
@@ -134,7 +146,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		fieldText.removeModifyListener(modifyListener);
 		super.dispose();
 	}
-	
+
 //	@Override
 //	public Point computeSize(int hint, int hint2, boolean changed) {
 //		String text = fieldText.getText();
@@ -144,6 +156,6 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 //			fieldText.setText(text);
 //		}
 //	}
-//	
-	
+//
+
 }

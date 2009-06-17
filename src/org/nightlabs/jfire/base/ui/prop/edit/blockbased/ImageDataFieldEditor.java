@@ -209,17 +209,18 @@ extends AbstractDataFieldEditor<ImageDataField>
 
 		group.setText(imageStructField.getName().getText(language.getLanguageID()));
 
-		if (!getDataField().isEmpty()) {
-			filenameTextbox.setText(getDataField().getFileName());
+		ImageDataField dataField = getDataField();
+		if (!dataField.isEmpty()) {
+			filenameTextbox.setText(dataField.getFileName());
 			ImageData id = null;
-			ByteArrayInputStream inPlain = new ByteArrayInputStream(getDataField().getContent());
+			ByteArrayInputStream inPlain = new ByteArrayInputStream(dataField.getContent());
 			InputStream in;
-			if(getDataField().getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_PLAIN))
+			if(dataField.getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_PLAIN))
 				in = inPlain;
-			else if(getDataField().getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_DEFLATE))
+			else if(dataField.getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_DEFLATE))
 				in = new InflaterInputStream(inPlain);
 			else
-				throw new RuntimeException("Unsupported content encoding: "+getDataField().getContentEncoding()); //$NON-NLS-1$
+				throw new RuntimeException("Unsupported content encoding: "+dataField.getContentEncoding()); //$NON-NLS-1$
 			try {
 				// TODO: try loading image with Java Image API if loading with SWT fails as in org.nightlabs.eclipse.ui.fckeditor.file.image.ImageUtil - marc
 				id = new ImageData(in);
@@ -239,6 +240,20 @@ extends AbstractDataFieldEditor<ImageDataField>
 						new Object[] { new Long(imageStructField.getMaxSizeKB()) }));
 		sizeLabel.pack();
 		sizeLabel.getParent().layout(true, true);
+
+		handleManagedBy(dataField.getManagedBy());
+	}
+
+	protected void handleManagedBy(String managedBy)
+	{
+		for (Control child : group.getChildren()) {
+			if (child != imageLabel)
+				child.setEnabled(managedBy == null);
+		}
+		if (managedBy != null)
+			group.setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+		else
+			group.setToolTipText(null);
 	}
 
 	/**

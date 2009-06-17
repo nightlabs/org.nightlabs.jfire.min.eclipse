@@ -128,6 +128,8 @@ extends AbstractInlineDataFieldComposite<SelectionDataFieldEditor>
 //			else
 //				fieldValueCombo.selectElementByIndex(-1);
 		}
+
+		fieldValueCombo.setEnabled(getEditor().getDataField().getManagedBy() == null);
 	}
 
 	public XComboComposite<StructFieldValue> getFieldValueCombo() {

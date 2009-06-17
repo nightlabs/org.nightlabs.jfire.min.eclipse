@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.prop.DataField;
@@ -68,9 +69,22 @@ extends XComposite
 			title.setText("&" + getEditor().getStructField().getName().getText()); //$NON-NLS-1$
 
 		_refresh();
+		handleManagedBy(getEditor().getDataField().getManagedBy());
 	}
 
 	protected abstract void _refresh();
+
+	protected void handleManagedBy(String managedBy)
+	{
+		for (Control child : getChildren()) {
+			if (title != child)
+				child.setEnabled(managedBy == null);
+		}
+		if (managedBy != null)
+			setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+		else
+			setToolTipText(null);
+	}
 
 	protected Editor getEditor() {
 		return this.editor;

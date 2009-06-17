@@ -20,7 +20,7 @@ import org.nightlabs.jfire.prop.datafield.PhoneNumberDataField;
 import org.nightlabs.util.NLLocale;
 
 public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNumberDataField> {
-	
+
 	public PhoneNumberDataFieldEditor(IStruct struct, PhoneNumberDataField data) {
 		super(struct, data);
 	}
@@ -48,11 +48,11 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 		public Class<PhoneNumberDataField> getPropDataFieldType() {
 			return PhoneNumberDataField.class;
 		}
-		
+
 	}
-	
+
 	PhoneNumberDataFieldEditorComposite comp;
-	
+
 	@Override
 	public Control createControl(Composite parent) {
 		comp = new PhoneNumberDataFieldEditorComposite(parent, this);
@@ -66,6 +66,7 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 		comp.areaCodeTextBox.setText(dataField.getAreaCode() != null ? dataField.getAreaCode() : ""); //$NON-NLS-1$
 		comp.localNumberTextBox.setText(dataField.getLocalNumber() != null ? dataField.getLocalNumber() : ""); //$NON-NLS-1$
 		comp.compGroup.setText(getStructField().getName().getText(NLLocale.getDefault().getLanguage()));
+		comp.handleManagedBy(dataField.getManagedBy());
 	}
 
 	public Control getControl() {
@@ -87,15 +88,15 @@ class PhoneNumberDataFieldEditorComposite extends XComposite {
 	protected Text areaCodeTextBox;
 	protected Text localNumberTextBox;
 	protected Group compGroup;
-	
+
 	public PhoneNumberDataFieldEditorComposite(Composite parent, PhoneNumberDataFieldEditor editor) {
 		super (parent, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 1);
 		this.phoneNumberDataFieldEditor = editor;
-		
+
 		getGridLayout().horizontalSpacing = 0;
 		getGridLayout().marginLeft = 0;
 		getGridLayout().marginRight = 0;
-		
+
 		compGroup = new Group(this, SWT.NONE);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 6;
@@ -103,9 +104,9 @@ class PhoneNumberDataFieldEditorComposite extends XComposite {
 		gl.marginLeft = 0;
 		gl.marginRight = 0;
 		compGroup.setLayout(gl);
-		
+
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, compGroup);
-		
+
 		new Label(compGroup, SWT.NONE).setText("+ "); //$NON-NLS-1$
 		countryCodeTextBox = new Text(compGroup, getBorderStyle());
 		GridData gd = new GridData();
@@ -120,7 +121,7 @@ class PhoneNumberDataFieldEditorComposite extends XComposite {
 		localNumberTextBox = new Text(compGroup, getBorderStyle());
 		//XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, areaCodeTextBox);
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, localNumberTextBox);
-		
+
 		ModifyListener modifyListener = new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				phoneNumberDataFieldEditor.setChanged(true);
@@ -129,5 +130,17 @@ class PhoneNumberDataFieldEditorComposite extends XComposite {
 		countryCodeTextBox.addModifyListener(modifyListener);
 		areaCodeTextBox.addModifyListener(modifyListener);
 		localNumberTextBox.addModifyListener(modifyListener);
+	}
+
+	protected void handleManagedBy(String managedBy)
+	{
+//		compGroup.setEnabled(managedBy == null);
+		countryCodeTextBox.setEditable(managedBy == null);
+		areaCodeTextBox.setEditable(managedBy == null);
+		localNumberTextBox.setEditable(managedBy == null);
+		if (managedBy != null)
+			setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+		else
+			setToolTipText(null);
 	}
 }
