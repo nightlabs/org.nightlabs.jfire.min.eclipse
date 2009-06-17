@@ -446,6 +446,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		fireModifyEvent(oldControllerObject, controllerObject);
 	}
 
+	private long lastSaveTimestamp = 0;
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -463,6 +465,8 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			oldControllerObject = controllerObject;
 			if (logger.isDebugEnabled())
 				logger.debug("Old controllerObject: " + oldControllerObject); //$NON-NLS-1$
+
+			lastSaveTimestamp = System.currentTimeMillis(); // important to set it *before* we actually store since the storing might cause an event to be dispatched before the below method returns.
 			EntityType newControllerObject = storeEntity(controllerObject, new SubProgressMonitor(monitor, 50));
 			if (newControllerObject != null) {
 				controllerObject = Util.cloneSerializable(newControllerObject);
@@ -647,10 +651,36 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			logger.debug("checkForSelfCausedChange looking for sourceSessionIDs."); //$NON-NLS-1$
 			logger.debug("Cache sessionID is: " + Cache.sharedInstance().getSessionID()); //$NON-NLS-1$
 		}
+
 		// There is a change by someone else, if our session-id is either not in the set of sourceSessionIDs or if there is
 		// additionally another sessionID. Kai & Marco ;-)
 		String mySessionID = Cache.sharedInstance().getSessionID();
-		return dirtyObjectID.getSourceSessionIDs().contains(mySessionID) && dirtyObjectID.getSourceSessionIDs().size() == 1;
+		boolean selfCaused = dirtyObjectID.getSourceSessionIDs().contains(mySessionID) && dirtyObjectID.getSourceSessionIDs().size() == 1;
+
+		// [Problem encountered: 17.06.2009] Kai & Marco.
+		// When two (or more) editor-pages are opened in a single JFire instance and during the same session,
+		// and there exists some sort of link (or links) between them, then the above check for selfCaused is not sufficient.
+		//     For example, in the Issue perspective, two editor-pages are opened, say, [Issue A] and [Issue B]. We then
+		//     create an IssueLink so that [Issue A] is the 'Parent of' [Issue B], and save it. Subsequently, we will get the
+		//     reverse-link automatically created, so that we get the symmetric relation that [Issue B] is the 'Child of' [Issue A].
+		//     And as such, the opened editor-page displaying Issue B should also automatically reflect this change in its
+		//     IssueLink table. Upon successful saving, the backend framework mechanism will notify both pages that both their
+		//     respective Issues have been modified, and to handle the corresponding UIs appropriately. Thus coming to this method
+		//     to checkForSelfCausedChange.
+		//     --> So accordingly, we should trigger a 'selfCaused=true' for the page displaying Issue A (the page where the
+		//     change originated), but not for the page displaying Issue B. That is, we want to make sure to return 'selfCause=false',
+		//     specifically for the page displaying Issue B.
+		//
+		// [Current solution]
+		// Check to see if the method 'doSave()' was actually executed recently in this thread. So far, 'recently' is defined
+		// to be any time between 0 and 10 seconds.
+		//     --> The logic behind: The ONLY page that would have just recently triggered the 'doSave()' method is THE page that
+		//     caused the change. ALL other pages, even within the same session, should not have the same reason to have their
+		//     pages return 'selfCause=true'.
+		if (selfCaused)
+			selfCaused = System.currentTimeMillis() - lastSaveTimestamp <= 1000L * 10L;
+
+		return selfCaused;
 
 		// Very inefficient code doing the same as the one efficient line above. Kai & Marco ;-)
 //		for (String sessionID : dirtyObjectID.getSourceSessionIDs()) {
