@@ -152,14 +152,15 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 */
 	protected abstract void createComposite();
 
-	/**
-	 * Resets the value in the query
-	 */
-	public void resetQueryData() {
-		for (String fieldName : getFieldNames()) {
-			getQuery().setFieldEnabled(fieldName, false);
-		}
-	}
+//	/**
+//	 * Resets the value in the query
+//	 */
+//	public abstract void resetQueryData();
+//	{
+//		for (String fieldName : getFieldNames()) {
+//			getQuery().setFieldEnabled(fieldName, false);
+//		}
+//	}
 	
 	@Override
 	public void setActive(boolean active)

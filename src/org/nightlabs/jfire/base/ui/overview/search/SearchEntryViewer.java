@@ -50,6 +50,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.jdo.query.AbstractJDOQuery;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.DefaultQueryProvider;
 import org.nightlabs.jdo.query.QueryCollection;
@@ -415,6 +416,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	 */
 	public void search()
 	{
+		QueryCollection<Q> c = queryProvider.getManagedQueries();
 		new Job(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchJob.name"))	//$NON-NLS-1$
 		{
 			@Override
@@ -438,15 +440,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	 */
 	public void doReset()
 	{
-		for (Section advancedSearchSection : advancedSearchSections) {
-			AbstractQueryFilterComposite client = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
-			client.resetQueryData();
+		for (AbstractSearchQuery searchQuery : getQueryProvider().getManagedQueries()) {
+			searchQuery.clearQuery();
 		}
-		
-		//Clear Stored Query Data
-//		QueryCollection<Q> queryCollection = getQueryProvider().getManagedQueries();
-//		for (AbstractSearchQuery searchQuery : queryCollection) {
-//		}
 	}
 
 	/**
