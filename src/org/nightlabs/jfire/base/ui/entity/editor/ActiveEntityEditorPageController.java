@@ -673,12 +673,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		//
 		// [Current solution]
 		// Check to see if the method 'doSave()' was actually executed recently in this thread. So far, 'recently' is defined
-		// to be any time between 0 and 10 seconds.
+		// to be any time between 0 and 15 seconds.
 		//     --> The logic behind: The ONLY page that would have just recently triggered the 'doSave()' method is THE page that
 		//     caused the change. ALL other pages, even within the same session, should not have the same reason to have their
 		//     pages return 'selfCause=true'.
 		if (selfCaused)
-			selfCaused = System.currentTimeMillis() - lastSaveTimestamp <= 1000L * 10L;
+			selfCaused = System.currentTimeMillis() - lastSaveTimestamp <= 1000L * 15L;
 
 		return selfCaused;
 
