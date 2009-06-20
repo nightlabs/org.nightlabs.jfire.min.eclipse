@@ -31,17 +31,18 @@ extends TableLabelProvider
 			return (String)element;
 
 		TreeNode node = (TreeNode) element;
-		return getJDOObjectText((JDOObject) node.getJdoObject(), columnIndex);
+		return getJDOObjectText((JDOObjectID) node.getJdoObjectID(), (JDOObject) node.getJdoObject(), columnIndex);
 	}
 
 	/**
 	 * Get the column text for the given {@link JDOObject}.
-	 *
+	 * @param jdoObjectID TODO
 	 * @param jdoObject The {@link JDOObject} to get the text for.
 	 * @param columnIndex The column to get the text for.
+	 *
 	 * @return The column text for the given {@link JDOObject}.
 	 */
-	protected abstract String getJDOObjectText(JDOObject jdoObject, int columnIndex);
+	protected abstract String getJDOObjectText(JDOObjectID jdoObjectID, JDOObject jdoObject, int columnIndex);
 
 	@Override
 	public Image getImage(Object element) {
@@ -54,17 +55,18 @@ extends TableLabelProvider
 			return null;
 
 		TreeNode node = (TreeNode) element;
-		return getJDOObjectImage((JDOObject) node.getJdoObject(), columnIndex);
+		return getJDOObjectImage((JDOObjectID) node.getJdoObjectID(), (JDOObject) node.getJdoObject(), columnIndex);
 	}
 
 	/**
 	 * Get the {@link Image} for the given {@link JDOObject}.
-	 *
+	 * @param jdoObjectID TODO
 	 * @param jdoObject The {@link JDOObject} to get the image for.
 	 * @param columnIndex The columnIndex to get the image for.
+	 *
 	 * @return The {@link Image} for the given {@link JDOObject}.
 	 */
-	protected Image getJDOObjectImage(JDOObject jdoObject, int columnIndex) {
+	protected Image getJDOObjectImage(JDOObjectID jdoObjectID, JDOObject jdoObject, int columnIndex) {
 		return null;
 	}
 }

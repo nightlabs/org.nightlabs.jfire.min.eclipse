@@ -121,7 +121,7 @@ implements ILazyTreeContentProvider
 		}
 		else {
 			if (child.getJdoObject() == null)
-				getTreeViewer().replace(parentElement, index, String.format(LOADING_OBJECT_ID, child.getJdoObjectID()));
+				getTreeViewer().replace(parentElement, index, child); // String.format(LOADING_OBJECT_ID, child.getJdoObjectID()));
 			else
 				getTreeViewer().replace(parentElement, index, child);
 
@@ -138,7 +138,7 @@ implements ILazyTreeContentProvider
 	}
 
 	private static final String LOADING = "Loading...";
-	private static final String LOADING_OBJECT_ID = "Loading %s ...";
+//	private static final String LOADING_OBJECT_ID = "Loading %s ...";
 
 	@Override
 	public void dispose() {
