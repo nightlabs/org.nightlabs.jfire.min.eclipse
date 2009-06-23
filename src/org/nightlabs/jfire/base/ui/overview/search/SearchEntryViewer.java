@@ -442,6 +442,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		for (AbstractSearchQuery searchQuery : getQueryProvider().getManagedQueries()) {
 			searchQuery.clearQuery();
 		}
+		
+		searchText.setText("");
 //		for (Section advancedSearchSection : advancedSearchSections) {
 //			AbstractQueryFilterComposite client = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
 //			client
