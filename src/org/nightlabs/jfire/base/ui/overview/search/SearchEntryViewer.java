@@ -444,10 +444,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		}
 		
 		searchText.setText("");
-//		for (Section advancedSearchSection : advancedSearchSections) {
-//			AbstractQueryFilterComposite client = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
-//			client
-//		}
+		for (Section advancedSearchSection : advancedSearchSections) {
+			advancedSearchSection.setExpanded(false);
+		}
+		
+		sashform.setWeights(calculateSashWeights(null));
 	}
 
 	/**
