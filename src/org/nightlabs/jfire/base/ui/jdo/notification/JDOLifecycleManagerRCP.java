@@ -1,16 +1,15 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.jdo.notification;
 
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationListenerJob;
 import org.nightlabs.base.ui.notification.NotificationListenerSWTThreadAsync;
 import org.nightlabs.base.ui.notification.NotificationListenerSWTThreadSync;
@@ -21,6 +20,7 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
@@ -30,12 +30,12 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 
 	private static Logger logger = Logger.getLogger(JDOLifecycleManagerRCP.class);
 	/**
-	 * 
+	 *
 	 */
 	public JDOLifecycleManagerRCP() {
 		new NotificationManagerInterceptorEPProcessor(this).process();
 	}
-	
+
 	@Override
 	protected Collection<Class<? extends NotificationListener>> getValidListenerTypes() {
 		Collection<Class<? extends NotificationListener>> superResult = super.getValidListenerTypes();
@@ -44,7 +44,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 		superResult.add(NotificationListenerSWTThreadAsync.class);
 		return superResult;
 	}
-	
+
 	@Override
 	protected Collection<Class<? extends JDOLifecycleListener>> getValidJDOListenerTypes() {
 		Collection<Class<? extends JDOLifecycleListener>> superResult = super.getValidJDOListenerTypes();
@@ -74,7 +74,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 
 				job = new Job(jobName) {
 					@Override
-					protected IStatus run(IProgressMonitor monitor)
+					protected IStatus run(ProgressMonitor monitor)
 					{
 						((NotificationListenerJob)listener).setProgressMonitor(monitor);
 						((NotificationListenerJob)listener).notify(event);
@@ -108,7 +108,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 		else
 			super.performNotification(notificationMode, listener, event);
 	}
-	
+
 	@Override
 	public void notify(Long filterID, final JDOLifecycleEvent event)
 	{
@@ -123,7 +123,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 
 		super.notify(filterID, event);
 	}
-	
+
 	private boolean notifyRCP(Long filterID, final JDOLifecycleEvent event, final JDOLifecycleListener listener)
 	{
 		listener.setActiveJDOLifecycleEvent(event);
@@ -139,7 +139,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 
 				job = new Job(jobName) {
 					@Override
-					protected IStatus run(IProgressMonitor monitor)
+					protected IStatus run(ProgressMonitor monitor)
 					{
 						((JDOLifecycleListenerJob)listener).setProgressMonitor(monitor);
 						((JDOLifecycleListenerJob)listener).notify(event);
@@ -176,8 +176,8 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 		else
 			return false;
 	}
-	
 
-	
-	
+
+
+
 }

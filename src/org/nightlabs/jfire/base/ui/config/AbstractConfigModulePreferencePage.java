@@ -241,7 +241,7 @@ extends LSDPreferencePage
 				return;
 			}
 
-			final ConfigModule updatedModule = getConfigModuleController().retrieveConfigModule(getProgressMonitorWrapper());
+			final ConfigModule updatedModule = getConfigModuleController().retrieveConfigModule(getProgressMonitor());
 
 			// Check if cache sent the same version of the GroupModule after the ChildModule got changed.
 			// This might happen, since the cache removes all objects depending on a changed one.

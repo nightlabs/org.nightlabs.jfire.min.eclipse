@@ -174,7 +174,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 
 				if (!jdoObjectIDsToLoad.isEmpty()) {
 					// Note: retrieveJDOObjects might not return all objects to the given Collection.
-					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMontitorWrapper());
+					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMonitor());
 					loadedJDOObjects = jdoObjects;
 					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
 					if (jdoObjects != null) {
@@ -246,7 +246,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				}
 
 				if (!jdoObjectIDsToLoad.isEmpty()) {
-					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMonitorWrapper());
+					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMonitor());
 					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
 					loadedJDOObjects = jdoObjects;
 					for (JDOObject jdoObject : jdoObjects) {

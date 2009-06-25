@@ -1,10 +1,10 @@
 package org.nightlabs.jfire.base.ui.jdo.notification;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * A listener implementing this interface will be triggered using an Eclipse {@link Job}.
@@ -36,13 +36,13 @@ public interface JDOLifecycleListenerJob
 	 *
 	 * @param progressMonitor
 	 */
-	void setProgressMonitor(IProgressMonitor progressMonitor);
+	void setProgressMonitor(ProgressMonitor progressMonitor);
 
 	/**
 	 * @return The progressMonitor that was passed to {@link #setProgressMonitor(ProgressMonitor)}
 	 */
-	IProgressMonitor getProgressMonitor();
-	
+	ProgressMonitor getProgressMonitor();
+
 	/**
 	 * @return Returns the name of the job.
 	 */

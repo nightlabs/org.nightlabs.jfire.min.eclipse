@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.jdo.tree;
 
@@ -14,7 +14,6 @@ import java.util.Set;
 import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -24,12 +23,13 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.Util;
 
 /**
  * {@link AbstractTreeComposite} to be used with an {@link ActiveJDOObjectTreeController}.
  * It enables the programatic expansion of active trees (trees that get their data from an {@link ActiveJDOObjectTreeController}).
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
@@ -37,12 +37,12 @@ public abstract class ActiveJDOObjectTreeComposite<JDOObjectID extends ObjectID,
 extends AbstractTreeComposite<JDOObject>
 {
 	private static final Logger logger = Logger.getLogger(ActiveJDOObjectTreeComposite.class);
-	
+
 	private Set<TreeNode> alreadyLoadedNodes = new HashSet<TreeNode>();
-	
+
 	/**
 	 * Create a new {@link ActiveJDOObjectTreeComposite} for the given parent.
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 */
 	public ActiveJDOObjectTreeComposite(Composite parent) {
@@ -51,7 +51,7 @@ extends AbstractTreeComposite<JDOObject>
 
 	/**
 	 * Create a new {@link ActiveJDOObjectTreeComposite} for the given parent.
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 * @param init Whether to initialize the tree (set content and label provider etc.)
 	 */
@@ -62,10 +62,10 @@ extends AbstractTreeComposite<JDOObject>
 	/**
 	 * Create a new {@link ActiveJDOObjectTreeComposite} for the given parent
 	 * with the given style and layout(data).
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 * @param style The style to apply to the new {@link ActiveJDOObjectTreeComposite} (surrounding the tree).
-	 * @param setLayoutData Whether to set a layout-data that will cause the tree to fill in both directions inside a GridData. 
+	 * @param setLayoutData Whether to set a layout-data that will cause the tree to fill in both directions inside a GridData.
 	 * @param init Whether to initialize the tree (set content and label provider etc.)
 	 * @param headerVisible Whether the header columns of the tree should be visible.
 	 */
@@ -98,11 +98,11 @@ extends AbstractTreeComposite<JDOObject>
 			return null;
 		return (JDOObject) ((TreeNode)obj).getJdoObject();
 	}
-	
+
 	/**
 	 * Here subclasses should provide the {@link ActiveJDOObjectTreeController} that
 	 * can provide the data for this tree.
-	 * 
+	 *
 	 * @return The {@link ActiveJDOObjectTreeController} for this tree.
 	 */
 	protected abstract ActiveJDOObjectTreeController<JDOObjectID, JDOObject, TreeNode> getJDOObjectTreeController();
@@ -119,12 +119,12 @@ extends AbstractTreeComposite<JDOObject>
 	protected ActiveTreeViewer getActiveTreeViewer() {
 		return (ActiveTreeViewer) getTreeViewer();
 	}
-	
+
 	/**
 	 * Selects the node in the tree which JDOObject has the corresponding JDOObjectID.
 	 * If the node has not been loaded yet, it will be loaded lazily.
-	 * 
-	 * @param jdoObjectID the JDOObjectID of the JDOObject to select the corresponding node for. 
+	 *
+	 * @param jdoObjectID the JDOObjectID of the JDOObject to select the corresponding node for.
 	 */
 	public void setSelectedObjectID(JDOObjectID jdoObjectID) {
 		long startFetchingParentIDs = System.currentTimeMillis();
@@ -143,16 +143,16 @@ extends AbstractTreeComposite<JDOObject>
 	}
 
 	/**
-	 * 
+	 *
 	 * @param jdoObjectID the JDOObjectID where to get all necessary parentIDs for until we reach node which is already visible and loaded.
 	 * @param parentIDPath a List of all parentIDs which have been identified so far.
 	 * @return the List of all necessary parentIDs for until we reach node which is already visible and loaded
 	 */
-	private List<JDOObjectID> getParentIDsUntilAvailable(JDOObjectID jdoObjectID, List<JDOObjectID> parentIDPath) 
-	{		
+	private List<JDOObjectID> getParentIDsUntilAvailable(JDOObjectID jdoObjectID, List<JDOObjectID> parentIDPath)
+	{
 		if (jdoObjectID == null)
 			return parentIDPath;
-		
+
 		TreeNode treeNode = getJDOObjectTreeController().getTreeNode(jdoObjectID);
 		if (treeNode != null) {
 			return parentIDPath;
@@ -161,7 +161,7 @@ extends AbstractTreeComposite<JDOObject>
 			if (!parentIDPath.contains(jdoObjectID)) {
 				parentIDPath.add(jdoObjectID);
 			}
-			
+
 			Collection<JDOObject> jdoObjects = getJDOObjectTreeController().retrieveJDOObjects(Collections.singleton(jdoObjectID), new NullProgressMonitor());
 			if (jdoObjects != null && !jdoObjects.isEmpty()) {
 				JDOObject object = jdoObjects.iterator().next();
@@ -172,7 +172,7 @@ extends AbstractTreeComposite<JDOObject>
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Currently used for enabling programatic expansion of active trees.
 	 */
@@ -181,7 +181,7 @@ extends AbstractTreeComposite<JDOObject>
 		public ActiveTreeViewer(Composite parent, int style) {
 			super(parent, style);
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 * Overwrites and calls {@link #internalExpand(Object, Object, int, int, Set)}.
@@ -193,11 +193,11 @@ extends AbstractTreeComposite<JDOObject>
 				startLevel--;
 			internalExpand(elementOrTreePath, elementOrTreePath, startLevel, level, new HashSet<LoadListener>());
 		}
-		
+
 		/**
 		 * Uses the {@link ActiveJDOObjectTreeController} of this tree
 		 * to trigger/get data that needs to be expanded.
-		 * 
+		 *
 		 * The {@link LoadListener} created here recurses into this method.
 		 */
 		@SuppressWarnings("unchecked") //$NON-NLS-1$
@@ -210,22 +210,22 @@ extends AbstractTreeComposite<JDOObject>
 			}
 			else {
 				try {
-					childNodes = getJDOObjectTreeController().getNodes((TreeNode) elementOrTreePath);	
+					childNodes = getJDOObjectTreeController().getNodes((TreeNode) elementOrTreePath);
 				} catch (ClassCastException e) {
 					// do nothing, wrong type of elementOrTreePath was passed
 				}
 			}
-			
+
 			if (childNodes != null) {
 				listener.handleLoad(childNodes);
 			}
 		}
-		
+
 		private TreeItem getItem(TreeNode node) {
 			Widget item = doFindItem(node);
 			return (TreeItem) item;
 		}
-		
+
 		/**
 		 * Makes the super expand method accessible
 		 */
@@ -236,7 +236,7 @@ extends AbstractTreeComposite<JDOObject>
 		/**
 		 * Send the SWT.Expand to the given TreeItem, this is necessary instead of calling TreeItem.setExpanded(true)
 		 * because only this way the ContentProvider.getChildren() method of the TreeViewer is triggered.
-		 * 
+		 *
 		 * @param item the TreeItem to send the SWT expansion event for.
 		 */
 		private void sendEventExpandTreeItem(TreeItem item) {
@@ -255,16 +255,16 @@ extends AbstractTreeComposite<JDOObject>
 			}
 			item.setExpanded(true);
 		}
-		
+
 		/**
-		 * Searches the given List of TreeNode, for a node which ObjectID of the TreeNode.getJDOObject() 
-		 * equals the given one.  
-		 * 
+		 * Searches the given List of TreeNode, for a node which ObjectID of the TreeNode.getJDOObject()
+		 * equals the given one.
+		 *
 		 * @param nodes the List of nodes to check
 		 * @param jdoObjectID the JDOObjectID to look for
 		 * @return the TreeNode which ObjectID of the TreeNode.getJDOObject() equals the given one or null if not contained.
 		 */
-		private TreeNode getChild(List<TreeNode> nodes, JDOObjectID jdoObjectID) 
+		private TreeNode getChild(List<TreeNode> nodes, JDOObjectID jdoObjectID)
 		{
 			if (nodes != null && jdoObjectID != null) {
 				for (TreeNode node : nodes) {
@@ -272,23 +272,23 @@ extends AbstractTreeComposite<JDOObject>
 					if (objectID != null && objectID.equals(jdoObjectID)) {
 						return node;
 					}
-				}			
+				}
 			}
 			return null;
 		}
-		
+
 		/**
 		 * Loads the children for all necessary parent nodes (given as objectIDs) until the given node is loaded.
-		 *    
+		 *
 		 * @param node the TreeNode for which the children should be loaded
 		 * @param objectIDs a List of all parent JDOObjectIDs which children need to be loaded until the given treeNode is loaded as well.
 		 * @param select determines if the given TreeNode should be selected as well
 		 */
-		protected void loadChildren(final TreeNode node, final List<JDOObjectID> objectIDs, final boolean select) 
+		protected void loadChildren(final TreeNode node, final List<JDOObjectID> objectIDs, final boolean select)
 		{
 			getJDOObjectTreeController().addJDOTreeNodesChangedListener(new JDOTreeNodesChangedListener<JDOObjectID, JDOObject, TreeNode>() {
 				@Override
-				public void onJDOObjectsChanged(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent) 
+				public void onJDOObjectsChanged(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent)
 				{
 					if (logger.isDebugEnabled()) {
 						logger.debug("onJDOObjectsChanged!");
@@ -300,7 +300,7 @@ extends AbstractTreeComposite<JDOObject>
 							if (node != null) {
 								Object objectID = JDOHelper.getObjectId(node.getJdoObject());
 								if (objectID != null) {
-									objectIDs.remove(objectID);	
+									objectIDs.remove(objectID);
 									if (objectIDs.isEmpty() && select) {
 										setSelection(new StructuredSelection(node), true);
 									}
@@ -312,7 +312,7 @@ extends AbstractTreeComposite<JDOObject>
 									loadChildren(nextChild, objectIDs, select);
 //									alreadyLoadedNodes.add(nextChild);
 								}
-							}							
+							}
 						}
 						else {
 							List<TreeNode> loadedTreeNodes = changedEvent.getLoadedTreeNodes();
@@ -337,18 +337,18 @@ extends AbstractTreeComposite<JDOObject>
 			}
 		}
 	}
-		
+
 	/**
 	 * Handles the successful loading of data to expand.
 	 */
 	private class LoadListener implements JDOTreeNodesChangedListener<JDOObjectID, JDOObject, TreeNode> {
-		
+
 		private Object root;
 		private Object element;
 		private int expandLevel;
 		private int totalLevel;
 		private Set<LoadListener> listenerStack;
-		
+
 		public LoadListener(
 				Object root,
 				Object element,
@@ -381,12 +381,12 @@ extends AbstractTreeComposite<JDOObject>
 			if (listenerStack.isEmpty())
 				getActiveTreeViewer().superExpandToLevel(root, totalLevel);
 		}
-		
+
 		public void onJDOObjectsChanged(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent) {
 			if (changedEvent.getParentsToRefresh().contains(element) || (element instanceof ActiveJDOObjectTreeController)) {
 				handleLoad(changedEvent.getLoadedTreeNodes());
 			}
 		}
 	}
-	
+
 }

@@ -13,12 +13,11 @@ import java.util.Map.Entry;
 import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.jdo.ObjectID;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
@@ -33,6 +32,7 @@ import org.nightlabs.jfire.jdo.notification.TreeLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.TreeNodeParentResolver;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * A controller to be used as datasource for JDO tree datastructures.
@@ -64,7 +64,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * @param parent <code>null</code> for the root elements or the parent element for which to load the children.
 	 * @return The children of the the JDOObject with the given parentID, but never <code>null</code>.
 	 */
-	protected abstract Collection<JDOObject> retrieveChildren(JDOObjectID parentID, JDOObject parent, IProgressMonitor monitor);
+	protected abstract Collection<JDOObject> retrieveChildren(JDOObjectID parentID, JDOObject parent, ProgressMonitor monitor);
 
 	/**
 	 * This method is called on a worker thread and must retrieve JDO objects for
@@ -74,7 +74,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * @param monitor The monitor.
 	 * @return Returns the jdo objects that correspond to the requested <code>objectIDs</code>.
 	 */
-	protected abstract Collection<JDOObject> retrieveJDOObjects(Set<JDOObjectID> objectIDs, IProgressMonitor monitor);
+	protected abstract Collection<JDOObject> retrieveJDOObjects(Set<JDOObjectID> objectIDs, ProgressMonitor monitor);
 
 	/**
 	 * Creates a subclass of {@link JDOObjectTreeNode} which represents the node object of the active tree.
@@ -180,7 +180,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	private NotificationListener changeListener;
 
 //	@SuppressWarnings("unchecked") //$NON-NLS-1$
-	protected void handleChangeNotification(NotificationEvent notificationEvent, IProgressMonitor monitor) {
+	protected void handleChangeNotification(NotificationEvent notificationEvent, ProgressMonitor monitor) {
 		synchronized (objectID2TreeNode) {
 			if (hiddenRootNode == null)
 				hiddenRootNode = createNode();
@@ -539,7 +539,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectTreeController.loadingDataJob")) { //$NON-NLS-1$
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			protected IStatus run(ProgressMonitor monitor)
 			{
 				if (logger.isDebugEnabled())
 					logger.debug("getNodes.Job#run: entered for parentTreeNode.jdoObjectID=\"" + (parent == null ? null : JDOHelper.getObjectId(parent.getJdoObject())) + "\""); //$NON-NLS-1$ //$NON-NLS-2$

@@ -13,14 +13,12 @@ import java.util.Map.Entry;
 import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.jdo.ObjectID;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
@@ -34,6 +32,8 @@ import org.nightlabs.jfire.jdo.notification.TreeLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.TreeNodeParentResolver;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
+import org.nightlabs.progress.ProgressMonitor;
+import org.nightlabs.progress.SubProgressMonitor;
 
 /**
  * A controller to be used as datasource for JDO tree datastructures.
@@ -57,9 +57,9 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 {
 	private static final Logger logger = Logger.getLogger(ActiveJDOObjectLazyTreeController.class);
 
-	protected abstract Collection<JDOObjectID> retrieveChildObjectIDs(JDOObjectID parentID, IProgressMonitor monitor);
+	protected abstract Collection<JDOObjectID> retrieveChildObjectIDs(JDOObjectID parentID, ProgressMonitor monitor);
 
-	protected abstract Map<JDOObjectID, Long> retrieveChildCount(Set<JDOObjectID> parentIDs, IProgressMonitor monitor);
+	protected abstract Map<JDOObjectID, Long> retrieveChildCount(Set<JDOObjectID> parentIDs, ProgressMonitor monitor);
 
 	/**
 	 * This method is called on a worker thread and must retrieve JDO objects for
@@ -69,7 +69,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	 * @param monitor The monitor.
 	 * @return Returns the jdo objects that correspond to the requested <code>objectIDs</code>.
 	 */
-	protected abstract Collection<JDOObject> retrieveJDOObjects(Set<JDOObjectID> objectIDs, IProgressMonitor monitor);
+	protected abstract Collection<JDOObject> retrieveJDOObjects(Set<JDOObjectID> objectIDs, ProgressMonitor monitor);
 
 	/**
 	 * Creates a subclass of {@link JDOObjectLazyTreeNode} which represents the node object of the active tree.
@@ -169,7 +169,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	private NotificationListener changeListener;
 
 //	@SuppressWarnings("unchecked") //$NON-NLS-1$
-	protected void handleChangeNotification(NotificationEvent notificationEvent, IProgressMonitor monitor) {
+	protected void handleChangeNotification(NotificationEvent notificationEvent, ProgressMonitor monitor) {
 		synchronized (mutex) {
 			if (hiddenRootNode == null)
 				hiddenRootNode = createNode();
@@ -500,7 +500,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 		Job job = new Job("Loading child count") {
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			protected IStatus run(ProgressMonitor monitor)
 			{
 				if (logger.isDebugEnabled())
 					logger.debug("getNodeCount.Job#run: entered"); //$NON-NLS-1$
@@ -540,6 +540,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 						retrieveRootCount = true;
 					}
 					else {
+						@SuppressWarnings("unchecked")
 						JDOObjectID parentJDOID = (JDOObjectID) treeNode.getJdoObjectID();
 						parentObjectIDs.add(parentJDOID);
 					}
@@ -702,7 +703,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 			Job job1 = new Job("Loading children") {
 				@Override
-				protected IStatus run(IProgressMonitor monitor)
+				protected IStatus run(ProgressMonitor monitor)
 				{
 					if (logger.isDebugEnabled())
 						logger.debug("getNode.job1#run: entered for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -802,7 +803,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 			Job job2 = new Job("Loading tree nodes' objects") {
 				@Override
-				protected IStatus run(IProgressMonitor monitor)
+				protected IStatus run(ProgressMonitor monitor)
 				{
 					if (logger.isDebugEnabled())
 						logger.debug("getNode.job2#run: entered"); //$NON-NLS-1$

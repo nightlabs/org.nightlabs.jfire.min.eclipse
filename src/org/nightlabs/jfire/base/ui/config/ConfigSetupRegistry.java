@@ -216,7 +216,7 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 					ConfigSetupID setupID = (ConfigSetupID)dirtyObjectID.getObjectID();
 					try {
 						ConfigSetup newSetup = ConfigSetupDAO.sharedInstance().getConfigSetup(setupID,
-								CONFIG_SETUP_FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitorWrapper());
+								CONFIG_SETUP_FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitor());
 //						integrateConfigSetup(newSetup);
 					} catch (Exception e) {
 						throw new RuntimeException(e);

@@ -27,7 +27,6 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorStaleHandler;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.IEntityEditorPageStaleHandler;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
-import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -343,7 +342,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 									if (logger.isDebugEnabled())
 										logger.debug("Found foreign change but clean editor, will silently reload the entity"); //$NON-NLS-1$
 									// no local changes, reload
-									doReload(new SubProgressMonitor(new ProgressMonitorWrapper(getProgressMonitor()), 100));
+									doReload(new SubProgressMonitor(getProgressMonitor(), 100));
 									setStale(false);
 								}
 							}
