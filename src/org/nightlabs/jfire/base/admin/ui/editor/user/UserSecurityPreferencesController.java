@@ -39,7 +39,6 @@ import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
-import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
@@ -138,7 +137,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 	private NotificationListener userChangedListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.SecurityPreferencesController.loadingChangedUser")) //$NON-NLS-1$
 	{
 		public void notify(NotificationEvent notificationEvent) {
-			doLoad(new ProgressMonitorWrapper(getProgressMonitor()));
+			doLoad(getProgressMonitor());
 		}
 	};
 

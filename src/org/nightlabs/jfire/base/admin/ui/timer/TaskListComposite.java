@@ -173,7 +173,7 @@ public class TaskListComposite
 				TaskID taskID = (TaskID) dirtyObjectID.getObjectID();
 //				Task task = TaskProvider.sharedInstance().getTask(taskID,
 //						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
-				Task task = TaskDAO.sharedInstance().getTask(taskID, FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitorWrapper());
+				Task task = TaskDAO.sharedInstance().getTask(taskID, FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitor());
 				if (taskSet.contains(task)) {
 					int idx = tasks.indexOf(task);
 					if (idx >= 0) {

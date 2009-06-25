@@ -37,7 +37,6 @@ import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
-import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
@@ -68,7 +67,7 @@ import org.nightlabs.util.Util;
 
 /**
  * Controller class for the security preferences of a user.
- * 
+ *
  * @version $Revision: 4472 $ - $Date: 2006-08-28 20:21:33 +0000 (Mon, 28 Aug 2006) $
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Niklas Schiffler <nick@nightlabs.de>
@@ -122,7 +121,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 		JDOLifecycleManager.sharedInstance().removeNotificationListener(UserSecurityGroup.class, userGroupChangedListener);
 		super.dispose();
 	}
-	
+
 	private NotificationListener userGroupChangedListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.GroupSecurityPreferencesController.loadingChangedGroup")) //$NON-NLS-1$
 	{
 		public void notify(NotificationEvent notificationEvent) {
@@ -132,10 +131,10 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 
 				DirtyObjectID dirtyObjectID = (DirtyObjectID) o;
 				if (Util.equals(dirtyObjectID.getObjectID(), userSecurityGroupID)) {
-					doLoad(new ProgressMonitorWrapper(getProgressMonitor()));
+					doLoad(getProgressMonitor());
 					break;
 				}
-			}					
+			}
 		}
 	};
 
@@ -207,7 +206,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 						new String[] { FetchPlan.DEFAULT, RoleGroup.FETCH_GROUP_NAME, RoleGroup.FETCH_GROUP_DESCRIPTION},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
 						new SubProgressMonitor(monitor, 34));
-				
+
 				roleGroupModel.setRoleGroupsAssignedDirectly(roleGroupSetCarrier.getAssignedToUser());
 				roleGroupModel.setRoleGroupsAssignedToUserGroups(roleGroupSetCarrier.getAssignedToUserGroups());
 				roleGroupModel.setRoleGroupsAssignedToOtherUser(roleGroupSetCarrier.getAssignedToOtherUser());
@@ -246,7 +245,7 @@ public class GroupSecurityPreferencesController extends EntityEditorPageControll
 
 		Collection<RoleGroup> includedRoleGroups = roleGroupModel.getRoleGroupsAssignedDirectly();
 		Set<RoleGroupID> includedRoleGroupIDs = NLJDOHelper.getObjectIDSet(includedRoleGroups);
-		
+
 		Collection<User> includedUsers = userGroupModel.getIncludedUsers();
 		Set<UserLocalID> includedUserLocalIDs = new HashSet<UserLocalID>(includedUsers.size());
 		for (User u : includedUsers)
