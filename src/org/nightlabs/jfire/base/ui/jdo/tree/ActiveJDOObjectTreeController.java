@@ -29,6 +29,7 @@ import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
 import org.nightlabs.jfire.jdo.notification.TreeLifecycleListenerFilter;
+import org.nightlabs.jfire.jdo.notification.TreeNodeMultiParentResolver;
 import org.nightlabs.jfire.jdo.notification.TreeNodeParentResolver;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
@@ -101,10 +102,31 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 * This method is called by the default implementation of {@link #createJDOLifecycleListenerFilter()}.
 	 * It is responsible for creating a {@link TreeNodeParentResolver} for the actual
 	 * type of JDOObject.
+	 * <p>
+	 * Instead of implementing this method, you might want to throw an {@link UnsupportedOperationException}
+	 * and override {@link #createTreeNodeMultiParentResolver()} if your objects occur multiple
+	 * times in the tree (and thus have multiple parents).
+	 * </p>
 	 */
 	protected abstract TreeNodeParentResolver createTreeNodeParentResolver();
 
+	/**
+	 * This method is called by the default implementation of {@link #createJDOLifecycleListenerFilter()}.
+	 * It is responsible for creating a {@link TreeNodeMultiParentResolver} for the actual
+	 * type of JDOObject.
+	 * <p>
+	 * The default implementation of this method returns <code>null</code> and
+	 * the framework will expect {@link #createTreeNodeParentResolver()} to return an
+	 * instance.
+	 * </p>
+	 */
+	protected TreeNodeMultiParentResolver createTreeNodeMultiParentResolver() {
+		return null;
+	}
+
 	private TreeNodeParentResolver treeNodeParentResolver = null;
+
+	private TreeNodeMultiParentResolver treeNodeMultiParentResolver = null;
 
 	/**
 	 * Get the {@link TreeNodeParentResolver} for this controller.
@@ -114,10 +136,37 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	public TreeNodeParentResolver getTreeNodeParentResolver()
 	{
-		if (treeNodeParentResolver == null)
+		if (treeNodeParentResolver == null) {
+			if (treeNodeMultiParentResolver != null)
+				return null;
+
+			treeNodeMultiParentResolver = createTreeNodeMultiParentResolver();
+			if (treeNodeMultiParentResolver != null)
+				return null;
+
 			treeNodeParentResolver = createTreeNodeParentResolver();
 
+			if (treeNodeParentResolver == null)
+				throw new IllegalStateException("Both methods createTreeNodeMultiParentResolver() and createTreeNodeParentResolver() returned null! One of them must return an instance! Check your class: " + getClass().getName());
+		}
+
 		return treeNodeParentResolver;
+	}
+
+	public TreeNodeMultiParentResolver getTreeNodeMultiParentResolver()
+	{
+		if (treeNodeMultiParentResolver == null) {
+			if (getTreeNodeParentResolver() != null)
+				return null;
+
+			if (treeNodeMultiParentResolver == null)
+				treeNodeMultiParentResolver = createTreeNodeMultiParentResolver();
+
+			if (treeNodeMultiParentResolver == null)
+				throw new IllegalStateException("How the hell can there be no TreeNodeParentResolver and no TreeNodeMultiParentResolver?! Check your class: " + getClass().getName());
+		}
+
+		return treeNodeMultiParentResolver;
 	}
 
 	/**
@@ -140,10 +189,18 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter(Set<? extends ObjectID> parentObjectIDs)
 	{
-		return new TreeLifecycleListenerFilter(
-				getJDOObjectClass(), true,
-				parentObjectIDs, getTreeNodeParentResolver(),
-				new JDOLifecycleState[] { JDOLifecycleState.NEW });
+		if (getTreeNodeMultiParentResolver() == null) {
+			return new TreeLifecycleListenerFilter(
+					getJDOObjectClass(), true,
+					parentObjectIDs, getTreeNodeParentResolver(),
+					new JDOLifecycleState[] { JDOLifecycleState.NEW });
+		}
+		else {
+			return new TreeLifecycleListenerFilter(
+					getJDOObjectClass(), true,
+					parentObjectIDs, getTreeNodeMultiParentResolver(),
+					new JDOLifecycleState[] { JDOLifecycleState.NEW });
+		}
 	}
 
 	/**
@@ -351,89 +408,100 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 				Collection<JDOObject> objects = retrieveJDOObjects(objectIDs, getProgressMonitor());
 				for (JDOObject object : objects) {
-					TreeNode parentNode;
-					boolean ignoreNodeBecauseParentUnknown = false;
-					ObjectID parentID = getTreeNodeParentResolver().getParentObjectID(object);
-					if (parentID == null) {
-//						parentNode = null;
-						parentNode = hiddenRootNode;
+					Collection<ObjectID> parentObjectIDs;
+					if (getTreeNodeMultiParentResolver() != null) {
+						parentObjectIDs = getTreeNodeMultiParentResolver().getParentObjectIDs(object);
+						if (parentObjectIDs == null || parentObjectIDs.isEmpty())
+							parentObjectIDs = Collections.singletonList(null);
 					}
-					else {
-						parentNode = objectID2TreeNode.get(parentID);
-						if (parentNode == null)
-							ignoreNodeBecauseParentUnknown = true;
-					}
+					else
+						parentObjectIDs = Collections.singletonList(getTreeNodeParentResolver().getParentObjectID(object));
 
-					if (ignoreNodeBecauseParentUnknown) {
-						logger.warn("LifecycleListener#notify: ignoring new object, because its parent is unknown! objectID=\"" + JDOHelper.getObjectId(object) + "\" parentID=\"" + parentID + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						continue;
-					}
-
-//					parentsToRefresh.add(null); // TODO what's this??? I think, this causes the whole tree to be refreshed. => Do we really need this???
-
-					JDOObjectID objectID = (JDOObjectID) JDOHelper.getObjectId(object);
-					TreeNode tn;
-					tn = objectID2TreeNode.get(objectID);
-
-					if (logger.isDebugEnabled())
-						logger.debug("LifecycleListener#notify: treeNodeAlreadyExists=\"" + (tn != null) + "\" objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-					if (tn != null && parentNode != tn.getParent()) { // parent changed, completely replace!
-						if (logger.isDebugEnabled())
-							logger.debug("LifecycleListener#notify: treeNode's parent changed! newParent=\"" + parentNode + "\" oldParent=\"" + tn.getParent() + "\" objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
-						TreeNode p = (TreeNode) tn.getParent();
-						parentsToRefresh.add(p == hiddenRootNode ? null : p);
-						if (p == null) {
-							throw new IllegalStateException("How the hell can TreeNode.getParent() return null?! If it is a root-node, it should have hiddenRootNode as its parent-node!"); //$NON-NLS-1$
-//							if (rootElements != null) {
-//								if (logger.isDebugEnabled())
-//									logger.debug("LifecycleListener#notify: removing TreeNode from rootElements (for replacement)! objectID=\"" + objectID + "\"");
-//
-//								if (!rootElements.remove(p))
-//									logger.warn("LifecycleListener#notify: removing TreeNode from rootElements (for replacement) failed - the TreeNode was not found in the rootElements! objectID=\"" + objectID + "\"");
-//							}
-//							else {
-//								if (logger.isDebugEnabled())
-//									logger.debug("LifecycleListener#notify: rootElements is null! Cannot remove old TreeNode! objectID=\"" + objectID + "\"");
-//							}
+					for (ObjectID parentID : parentObjectIDs) {
+						TreeNode parentNode;
+						boolean ignoreNodeBecauseParentUnknown = false;
+//						ObjectID parentID = getTreeNodeParentResolver().getParentObjectID(object);
+						if (parentID == null) {
+	//						parentNode = null;
+							parentNode = hiddenRootNode;
 						}
-						else
-							p.removeChildNode(tn);
+						else {
+							parentNode = objectID2TreeNode.get(parentID);
+							if (parentNode == null)
+								ignoreNodeBecauseParentUnknown = true;
+						}
 
-						objectID2TreeNode.remove(objectID);
-						tn = null;
-					}
+						if (ignoreNodeBecauseParentUnknown) {
+							logger.warn("LifecycleListener#notify: ignoring new object, because its parent is unknown! objectID=\"" + JDOHelper.getObjectId(object) + "\" parentID=\"" + parentID + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+							continue;
+						}
 
-					if (tn == null) {
+	//					parentsToRefresh.add(null); // TODO what's this??? I think, this causes the whole tree to be refreshed. => Do we really need this???
+
+						JDOObjectID objectID = (JDOObjectID) JDOHelper.getObjectId(object);
+						TreeNode tn;
+						tn = objectID2TreeNode.get(objectID);
+
 						if (logger.isDebugEnabled())
-							logger.debug("LifecycleListener#notify: creating TreeNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+							logger.debug("LifecycleListener#notify: treeNodeAlreadyExists=\"" + (tn != null) + "\" objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-						tn = createNode();
-						tn.setActiveJDOObjectTreeController(ActiveJDOObjectTreeController.this);
-					}
-					else {
-						if (logger.isDebugEnabled())
-							logger.debug("LifecycleListener#notify: reusing existing TreeNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-					}
+						if (tn != null && parentNode != tn.getParent()) { // parent changed, completely replace!
+							if (logger.isDebugEnabled())
+								logger.debug("LifecycleListener#notify: treeNode's parent changed! newParent=\"" + parentNode + "\" oldParent=\"" + tn.getParent() + "\" objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-					tn.setJdoObject(object);
-					if (tn.getParent() != parentNode) {
-						if (logger.isDebugEnabled())
-							logger.debug("LifecycleListener#notify: tn.getParent() != parentNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+							TreeNode p = (TreeNode) tn.getParent();
+							parentsToRefresh.add(p == hiddenRootNode ? null : p);
+							if (p == null) {
+								throw new IllegalStateException("How the hell can TreeNode.getParent() return null?! If it is a root-node, it should have hiddenRootNode as its parent-node!"); //$NON-NLS-1$
+	//							if (rootElements != null) {
+	//								if (logger.isDebugEnabled())
+	//									logger.debug("LifecycleListener#notify: removing TreeNode from rootElements (for replacement)! objectID=\"" + objectID + "\"");
+	//
+	//								if (!rootElements.remove(p))
+	//									logger.warn("LifecycleListener#notify: removing TreeNode from rootElements (for replacement) failed - the TreeNode was not found in the rootElements! objectID=\"" + objectID + "\"");
+	//							}
+	//							else {
+	//								if (logger.isDebugEnabled())
+	//									logger.debug("LifecycleListener#notify: rootElements is null! Cannot remove old TreeNode! objectID=\"" + objectID + "\"");
+	//							}
+							}
+							else
+								p.removeChildNode(tn);
 
-						tn.setParent(parentNode);
-//						if (parentNode != null) // should never be null now - we have introduced hiddenRootNode!
-						parentNode.addChildNode(tn);
-					}
-					else {
-						if (logger.isDebugEnabled())
-							logger.debug("LifecycleListener#notify: tn.getParent() == parentNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-					}
+							objectID2TreeNode.remove(objectID);
+							tn = null;
+						}
 
-					parentsToRefresh.add(parentNode == hiddenRootNode ? null : parentNode);
-					objectID2TreeNode.put(objectID, tn);
-					loadedTreeNodes.add(tn);
+						if (tn == null) {
+							if (logger.isDebugEnabled())
+								logger.debug("LifecycleListener#notify: creating TreeNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+
+							tn = createNode();
+							tn.setActiveJDOObjectTreeController(ActiveJDOObjectTreeController.this);
+						}
+						else {
+							if (logger.isDebugEnabled())
+								logger.debug("LifecycleListener#notify: reusing existing TreeNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+						}
+
+						tn.setJdoObject(object);
+						if (tn.getParent() != parentNode) {
+							if (logger.isDebugEnabled())
+								logger.debug("LifecycleListener#notify: tn.getParent() != parentNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+
+							tn.setParent(parentNode);
+	//						if (parentNode != null) // should never be null now - we have introduced hiddenRootNode!
+							parentNode.addChildNode(tn);
+						}
+						else {
+							if (logger.isDebugEnabled())
+								logger.debug("LifecycleListener#notify: tn.getParent() == parentNode for objectID=\"" + objectID + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+						}
+
+						parentsToRefresh.add(parentNode == hiddenRootNode ? null : parentNode);
+						objectID2TreeNode.put(objectID, tn);
+						loadedTreeNodes.add(tn);
+					}
 				}
 
 				Display.getDefault().asyncExec(new Runnable()

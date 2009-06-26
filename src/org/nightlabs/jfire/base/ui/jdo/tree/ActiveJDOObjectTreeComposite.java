@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.jdo.notification.TreeNodeMultiParentResolver;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.Util;
 
@@ -143,6 +144,10 @@ extends AbstractTreeComposite<JDOObject>
 	}
 
 	/**
+	 * <p>
+	 * In case of multiple parents being used (=&gt; {@link TreeNodeMultiParentResolver}),
+	 * the first occurance will be used.
+	 * </p>
 	 *
 	 * @param jdoObjectID the JDOObjectID where to get all necessary parentIDs for until we reach node which is already visible and loaded.
 	 * @param parentIDPath a List of all parentIDs which have been identified so far.
@@ -165,7 +170,24 @@ extends AbstractTreeComposite<JDOObject>
 			Collection<JDOObject> jdoObjects = getJDOObjectTreeController().retrieveJDOObjects(Collections.singleton(jdoObjectID), new NullProgressMonitor());
 			if (jdoObjects != null && !jdoObjects.isEmpty()) {
 				JDOObject object = jdoObjects.iterator().next();
-				JDOObjectID parentID = (JDOObjectID) getJDOObjectTreeController().getTreeNodeParentResolver().getParentObjectID(object);
+				JDOObjectID parentID;
+
+				if (getJDOObjectTreeController().getTreeNodeMultiParentResolver() != null) {
+					// multi-parent => use first
+					Collection<ObjectID> parentObjectIDs = getJDOObjectTreeController().getTreeNodeMultiParentResolver().getParentObjectIDs(object);
+					if (parentObjectIDs != null && !parentObjectIDs.isEmpty()) {
+						@SuppressWarnings("unchecked")
+						JDOObjectID p = (JDOObjectID) parentObjectIDs.iterator().next();
+						parentID = p;
+					}
+					else
+						parentID = null;
+				}
+				else {
+					@SuppressWarnings("unchecked")
+					JDOObjectID p = (JDOObjectID) getJDOObjectTreeController().getTreeNodeParentResolver().getParentObjectID(object);
+					parentID = p;
+				}
 				parentIDPath.add(0, parentID);
 				return getParentIDsUntilAvailable(parentID, parentIDPath);
 			}
