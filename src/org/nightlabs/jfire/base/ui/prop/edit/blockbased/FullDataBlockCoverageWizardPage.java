@@ -35,6 +35,7 @@ import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.ValidationResultHandler;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.validation.ValidationResult;
 
 /**
@@ -122,7 +123,12 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 				scheduleUpdateButtons();
 			}
 		};
-		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry, resultManager);
+		fullDataBlockCoverageComposite = new FullDataBlockCoverageComposite(parent, SWT.NONE, prop, editorStructBlockRegistry, resultManager) {
+			@Override
+			protected BlockBasedEditor createBlockBasedEditor() {
+				return FullDataBlockCoverageWizardPage.this.createBlockBasedEditor();
+			}
+		};
 
 		// Register a listener, that sets pristine to false and then immediately deregisteres itself again
 		final DataBlockEditorChangedListener[] listener = new DataBlockEditorChangedListener[1];
@@ -136,6 +142,15 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 		fullDataBlockCoverageComposite.addChangeListener(listener[0]);
 
 		return fullDataBlockCoverageComposite;
+	}
+
+	/**
+	 * This method is delegated to in order to create the {@link BlockBasedEditor}
+	 * that will show all {@link StructBlock}s to fulfill full coverage.
+	 * @return A new {@link BlockBasedEditor}.
+	 */
+	protected BlockBasedEditor createBlockBasedEditor() {
+		return new BlockBasedEditor(true);
 	}
 
 	private void scheduleUpdateButtons() {

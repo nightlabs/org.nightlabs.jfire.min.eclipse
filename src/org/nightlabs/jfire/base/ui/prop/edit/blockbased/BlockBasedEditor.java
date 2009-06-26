@@ -26,6 +26,8 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -203,7 +205,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	private XComposite displayNameComp;
 	private Text displayNameText;
 	private Button autogenerateNameCheckbox;
-	private boolean showDisplayNameComposite;
+	private boolean showHeaderComposite;
 
 	/**
 	 * Will be added to the {@link DataBlockEditor}s that have been created
@@ -222,24 +224,27 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 	private IValidationResultHandler validationResultHandler;
 
+
+	private PropertyChangeSupport propertyChangeSupport;
+	
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
-	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
+	 * @param showHeaderComposite Indicates whether a header composite should be displayed. In this implementation this will then show a composite to edit the display name settings of the managed property set.
 	 */
-	public BlockBasedEditor(boolean showDisplayNameComp) {
-		this(null, showDisplayNameComp);
+	public BlockBasedEditor(boolean showHeaderComposite) {
+		this(null, showHeaderComposite);
 	}
 
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
 	 * @param propSet The {@link PropertySet} to be managed.
-	 * @param showDisplayNameComp Indicates whether a composite to edit the display name settings of the managed property set should be displayed.
+	 * @param showHeaderComposite Indicates whether a header composite should be displayed. In this implementation this will then show a composite to edit the display name settings of the managed property set.
 	 */
-	public BlockBasedEditor(PropertySet propSet, boolean showDisplayNameComp) {
+	public BlockBasedEditor(PropertySet propSet, boolean showHeaderComposite) {
 		super(propSet);
-		this.showDisplayNameComposite = showDisplayNameComp;
+		this.showHeaderComposite = showHeaderComposite;
+		propertyChangeSupport = new PropertyChangeSupport(this);
 	}
-
 	/**
 	 * Refreshes the UI-Representation.
 	 */
@@ -307,59 +312,68 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void removeChangeListener(final DataBlockEditorChangedListener changeListener) {
 		changeListenerProxy.removeChangeListener(changeListener);
 	}
-
+	
+	protected PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
+	}
+	
 	/**
-	 * Add the given {@link DisplayNameChangedListener} to the list of listeners of this Editor.
-	 * @param displayNameChangedListener The listener to add.
+	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
+	 * This property change listener will be triggered on a change of the additional data
+	 * of a PropertySet which might be the display name of a PropertySet or each other
+	 * property introduced by a subclass of PropertySet. 
+	 * 
+	 * @param listener The listener to add.
 	 */
-	public void addDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
-		this.displayNameChangedListeners.add(displayNameChangedListener);
+	public void addAdditionalDataChangedListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
+	
 	/**
-	 * Remove the given {@link DisplayNameChangedListener} from the list of listeners of this Editor.
-	 * @param displayNameChangedListener The listener to remove.
+	 * Remove the given {@link PropertyChangeListener} from the list of listeners of this Editor.
+	 * @param listener The listener to remove.
 	 */
-	public void removeDisplayNameChangedListener(DisplayNameChangedListener displayNameChangedListener) {
-		this.displayNameChangedListeners.remove(displayNameChangedListener);
+	public void removeAdditionalDataChangedListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
-
-	protected void fireDisplayNameChangedEvent(String oldName, String newName) {
-		DisplayNameChangedEvent evt = new DisplayNameChangedEvent(oldName, newName);
-		for (Object listener : displayNameChangedListeners.getListeners()) {
-			if (listener instanceof DisplayNameChangedListener) {
-				((DisplayNameChangedListener) listener).displayNameChanged(evt);
-			}
-		}
+	
+	/**
+	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
+	 * This property change listener will be triggered on a change of the given property
+	 * of a PropertySet. 
+	 *
+	 * @param property The additional property of a PropertySet to listen for changes.
+	 * @param listener The listener to add.
+	 */
+	public void addAdditionalDataChangedListener(String property, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
-
+	
+	/**
+	 * Removes the given {@link PropertyChangeListener} from the list of listeners of this Editor
+	 * that listen to changes of the given property.
+	 *
+	 * @param property The additional property of a PropertySet the listener listened to.
+	 * @param listener The listener to remove.
+	 */
+	public void removeAdditionalDataChangedListener(String property, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	
 	protected void fireDataBlockEditorChangedEvent(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		changeListenerProxy.dataBlockEditorChanged(new DataBlockEditorChangedEvent(dataBlockEditor, dataFieldEditor));
 		if (!refreshing)
 			refreshControl();
 	}
 
-	protected Composite createDisplayNameComposite(Composite parent)
+	protected Composite createHeaderComposite(Composite parent)
 	{
 		displayNameComp = new XComposite(parent, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 		displayNameComp.getGridLayout().numColumns = 2;
 
 		Label label = new Label(displayNameComp, SWT.NONE);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor.nameLabel")); //$NON-NLS-1$
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		label.setLayoutData(gd);
-
-		displayNameText = new Text(displayNameComp, XComposite.getBorderStyle(displayNameComp));
-		displayNameText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (refreshing)
-					return;
-				String oldDisplayName = propertySet.getDisplayName();
-				propertySet.setDisplayName(displayNameText.getText());
-				fireDisplayNameChangedEvent(oldDisplayName, displayNameText.getText());
-			}
-		});
-		displayNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		label.setLayoutData(new GridData());
 		autogenerateNameCheckbox = new Button(displayNameComp, SWT.CHECK);
 		autogenerateNameCheckbox.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor.autogenerateCheckboxText")); //$NON-NLS-1$
 
@@ -370,6 +384,22 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
+//		autogenerateNameCheckbox.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		autogenerateNameCheckbox.setLayoutData(new GridData());
+		
+		displayNameText = new Text(displayNameComp, XComposite.getBorderStyle(displayNameComp));
+		displayNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if (refreshing)
+					return;
+				String oldDisplayName = propertySet.getDisplayName();
+				propertySet.setDisplayName(displayNameText.getText());
+				getPropertyChangeSupport().firePropertyChange(PropertySet.PROP_DISPLAY_NAME, oldDisplayName, displayNameText.getText());
+			}
+		});
+		GridData textGD = new GridData(GridData.FILL_HORIZONTAL);
+		textGD.horizontalSpan = 2;
+		displayNameText.setLayoutData(textGD);
 
 		return displayNameComp;
 	}
@@ -381,8 +411,8 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	@Override
 	public Control createControl(Composite parent, boolean refresh) {
 		if (groupedContentComposite == null) {
-			if (showDisplayNameComposite) {
-				createDisplayNameComposite(parent);
+			if (showHeaderComposite) {
+				createHeaderComposite(parent);
 			}
 
 			groupedContentComposite = new GroupedContentComposite(parent, SWT.NONE, true);
@@ -451,7 +481,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				displayNameText.setEnabled(!autogenerateNameCheckbox.getSelection());
 				if (!wasRefreshing) {
 					if (!displayNameText.getText().equals(oldDisplayNameText)) {
-						fireDisplayNameChangedEvent(oldDisplayNameText, displayNameText.getText());
+						getPropertyChangeSupport().firePropertyChange(PropertySet.PROP_DISPLAY_NAME, oldDisplayNameText, displayNameText.getText());
 					}
 				}
 			}

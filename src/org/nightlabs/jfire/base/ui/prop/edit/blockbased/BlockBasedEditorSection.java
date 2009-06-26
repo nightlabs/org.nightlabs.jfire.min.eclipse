@@ -1,5 +1,8 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -122,8 +125,9 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 				markDirty();
 			}
 		});
-		blockBasedEditor.addDisplayNameChangedListener(new DisplayNameChangedListener() {
-			public void displayNameChanged(DisplayNameChangedEvent changedEvent) {
+		blockBasedEditor.addAdditionalDataChangedListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
 				markDirty();
 			}
 		});
@@ -147,7 +151,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		section.setText(sectionDescriptionText);
 	}
 
-	public void setDisplayNameChangedListener(DisplayNameChangedListener listener) {
-		blockBasedEditor.addDisplayNameChangedListener(listener);
+	public void setAdditionalDataChangeListener(PropertyChangeListener listener) {
+		blockBasedEditor.addAdditionalDataChangedListener(listener);
 	}
 }

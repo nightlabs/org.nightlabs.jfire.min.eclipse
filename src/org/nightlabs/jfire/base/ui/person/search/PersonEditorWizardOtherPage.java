@@ -28,6 +28,8 @@ package org.nightlabs.jfire.base.ui.person.search;
 
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.person.edit.blockbased.PersonBlockBasedEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.FullDataBlockCoverageWizardPage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
@@ -58,5 +60,10 @@ extends FullDataBlockCoverageWizardPage
 				SharedImages.getSharedImageDescriptor(
 						JFireBasePlugin.getDefault(),
 						PersonEditorWizardOtherPage.class, null, SharedImages.ImageDimension._75x70));
+	}
+	
+	@Override
+	protected BlockBasedEditor createBlockBasedEditor() {
+		return new PersonBlockBasedEditor();
 	}
 }

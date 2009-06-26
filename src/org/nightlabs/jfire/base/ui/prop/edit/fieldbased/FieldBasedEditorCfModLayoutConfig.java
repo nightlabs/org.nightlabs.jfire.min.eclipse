@@ -3,6 +3,8 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.fieldbased;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,6 +71,8 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	
 	private List<StructField<?>> displayedStructFieldIDs = new LinkedList<StructField<?>>();
 	
+	private PropertyChangeSupport propertyChangeSupport;
+	
 	/**
 	 * Constructs a new {@link FieldBasedEditorCfModLayoutConfig} that reads its configuration
 	 * from the given config module.
@@ -86,6 +90,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 			}
 			
 		});
+		propertyChangeSupport = new PropertyChangeSupport(this);
 	}
 	
 	/**
@@ -95,6 +100,11 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 */
 	public FieldBasedEditorCfModLayoutConfig(boolean showDisplayNameEdit) {
 		this.showDisplayNameEdit = showDisplayNameEdit;
+		propertyChangeSupport = new PropertyChangeSupport(this);
+	}
+	
+	protected PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
 	}
 	
 	/**
@@ -118,19 +128,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 			wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE);
 			
 			if (showDisplayNameEdit) {
-				displayNameEditComposite = new DisplayNameEditComposite(wrapper, SWT.NONE);
-				displayNameEditComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-				// add the listener that will update the display name control
-				addDataFieldEditorChangedListener(new DataFieldEditorChangedListener() {
-					@Override
-					public void dataFieldEditorChanged(
-							DataFieldEditorChangedEvent dataFieldEditorChangedEvent) {
-						dataFieldEditorChangedEvent.getDataFieldEditor().updatePropertySet();
-						displayNameEditComposite.refresh();
-						
-						validate();
-					}
-				});
+				createHeaderComposite(wrapper);
 			}
 			
 			editorWrapper = new XComposite(wrapper, SWT.NONE);
@@ -145,6 +143,23 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 			refreshControl();
 		
 		return wrapper;
+	}
+	
+	protected Composite createHeaderComposite(Composite parent) {
+		displayNameEditComposite = new DisplayNameEditComposite(parent, SWT.NONE, getPropertyChangeSupport());
+		displayNameEditComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// add the listener that will update the display name control
+		addDataFieldEditorChangedListener(new DataFieldEditorChangedListener() {
+			@Override
+			public void dataFieldEditorChanged(
+					DataFieldEditorChangedEvent dataFieldEditorChangedEvent) {
+				dataFieldEditorChangedEvent.getDataFieldEditor().updatePropertySet();
+				displayNameEditComposite.refresh();
+				
+				validate();
+			}
+		});
+		return displayNameEditComposite;
 	}
 	
 	/*
@@ -348,6 +363,50 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 		fieldEditorChangedListeners.remove(listener);
 	}
 	
+	
+	/**
+	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
+	 * This property change listener will be triggered on a change of the additional data
+	 * of a PropertySet which might be the display name of a PropertySet or each other
+	 * property introduced by a subclass of PropertySet. 
+	 * 
+	 * @param listener The listener to add.
+	 */
+	public void addAdditionalDataChangedListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	
+	/**
+	 * Remove the given {@link PropertyChangeListener} from the list of listeners of this Editor.
+	 * @param listener The listener to remove.
+	 */
+	public void removeAdditionalDataChangedListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	
+	/**
+	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
+	 * This property change listener will be triggered on a change of the given property
+	 * of a PropertySet. 
+	 *
+	 * @param property The additional property of a PropertySet to listen for changes.
+	 * @param listener The listener to add.
+	 */
+	public void addAdditionalDataChangedListener(String property, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	
+	/**
+	 * Removes the given {@link PropertyChangeListener} from the list of listeners of this Editor
+	 * that listen to changes of the given property.
+	 *
+	 * @param property The additional property of a PropertySet the listener listened to.
+	 * @param listener The listener to remove.
+	 */
+	public void removeAdditionalDataChangedListener(String property, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+
 	@Override
 	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
 		this.validationResultHandler = validationResultHandler;

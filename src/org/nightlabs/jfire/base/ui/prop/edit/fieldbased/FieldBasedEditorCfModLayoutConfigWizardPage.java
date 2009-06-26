@@ -98,8 +98,16 @@ public class FieldBasedEditorCfModLayoutConfigWizardPage extends WizardHopPage {
 	 * @param blockOnValidationErrors Defines whether the new page should block on validation errors, i.e. return <code>false</code> on isPageComplete. 
 	 */
 	private void init(boolean blockOnValidationErrors) {
-		editor = new FieldBasedEditorCfModLayoutConfig(true);
+		editor = createFieldBasedEditor();
 		this.blockOnValidationErrors = blockOnValidationErrors;
+	}
+
+	/**
+	 * Creates the {@link FieldBasedEditorCfModLayoutConfig} this page uses.
+	 * @return A new instance of {@link FieldBasedEditorCfModLayoutConfig} that this page uses.
+	 */
+	protected FieldBasedEditorCfModLayoutConfig createFieldBasedEditor() {
+		return new FieldBasedEditorCfModLayoutConfig(true);
 	}
 	
 	/**

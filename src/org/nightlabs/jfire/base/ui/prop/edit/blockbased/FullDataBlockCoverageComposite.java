@@ -40,6 +40,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.prop.PropertySet;
+import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.id.StructBlockID;
 
@@ -113,11 +114,20 @@ public class FullDataBlockCoverageComposite extends Composite {
 	private void createPropEditors(IValidationResultHandler validationResultHandler) {
 		propEditors.clear();
 		for (int i=0; i<numColumns; i++) {
-			BlockBasedEditor blockBasedEditor = new BlockBasedEditor(true);
+			BlockBasedEditor blockBasedEditor = createBlockBasedEditor();
 			blockBasedEditor.setValidationResultHandler(validationResultHandler);
 			propEditors.add(blockBasedEditor);
 			blockBasedEditor.addChangeListener(listenerProxy);
 		}
+	}
+	
+	/**
+	 * This method is delegated to in order to create the {@link BlockBasedEditor}
+	 * that will show all {@link StructBlock}s to fulfill full coverage.
+	 * @return A new {@link BlockBasedEditor}.
+	 */
+	protected BlockBasedEditor createBlockBasedEditor() {
+		return new BlockBasedEditor(true);
 	}
 
 	/**

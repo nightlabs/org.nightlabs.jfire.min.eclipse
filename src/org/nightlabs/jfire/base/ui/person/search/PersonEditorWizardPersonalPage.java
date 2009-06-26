@@ -28,6 +28,8 @@ package org.nightlabs.jfire.base.ui.person.search;
 
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.person.edit.fieldbased.PersonFieldBasedEditor;
+import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditorCfModLayoutConfig;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditorCfModLayoutConfigWizardPage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
@@ -56,6 +58,10 @@ extends FieldBasedEditorCfModLayoutConfigWizardPage {
 						PersonEditorWizardPersonalPage.class, null, SharedImages.ImageDimension._75x70));
 	}
 	
+	@Override
+	protected FieldBasedEditorCfModLayoutConfig createFieldBasedEditor() {
+		return new PersonFieldBasedEditor(true);
+	}
 //	@Override
 //	public Control createPageContents(Composite parent) {
 //		IValidationResultHandler resultManager = new ValidationResultHandler() {
