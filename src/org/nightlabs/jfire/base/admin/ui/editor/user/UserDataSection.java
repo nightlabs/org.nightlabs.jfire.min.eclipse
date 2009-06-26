@@ -1,5 +1,8 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -25,8 +28,6 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DisplayNameChangedEvent;
-import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DisplayNameChangedListener;
 import org.nightlabs.jfire.security.User;
 import org.nightlabs.jfire.security.UserLocal;
 
@@ -194,8 +195,9 @@ public class UserDataSection extends RestorableSectionPart
 					autogenerateNameCheckBox.setSelection(user.isAutogenerateName());
 					userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
 
-					personPreferencesPage.getUserPropertiesSection().setDisplayNameChangedListener(new DisplayNameChangedListener() {
-						public void displayNameChanged(DisplayNameChangedEvent changedEvent) {
+					personPreferencesPage.getUserPropertiesSection().setAdditionalDataChangeListener(new PropertyChangeListener() {
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
 							refreshing = true;
 							updateDisplayName();
 							refreshing = false;
