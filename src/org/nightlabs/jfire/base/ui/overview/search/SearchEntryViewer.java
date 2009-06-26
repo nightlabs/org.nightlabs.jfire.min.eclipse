@@ -446,7 +446,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		searchText.setText("");
 		for (Section advancedSearchSection : advancedSearchSections) {
 			advancedSearchSection.setExpanded(false);
+			Button activeButton = (Button)advancedSearchSection.getTextClient();
+			activeButton.setSelection(false);
 		}
+		
 		
 		sashform.setWeights(calculateSashWeights(null));
 	}
