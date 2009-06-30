@@ -29,6 +29,7 @@ package org.nightlabs.jfire.base.ui.prop;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.jdo.FetchPlan;
@@ -37,6 +38,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -51,6 +53,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -59,6 +62,8 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.query.ui.search.EarlySearchFilterProvider;
 import org.nightlabs.jdo.query.ui.search.SearchFilterProvider;
 import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
+import org.nightlabs.jdo.search.SearchFilter;
+import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.person.search.StaticPersonSearchFilterProvider;
@@ -68,6 +73,7 @@ import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.dao.PropertySetDAO;
 import org.nightlabs.jfire.prop.id.PropertySetID;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
+import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.ObjectCarrier;
@@ -302,6 +308,41 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 */
 	public void performSearch() {
 		final SearchFilterProvider filterProvider = ((FilterProviderTab) filterProviderFolder.getSelection()[0].getData()).getFilterProvider();
+		
+		//--------------Added By Chairat----------------------------------------------------------------
+		//--------------There are still some fields that don't work properly. It's needed to be fixed!!!
+		//--------------PersonID and Person's Phone, for example----------------------------------------
+		SearchFilter filter = filterProvider.getSearchFilter();
+		List<SearchFilterItem> filterItems = filter.getFilters();
+		boolean isAllStringEmpty = true;
+		for (SearchFilterItem filterItem : filterItems) {
+			if (filterItem instanceof TextPropSearchFilterItem) {
+				TextPropSearchFilterItem textItem = (TextPropSearchFilterItem) filterItem;
+				if (!textItem.getNeedle().isEmpty()) {
+					isAllStringEmpty = false;
+					break;
+				}
+			}
+		}
+		
+		if (isAllStringEmpty) {
+			MessageDialog warningDialog =
+				new MessageDialog(getShell(), "Search Warning", null, 
+						"Please Specify Some Critirias for Searching.",
+						MessageDialog.INFORMATION,
+						new String[] { "Ok" },
+						0);
+			warningDialog.open();
+				   
+//			MessageBox msgBox = new MessageBox(getShell(), SWT.OK | SWT.);
+//			msgBox.setMessage("Please Specify Some Critirias for Searching.");
+//			msgBox.setText("Search Warning");
+//			msgBox.open();
+			return;
+		}
+		//---------------End----------------------
+		//----------------------------------------
+		
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.searchJob.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
