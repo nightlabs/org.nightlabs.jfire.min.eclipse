@@ -36,8 +36,8 @@ public class JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode> extends EventOb
 
 	private Set<TreeNode> parentsToRefresh;
 	private List<TreeNode> loadedTreeNodes;
-	private Map<JDOObjectID, TreeNode> ignoredJDOObjects;
-	private Map<JDOObjectID, TreeNode> deletedJDOObjects;
+	private Map<JDOObjectID, List<TreeNode>> ignoredJDOObjects;
+	private Map<JDOObjectID, List<TreeNode>> deletedJDOObjects;
 
 	public JDOLazyTreeNodesChangedEvent(Object source) {
 		super(source);
@@ -51,11 +51,11 @@ public class JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode> extends EventOb
 		this(source, parentsToRefresh, loadedTreeNodes, null, null);
 	}
 
-	public JDOLazyTreeNodesChangedEvent(Object source, List<TreeNode> loadedTreeNodes, Map<JDOObjectID, TreeNode> ignoredJDOObjects, Map<JDOObjectID, TreeNode> deletedJDOObjects) {
+	public JDOLazyTreeNodesChangedEvent(Object source, List<TreeNode> loadedTreeNodes, Map<JDOObjectID, List<TreeNode>> ignoredJDOObjects, Map<JDOObjectID, List<TreeNode>> deletedJDOObjects) {
 		this(source, null, loadedTreeNodes, ignoredJDOObjects, deletedJDOObjects);
 	}
 
-	public JDOLazyTreeNodesChangedEvent(Object source, Set<TreeNode> parentsToRefresh, List<TreeNode> loadedTreeNodes, Map<JDOObjectID, TreeNode> ignoredJDOObjects, Map<JDOObjectID, TreeNode> deletedJDOObjects) {
+	public JDOLazyTreeNodesChangedEvent(Object source, Set<TreeNode> parentsToRefresh, List<TreeNode> loadedTreeNodes, Map<JDOObjectID, List<TreeNode>> ignoredJDOObjects, Map<JDOObjectID, List<TreeNode>> deletedJDOObjects) {
 		super(source);
 
 		if (parentsToRefresh == null)
@@ -82,28 +82,28 @@ public class JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode> extends EventOb
 	/**
 	 * @return the deletedJDOObjects
 	 */
-	public Map<JDOObjectID, TreeNode> getDeletedJDOObjects() {
+	public Map<JDOObjectID, List<TreeNode>> getDeletedJDOObjects() {
 		return deletedJDOObjects;
 	}
 
 	/**
 	 * @param deletedJDOObjects the deletedJDOObjects to set
 	 */
-	public void setDeletedJDOObjects(Map<JDOObjectID, TreeNode> deletedJDOObjects) {
+	public void setDeletedJDOObjects(Map<JDOObjectID, List<TreeNode>> deletedJDOObjects) {
 		this.deletedJDOObjects = deletedJDOObjects;
 	}
 
 	/**
 	 * @return the ignoredJDOObjects
 	 */
-	public Map<JDOObjectID, TreeNode> getIgnoredJDOObjects() {
+	public Map<JDOObjectID, List<TreeNode>> getIgnoredJDOObjects() {
 		return ignoredJDOObjects;
 	}
 
 	/**
 	 * @param ignoredJDOObjects the ignoredJDOObjects to set
 	 */
-	public void setIgnoredJDOObjects(Map<JDOObjectID, TreeNode> ignoredJDOObjects) {
+	public void setIgnoredJDOObjects(Map<JDOObjectID, List<TreeNode>> ignoredJDOObjects) {
 		this.ignoredJDOObjects = ignoredJDOObjects;
 	}
 

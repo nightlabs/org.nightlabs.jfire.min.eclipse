@@ -46,10 +46,10 @@ import org.nightlabs.progress.NullProgressMonitor;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public class PersonSearchWizardPage extends WizardHopPage 
+public class PersonSearchWizardPage extends WizardHopPage
 {
 	private static final Logger logger = Logger.getLogger(PersonSearchWizardPage.class);
-	
+
 	private PersonEditorWizardHop newPersonEditorWizardHop;
 	private PersonEditorWizardHop editorWizardHop;
 	private PersonSearchComposite searchComposite;
@@ -92,6 +92,9 @@ public class PersonSearchWizardPage extends WizardHopPage
 			String description)
 	{
 		super(PersonSearchWizardPage.class.getName(), title);
+		if (quickSearchText == null)
+			quickSearchText = "";
+
 		this.quickSearchText = quickSearchText;
 		this.allowNewLegalEntityCreation = allowNewLegalEntityCreation;
 		this.allowEditLegalEntity = allowEditLegalEntity;
@@ -164,7 +167,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 			public void modifyText(ModifyEvent e) {
 				String text = searchComposite.getSearchText();
 				if (text != null) {
-					quickSearchText = text;	
+					quickSearchText = text;
 					logger.debug("quickSearchText = "+quickSearchText);
 				}
 			}
@@ -257,7 +260,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 								sb.append(suffix);
 								quickSearchText = quickSearchText.replace(sb.toString(), ""); //$NON-NLS-1$
 							}
-						}							
+						}
 					}
 					if (firstPart != null) {
 						try {
@@ -267,11 +270,11 @@ public class PersonSearchWizardPage extends WizardHopPage
 							}
 						} catch (Exception e) {
 							// do nothing
-						} 	
+						}
 					}
 				}
 			}
-			
+
 			editingNewPerson = true;
 			getWizardHop().addHopPage(newPersonEditorWizardHop.getEntryPage());
 			personSelectionChanged();

@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 import org.nightlabs.jdo.ObjectID;
 
 public class JDOObjectLazyTreeContentProvider
@@ -86,8 +87,13 @@ implements ILazyTreeContentProvider
 			getTreeViewer().setChildCount(element, (int)realChildCount);
 	}
 
+	private Set<String> updateElementReplaceActiveIDSet = new HashSet<String>();
+
 	@Override
 	public void updateElement(final Object parentElement, final int index) {
+		if (Display.getCurrent() == null)
+			throw new IllegalStateException("Thread mismatch! This method must be called on the UI thread!");
+
 		TreeNode parent = null;
 
 		if (parentElement instanceof ActiveJDOObjectLazyTreeController) {
@@ -117,7 +123,15 @@ implements ILazyTreeContentProvider
 			if (logger.isDebugEnabled())
 				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " :: Child is not yet loaded!");
 
-			getTreeViewer().replace(parentElement, index, LOADING);
+			String updateElementReplaceActiveID = parentElement == null ? "null" : parentElement.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(parentElement)) + '/' + Integer.toString(index, 36);
+			if (!updateElementReplaceActiveIDSet.contains(updateElementReplaceActiveID)) {
+				updateElementReplaceActiveIDSet.add(updateElementReplaceActiveID);
+				try {
+					getTreeViewer().replace(parentElement, index, LOADING);
+				} finally {
+					updateElementReplaceActiveIDSet.remove(updateElementReplaceActiveID);
+				}
+			}
 		}
 		else {
 			if (child.getJdoObject() == null)
