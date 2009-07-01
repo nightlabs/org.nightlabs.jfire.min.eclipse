@@ -303,7 +303,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 
 	protected void personDoubleClicked() {
 		if (getContainer() instanceof WizardDialog) {
-			if (getWizard().performFinish()) {
+			if (isPageComplete() && getWizard().performFinish()) {
 				((WizardDialog) getContainer()).close();
 			}
 		}
@@ -317,7 +317,8 @@ public class PersonSearchWizardPage extends WizardHopPage
 	protected void onPersonSelectionChanged()
 	{
 		if (editButton != null && !editButton.isDisposed())
-			editButton.setEnabled(searchComposite.getResultTable().getSelectionCount() == 1);
+			editButton.setEnabled(searchComposite.getResultTable().getSelectionCount() == 1 &&
+					searchComposite.getResultTable().getFirstSelectedElement() instanceof Person);
 
 		if (controlIsChildOfOrEquals(searchComposite.getTopWrapper(), searchComposite.getDisplay().getFocusControl()))
 			makeSearchButtonDefault();
@@ -338,10 +339,10 @@ public class PersonSearchWizardPage extends WizardHopPage
 
 	@Override
 	public boolean isPageComplete() {
-//		if (controlIsChildOfOrEquals(searchComposite.getTopWrapper(), searchComposite.getDisplay().getFocusControl()))
-//		makeSearchButtonDefault();
-
-		return searchComposite != null && (searchComposite.getResultTable().getFirstSelectedElement() != null || !getWizardHop().getHopPages().isEmpty());
+		return searchComposite != null &&
+			((searchComposite.getResultTable().getFirstSelectedElement() != null &&
+			  searchComposite.getResultTable().getFirstSelectedElement() instanceof Person) ||
+			  !getWizardHop().getHopPages().isEmpty());
 	}
 
 	/**

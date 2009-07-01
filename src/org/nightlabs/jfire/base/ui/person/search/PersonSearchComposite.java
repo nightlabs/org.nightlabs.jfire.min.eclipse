@@ -47,7 +47,7 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 			String quickSearchText) {
 		super(parent, style, quickSearchText);
 	}
-		
+
 	/**
 	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String, boolean)}
 	 */
@@ -63,7 +63,7 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	protected PropertySetTable<Person> createResultTable(Composite parent) {
 		return new PersonResultTable(parent, SWT.NONE);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,5 +78,5 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	protected SearchFilterProvider createDynamicSearchFilterProvider(SearchResultFetcher resultFetcher) {
 		return new DynamicPersonSearchFilterProvider(new PropertySetSearchFilterItemListMutator(), resultFetcher);
 	}
-	
+
 }

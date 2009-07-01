@@ -38,7 +38,6 @@ import javax.security.auth.login.LoginException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -53,7 +52,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -290,6 +288,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 						if (finalInput != null && finalInput.size() == 1) {
 							resultTable.setSelection(new StructuredSelection(finalInput.iterator().next()));
 						}
+						setResultLabelText();
 					}
 				});
 			} catch (Exception e) {
@@ -308,7 +307,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 */
 	public void performSearch() {
 		final SearchFilterProvider filterProvider = ((FilterProviderTab) filterProviderFolder.getSelection()[0].getData()).getFilterProvider();
-		
+
 		//--------------Added By Chairat----------------------------------------------------------------
 		//--------------There are still some fields that don't work properly. It's needed to be fixed!!!
 		//--------------PersonID and Person's Phone, for example----------------------------------------
@@ -324,25 +323,23 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 				}
 			}
 		}
-		
+
 		if (isAllStringEmpty) {
-			MessageDialog warningDialog =
-				new MessageDialog(getShell(), "Search Warning", null, 
-						"Please Specify Some Critirias for Searching.",
-						MessageDialog.INFORMATION,
-						new String[] { "Ok" },
-						0);
-			warningDialog.open();
-				   
-//			MessageBox msgBox = new MessageBox(getShell(), SWT.OK | SWT.);
-//			msgBox.setMessage("Please Specify Some Critirias for Searching.");
-//			msgBox.setText("Search Warning");
-//			msgBox.open();
+//			MessageDialog warningDialog =
+//				new MessageDialog(getShell(), "Search Warning", null,
+//						"Please Specify Some Critirias for Searching.",
+//						MessageDialog.INFORMATION,
+//						new String[] { "Ok" },
+//						0);
+//			warningDialog.open();
+			// removed dialog and replaced, by entry in table which indicates that no result were found
+			resultTable.setLoadingMessage("No Results found");
+			setResultLabelText();
 			return;
 		}
 		//---------------End----------------------
 		//----------------------------------------
-		
+
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.searchJob.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -433,6 +430,34 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		}
 		sash.setWeights(new int[] {3, 5});
 		return getWrapper();
+	}
+
+	private void setResultLabelText() {
+		if (!isDisposed() && !getDisplay().isDisposed()) {
+			getDisplay().asyncExec(new Runnable(){
+				@Override
+				public void run()
+				{
+					if (!isDisposed()) {
+						int itemCount = resultTable.getItemCount();
+						if (resultTable.getElements().size() == 1 && resultTable.getElements().iterator().next()instanceof String) {
+							itemCount = 0;
+						}
+						StringBuilder sb = new StringBuilder();
+						sb.append(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.resultLabel.text")); //$NON-NLS-1$
+						sb.append(" ("); //$NON-NLS-1$
+						sb.append(itemCount);
+						sb.append(" ");  //$NON-NLS-1$
+						sb.append("Search Results");
+						sb.append(")");  //$NON-NLS-1$
+
+						resultLabel.setText(sb.toString());
+						resultLabelWrapper.layout(new Control[]{resultLabel});
+//						layout(true, true);
+					}
+				}
+			});
+		}
 	}
 
 	public void setQuickSearchText(String text)
