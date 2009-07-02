@@ -116,8 +116,23 @@ extends EntityEditor
 
 		return super.getTitle();
 	}
+	
+	@Override
+	public String getTitleToolTip() {
+		if (entityTooltip != null)
+			return entityTooltip;
+
+		if(getEditorInput() == null)
+			return super.getTitle();
+
+		if (loadTitleJob == null)
+			scheduleLoadTitleJob();
+
+		return super.getTitleToolTip();
+	}
 
 	private String entityTitle = null;
+	private String entityTooltip = null;
 
 	private volatile Job loadTitleJob = null;
 	private void scheduleLoadTitleJob()
@@ -133,15 +148,20 @@ extends EntityEditor
 				addChangeListener(entity);
 				if (entity != null) {
 					final String title = getEditorTitleFromEntity(entity);
-					if (title != null) {
+					final String tooltip = getEditorTooltipFromEntity(entity);
+					if (title != null && tooltip != null) {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								if (loadTitleJob != thisJob)
 									return;
 
 								entityTitle = title;
+								entityTooltip = tooltip;
+								if (title != null)
+									setPartName(title);
+								if (tooltip != null)
+									setTitleToolTip(tooltip);
 								loadTitleJob = null;
-								setPartName(title);
 							}
 						});
 					}
@@ -179,6 +199,25 @@ extends EntityEditor
 	 * @see #retrieveEntityForEditorTitle(ProgressMonitor)
 	 */
 	protected abstract String getEditorTitleFromEntity(Object entity);
+	
+	/**
+	 * Get the tooltip for this editor from the {@link #retrieveEntityForEditorTitle(ProgressMonitor) previously retrieved} entity.
+	 * If this method returns <code>null</code>, the editor-tooltip is not changed.
+	 * <p>
+	 * This implementation of {@link #getEditorTooltipFromEntity(Object)} returns <code>null</code> meaning that the 
+	 * tooltip retrieved from the editors input is set by default.
+	 * </p>
+	 * <p>
+	 * To change the default tooltip override this method and return a custom tooltip.
+	 * </p>
+	 *
+	 * @param entity the object that was previously returned by {@link #retrieveEntityForEditorTitle(ProgressMonitor)}; never <code>null</code>.
+	 * @return <code>null</code> or the title for this editor.
+	 * @see #retrieveEntityForEditorTitle(ProgressMonitor)
+	 */
+	protected String getEditorTooltipFromEntity(Object entity) {
+		return null;
+	}
 
 	/**
 	 * Obtain the data that is needed for displaying the correct editor title.
