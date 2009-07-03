@@ -20,7 +20,7 @@ extends WorkbenchPartAction
 		super();
 		init();
 	}
-	
+
 	public ApplySearchAction(SearchEntryViewer searchController) {
 		super();
 		init();
@@ -30,9 +30,9 @@ extends WorkbenchPartAction
 	protected void init() {
 		setId(ID);
 		setText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.ApplySearchAction.text")); //$NON-NLS-1$
-		setImageDescriptor(SharedImages.SEARCH_24x24);
+		setImageDescriptor(SharedImages.SEARCH_16x16);
 	}
-	
+
 	@Override
 	public void run()
 	{
@@ -58,5 +58,5 @@ extends WorkbenchPartAction
 			}
 		}
 	}
-			
+
 }
