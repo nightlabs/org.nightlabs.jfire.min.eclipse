@@ -116,7 +116,7 @@ extends EntityEditor
 
 		return super.getTitle();
 	}
-	
+
 	@Override
 	public String getTitleToolTip() {
 		if (entityTooltip != null)
@@ -149,7 +149,7 @@ extends EntityEditor
 				if (entity != null) {
 					final String title = getEditorTitleFromEntity(entity);
 					final String tooltip = getEditorTooltipFromEntity(entity);
-					if (title != null && tooltip != null) {
+					if (title != null || tooltip != null) {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								if (loadTitleJob != thisJob)
@@ -199,12 +199,12 @@ extends EntityEditor
 	 * @see #retrieveEntityForEditorTitle(ProgressMonitor)
 	 */
 	protected abstract String getEditorTitleFromEntity(Object entity);
-	
+
 	/**
 	 * Get the tooltip for this editor from the {@link #retrieveEntityForEditorTitle(ProgressMonitor) previously retrieved} entity.
 	 * If this method returns <code>null</code>, the editor-tooltip is not changed.
 	 * <p>
-	 * This implementation of {@link #getEditorTooltipFromEntity(Object)} returns <code>null</code> meaning that the 
+	 * This implementation of {@link #getEditorTooltipFromEntity(Object)} returns <code>null</code> meaning that the
 	 * tooltip retrieved from the editors input is set by default.
 	 * </p>
 	 * <p>
