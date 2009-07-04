@@ -82,6 +82,16 @@ public class JDOObjectLazyTreeNode
 		this.childNodeCount = childCount;
 	}
 
+	private boolean deleted = false;
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
 	private List<JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> childNodes = null;
 	private List<JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> childNodes_ro = null;
 

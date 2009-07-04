@@ -301,10 +301,11 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			for (Entry<JDOObjectID, List<TreeNode>> deletedEntry : deletedNodes.entrySet()) {
 				Object jdoObject = null;
 				for (TreeNode n : deletedEntry.getValue()) {
+					n.setDeleted(true);
+
 					// getJdoObject() might return null in a lazy tree!
-					jdoObject = n.getJdoObject();
-					if (jdoObject != null)
-						break;
+					if (jdoObject == null)
+						jdoObject = n.getJdoObject();
 				}
 				if (jdoObject == null) {
 					// TODO this is not very efficient - can we do it better? Or do we not care, because deletions don't happen so often.
@@ -920,6 +921,9 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		if (_parent == null) {
 			_parent = hiddenRootNode;
 		}
+
+		if (_parent.isDeleted())
+			return null;
 
 		addActiveParentObjectID(
 				(JDOObjectID)_parent.getJdoObjectID(), // this is null in case of hiddenRootNode

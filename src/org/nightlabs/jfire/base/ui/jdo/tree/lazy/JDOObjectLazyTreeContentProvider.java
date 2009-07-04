@@ -127,17 +127,34 @@ implements ILazyTreeContentProvider
 			if (!updateElementReplaceActiveIDSet.contains(updateElementReplaceActiveID)) {
 				updateElementReplaceActiveIDSet.add(updateElementReplaceActiveID);
 				try {
-					getTreeViewer().replace(parentElement, index, LOADING);
+
+					if (parent == null ? true : !parent.isDeleted())
+						try {
+							getTreeViewer().replace(parentElement, index, LOADING);
+						} catch (NullPointerException x) {
+							logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x);
+//						getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
+							return;
+						}
+
 				} finally {
 					updateElementReplaceActiveIDSet.remove(updateElementReplaceActiveID);
 				}
 			}
 		}
 		else {
-			if (child.getJdoObject() == null)
-				getTreeViewer().replace(parentElement, index, child); // String.format(LOADING_OBJECT_ID, child.getJdoObjectID()));
-			else
-				getTreeViewer().replace(parentElement, index, child);
+//			if (child.getJdoObject() == null)
+//				getTreeViewer().replace(parentElement, index, child); // String.format(LOADING_OBJECT_ID, child.getJdoObjectID()));
+//			else
+//				getTreeViewer().replace(parentElement, index, child);
+			if (parent == null ? true : !parent.isDeleted())
+				try {
+					getTreeViewer().replace(parentElement, index, child);
+				} catch (NullPointerException x) {
+					logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x);
+//				getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
+					return;
+				}
 
 			long childChildNodeCount = getController().getNodeCount(child);
 
