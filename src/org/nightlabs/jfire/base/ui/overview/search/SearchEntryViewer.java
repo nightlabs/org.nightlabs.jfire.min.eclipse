@@ -329,7 +329,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		searchItem.addSelectionListener(searchItemListener);
 		
 		resetItem = new ToolItem(searchTextToolBar, SWT.PUSH);
-		resetItem.setToolTipText("Clear all criterias");
+		resetItem.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.item.clearAllCriteria.tooltip")); //$NON-NLS-1$
 		resetItem.setImage(SharedImages.RESET_16x16.createImage());
 		resetItem.addSelectionListener(resetItemListener);
 		
@@ -443,7 +443,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			searchQuery.clearQuery();
 		}
 		
-		searchText.setText("");
+		searchText.setText(""); //$NON-NLS-1$
 		for (Section advancedSearchSection : advancedSearchSections) {
 			advancedSearchSection.setExpanded(false);
 			Button activeButton = (Button)advancedSearchSection.getTextClient();

@@ -4,6 +4,7 @@
 package org.nightlabs.jfire.base.ui.prop.validation;
 
 import org.nightlabs.jfire.base.idgenerator.IDGeneratorClient;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -31,16 +32,16 @@ extends AbstractScriptValidatorHandler
 	@Override
 	public String getTemplateText() 
 	{
-		final String LINE_BREAK = "\n"; 
+		final String LINE_BREAK = "\n";  //$NON-NLS-1$
 		String key = getScriptValidatorEditor().getCurrentKey();
 		StringBuilder sb = new StringBuilder();
-		sb.append("importPackage(Packages.org.nightlabs.jfire.prop);" + LINE_BREAK);
-		sb.append("if (dataField.isEmpty()) {" + LINE_BREAK);
-		sb.append("\""+ key +"\";" + LINE_BREAK);
-		sb.append("}" + LINE_BREAK);
-		sb.append("else {" + LINE_BREAK);
-		sb.append("	undefined" + ";" + LINE_BREAK);
-		sb.append("}");
+		sb.append("importPackage(Packages.org.nightlabs.jfire.prop);" + LINE_BREAK); //$NON-NLS-1$
+		sb.append("if (dataField.isEmpty()) {" + LINE_BREAK); //$NON-NLS-1$
+		sb.append("\""+ key +"\";" + LINE_BREAK); //$NON-NLS-1$ //$NON-NLS-2$
+		sb.append("}" + LINE_BREAK); //$NON-NLS-1$
+		sb.append("else {" + LINE_BREAK); //$NON-NLS-1$
+		sb.append("	undefined" + ";" + LINE_BREAK); //$NON-NLS-1$ //$NON-NLS-2$
+		sb.append("}"); //$NON-NLS-1$
 		return sb.toString();
 	}
 	
@@ -64,18 +65,18 @@ extends AbstractScriptValidatorHandler
 					if (dataField != null) {
 						ValidationResult result = validator.validate(dataField, structField);
 						if (result == null) {
-							return "result is null";
+							return "result is null"; //$NON-NLS-1$
 						}
 						return null;
 					}
 					else {
-						return "dataField is null";
+						return "dataField is null"; //$NON-NLS-1$
 					}
 				} catch (Exception e) {
 					return e.getMessage();
 				}
 			} else {
-				return "Struct is no StructLocal";	
+				return "Struct is no StructLocal";	 //$NON-NLS-1$
 			}			
 		} finally {
 			validator.setScript(oldScript);

@@ -8,6 +8,7 @@ import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  *
@@ -57,13 +58,13 @@ public class JDOObjectLazyTreeNode
 			@SuppressWarnings("unchecked")
 			JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
 			if (jdoObjectID == null)
-				throw new IllegalStateException("JDOHelper.getObjectId(jdoObject) returned null! jdoObject=" + jdoObject);
+				throw new IllegalStateException("JDOHelper.getObjectId(jdoObject) returned null! jdoObject=" + jdoObject); //$NON-NLS-1$
 
 			this.jdoObjectID = jdoObjectID;
 		}
 		else {
 			if (!this.jdoObjectID.equals(JDOHelper.getObjectId(jdoObject)))
-				throw new IllegalArgumentException("this.jdoObjectID != JDOHelper.getObjectId(jdoObject) :: " + this.jdoObjectID + " != " + JDOHelper.getObjectId(jdoObject));
+				throw new IllegalArgumentException("this.jdoObjectID != JDOHelper.getObjectId(jdoObject) :: " + this.jdoObjectID + " != " + JDOHelper.getObjectId(jdoObject)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		this.jdoObject = jdoObject;

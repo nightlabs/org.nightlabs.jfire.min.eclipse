@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.nightlabs.base.ui.NLBasePlugin;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.j2ee.LoginData;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.math.Base62Coder;
 
 /**
@@ -84,7 +85,7 @@ public class JFireLoginHandler implements ILoginHandler {
 //						defaultData.setProviderURL(LoginData.DEFAULT_PROVIDER_URL);
 //						defaultData.setSecurityProtocol(LoginData.DEFAULT_SECURITY_PROTOCOL);
 					defaultData.setDefaultValues();
-					defaultData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory"); // TODO need a jboss-independent solution! Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco.
+					defaultData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory"); // TODO need a jboss-independent solution! Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco. //$NON-NLS-1$
 				}
 
 				LoginData lastUsed = latestConfig.getLoginData();

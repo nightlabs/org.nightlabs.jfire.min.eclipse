@@ -93,7 +93,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 	{
 		super(PersonSearchWizardPage.class.getName(), title);
 		if (quickSearchText == null)
-			quickSearchText = "";
+			quickSearchText = ""; //$NON-NLS-1$
 
 		this.quickSearchText = quickSearchText;
 		this.allowNewLegalEntityCreation = allowNewLegalEntityCreation;
@@ -168,7 +168,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 				String text = searchComposite.getSearchText();
 				if (text != null) {
 					quickSearchText = text;
-					logger.debug("quickSearchText = "+quickSearchText);
+					logger.debug("quickSearchText = "+quickSearchText); //$NON-NLS-1$
 				}
 			}
 		});

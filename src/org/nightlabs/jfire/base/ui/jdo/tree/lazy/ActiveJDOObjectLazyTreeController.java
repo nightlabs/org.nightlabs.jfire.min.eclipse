@@ -25,6 +25,7 @@ import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
@@ -151,7 +152,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			treeNodeParentResolver = createTreeNodeParentResolver();
 
 			if (treeNodeParentResolver == null)
-				throw new IllegalStateException("Both methods createTreeNodeMultiParentResolver() and createTreeNodeParentResolver() returned null! One of them must return an instance! Check your class: " + getClass().getName());
+				throw new IllegalStateException("Both methods createTreeNodeMultiParentResolver() and createTreeNodeParentResolver() returned null! One of them must return an instance! Check your class: " + getClass().getName()); //$NON-NLS-1$
 		}
 
 		return treeNodeParentResolver;
@@ -164,7 +165,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 			if (treeNodeMultiParentResolver == null) {
 				if (getTreeNodeParentResolver() == null)
-					throw new IllegalStateException("How the hell can there be no TreeNodeParentResolver and no TreeNodeMultiParentResolver?! Check your class: " + getClass().getName());
+					throw new IllegalStateException("How the hell can there be no TreeNodeParentResolver and no TreeNodeMultiParentResolver?! Check your class: " + getClass().getName()); //$NON-NLS-1$
 			}
 		}
 
@@ -407,7 +408,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 	protected void registerChangeListener() {
 		if (changeListener == null) {
-			changeListener = new ChangeListener("Loading changes");
+			changeListener = new ChangeListener("Loading changes"); //$NON-NLS-1$
 			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClass(), changeListener);
 		}
 	}
@@ -483,7 +484,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 					@SuppressWarnings("unchecked")
 					JDOObjectID objectID = (JDOObjectID) JDOHelper.getObjectId(object);
 					if (objectID == null)
-						throw new IllegalStateException("JDOHelper.getObjectId(object) returned null! " + object);
+						throw new IllegalStateException("JDOHelper.getObjectId(object) returned null! " + object); //$NON-NLS-1$
 
 					// Find all 'parentObjectIDs' of the current 'object'. That's how things are in the server and should be here in the tree.
 					Collection<ObjectID> parentObjectIDs;
@@ -736,7 +737,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		if (logger.isDebugEnabled())
 			logger.debug("getNodeCount: returning -1 and spawning Job."); //$NON-NLS-1$
 
-		Job job = new Job("Loading child count") {
+		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.lazy.ActiveJDOObjectLazyTreeController.job.loadingChildCount")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor)
 			{
@@ -797,7 +798,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 					);
 					Long count = parentOID2childCount.isEmpty() ? 0 : parentOID2childCount.get(null);
 					if (count == null)
-						throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!");
+						throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
 
 					hiddenRootNode.setChildNodeCount(count);
 					parentsToRefresh.add(null);
@@ -818,15 +819,15 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 						for (Map.Entry<JDOObjectID, Long> me : parentOID2childCount.entrySet()) {
 							JDOObjectID parentJDOID = me.getKey();
 							if (parentJDOID == null)
-								throw new IllegalStateException("retrieveChildCount(...) returned a null key (parent-OID) in its result map even though no null element (parent-OID) was passed to it! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!");
+								throw new IllegalStateException("retrieveChildCount(...) returned a null key (parent-OID) in its result map even though no null element (parent-OID) was passed to it! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
 
 							Long childCount = me.getValue();
 							if (childCount == null)
-								throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!");
+								throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
 
 							List<TreeNode> pnl = parentObjectID2ParentTreeNodeList.get(parentJDOID);
 							if (pnl == null)
-								throw new IllegalStateException("Cannot find any TreeNode for parentJDOID: " + parentJDOID);
+								throw new IllegalStateException("Cannot find any TreeNode for parentJDOID: " + parentJDOID); //$NON-NLS-1$
 
 							for (TreeNode parentTreeNode : pnl) {
 								parentTreeNode.setChildNodeCount(childCount.longValue());
@@ -933,7 +934,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 		if (childNodes != null) {
 			if (index >= childNodes.size()) {
-				logger.warn("getNode: index >= childNodes.size() :: " + index + " >= " + childNodes.size(), new Exception("StackTrace")); //$NON-NLS-1$
+				logger.warn("getNode: index >= childNodes.size() :: " + index + " >= " + childNodes.size(), new Exception("StackTrace")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				_parent.setChildNodes(null);
 				_parent.setChildNodeCount(-1);
 			}
@@ -954,7 +955,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 			final TreeNode parent = _parent;
 
-			Job job1 = new Job("Loading children") {
+			Job job1 = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.lazy.ActiveJDOObjectLazyTreeController.job.loadChildren")) { //$NON-NLS-1$
 				@Override
 				protected IStatus run(ProgressMonitor monitor)
 				{
@@ -1061,7 +1062,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			if (logger.isDebugEnabled())
 				logger.debug("getNode: returning previously loaded INcomplete child-node and spawning Job."); //$NON-NLS-1$
 
-			Job job2 = new Job("Loading tree nodes' objects") {
+			Job job2 = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.lazy.ActiveJDOObjectLazyTreeController.job.loadingTreeNodes")) { //$NON-NLS-1$
 				@Override
 				protected IStatus run(ProgressMonitor monitor)
 				{
@@ -1114,7 +1115,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 							ignoredJDOObjectIDs.remove(jdoObjectID);
 							List<TreeNode> treeNodes = objectID2TreeNodeList.get(jdoObjectID);
 							if (treeNodes == null)
-								logger.warn("getNode.job2#run#1: There is no TreeNode existing for objectID=\"" + jdoObjectID + "\"!", new IllegalStateException("StackTrace"));
+								logger.warn("getNode.job2#run#1: There is no TreeNode existing for objectID=\"" + jdoObjectID + "\"!", new IllegalStateException("StackTrace")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 							else {
 								for (TreeNode treeNode : treeNodes) {
 									treeNode.setJdoObject(jdoObject);
@@ -1132,7 +1133,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 						for (JDOObjectID jdoObjectID : ignoredJDOObjectIDs) {
 							List<TreeNode> treeNodes = objectID2TreeNodeList.get(jdoObjectID);
 							if (treeNodes == null)
-								logger.warn("getNode.job2#run#2: There is no TreeNode existing for objectID=\"" + jdoObjectID + "\"!", new IllegalStateException("StackTrace"));
+								logger.warn("getNode.job2#run#2: There is no TreeNode existing for objectID=\"" + jdoObjectID + "\"!", new IllegalStateException("StackTrace")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 							else
 								ignoredJDOObjects.put(jdoObjectID, treeNodes);
 						}

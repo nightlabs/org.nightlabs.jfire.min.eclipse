@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.ui.prop.validation;
 
 import org.nightlabs.jfire.base.idgenerator.IDGeneratorClient;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
@@ -24,7 +25,7 @@ extends AbstractScriptValidatorHandler
 	public StructBlockScriptValidatorHandler(StructBlock structBlock) 
 	{
 		if (structBlock == null)
-			throw new IllegalArgumentException("Param structBlock muts not be null!");
+			throw new IllegalArgumentException("Param structBlock muts not be null!"); //$NON-NLS-1$
 		
 		this.structBlock = structBlock;
 	}
@@ -35,53 +36,53 @@ extends AbstractScriptValidatorHandler
 	@Override
 	public String getTemplateText() 
 	{
-		final String LINE_BREAK = "\n"; 
+		final String LINE_BREAK = "\n";  //$NON-NLS-1$
 		String key = getScriptValidatorEditor().getCurrentKey();
 		StringBuilder sb = new StringBuilder();
-		sb.append("importPackage(Packages.org.nightlabs.jfire.prop);");
+		sb.append("importPackage(Packages.org.nightlabs.jfire.prop);"); //$NON-NLS-1$
 		sb.append(LINE_BREAK);
-		sb.append("importPackage(Packages.org.nightlabs.jfire.prop.id);");
+		sb.append("importPackage(Packages.org.nightlabs.jfire.prop.id);"); //$NON-NLS-1$
 		sb.append(LINE_BREAK);
 		for (int i=0; i<structBlock.getStructFields().size(); i++) {
 			StructField<?> sf = structBlock.getStructFields().get(i);			
 			String structFieldName = getStructFieldVarName(sf);
-			sb.append(structFieldName+"ID");
-			sb.append(" = ");
-			sb.append("new StructFieldID(");
-			sb.append("\"");
+			sb.append(structFieldName+"ID"); //$NON-NLS-1$
+			sb.append(" = "); //$NON-NLS-1$
+			sb.append("new StructFieldID("); //$NON-NLS-1$
+			sb.append("\""); //$NON-NLS-1$
 			sb.append(sf.getStructFieldIDObj().toString());
-			sb.append("\"");
-			sb.append(");");
+			sb.append("\""); //$NON-NLS-1$
+			sb.append(");"); //$NON-NLS-1$
 			sb.append(LINE_BREAK);
-			sb.append(structFieldName+" = dataBlock.getDataField("+structFieldName+"ID);");
+			sb.append(structFieldName+" = dataBlock.getDataField("+structFieldName+"ID);"); //$NON-NLS-1$ //$NON-NLS-2$
 			sb.append(LINE_BREAK);
 		}
-		sb.append("if (");
+		sb.append("if ("); //$NON-NLS-1$
 		for (int i=0; i<structBlock.getStructFields().size(); i++) {			
 			StructField<?> structField = structBlock.getStructFields().get(i);
 			String structFieldName = getStructFieldVarName(structField);
-			sb.append(structFieldName+".isEmpty()");
+			sb.append(structFieldName+".isEmpty()"); //$NON-NLS-1$
 			if (i != structBlock.getStructFields().size() - 1) {
-				sb.append(" || ");
+				sb.append(" || "); //$NON-NLS-1$
 			}
 		}
-		sb.append(")");
-		sb.append("{");
+		sb.append(")"); //$NON-NLS-1$
+		sb.append("{"); //$NON-NLS-1$
 		sb.append(LINE_BREAK);
-		sb.append("\""+ key +"\";");
+		sb.append("\""+ key +"\";"); //$NON-NLS-1$ //$NON-NLS-2$
 		sb.append(LINE_BREAK);
-		sb.append("}");
-		sb.append("else {");
+		sb.append("}"); //$NON-NLS-1$
+		sb.append("else {"); //$NON-NLS-1$
 		sb.append(LINE_BREAK);
-		sb.append("undefined;");
+		sb.append("undefined;"); //$NON-NLS-1$
 		sb.append(LINE_BREAK);
-		sb.append("}");
+		sb.append("}"); //$NON-NLS-1$
 		return sb.toString();
 	}
 
 	private String getStructFieldVarName(StructField<?> sf) {
 		String name = sf.getName().getText().trim();
-		return name.replace(" ", "-");
+		return name.replace(" ", "-"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	@Override
@@ -105,19 +106,19 @@ extends AbstractScriptValidatorHandler
 						DataBlock dataBlock = dataBlockGroup.getDataBlocks().iterator().next();
 						ValidationResult result = validator.validate(dataBlock, structBlock);
 						if (result == null) {
-							return "result is null";
+							return "result is null"; //$NON-NLS-1$
 						}
 						return null;
 					}
 					else {
-						return "DataBlockGroup is empty";
+						return "DataBlockGroup is empty"; //$NON-NLS-1$
 					}
 				} catch (DataBlockGroupNotFoundException e) {
 					return e.getMessage();
 				}
 			}
 			else {
-				return "Struct is no StructLocal";	
+				return "Struct is no StructLocal";	 //$NON-NLS-1$
 			}			
 		} finally {
 			validator.setScript(oldScript);

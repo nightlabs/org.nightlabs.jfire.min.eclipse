@@ -30,6 +30,7 @@ import org.nightlabs.i18n.I18nText;
 import org.nightlabs.i18n.StaticI18nText;
 import org.nightlabs.jfire.base.ui.config.AbstractUserConfigModulePreferencePage;
 import org.nightlabs.jfire.base.ui.config.IConfigModuleController;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
@@ -57,7 +58,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 		public GridLayoutConfig(PropertySetFieldBasedEditLayoutConfigModule cfMod, StructLocalID structLocalID) {
 			this.cfMod = cfMod;
 			this.structLocalID = structLocalID;
-			loadStructLocalJob = new Job("Load StructLocal") {
+			loadStructLocalJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferencePage.job.loadStructLocal")) { //$NON-NLS-1$
 				@Override
 				protected IStatus run(ProgressMonitor monitor) throws Exception {
 					structLocal = StructLocalDAO.sharedInstance().getStructLocal(GridLayoutConfig.this.structLocalID, monitor);
@@ -107,7 +108,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 				@Override
 				public I18nText getName() {
 					if (entry.getStructFieldID() == null) {
-						return new StaticI18nText("Separator");
+						return new StaticI18nText("Separator"); //$NON-NLS-1$
 					}
 					try {
 						loadStructLocalJob.join();

@@ -1165,11 +1165,11 @@ extends AbstractEPProcessor
 				Login.logger.debug("Create testing login"); //$NON-NLS-1$
 				InitialContext initialContext = new InitialContext(_loginData.getInitialContextProperties());
 				try {
-					jfireRCLBackend = (JFireRCLBackendRemote) initialContext.lookup("ejb/byRemoteInterface/" + JFireRCLBackendRemote.class.getName());
+					jfireRCLBackend = (JFireRCLBackendRemote) initialContext.lookup("ejb/byRemoteInterface/" + JFireRCLBackendRemote.class.getName()); //$NON-NLS-1$
 				} finally {
 					initialContext.close();
 				}
-				jfireRCLBackend.ping("testLogin");
+				jfireRCLBackend.ping("testLogin"); //$NON-NLS-1$
 				Login.logger.debug("**********************************************************"); //$NON-NLS-1$
 				loginResult.setSuccess(true);
 			} catch (EJBAccessException x) {

@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.Util;
 
@@ -131,8 +132,8 @@ extends AbstractTreeComposite<JDOObject>
 		final List<JDOObjectID> parentIds = getParentIDsUntilAvailable(jdoObjectID, new ArrayList<JDOObjectID>());
 		if (logger.isDebugEnabled()) {
 			long duration = System.currentTimeMillis() - startFetchingParentIDs;
-			logger.debug("Fetching parent ids took "+duration+" ms");
-			logger.debug("parentIDs = "+parentIds);
+			logger.debug("Fetching parent ids took "+duration+" ms"); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("parentIDs = "+parentIds); //$NON-NLS-1$
 		}
 		if (parentIds != null && !parentIds.isEmpty()) {
 			JDOObjectID lastAvailableID = parentIds.get(0);
@@ -247,7 +248,7 @@ extends AbstractTreeComposite<JDOObject>
 			event.widget = item.getParent();
 			Method method;
 			try {
-				method = Widget.class.getDeclaredMethod("sendEvent", new Class[] {int.class, Event.class});
+				method = Widget.class.getDeclaredMethod("sendEvent", new Class[] {int.class, Event.class}); //$NON-NLS-1$
 				method.setAccessible(true);
 				method.invoke(item.getParent(), event.type, event);
 			} catch (Exception ex) {
@@ -291,7 +292,7 @@ extends AbstractTreeComposite<JDOObject>
 				public void onJDOObjectsChanged(JDOTreeNodesChangedEvent<JDOObjectID, TreeNode> changedEvent)
 				{
 					if (logger.isDebugEnabled()) {
-						logger.debug("onJDOObjectsChanged!");
+						logger.debug("onJDOObjectsChanged!"); //$NON-NLS-1$
 					}
 					Set<TreeNode> treeNodes = changedEvent.getParentsToRefresh();
 					if (treeNodes != null) {
@@ -330,7 +331,7 @@ extends AbstractTreeComposite<JDOObject>
 			Widget item = getItem(node);
 			if (item != null && !alreadyLoadedNodes.contains(node)) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("send expansion event for treeItem "+item);
+					logger.debug("send expansion event for treeItem "+item); //$NON-NLS-1$
 				}
 				sendEventExpandTreeItem((TreeItem) item);
 				alreadyLoadedNodes.add(node);

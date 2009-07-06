@@ -474,12 +474,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			else {
 				Object oid = JDOHelper.getObjectId(oldControllerObject);
 				if (oid == null)
-					throw new IllegalStateException("storeEntity(...) returned null, but the controllerObject seems not to be a JDO object! JDOHelper.getObjectId(oldControllerObject) returned null for " + oldControllerObject);
+					throw new IllegalStateException("storeEntity(...) returned null, but the controllerObject seems not to be a JDO object! JDOHelper.getObjectId(oldControllerObject) returned null for " + oldControllerObject); //$NON-NLS-1$
 
 				Cache.sharedInstance().removeByObjectID(oid, false);
 				newControllerObject = retrieveEntity(new SubProgressMonitor(monitor, 50));
 				if (newControllerObject == oldControllerObject)
-					throw new IllegalStateException("Cache eviction obviously failed! newControllerObject == oldControllerObject (same instance!)");
+					throw new IllegalStateException("Cache eviction obviously failed! newControllerObject == oldControllerObject (same instance!)"); //$NON-NLS-1$
 
 				controllerObject = Util.cloneSerializable(newControllerObject);
 			}

@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 
 /**
@@ -81,7 +82,7 @@ extends XComposite
 				child.setEnabled(managedBy == null);
 		}
 		if (managedBy != null)
-			setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+			setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
 		else
 			setToolTipText(null);
 	}

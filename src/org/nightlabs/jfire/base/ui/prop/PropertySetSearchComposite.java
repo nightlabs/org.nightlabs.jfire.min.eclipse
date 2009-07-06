@@ -333,7 +333,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 //						0);
 //			warningDialog.open();
 			// removed dialog and replaced, by entry in table which indicates that no result were found
-			resultTable.setLoadingMessage("No Results found");
+			resultTable.setLoadingMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.message.noResultsFound")); //$NON-NLS-1$
 			setResultLabelText();
 			return;
 		}
@@ -448,7 +448,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 						sb.append(" ("); //$NON-NLS-1$
 						sb.append(itemCount);
 						sb.append(" ");  //$NON-NLS-1$
-						sb.append("Search Results");
+						sb.append(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.label.searchResults")); //$NON-NLS-1$
 						sb.append(")");  //$NON-NLS-1$
 
 						resultLabel.setText(sb.toString());

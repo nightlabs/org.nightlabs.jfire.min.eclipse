@@ -9,6 +9,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.dao.PropertySetDAO;
 
@@ -29,7 +30,7 @@ public class PersonEditWizard extends DynamicPathWizard
 	public PersonEditWizard(Person person) 
 	{
 		if (person == null)
-			throw new IllegalArgumentException("Param person must not be null!");
+			throw new IllegalArgumentException("Param person must not be null!"); //$NON-NLS-1$
 		
 		this.person = person;
 		personEditorWizardHop = new PersonEditorWizardHop();
@@ -51,7 +52,7 @@ public class PersonEditWizard extends DynamicPathWizard
 				throws InvocationTargetException, InterruptedException 
 			    {
 					try {
-						monitor.beginTask("Saving Person", 100);
+						monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditWizard.task.savingPerson"), 100); //$NON-NLS-1$
 						person = (Person) PropertySetDAO.sharedInstance().storePropertySet(person, true, 
 								new String[] {FetchPlan.DEFAULT, Person.FETCH_GROUP_FULL_DATA}, 
 								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, 

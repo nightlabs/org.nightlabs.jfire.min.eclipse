@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class JDOObjectLazyTreeContentProvider
 <JDOObjectID extends ObjectID,
@@ -23,14 +24,14 @@ implements ILazyTreeContentProvider
 
 	protected TreeViewer getTreeViewer() {
 		if (treeViewer == null)
-			throw new IllegalStateException("There is no TreeViewer assigned; inputChanged(...) was not yet called!");
+			throw new IllegalStateException("There is no TreeViewer assigned; inputChanged(...) was not yet called!"); //$NON-NLS-1$
 
 		return treeViewer;
 	}
 
 	protected ActiveJDOObjectLazyTreeController<JDOObjectID, JDOObject, TreeNode> getController() {
 		if (controller == null)
-			throw new IllegalStateException("There is no ActiveJDOObjectLazyTreeController assigned; inputChanged(...) was not yet called!");
+			throw new IllegalStateException("There is no ActiveJDOObjectLazyTreeController assigned; inputChanged(...) was not yet called!"); //$NON-NLS-1$
 
 		return controller;
 	}
@@ -38,7 +39,7 @@ implements ILazyTreeContentProvider
 	@Override
 	public Object getParent(Object element) {
 		if (logger.isTraceEnabled())
-			logger.trace("getParent: entered for element=" + element);
+			logger.trace("getParent: entered for element=" + element); //$NON-NLS-1$
 
 		TreeNode child = null;
 		if (element instanceof ActiveJDOObjectLazyTreeController) {
@@ -54,7 +55,7 @@ implements ILazyTreeContentProvider
 			return null;
 
 		if (logger.isDebugEnabled())
-			logger.debug("getParent: child.oid=" + child.getJdoObjectID());
+			logger.debug("getParent: child.oid=" + child.getJdoObjectID()); //$NON-NLS-1$
 
 		return child.getParent();
 	}
@@ -81,7 +82,7 @@ implements ILazyTreeContentProvider
 			realChildCount = childCount;
 
 		if (logger.isDebugEnabled())
-			logger.debug("updateChildCount: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " childCount=" + childCount);
+			logger.debug("updateChildCount: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " childCount=" + childCount); //$NON-NLS-1$ //$NON-NLS-2$
 
 		if (realChildCount != currentChildCount)
 			getTreeViewer().setChildCount(element, (int)realChildCount);
@@ -92,7 +93,7 @@ implements ILazyTreeContentProvider
 	@Override
 	public void updateElement(final Object parentElement, final int index) {
 		if (Display.getCurrent() == null)
-			throw new IllegalStateException("Thread mismatch! This method must be called on the UI thread!");
+			throw new IllegalStateException("Thread mismatch! This method must be called on the UI thread!"); //$NON-NLS-1$
 
 		TreeNode parent = null;
 
@@ -121,9 +122,9 @@ implements ILazyTreeContentProvider
 		TreeNode child = getController().getNode(parent, index);
 		if (child == null) { // loading
 			if (logger.isDebugEnabled())
-				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " :: Child is not yet loaded!");
+				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " :: Child is not yet loaded!"); //$NON-NLS-1$ //$NON-NLS-2$
 
-			String updateElementReplaceActiveID = parentElement == null ? "null" : parentElement.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(parentElement)) + '/' + Integer.toString(index, 36);
+			String updateElementReplaceActiveID = parentElement == null ? "null" : parentElement.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(parentElement)) + '/' + Integer.toString(index, 36); //$NON-NLS-1$
 			if (!updateElementReplaceActiveIDSet.contains(updateElementReplaceActiveID)) {
 				updateElementReplaceActiveIDSet.add(updateElementReplaceActiveID);
 				try {
@@ -132,7 +133,7 @@ implements ILazyTreeContentProvider
 						try {
 							getTreeViewer().replace(parentElement, index, LOADING);
 						} catch (NullPointerException x) {
-							logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x);
+							logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x); //$NON-NLS-1$
 //						getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
 							return;
 						}
@@ -151,7 +152,7 @@ implements ILazyTreeContentProvider
 				try {
 					getTreeViewer().replace(parentElement, index, child);
 				} catch (NullPointerException x) {
-					logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x);
+					logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x); //$NON-NLS-1$
 //				getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
 					return;
 				}
@@ -159,7 +160,7 @@ implements ILazyTreeContentProvider
 			long childChildNodeCount = getController().getNodeCount(child);
 
 			if (logger.isDebugEnabled())
-				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " child.oid=" + child.getJdoObjectID() + " child.childCount=" + childChildNodeCount);
+				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " child.oid=" + child.getJdoObjectID() + " child.childCount=" + childChildNodeCount); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			if (childChildNodeCount < 0)
 				childChildNodeCount = 1; // the "Loading..." message
@@ -168,7 +169,7 @@ implements ILazyTreeContentProvider
 		}
 	}
 
-	private static final String LOADING = "Loading...";
+	private static final String LOADING = "Loading..."; //$NON-NLS-1$
 //	private static final String LOADING_OBJECT_ID = "Loading %s ...";
 
 	@Override
@@ -189,7 +190,7 @@ implements ILazyTreeContentProvider
 			TreeNode node = (TreeNode) event.getElement();
 
 			if (logger.isDebugEnabled())
-				logger.debug("treeViewerListener.treeCollapsed: node=" + node);
+				logger.debug("treeViewerListener.treeCollapsed: node=" + node); //$NON-NLS-1$
 
 			collapsedNodes.add(node);
 		}
@@ -198,7 +199,7 @@ implements ILazyTreeContentProvider
 			TreeNode node = (TreeNode) event.getElement();
 
 			if (logger.isDebugEnabled())
-				logger.debug("treeViewerListener.treeExpanded: node=" + node);
+				logger.debug("treeViewerListener.treeExpanded: node=" + node); //$NON-NLS-1$
 
 			if (collapsedNodes.remove(node))
 				getTreeViewer().refresh();

@@ -23,6 +23,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditorCfModLayoutConfig;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
 import org.nightlabs.language.LanguageCf;
@@ -92,7 +93,7 @@ public class PersonFieldBasedEditor extends FieldBasedEditorCfModLayoutConfig {
 
 		XComposite carrier2 = new XComposite(carrier, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER);
 		Label localeLabel = new Label(carrier2, SWT.NONE);
-		localeLabel.setText("Language");
+		localeLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.person.edit.fieldbased.PersonFieldBasedEditor.label.locale")); //$NON-NLS-1$
 		localeCombo = new XComboComposite<Locale>(
 				carrier2, SWT.READ_ONLY,
 				new LabelProvider() {

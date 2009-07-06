@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.ObjectID;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -32,7 +33,7 @@ public class JDOLazyTreeNodesChangedEventHandler {
 	public static void handle(TreeViewer treeViewer, JDOLazyTreeNodesChangedEvent<? extends ObjectID, ? extends JDOObjectLazyTreeNode> changedEvent) {
 		final Display display = Display.getCurrent();
 		if (display == null)
-			throw new IllegalStateException("This method must be called on the SWT UI thread!!! Wrong thread: " + Thread.currentThread());
+			throw new IllegalStateException("This method must be called on the SWT UI thread!!! Wrong thread: " + Thread.currentThread()); //$NON-NLS-1$
 
 		if (treeViewer.getTree().isDisposed())
 			return;
@@ -40,7 +41,7 @@ public class JDOLazyTreeNodesChangedEventHandler {
 		treeViewersWaitingForRefresh.add(treeViewer);
 
 		if (deferredRefreshJob == null) {
-			Job job = new Job("Deferred refresh") {
+			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.lazy.JDOLazyTreeNodesChangedEventHandler.job.deferredRefresh")) { //$NON-NLS-1$
 				@Override
 				protected IStatus run(ProgressMonitor monitor) throws Exception {
 					try { Thread.sleep(DEFER_REFRESH_MSEC); } catch (InterruptedException x) { } // ignore InterruptedException
@@ -56,7 +57,7 @@ public class JDOLazyTreeNodesChangedEventHandler {
 									continue;
 
 								if (logger.isDebugEnabled())
-									logger.debug("handle.deferredRefreshJob.run: Calling treeViewer.refresh() now: " + treeViewer);
+									logger.debug("handle.deferredRefreshJob.run: Calling treeViewer.refresh() now: " + treeViewer); //$NON-NLS-1$
 
 								// WORKAROUND BEGIN - otherwise it refreshes only a few items - not all
 								treeViewer.getTree().getParent().layout(true);

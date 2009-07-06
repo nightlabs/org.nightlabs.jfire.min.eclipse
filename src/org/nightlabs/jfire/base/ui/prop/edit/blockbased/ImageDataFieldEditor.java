@@ -251,7 +251,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 				child.setEnabled(managedBy == null);
 		}
 		if (managedBy != null)
-			group.setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+			group.setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.group.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
 		else
 			group.setToolTipText(null);
 	}

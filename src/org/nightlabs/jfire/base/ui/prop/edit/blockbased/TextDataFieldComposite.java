@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
@@ -113,7 +114,7 @@ public class TextDataFieldComposite<DataFieldType extends DataField & II18nTextD
 		// Thus, we make the text read-only.
 		fieldText.setEditable(managedBy == null);
 		if (managedBy != null)
-			setToolTipText(String.format("This field cannot be modified, because it is managed by a different system: %s", managedBy));
+			setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.TextDataFieldComposite.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
 		else
 			setToolTipText(null);
 	}

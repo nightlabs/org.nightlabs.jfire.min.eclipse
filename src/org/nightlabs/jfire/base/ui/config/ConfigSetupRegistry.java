@@ -41,6 +41,7 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.config.ConfigSetup;
 import org.nightlabs.jfire.config.UserConfigSetup;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;
@@ -182,8 +183,8 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 			//   - Using the fact of the mutually exclusive and specific conditions between Workstation (org.nightlabs.jfire.workstation.Workstation)
 			//     and User (org.nightlabs.jfire.security.User).
 			String orgConfigPrefID = orgNode.getConfigPreferenceID();
-			boolean isMutuallyExclusive = setup instanceof UserConfigSetup && !orgConfigPrefID.contains("Workstation")
-			                              || setup instanceof WorkstationConfigSetup && !orgConfigPrefID.contains("User");
+			boolean isMutuallyExclusive = setup instanceof UserConfigSetup && !orgConfigPrefID.contains("Workstation") //$NON-NLS-1$
+			                              || setup instanceof WorkstationConfigSetup && !orgConfigPrefID.contains("User"); //$NON-NLS-1$
 
 			if (isMutuallyExclusive) {
 				ConfigPreferenceNode newNode = new ConfigPreferenceNode(

@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.eclipse.preferences.ui.OverviewPage;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutUseCase;
 import org.nightlabs.jfire.prop.dao.PropertySetFieldBasedEditLayoutUseCaseDAO;
 import org.nightlabs.progress.ProgressMonitor;
@@ -35,7 +36,7 @@ public class PropertySetFieldBasedEditLayoutPreferenceRootNode implements IPrefe
 	 * @param id
 	 */
 	public PropertySetFieldBasedEditLayoutPreferenceRootNode() {
-		loadUseCasesJob = new Job("Loading PropertySet edit use cases") {
+		loadUseCasesJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferenceRootNode.job.loadPropertySetEditUseCases")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				Collection<PropertySetFieldBasedEditLayoutUseCase> allUseCases = PropertySetFieldBasedEditLayoutUseCaseDAO.sharedInstance().getAllUseCases(
@@ -107,7 +108,7 @@ public class PropertySetFieldBasedEditLayoutPreferenceRootNode implements IPrefe
 
 	@Override
 	public String getLabelText() {
-		return "PropertySet editors";
+		return Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferenceRootNode.label.propertySetEditors"); //$NON-NLS-1$
 	}
 
 	@Override

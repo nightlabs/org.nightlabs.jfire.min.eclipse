@@ -18,6 +18,7 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.part.PartAdapter;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
@@ -82,7 +83,7 @@ extends EntityEditor
 		entityClass = entity.getClass();
 		entityObjectID = JDOHelper.getObjectId(entity);
 		if (entityObjectID == null)
-			throw new IllegalStateException("Entity has no object-id assigned! " + entity);
+			throw new IllegalStateException("Entity has no object-id assigned! " + entity); //$NON-NLS-1$
 
 		JDOLifecycleManager.sharedInstance().addNotificationListener(
 				entityClass, changeListener
@@ -137,7 +138,7 @@ extends EntityEditor
 	private volatile Job loadTitleJob = null;
 	private void scheduleLoadTitleJob()
 	{
-		Job job = new Job("Loading entity") {
+		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditor.job.loadEntity")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				final Job thisJob = this;
