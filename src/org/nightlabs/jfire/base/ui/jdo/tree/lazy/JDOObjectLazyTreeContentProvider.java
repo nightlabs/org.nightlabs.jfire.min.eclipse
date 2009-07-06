@@ -10,7 +10,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.jdo.ObjectID;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class JDOObjectLazyTreeContentProvider
 <JDOObjectID extends ObjectID,
@@ -186,6 +185,9 @@ implements ILazyTreeContentProvider
 
 	private ITreeViewerListener treeViewerListener = new ITreeViewerListener() {
 		public void treeCollapsed(org.eclipse.jface.viewers.TreeExpansionEvent event) {
+			if (event.getElement() instanceof String)
+				return;
+
 			@SuppressWarnings("unchecked")
 			TreeNode node = (TreeNode) event.getElement();
 
@@ -195,6 +197,9 @@ implements ILazyTreeContentProvider
 			collapsedNodes.add(node);
 		}
 		public void treeExpanded(org.eclipse.jface.viewers.TreeExpansionEvent event) {
+			if (event.getElement() instanceof String)
+				return;
+
 			@SuppressWarnings("unchecked")
 			TreeNode node = (TreeNode) event.getElement();
 

@@ -180,6 +180,13 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	 */
 	protected abstract Class<? extends JDOObject> getJDOObjectClass();
 
+	protected Set<Class<? extends JDOObject>> getJDOObjectClasses()
+	{
+		Set<Class<? extends JDOObject>> c = new HashSet<Class<? extends JDOObject>>(1);
+		c.add(getJDOObjectClass());
+		return c;
+	}
+
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
 	 * track new objects that are children of one of the objects referenced by
@@ -197,15 +204,16 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 //				parentObjectIDs, getTreeNodeParentResolver(),
 //				new JDOLifecycleState[] { JDOLifecycleState.NEW });
 
+		Set<Class<? extends JDOObject>> classes = getJDOObjectClasses();
 		if (getTreeNodeMultiParentResolver() == null) {
 			return new TreeLifecycleListenerFilter(
-					getJDOObjectClass(), true,
+					classes.toArray(new Class[classes.size()]), true,
 					parentObjectIDs, getTreeNodeParentResolver(),
 					new JDOLifecycleState[] { JDOLifecycleState.NEW });
 		}
 		else {
 			return new TreeLifecycleListenerFilter(
-					getJDOObjectClass(), true,
+					classes.toArray(new Class[classes.size()]), true,
 					parentObjectIDs, getTreeNodeMultiParentResolver(),
 					new JDOLifecycleState[] { JDOLifecycleState.NEW });
 		}
@@ -408,14 +416,14 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 	protected void registerChangeListener() {
 		if (changeListener == null) {
-			changeListener = new ChangeListener("Loading changes"); //$NON-NLS-1$
-			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClass(), changeListener);
+			changeListener = new ChangeListener("Loading changes");
+			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClasses(), changeListener);
 		}
 	}
 
 	protected void unregisterChangeListener() {
 		if (changeListener != null) {
-			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), changeListener);
+			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClasses(), changeListener);
 			changeListener = null;
 		}
 	}
