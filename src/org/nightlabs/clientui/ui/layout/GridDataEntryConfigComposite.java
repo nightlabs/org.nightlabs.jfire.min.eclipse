@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.clientui.layout.GridData;
+import org.nightlabs.clientui.ui.resource.Messages;
 
 /**
  * Composite used by {@link GridLayoutConfigComposite} to edit the {@link GridData} of a single {@link IGridDataEntry} inside a {@link IGridLayoutConfig}.
@@ -26,7 +27,7 @@ import org.nightlabs.clientui.layout.GridData;
  */
 public class GridDataEntryConfigComposite extends XComposite {
 
-	public static final String PROP_GRID_DATA_ENTY = "gridDataEntry"; 
+	public static final String PROP_GRID_DATA_ENTY = "gridDataEntry";  //$NON-NLS-1$
 	
 	private Button fillHorizontalCB;
 	private Button fillVerticalCB;
@@ -87,47 +88,47 @@ public class GridDataEntryConfigComposite extends XComposite {
 		
 		Label fillLabel = new Label(this, SWT.NONE);
 		fillLabel.setLayoutData(createSpanData());
-		fillLabel.setText("Fill");
+		fillLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.fill.text")); //$NON-NLS-1$
 		
 		fillHorizontalCB = new Button(this, SWT.CHECK);
 		fillHorizontalCB.setLayoutData(createGridData());
-		fillHorizontalCB.setText("Horz.");
+		fillHorizontalCB.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.fill-horizontal.text")); //$NON-NLS-1$
 		fillHorizontalCB.addSelectionListener(cbListener);
 		fillHorizontalCB.addSelectionListener(cbListener);
 		
 		fillVerticalCB = new Button(this, SWT.CHECK);
 		fillVerticalCB.setLayoutData(createGridData());
-		fillVerticalCB.setText("Vert.");
+		fillVerticalCB.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.fill-vertical.text")); //$NON-NLS-1$
 		fillVerticalCB.addSelectionListener(cbListener);
 		fillVerticalCB.addSelectionListener(cbListener);
 		
 		Label grabLabel = new Label(this, SWT.NONE);
 		grabLabel.setLayoutData(createSpanData());
-		grabLabel.setText("Grab");
+		grabLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.grab.text")); //$NON-NLS-1$
 		
 		grabHorizontalCB = new Button(this, SWT.CHECK);
 		grabHorizontalCB.setLayoutData(createGridData());
-		grabHorizontalCB.setText("Horz.");
+		grabHorizontalCB.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.grab-horizontal.text")); //$NON-NLS-1$
 		grabHorizontalCB.addSelectionListener(cbListener);
 		grabHorizontalCB.addSelectionListener(cbListener);
 		
 		grabVerticalCB = new Button(this, SWT.CHECK);
 		grabVerticalCB.setLayoutData(createGridData());
-		grabVerticalCB.setText("Vert.");
+		grabVerticalCB.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.grab-vertical.text")); //$NON-NLS-1$
 		grabVerticalCB.addSelectionListener(cbListener);
 		grabVerticalCB.addSelectionListener(cbListener);
 		
 		Label spanLabel = new Label(this, SWT.NONE);
 		spanLabel.setLayoutData(createSpanData());
-		spanLabel.setText("Span");
+		spanLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.span.text")); //$NON-NLS-1$
 		
 		Label spanHorizontalLabel = new Label(this, SWT.NONE);
 		spanHorizontalLabel.setLayoutData(createGridData());
-		spanHorizontalLabel.setText("Horz.");
+		spanHorizontalLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.span-horizontal.text")); //$NON-NLS-1$
 		
 		Label spanVerticalLabel = new Label(this, SWT.NONE);
 		spanVerticalLabel.setLayoutData(createGridData());
-		spanVerticalLabel.setText("Vert.");
+		spanVerticalLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridDataEntryConfigComposite.label.span-vertical.text")); //$NON-NLS-1$
 		
 		spanHorizontalText = new Text(this, getBorderStyle());
 		spanHorizontalText.setLayoutData(createGridData());

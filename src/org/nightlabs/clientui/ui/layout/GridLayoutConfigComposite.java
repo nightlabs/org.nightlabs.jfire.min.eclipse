@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.clientui.layout.GridLayout;
+import org.nightlabs.clientui.ui.resource.Messages;
 
 /**
  * Composite that serves for editing an instance of {@link IGridLayoutConfig}.
@@ -54,17 +55,17 @@ public class GridLayoutConfigComposite extends XComposite {
 	/**
 	 * Property name for notifications made when the {@link GridLayout} of the edited {@link IGridLayoutConfig} changed.
 	 */
-	public static final String PROP_GRID_LAYOUT = "gridLayout";
+	public static final String PROP_GRID_LAYOUT = "gridLayout"; //$NON-NLS-1$
 	/**
 	 * Property name for notifications made when the layout configuration changed in general,
 	 * i.e. when the list or the order of its child entries was changed.
 	 */
-	public static final String PROP_GRID_LAYOUT_CONFIG = "gridLayoutConfig";
+	public static final String PROP_GRID_LAYOUT_CONFIG = "gridLayoutConfig"; //$NON-NLS-1$
 	/**
 	 * Property name for notifications made when one of the entries inside the edited {@link IGridLayoutConfig} chagned. 
 	 * 
 	 */
-	public static final String PROP_GRID_DATA_ENTRY = "gridDataEntry";
+	public static final String PROP_GRID_DATA_ENTRY = "gridDataEntry"; //$NON-NLS-1$
 	/** The currently edited layout config */
 	private IGridLayoutConfig gridLayoutConfig;
 	
@@ -130,14 +131,14 @@ public class GridLayoutConfigComposite extends XComposite {
 		layoutWrapper.getGridLayout().numColumns = 2;
 		layoutWrapper.getGridLayout().makeColumnsEqualWidth = false;
 		Label numColLabel = new Label(layoutWrapper, SWT.NONE);
-		numColLabel.setText("Num. columns");
+		numColLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.label.numberOfColumns.text")); //$NON-NLS-1$
 		
 		Button previewButton = new Button(layoutWrapper, SWT.PUSH);
 		GridData previewGD = new GridData();
 		previewGD.verticalSpan = 3;
 		previewGD.verticalAlignment = SWT.END;
 		previewButton.setLayoutData(previewGD);
-		previewButton.setText("Preview");
+		previewButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.preview.text")); //$NON-NLS-1$
 		previewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -158,7 +159,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		
 		colsEqualWidthCB = new Button(layoutWrapper, SWT.CHECK);
 		colsEqualWidthCB.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		colsEqualWidthCB.setText("Columns equal width");
+		colsEqualWidthCB.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.columnsEqualWidth.text")); //$NON-NLS-1$
 		colsEqualWidthCB.addSelectionListener(cbListener);
 		
 		XComposite bottomWrapper = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -172,7 +173,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		
 		addEntryButton = new Button(buttonWrapper, SWT.PUSH);
 		addEntryButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		addEntryButton.setText("Add");
+		addEntryButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.add.text")); //$NON-NLS-1$
 		addEntryButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -189,7 +190,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		
 		removeEntryButton = new Button(buttonWrapper, SWT.PUSH);
 		removeEntryButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		removeEntryButton.setText("Remove");
+		removeEntryButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.remove.text")); //$NON-NLS-1$
 		removeEntryButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -207,7 +208,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		
 		moveEntryUpButton = new Button(buttonWrapper, SWT.PUSH);
 		moveEntryUpButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		moveEntryUpButton.setText("Up");
+		moveEntryUpButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.up.text")); //$NON-NLS-1$
 		moveEntryUpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -226,7 +227,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		
 		moveEntryDownButton  = new Button(buttonWrapper, SWT.PUSH);
 		moveEntryDownButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		moveEntryDownButton.setText("Down");
+		moveEntryDownButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.down.text")); //$NON-NLS-1$
 		moveEntryDownButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -282,7 +283,7 @@ public class GridLayoutConfigComposite extends XComposite {
 							numColText.setText(String.valueOf(gridLayout.getNumColumns()));
 							colsEqualWidthCB.setSelection(gridLayout.isMakeColumnsEqualWidth());
 						} else {
-							numColText.setText("1");
+							numColText.setText("1"); //$NON-NLS-1$
 							colsEqualWidthCB.setSelection(true);
 						}
 					}

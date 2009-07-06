@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.clientui.ui.resource.Messages;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 
 /**
@@ -38,7 +39,7 @@ public class GridLayoutConfigPreviewDialog extends ResizableTitleAreaDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Layout preview");
+		newShell.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigPreviewDialog.window.title")); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -56,8 +57,8 @@ public class GridLayoutConfigPreviewDialog extends ResizableTitleAreaDialog {
 			entryComp.setLayoutData(GridLayoutUtil.createGridData(entry.getGridData()));
 		}
 		
-		setTitle("Layout preview");
-		setMessage("This is a preview of the current layout with place-holders for the cells.");
+		setTitle(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigPreviewDialog.dialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigPreviewDialog.dialog.message")); //$NON-NLS-1$
 		
 		return wrapper;
 	}
