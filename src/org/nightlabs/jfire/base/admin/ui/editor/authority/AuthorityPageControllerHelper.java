@@ -825,7 +825,7 @@ public abstract class AuthorityPageControllerHelper
 	}
 	
 	private void loadInheritanceData(ProgressMonitor monitor) {
-		monitor.beginTask("Loading inheritance data", 2);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorityPageControllerHelper.task.loadInheritance"), 2); //$NON-NLS-1$
 		inheritedSecuringAuthorityResolver = null;
 		securedObjectInheritable = null;
 		InheritedSecuringAuthorityResolver resolver = getInheritedSecuringAuthorityResolver();

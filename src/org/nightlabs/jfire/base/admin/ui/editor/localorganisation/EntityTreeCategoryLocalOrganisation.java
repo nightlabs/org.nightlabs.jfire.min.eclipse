@@ -15,6 +15,7 @@ import org.eclipse.ui.IEditorInput;
 import org.nightlabs.base.ui.entity.tree.IEntityTreeCategory;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.tree.ActiveJDOEntityTreeCategory;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.organisation.dao.OrganisationDAO;
@@ -112,7 +113,7 @@ public class EntityTreeCategoryLocalOrganisation extends ActiveJDOEntityTreeCate
 			}
 			
 			private String getOrganisationName(Organisation o) {
-				return String.format("%s (%s)", o.getOrganisationID(), o.getPerson().getDisplayName());
+				return String.format("%s (%s)", o.getOrganisationID(), o.getPerson().getDisplayName()); //$NON-NLS-1$
 			}
 		};
 	}

@@ -32,6 +32,7 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView;
 import org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView;
 import org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
  * Administration perspective for Users, UserGroups,
@@ -58,7 +59,7 @@ public class BaseAdminPerspective implements IPerspectiveFactory
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.25f,	IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
 		left.addView(SysAdminEntityTreeView.ID_VIEW);
 
-		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, IPageLayout.ID_EDITOR_AREA);
+		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
 		bottom.addView(PendingOrganisationRegistrationsView.ID_VIEW);
 		bottom.addView(AsyncInvokeProblemView.ID_VIEW);
 		

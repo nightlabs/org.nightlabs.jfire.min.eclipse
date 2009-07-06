@@ -27,6 +27,7 @@ import javax.jdo.FetchPlan;
 
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.organisation.dao.OrganisationDAO;
@@ -103,7 +104,7 @@ public class LocalOrganisationPropertiesController extends ActiveEntityEditorPag
 	 */
 	@Override
 	protected Organisation retrieveEntity(ProgressMonitor monitor) {
-		monitor.beginTask("Loading organisation data", 4);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationPropertiesController.task.loadOrganisationData"), 4); //$NON-NLS-1$
 		Organisation organisation = OrganisationDAO.sharedInstance().getOrganisation(
 				organisationID, FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 2));
 		Person person = organisation.getPerson();

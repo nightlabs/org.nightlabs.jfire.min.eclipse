@@ -29,6 +29,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditor;
 import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.config.id.ConfigID;
@@ -75,7 +76,7 @@ implements IConfigSetupEditor, ICloseOnLogoutEditorPart
 	protected String getEditorTitleFromEntity(Object entity) {
 		if (entity instanceof User) {
 			User user = (User)entity;
-			if (user.getName() != null && !"".equals(user.getName()))	return user.getName();
+			if (user.getName() != null && !"".equals(user.getName()))	return user.getName(); //$NON-NLS-1$
 		}
 
 		return null;

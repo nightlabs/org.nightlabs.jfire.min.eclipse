@@ -53,13 +53,13 @@ extends ToolBarSectionPart
 		wrapper.setLayout(new GridLayout(2, false));
 
 		nameLabel = new Label(wrapper, SWT.NONE);
-		nameLabel.setText("Name");
+		nameLabel.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthoritySection.label.name")); //$NON-NLS-1$
 		name = new I18nTextEditor(wrapper);
 		name.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		name.addModifyListener(markDirtyModifyListener);
 
 		descriptionLabel = new Label(wrapper, SWT.NONE);
-		descriptionLabel.setText("Description");
+		descriptionLabel.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthoritySection.label.description")); //$NON-NLS-1$
 		GridData gd = new GridData();
 		gd.verticalAlignment = GridData.BEGINNING;
 		descriptionLabel.setLayoutData(gd);
@@ -153,7 +153,7 @@ extends ToolBarSectionPart
 		public void run() {
 			final boolean oldEnabled = inheritAction.isEnabled();
 			inheritAction.setEnabled(false);
-			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.job.loadingAuthority")) {
+			Job job = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.job.loadingAuthority")) { //$NON-NLS-1$
 				@Override
 				protected org.eclipse.core.runtime.IStatus run(org.nightlabs.progress.ProgressMonitor monitor) throws Exception {
 					try {
@@ -234,9 +234,9 @@ extends ToolBarSectionPart
 			description.setI18nText(null, EditMode.DIRECT);
 
 			if (authorityPageControllerHelper == null)
-				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noSecuredObjectSelected"));
+				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noSecuredObjectSelected")); //$NON-NLS-1$
 			else
-				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noAuthorityAssigned"));
+				setMessage(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AbstractAuthoritySection.message.noAuthorityAssigned")); //$NON-NLS-1$
 
 			setEnabled(false);
 		}

@@ -32,7 +32,7 @@ extends RestorableSectionPart
 		((GridLayout)container.getLayout()).numColumns = 1;
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		configGroupMembersEditComposite = new ConfigGroupMembersEditComposite(container, SWT.NONE, true, this, "Users"); 
+		configGroupMembersEditComposite = new ConfigGroupMembersEditComposite(container, SWT.NONE, true, this, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupMemberSection.title.users"));  //$NON-NLS-1$
 	}
 	
 	private ConfigGroupMembersEditComposite configGroupMembersEditComposite;
