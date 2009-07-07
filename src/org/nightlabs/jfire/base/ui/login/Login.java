@@ -839,6 +839,17 @@ extends AbstractEPProcessor
 		return loginData.getAdditionalParams().get(LoginData.WORKSTATION_ID);
 	}
 
+	public User getUser(String fetchGroups[], int maxFetchDepth, ProgressMonitor monitor) {
+		return UserDAO.sharedInstance().getUser(
+				UserID.create(loginData.getOrganisationID(), loginData.getUserID()),
+				fetchGroups, maxFetchDepth, monitor
+		);
+	}
+
+	/**
+	 * @deprecated Use {@link #getUser(String[], int, ProgressMonitor)} instead!
+	 */
+	@Deprecated
 	public User getUser(String fetchGroups[], int maxFetchDepth, IProgressMonitor monitor) {
 		return UserDAO.sharedInstance().getUser(
 				UserID.create(loginData.getOrganisationID(), loginData.getUserID()),
