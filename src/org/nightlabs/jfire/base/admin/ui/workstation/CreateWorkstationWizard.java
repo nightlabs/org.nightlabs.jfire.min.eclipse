@@ -26,16 +26,22 @@
 
 package org.nightlabs.jfire.base.admin.ui.workstation;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.nightlabs.base.ui.editor.Editor2PerspectiveRegistry;
+import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
-import org.nightlabs.jfire.base.JFireEjb3Factory;
+import org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor;
+import org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditorInput;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.jfire.workstation.Workstation;
-import org.nightlabs.jfire.workstation.WorkstationManagerRemote;
+import org.nightlabs.jfire.workstation.dao.WorkstationDAO;
 import org.nightlabs.jfire.workstation.id.WorkstationID;
 
 /**
@@ -58,25 +64,52 @@ public class CreateWorkstationWizard extends DynamicPathWizard implements INewWi
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
-	public boolean performFinish() {
-		Workstation workstation;
+	public boolean performFinish()
+	{
+		final boolean[] result = new boolean[] {false};
 		try {
-			WorkstationID workstationID = WorkstationID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), createWorkstationPage.getWorkstationID());
-			workstation = new Workstation(workstationID.organisationID, workstationID.workstationID);
-			workstation.setDescription(createWorkstationPage.getWorkstationDescription());
-
-			WorkstationManagerRemote workstationManager = JFireEjb3Factory.getRemoteBean(WorkstationManagerRemote.class, Login.getLogin().getInitialContextProperties());
-			workstationManager.storeWorkstation(workstation, false, null, -1);
-			createdWorkstationID = workstationID;
-			return true;
+			getContainer().run(false, false, new IRunnableWithProgress(){
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException
+				{
+					try {
+						Workstation workstation;
+						WorkstationID workstationID = WorkstationID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), createWorkstationPage.getWorkstationID());
+						workstation = new Workstation(workstationID.organisationID, workstationID.workstationID);
+						workstation.setDescription(createWorkstationPage.getWorkstationDescription());
+//						WorkstationManagerRemote workstationManager = JFireEjb3Factory.getRemoteBean(WorkstationManagerRemote.class, Login.getLogin().getInitialContextProperties());
+//						workstationManager.storeWorkstation(workstation, false, null, -1);
+						WorkstationDAO.sharedInstance().storeWorkstation(workstation, false, null, -1, new ProgressMonitorWrapper(monitor));
+						createdWorkstationID = workstationID;
+						result[0] = true;
+						if (!getContainer().getShell().isDisposed()) {
+							getContainer().getShell().getDisplay().asyncExec(new Runnable(){
+								@Override
+								public void run() {
+									try {
+										Editor2PerspectiveRegistry.sharedInstance().openEditor(
+												new WorkstationEditorInput(createdWorkstationID), WorkstationEditor.EDITOR_ID);
+									} catch (Exception e) {
+										throw new RuntimeException(e);
+									}
+								}
+							});
+						}
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		return result[0];
 	}
 
-	public WorkstationID getCreatedWorkstationID() {
-		return createdWorkstationID;
-	}
+//	public WorkstationID getCreatedWorkstationID() {
+//		return createdWorkstationID;
+//	}
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

@@ -26,10 +26,18 @@
 
 package org.nightlabs.jfire.base.admin.ui.user;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.nightlabs.base.ui.editor.Editor2PerspectiveRegistry;
+import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
+import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditorInput;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.BlockBasedPropertySetEditorWizardHop;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
@@ -67,8 +75,6 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
 		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(
 				person.getStructLocalObjectID(),
-//				Organisation.DEV_ORGANISATION_ID,
-//				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE,
 				new NullProgressMonitor()
 		);
 		person.inflate(personStruct);
@@ -90,31 +96,45 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 	@Override
 	public boolean performFinish()
 	{
+		final boolean[] result = new boolean[] {false};
 		try {
-			UserID userID = UserID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), cuPage.getUserID());
-			User newUser = new User(userID.organisationID, userID.userID);
-			newUser.setName(cuPage.getUserName());
-			newUser.setDescription(cuPage.getUserDescription());
-			newUser.setAutogenerateName(cuPage.isAutogenerateName());
-
-			newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
-			newUser.getPerson().deflate();
-
-//			JFireSecurityManagerRemote = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
-////			userManager.saveUser(newUser, cuPage.getPassword1());
-//			userManager.storeUser(newUser, cuPage.getPassword1(), false, null, 1);
-			UserDAO.sharedInstance().storeUser(newUser, cuPage.getPassword1(), false, null, 1, new NullProgressMonitor()); // TODO do this asynchronously in a job!
-			createdUserID = userID;
-			return true;
-		}
-		catch (RuntimeException e)
-		{
-			throw e;
-		}
-		catch (Exception e)
-		{
+			getContainer().run(false, false, new IRunnableWithProgress() {
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					try {
+						final UserID userID = UserID.create(SecurityReflector.getUserDescriptor().getOrganisationID(), cuPage.getUserID());
+						User newUser = new User(userID.organisationID, userID.userID);
+						newUser.setName(cuPage.getUserName());
+						newUser.setDescription(cuPage.getUserDescription());
+						newUser.setAutogenerateName(cuPage.isAutogenerateName());
+						newUser.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
+						newUser.getPerson().deflate();
+						UserDAO.sharedInstance().storeUser(newUser, cuPage.getPassword1(), false, null, 1, new ProgressMonitorWrapper(monitor));
+						createdUserID = userID;
+						result[0] = true;
+						if (!getContainer().getShell().isDisposed()) {
+							getContainer().getShell().getDisplay().asyncExec(new Runnable(){
+								@Override
+								public void run() {
+									try {
+										Editor2PerspectiveRegistry.sharedInstance().openEditor(new UserEditorInput(userID), UserEditor.EDITOR_ID);
+									} catch (Exception e) {
+										throw new RuntimeException(e);
+									}
+								}
+							});
+						}
+					}
+					catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		return result[0];
 	}
 
 	@Override
@@ -122,9 +142,9 @@ public class CreateUserWizard extends DynamicPathWizard implements INewWizard
 		return canFinish && super.canFinish();
 	}
 
-	public UserID getCreatedUserID() {
-		return createdUserID;
-	}
+//	public UserID getCreatedUserID() {
+//		return createdUserID;
+//	}
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

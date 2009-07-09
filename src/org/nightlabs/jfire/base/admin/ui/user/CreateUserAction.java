@@ -30,10 +30,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Point;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
-import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor;
-import org.nightlabs.jfire.base.admin.ui.editor.user.UserEditorInput;
 
 /**
  * An action that opens the {@link CreateUserWizard}.
@@ -58,7 +55,7 @@ public class CreateUserAction extends WorkbenchWindowAndViewActionDelegate
 				}
 			};
 			if (dynamicPathWizardDialog.open() == Window.OK) {
-				RCPUtil.openEditor(new UserEditorInput(wiz.getCreatedUserID()), UserEditor.EDITOR_ID);
+//				RCPUtil.openEditor(new UserEditorInput(wiz.getCreatedUserID()), UserEditor.EDITOR_ID);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

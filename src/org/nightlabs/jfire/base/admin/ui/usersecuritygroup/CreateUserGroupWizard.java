@@ -26,15 +26,22 @@
 
 package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
 
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.nightlabs.base.ui.editor.Editor2PerspectiveRegistry;
+import org.nightlabs.base.ui.progress.ProgressMonitorWrapper;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor;
+import org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditorInput;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
@@ -61,7 +68,6 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 	throws LoginException, NamingException, RemoteException
 	{
 		super();
-
 		setNeedsProgressMonitor(true);
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupWizard.windowTitle")); //$NON-NLS-1$
 	}
@@ -72,8 +78,6 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 		Person person = new Person(IDGenerator.getOrganisationID(), IDGenerator.nextID(PropertySet.class));
 		StructLocal personStruct = StructLocalDAO.sharedInstance().getStructLocal(
 				person.getStructLocalObjectID(),
-//				Organisation.DEV_ORGANISATION_ID,
-//				Person.class, Person.STRUCT_SCOPE, Person.STRUCT_LOCAL_SCOPE,
 				new NullProgressMonitor()
 		);
 		person.inflate(personStruct);
@@ -90,40 +94,63 @@ public class CreateUserGroupWizard extends DynamicPathWizard implements INewWiza
 	@Override
 	public boolean performFinish()
 	{
+		final boolean[] result = new boolean[] {false};
 		try {
-			UserSecurityGroupID groupID = UserSecurityGroupID.create(
-					SecurityReflector.getUserDescriptor().getOrganisationID(),
-					cugPage.getUserGroupID());
-			UserSecurityGroup newGroup = new UserSecurityGroup(
-					groupID.organisationID, groupID.userSecurityGroupID);
-			newGroup.setName(cugPage.getUserName());
-			newGroup.setDescription(cugPage.getUserGroupDescription());
+			getContainer().run(false, false, new IRunnableWithProgress(){
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException
+				{
+					try {
+						final UserSecurityGroupID groupID = UserSecurityGroupID.create(
+								SecurityReflector.getUserDescriptor().getOrganisationID(),
+								cugPage.getUserGroupID());
+						UserSecurityGroup newGroup = new UserSecurityGroup(
+								groupID.organisationID, groupID.userSecurityGroupID);
+						newGroup.setName(cugPage.getUserName());
+						newGroup.setDescription(cugPage.getUserGroupDescription());
 
-//			newGroup.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
-//			newGroup.getPerson().deflate();
+//						newGroup.setPerson((Person)propertySetEditorWizardHop.getPropertySet());
+//						newGroup.getPerson().deflate();
 
-//			JFireSecurityManagerRemote = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
-////			userManager.saveUser(newGroup, null);
-//			userManager.storeUser(newGroup, null, false, null, 1);
-			UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(
-					newGroup,
-					false,
-					(String[]) null,
-					1,
-					new NullProgressMonitor()); // TODO do this asynchronously in a job!
+						UserSecurityGroupDAO.sharedInstance().storeUserSecurityGroup(
+								newGroup,
+								false,
+								(String[]) null,
+								1,
+								new ProgressMonitorWrapper(monitor));
 
-			createdUserSecurityGroupID = groupID;
-			return true;
-		} catch (RuntimeException e) {
-			throw e;
+						createdUserSecurityGroupID = groupID;
+						result[0] = true;
+						if (!getContainer().getShell().isDisposed()) {
+							getContainer().getShell().getDisplay().asyncExec(new Runnable(){
+								@Override
+								public void run() {
+									try {
+										Editor2PerspectiveRegistry.sharedInstance().openEditor(
+												new UserSecurityGroupEditorInput(groupID), UserSecurityGroupEditor.EDITOR_ID);
+									} catch (Exception e) {
+										throw new RuntimeException(e);
+									}
+								}
+							});
+						}
+					} catch (RuntimeException e) {
+						throw e;
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		return result[0];
 	}
 
-	public UserSecurityGroupID getCreatedUserSecurityGroupID() {
-		return createdUserSecurityGroupID;
-	}
+//	public UserSecurityGroupID getCreatedUserSecurityGroupID() {
+//		return createdUserSecurityGroupID;
+//	}
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

@@ -419,4 +419,19 @@
              name="%org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard.name">
        </wizard>
     </extension>
+    <extension
+          point="org.nightlabs.base.ui.editor2perspective">
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.workstation.WorkstationEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.user.UserEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+    </extension>
 </plugin>
