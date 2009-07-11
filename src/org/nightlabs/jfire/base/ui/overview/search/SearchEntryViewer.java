@@ -327,12 +327,12 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		searchItem = new ToolItem(searchTextToolBar, SWT.DROP_DOWN);
 		searchItem.setImage(SharedImages.SEARCH_16x16.createImage());
 		searchItem.addSelectionListener(searchItemListener);
-		
+
 		resetItem = new ToolItem(searchTextToolBar, SWT.PUSH);
 		resetItem.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.item.clearAllCriteria.tooltip")); //$NON-NLS-1$
 		resetItem.setImage(SharedImages.RESET_16x16.createImage());
 		resetItem.addSelectionListener(resetItemListener);
-		
+
 		XComposite rangeWrapper = new XComposite(toolBarWrapper, SWT.NONE,
 				LayoutMode.ORDINARY_WRAPPER, LayoutDataMode.NONE, 2);
 		Label limitLabel = new Label(rangeWrapper, SWT.NONE);
@@ -415,25 +415,52 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	 */
 	public void search()
 	{
-		QueryCollection<Q> c = queryProvider.getManagedQueries();
-		new Job(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchJob.name"))	//$NON-NLS-1$
+		if (Display.getCurrent() == null)
+			throw new IllegalStateException("Thread mismatch! This method must be called on the UI thread!");
+
+		final Display display = sashform.getDisplay();
+		final QueryCollection<Q> c = queryProvider.getManagedQueries();
+		Job searchJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.overview.search.SearchEntryViewer.searchJob.name"))	//$NON-NLS-1$
 		{
 			@Override
 			protected IStatus run(final ProgressMonitor monitor)
 			{
-				final Collection<R> result = doSearch(queryProvider.getManagedQueries(), monitor);
-					Display.getDefault().syncExec(new Runnable()
+				final Job thisJob = this;
+				if (currentSearchJob != thisJob)
+					return Status.CANCEL_STATUS;
+
+				final Collection<R> result = doSearch(c, monitor);
+				if (currentSearchJob != thisJob)
+					return Status.CANCEL_STATUS;
+
+				display.asyncExec(new Runnable()
+				{
+					public void run()
 					{
-						public void run()
-						{
-							displaySearchResult(result);
-						}
-					});
+						if (sashform.isDisposed())
+							return;
+
+						if (currentSearchJob != thisJob)
+							return;
+						else
+							currentSearchJob = null;
+
+						displaySearchResult(result);
+					}
+				});
 				return Status.OK_STATUS;
 			}
-		}.schedule();
+		};
+		searchJob.setUser(true);
+		Job oldJob = this.currentSearchJob;
+		if (oldJob != null)
+			oldJob.cancel();
+		this.currentSearchJob = searchJob;
+		searchJob.schedule();
 	}
-	
+
+	private transient volatile Job currentSearchJob;
+
 	/**
 	 * Performs a reseting with all criteria.
 	 */
@@ -442,15 +469,15 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		for (AbstractSearchQuery searchQuery : getQueryProvider().getManagedQueries()) {
 			searchQuery.clearQuery();
 		}
-		
+
 		searchText.setText(""); //$NON-NLS-1$
 		for (Section advancedSearchSection : advancedSearchSections) {
 			advancedSearchSection.setExpanded(false);
 			Button activeButton = (Button)advancedSearchSection.getTextClient();
 			activeButton.setSelection(false);
 		}
-		
-		
+
+
 		sashform.setWeights(calculateSashWeights(null));
 	}
 
@@ -496,7 +523,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 				search();
 		}
 	};
-	
+
 	private SelectionListener resetItemListener = new SelectionAdapter()
 	{
 		@Override

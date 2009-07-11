@@ -70,7 +70,8 @@ public abstract class AbstractQuickSearchEntry<Q extends AbstractSearchQuery>
 	public void setSearchConditionValue(String searchText)
 	{
 		final Q query = getQueryOfType(queryType);
-		query.setFieldEnabled(getModifiedQueryFieldName(), true);
+//		query.setFieldEnabled(getModifiedQueryFieldName(), true);
+		query.setFieldEnabled(getModifiedQueryFieldName(), !searchText.isEmpty());
 		doSetSearchConditionValue(query, searchText);
 	}
 
