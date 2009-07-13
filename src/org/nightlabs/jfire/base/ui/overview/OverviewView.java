@@ -8,7 +8,7 @@ import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 /**
  * Abstract base {@link ViewPart} that will display an {@link OverviewShelf}
  * with the {@link OverviewRegistry} returned in {@link #getOverviewRegistry()}.
- * 
+ *
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  *
  */
@@ -20,7 +20,7 @@ extends LSDViewPart
 	}
 
 	private OverviewShelf overviewShelf;
-	
+
 	@Override
 	public void createPartContents(Composite parent)
 	{
@@ -33,12 +33,12 @@ extends LSDViewPart
 			}
 		};
 	}
-	
+
 	@Override
 	public void setFocus() {
-		if (overviewShelf == null)
+		if (overviewShelf == null || overviewShelf.isDisposed())
 			return;
-		
+
 		overviewShelf.setFocus();
 	}
 
