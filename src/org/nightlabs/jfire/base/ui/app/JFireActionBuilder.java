@@ -26,39 +26,58 @@
 
 package org.nightlabs.jfire.base.ui.app;
 
-import org.eclipse.jface.action.IStatusLineManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.nightlabs.base.ui.app.DefaultActionBuilder;
 
 /**
- * Creates the Menu
+ * Creates the Menu for the JFire Application
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Daniel Mazurek <daniel[AT]nightlabs[DOT]de>
  *
  */
 public class JFireActionBuilder
 extends DefaultActionBuilder
 {
+//	public JFireActionBuilder(IActionBarConfigurer configurer) {
+//		super(configurer);
+//		// by default JFire Applications don't use the eclipse help system
+//		if (menuBarItems != null) {
+//			menuBarItems.remove(ActionBarItem.Help);
+//			menuBarItems.remove(ActionBarItem.Update);
+//			menuBarItems.remove(ActionBarItem.Import);
+//			menuBarItems.remove(ActionBarItem.Export);
+//			menuBarItems.remove(ActionBarItem.Properties);
+//			menuBarItems.remove(ActionBarItem.Back_History);
+//			menuBarItems.remove(ActionBarItem.Forward_History);
+//		}
+//	}
+
 	public JFireActionBuilder(IActionBarConfigurer configurer) {
-		super(configurer);
-		// by default JFire Applications don't use the eclipse help system
-		if (menuBarItems != null) {
-			menuBarItems.remove(ActionBarItem.Help);	
-			menuBarItems.remove(ActionBarItem.Update);
-			menuBarItems.remove(ActionBarItem.Import);
-			menuBarItems.remove(ActionBarItem.Export);
-			menuBarItems.remove(ActionBarItem.Properties);
-		}
+		super(configurer,
+				new ArrayList<ActionBarItem>(
+						Arrays.asList(new ActionBarItem[] {
+								ActionBarItem.New,
+								ActionBarItem.Open,
+								ActionBarItem.Close,
+								ActionBarItem.CloseAll,
+								ActionBarItem.Quit,
+//								ActionBarItem.Back_History,
+//								ActionBarItem.Forward_History,
+								ActionBarItem.About,
+								ActionBarItem.Intro,
+								ActionBarItem.KeyAssist,
+								ActionBarItem.Perspectives,
+								ActionBarItem.Views,
+								ActionBarItem.Print,
+								ActionBarItem.RecentFiles,
+								ActionBarItem.Save,
+								ActionBarItem.SaveAs,
+								ActionBarItem.Preferences
+						})),
+				null);
 	}
-	
-	@Override
-	protected void fillStatusLine(IStatusLineManager statusLine) {
-		super.fillStatusLine(statusLine);
-//		IContributionItem beginGroup = statusLine.find(StatusLineManager.BEGIN_GROUP);
-//		statusLine.add(new LocaleStatusLineContribution("Locale"));
-//		statusLine.prependToGroup(StatusLineManager.BEGIN_GROUP, new LoginStateStatusLineContribution(Messages.getString("app.JFireActionBuilder.loginStatus"))); //$NON-NLS-1$
-////		statusLine.appendToGroup(StatusLineManager.BEGIN_GROUP, new LocaleStatusLineContribution("Locale")); //$NON-NLS-1$
-//		statusLine.remove(beginGroup);
-//		statusLine.prependToGroup(StatusLineManager.MIDDLE_GROUP, beginGroup);
-	}
-	
+
 }
