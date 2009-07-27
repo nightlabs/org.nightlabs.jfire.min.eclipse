@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -65,11 +66,15 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
+import org.nightlabs.jfire.organisation.dao.OrganisationDAO;
+import org.nightlabs.jfire.organisation.id.OrganisationID;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.server.Server;
 import org.nightlabs.jfire.server.ServerManagerRemote;
 import org.nightlabs.jfire.servermanager.config.J2eeServerTypeRegistryConfigModule;
+import org.nightlabs.jfire.servermanager.config.ServerCf;
 import org.nightlabs.jfire.servermanager.config.J2eeServerTypeRegistryConfigModule.J2eeRemoteServer;
+import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
 
 /**
@@ -136,6 +141,9 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 	private Text anonymousInitialContextFactory;
 	private Text initialContextURL;
 	private Text organisationID;
+
+	private Organisation myOrganisation;
+	private Server myServer;
 
 	protected static class OrganisationViewerSorter_PersonName
 	extends AbstractInvertableTableSorter<Organisation>
@@ -226,9 +234,18 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 							true, FETCH_GROUPS_ORGANISATION, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
 					orgs.add(UNKNOWN_ORGANISATION);
 
+					final Organisation _myOrganisation = OrganisationDAO.sharedInstance().getOrganisation(
+							OrganisationID.create(Login.getLogin().getOrganisationID()),
+							FETCH_GROUPS_ORGANISATION,
+							NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+							new NullProgressMonitor() // TODO proper handling of monitor
+					);
+
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run()
 						{
+							myOrganisation = _myOrganisation;
+							myServer = myOrganisation.getServer();
 							organisationTable.setInput(orgs);
 						}
 					});
@@ -246,10 +263,12 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 
 	private static final Organisation UNKNOWN_ORGANISATION = new Organisation("jfire.other.organisation.com"); //$NON-NLS-1$
 	static {
-		Server unknownServer = new Server("jfire.server.com"); //$NON-NLS-1$
-		unknownServer.setInitialContextURL("jnp://jfire.server.com:1099"); //$NON-NLS-1$
-		unknownServer.setJ2eeServerType(Server.J2EESERVERTYPE_JBOSS40X);
-		unknownServer.setServerName("JFire Server"); //$NON-NLS-1$
+		ServerCf serverCf = new ServerCf("jfire.company.com"); //$NON-NLS-1$
+		serverCf.setServerName("JFire Server"); //$NON-NLS-1$
+		serverCf.init();
+
+		Server unknownServer = new Server(serverCf.getServerID());
+		serverCf.copyTo(unknownServer);
 		UNKNOWN_ORGANISATION.setServer(unknownServer);
 
 		Person person = new Person(UNKNOWN_ORGANISATION.getOrganisationID(), 0);
@@ -308,6 +327,16 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 		if (organisationID == null)
 			return;
 
+		String protocol;
+		if (selectedOrganisation == UNKNOWN_ORGANISATION)
+			protocol = Server.PROTOCOL_HTTPS;
+		else {
+			if (myServer.getDistinctiveDataCentreID().equals(selectedOrganisation.getServer().getDistinctiveDataCentreID()))
+				protocol = Server.PROTOCOL_JNP;
+			else
+				protocol = Server.PROTOCOL_HTTPS;
+		}
+
 		J2eeServerTypeRegistryConfigModule.J2eeRemoteServer remoteServer = null;
 		if (serverType2j2eeRemoteServerMap != null)
 			 remoteServer = serverType2j2eeRemoteServerMap.get(selectedOrganisation.getServer().getJ2eeServerType());
@@ -318,7 +347,20 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 			anonymousInitialContextFactory.setText(remoteServer.getAnonymousInitialContextFactory());
 
 		anonymousInitialContextFactory.setEditable(selectedOrganisation == UNKNOWN_ORGANISATION);
-		initialContextURL.setText(selectedOrganisation.getServer().getInitialContextURL());
+		String initialContextURLString = selectedOrganisation.getServer().getInitialContextURL(protocol, false);
+		if (initialContextURLString == null || initialContextURLString.isEmpty()) {
+			initialContextURLString = "";
+			MessageDialog.openError(
+					getShell(),
+					"No initial-context-URL!",
+					String.format(
+							"The server \"%3$s\" (on which the selected organisation \"%2$s\" is hosted) doesn't have an initial-context-URL configured for the protocol \"%1$s\"! Tell the server administrator to configure his server correctly and to propagate this information to the root organisation!",
+							protocol,
+							selectedOrganisation.getOrganisationID(),
+							selectedOrganisation.getServer().getServerID())
+			);
+		}
+		initialContextURL.setText(initialContextURLString);
 		initialContextURL.setEditable(selectedOrganisation == UNKNOWN_ORGANISATION);
 		organisationID.setText(selectedOrganisation.getOrganisationID());
 		organisationID.setEditable(selectedOrganisation == UNKNOWN_ORGANISATION);
