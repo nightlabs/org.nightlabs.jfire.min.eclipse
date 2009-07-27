@@ -45,18 +45,18 @@ public class UserDataSection extends RestorableSectionPart
 	private Button passwordButton;
 	private Button autogenerateNameCheckBox;
 	private String newPassword;
-	
+
 	/**
 	 * The user object this section is connected to.
 	 */
 	private User user;
-	
+
 	/**
 	 * Set to <code>true</code> while automatic refreshing of UI elements
 	 * happens. Some listeners are enabled at this time.
 	 */
 	private boolean refreshing = false;
-	
+
 	ModifyListener dirtyListener = new ModifyListener() {
 		public void modifyText(ModifyEvent e) {
 			if (!refreshing)
@@ -64,7 +64,7 @@ public class UserDataSection extends RestorableSectionPart
 		}
 	};
 	private PersonPreferencesPage personPreferencesPage;
-	
+
 	/**
 	 * Create an instance of UserPropertiesSection.
 	 * @param parent The parent for this section
@@ -84,17 +84,17 @@ public class UserDataSection extends RestorableSectionPart
 		GridLayout layout = (GridLayout) container.getLayout();
 		layout.horizontalSpacing = 10;
 		layout.numColumns = 2;
-		
+
 		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserDataSection.userIDLabel"), 2); //$NON-NLS-1$
 		userIdText = new Text(container, XComposite.getBorderStyle(container));
 		userIdText.setEditable(false);
 		userIdText.setLayoutData(getGridData(2));
-		
+
 		createLabel(container,	Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserDataSection.userNameLabel"), 2); //$NON-NLS-1$
 		userNameText = new Text(container, XComposite.getBorderStyle(container));
 		userNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		userNameText.addModifyListener(dirtyListener);
-		
+
 		autogenerateNameCheckBox = new Button(container, SWT.CHECK);
 		autogenerateNameCheckBox.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserDataSection.AutogenerateLabel")); //$NON-NLS-1$
 		autogenerateNameCheckBox.addSelectionListener(new SelectionListener() {
@@ -112,12 +112,12 @@ public class UserDataSection extends RestorableSectionPart
 					markDirty();
 			}
 		});
-		
+
 		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserDataSection.DescriptionLabel"), 2); //$NON-NLS-1$
 		userDescriptionText = new Text(container, XComposite.getBorderStyle(container));
 		userDescriptionText.setLayoutData(getGridData(3));
 		userDescriptionText.addModifyListener(dirtyListener);
-		
+
 		createLabel(container, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserDataSection.PasswordLabel"), 2); //$NON-NLS-1$
 		passwordButton = new Button(container, SWT.PUSH);
 		passwordButton.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserDataSection.SetPasswordButtonText")); //$NON-NLS-1$
@@ -144,14 +144,14 @@ public class UserDataSection extends RestorableSectionPart
 				return null;
 			}
 		};
-		
+
 		ChangePasswordDialog dialog = new ChangePasswordDialog(RCPUtil.getActiveShell(), newPasswordValidator, null);
 		if (dialog.open() == Window.OK) {
 			newPassword = dialog.getConfirmedPassword();
 			markDirty();
 		}
 	}
-	
+
 	private void createLabel(Composite container, String text, int span) {
 		Label label = new Label(container, SWT.NONE);
 		label.setText(text);
@@ -159,27 +159,27 @@ public class UserDataSection extends RestorableSectionPart
 		gd.horizontalSpan = span;
 		label.setLayoutData(gd);
 	}
-	
+
 	private GridData getGridData(int span) {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = span;
 		return gd;
 	}
-	
+
 	private void createDescriptionControl(Section section, FormToolkit toolkit, String sectionDescriptionText) {
 		if (sectionDescriptionText == null || "".equals(sectionDescriptionText)) //$NON-NLS-1$
 			return;
 
 		section.setText(sectionDescriptionText);
 	}
-	
+
 	public void setUser(User _user) {
 		this.user = _user;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (userIdText == null || userIdText.isDisposed())
 					return;
-				
+
 				refreshing = true;
 				try {
 					userIdText.setText(user.getUserID());
@@ -188,9 +188,7 @@ public class UserDataSection extends RestorableSectionPart
 					if (user.getDescription() != null)
 						userDescriptionText.setText(user.getDescription());
 
-					String pw = user.getUserLocal().getPassword();
-
-					passwordButton.setEnabled(pw != null);
+					passwordButton.setEnabled(!user.getUserID().startsWith("_"));
 
 					autogenerateNameCheckBox.setSelection(user.isAutogenerateName());
 					userNameText.setEnabled(!autogenerateNameCheckBox.getSelection());
@@ -209,7 +207,7 @@ public class UserDataSection extends RestorableSectionPart
 			}
 		});
 	}
-	
+
 	@Override
 	public void commit(boolean onSave) {
 		super.commit(onSave);
@@ -219,10 +217,10 @@ public class UserDataSection extends RestorableSectionPart
 		if (newPassword != null)
 			user.getUserLocal().setNewPassword(newPassword);
 	}
-	
+
 	void updateDisplayName() {
 		user.setAutogenerateName(autogenerateNameCheckBox.getSelection());
-		
+
 		if (autogenerateNameCheckBox.getSelection()) {
 			// FIXME: why changing the user object here? Does it make any sense? Marc
 			user.setNameAuto();
