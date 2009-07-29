@@ -344,7 +344,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 		if (remoteServer == null)
 			anonymousInitialContextFactory.setText("your.anonymous.jndi.NamingContextFactory"); // "org.jnp.interfaces.NamingContextFactory"; //$NON-NLS-1$
 		else
-			anonymousInitialContextFactory.setText(remoteServer.getAnonymousInitialContextFactory());
+			anonymousInitialContextFactory.setText(remoteServer.getAnonymousInitialContextFactory(protocol, true));
 
 		anonymousInitialContextFactory.setEditable(selectedOrganisation == UNKNOWN_ORGANISATION);
 		String initialContextURLString = selectedOrganisation.getServer().getInitialContextURL(protocol, false);
