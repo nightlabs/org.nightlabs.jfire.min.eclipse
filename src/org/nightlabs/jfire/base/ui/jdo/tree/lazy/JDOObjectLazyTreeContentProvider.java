@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TreeItem;
 import org.nightlabs.jdo.ObjectID;
 
 public class JDOObjectLazyTreeContentProvider
@@ -75,6 +76,7 @@ implements ILazyTreeContentProvider
 
 		long realChildCount;
 		long childCount = getController().getNodeCount(parent);
+		
 		if (childCount < 0) // loading
 			realChildCount = 1; // the "Loading..." message
 		else
@@ -83,11 +85,17 @@ implements ILazyTreeContentProvider
 		if (logger.isDebugEnabled())
 			logger.debug("updateChildCount: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " childCount=" + childCount); //$NON-NLS-1$ //$NON-NLS-2$
 
-		if (realChildCount != currentChildCount)
-			getTreeViewer().setChildCount(element, (int)realChildCount);
+		long start = System.currentTimeMillis();
+		if (realChildCount != currentChildCount) {			
+			getTreeViewer().setChildCount(element, (int)realChildCount);			
+			if (logger.isDebugEnabled()){
+				long duration = System.currentTimeMillis() - start;
+				logger.debug(duration+" ms took getTreeViewer().setChildCount("+element+", "+realChildCount+")");
+			}
+		}
 	}
 
-	private Set<String> updateElementReplaceActiveIDSet = new HashSet<String>();
+	protected Set<String> updateElementReplaceActiveIDSet = new HashSet<String>();
 
 	@Override
 	public void updateElement(final Object parentElement, final int index) {
@@ -130,7 +138,12 @@ implements ILazyTreeContentProvider
 
 					if (parent == null ? true : !parent.isDeleted())
 						try {
+							long start = System.currentTimeMillis();
 							getTreeViewer().replace(parentElement, index, LOADING);
+							if (logger.isDebugEnabled()) {
+								long duration = System.currentTimeMillis() - start;
+								logger.debug(duration+" ms took getTreeViewer().replace("+parentElement+", "+index+", "+LOADING);
+							}
 						} catch (NullPointerException x) {
 							logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x); //$NON-NLS-1$
 //						getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
@@ -149,7 +162,12 @@ implements ILazyTreeContentProvider
 //				getTreeViewer().replace(parentElement, index, child);
 			if (parent == null ? true : !parent.isDeleted())
 				try {
+					long start = System.currentTimeMillis();
 					getTreeViewer().replace(parentElement, index, child);
+					if (logger.isDebugEnabled()) {
+						long duration = System.currentTimeMillis() - start;
+						logger.debug(duration+" ms took getTreeViewer().replace("+parentElement+", "+index+", "+LOADING);
+					}
 				} catch (NullPointerException x) {
 					logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x); //$NON-NLS-1$
 //				getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
@@ -164,11 +182,16 @@ implements ILazyTreeContentProvider
 			if (childChildNodeCount < 0)
 				childChildNodeCount = 1; // the "Loading..." message
 
+			long start = System.currentTimeMillis(); 
 			getTreeViewer().setChildCount(child, (int)childChildNodeCount);
+			if (logger.isDebugEnabled()) {
+				long duration = System.currentTimeMillis() - start;
+				logger.debug(duration+" ms took getTreeViewer().setChildCount("+child+", "+childChildNodeCount+")");
+			}
 		}
 	}
 
-	private static final String LOADING = "Loading..."; //$NON-NLS-1$
+	public static final String LOADING = "Loading..."; //$NON-NLS-1$
 //	private static final String LOADING_OBJECT_ID = "Loading %s ...";
 
 	@Override
@@ -181,7 +204,7 @@ implements ILazyTreeContentProvider
 	 * all children when collapsing a node. Totally unnecessary and highly inefficient :-( but fortunately possible
 	 * to work-around it.
 	 */
-	private Set<TreeNode> collapsedNodes = new HashSet<TreeNode>();
+	protected Set<TreeNode> collapsedNodes = new HashSet<TreeNode>();
 
 	private ITreeViewerListener treeViewerListener = new ITreeViewerListener() {
 		public void treeCollapsed(org.eclipse.jface.viewers.TreeExpansionEvent event) {
@@ -242,7 +265,7 @@ implements ILazyTreeContentProvider
 	}
 
 	@SuppressWarnings("unchecked") //$NON-NLS-1$
-	private <T> T naiveCast(T t, Object obj) {
+	protected <T> T naiveCast(T t, Object obj) {
 		return (T) obj;
 	}
 }

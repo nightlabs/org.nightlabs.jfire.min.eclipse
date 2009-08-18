@@ -714,9 +714,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		if (_parent != null && _parent == hiddenRootNode)
 			throw new IllegalArgumentException("Why the hell is the hiddenRootNode passed to this method?! If this ever happens - maybe we should map it to null here?"); //$NON-NLS-1$
 
-		if (logger.isDebugEnabled())
+		long start = 0;
+		if (logger.isDebugEnabled()) {
 			logger.debug("getNodeCount: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : _parent.getJdoObjectID()) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-
+			start = System.currentTimeMillis();
+		}
+		
 		synchronized (mutex) {
 			if (hiddenRootNode == null)
 				hiddenRootNode = createNode();
@@ -737,8 +740,11 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		nodeCount = _parent.getChildNodeCount();
 
 		if (nodeCount >= 0) {
-			if (logger.isDebugEnabled())
+			if (logger.isDebugEnabled()) {
 				logger.debug("getNodeCount: returning previously loaded count: " + nodeCount); //$NON-NLS-1$
+				long duration = System.currentTimeMillis() - start;
+				logger.debug("getNodeCount() took "+duration+" ms!");
+			}
 
 			return nodeCount;
 		}
@@ -870,6 +876,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 				};
 				jobChildCountRetrieval = job;
 				job.setRule(schedulingRule_jobChildCountRetrieval);
+				job.setPriority(Job.SHORT);
 				job.schedule();
 			}
 		}
@@ -917,9 +924,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		if (_parent != null && _parent == hiddenRootNode)
 			throw new IllegalArgumentException("Why the hell is the hiddenRootNode passed to this method?! If this ever happens - maybe we should map it to null here?"); //$NON-NLS-1$
 
-		if (logger.isDebugEnabled())
+		long start = 0;
+		if (logger.isDebugEnabled()) {
 			logger.debug("getNode: entered for parentTreeNode.jdoObjectID=\"" + (_parent == null ? null : _parent.getJdoObjectID()) + "\" index=" + index); //$NON-NLS-1$ //$NON-NLS-2$
-
+			start = System.currentTimeMillis();
+		} 
+		
 		TreeNode _currentRootNode;
 		synchronized (mutex) {
 			if (hiddenRootNode == null)
@@ -957,9 +967,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		}
 
 		if (node != null && node.getJdoObject() != null) {
-			if (logger.isDebugEnabled())
+			if (logger.isDebugEnabled()) {
 				logger.debug("getNode: returning previously loaded complete child-node."); //$NON-NLS-1$
-
+				long duration = System.currentTimeMillis() - start;
+				logger.debug("getNode() took "+duration+" ms!"); 
+			}
+						
 			return node;
 		}
 
@@ -1084,7 +1097,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 				}
 			};
 			job1.setRule(schedulingRule_jobChildObjectIDRetrieval);
+//			job1.setPriority(Job.SHORT);
+//			job1.setSystem(true);
 			job1.schedule();
+			if (logger.isDebugEnabled()) {
+				logger.debug("scheduled job1 at "+System.currentTimeMillis());
+			}
 		}
 		else {
 			if (logger.isDebugEnabled())
@@ -1099,7 +1117,8 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 					// Give it some time to collect objects in the treeNodesWaitingForObjectRetrieval
 					// before we start processing them.
-					try { Thread.sleep(500); } catch (InterruptedException x) { } // ignore InterruptedException
+//					try { Thread.sleep(500); } catch (InterruptedException x) { } // ignore InterruptedException
+					try { Thread.sleep(250); } catch (InterruptedException x) { } // ignore InterruptedException
 
 					Set<TreeNode> nodesWaitingForObjectRetrieval;
 					synchronized (treeNodesWaitingForObjectRetrieval) {
@@ -1184,7 +1203,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 				if (jobObjectRetrieval == null) {
 					jobObjectRetrieval = job2;
 					job2.setRule(schedulingRule_jobObjectRetrieval);
+//					job2.setPriority(Job.SHORT);
+//					job2.setSystem(true);
 					job2.schedule();
+					if (logger.isDebugEnabled()) {
+						logger.debug("scheduled job2 at "+System.currentTimeMillis());
+					}					
 				}
 			}
 		}

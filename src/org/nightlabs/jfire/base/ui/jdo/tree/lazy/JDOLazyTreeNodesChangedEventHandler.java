@@ -30,7 +30,7 @@ public class JDOLazyTreeNodesChangedEventHandler {
 	private static Job deferredRefreshJob = null;
 	private static Set<TreeViewer> treeViewersWaitingForRefresh = new HashSet<TreeViewer>();
 
-	public static void handle(TreeViewer treeViewer, JDOLazyTreeNodesChangedEvent<? extends ObjectID, ? extends JDOObjectLazyTreeNode> changedEvent) {
+	public static void handle(TreeViewer treeViewer, final JDOLazyTreeNodesChangedEvent<? extends ObjectID, ? extends JDOObjectLazyTreeNode> changedEvent) {
 		final Display display = Display.getCurrent();
 		if (display == null)
 			throw new IllegalStateException("This method must be called on the SWT UI thread!!! Wrong thread: " + Thread.currentThread()); //$NON-NLS-1$
@@ -63,8 +63,16 @@ public class JDOLazyTreeNodesChangedEventHandler {
 								treeViewer.getTree().getParent().layout(true);
 								// WORKAROUND END
 
+								long start = System.currentTimeMillis();
 //								treeViewer.refresh();
 								treeViewer.refresh(true); // a tree with SWT.VIRTUAL needs to be always refreshed completely (since it refreshes the visible items only, anyway).
+//								for (JDOObjectLazyTreeNode node : changedEvent.getParentsToRefresh()) {
+//									treeViewer.refresh(node, true);
+//								}
+								if (logger.isDebugEnabled()) {
+									long duration = System.currentTimeMillis() - start;
+									logger.debug("treeViewer.refresh() took "+duration+" ms");
+								}
 							}
 
 						}
