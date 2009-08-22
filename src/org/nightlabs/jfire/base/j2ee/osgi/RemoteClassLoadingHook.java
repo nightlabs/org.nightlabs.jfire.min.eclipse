@@ -3,12 +3,10 @@
  */
 package org.nightlabs.jfire.base.j2ee.osgi;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 
@@ -47,52 +45,64 @@ public class RemoteClassLoadingHook implements ClassLoadingHook, HookConfigurato
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //BEGIN: Must be exactly the same as in org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
-	private String minusHexEncode(String plain) {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		Writer w = new OutputStreamWriter(bout, Charset.forName("UTF-8"));
+	private String hash(String s)
+	{
+		MessageDigest md;
 		try {
-			w.write(plain);
-			w.close();
-		} catch (IOException e) {
-			// writing into an in-memory-stream should never fail
+			md = MessageDigest.getInstance("SHA-256"); // SHA-256 causes a 64 char hash string (SHA-512 would be 128 chars and maybe too long for windows - can't test)
+		} catch (NoSuchAlgorithmException x) {
+			throw new RuntimeException(x);
+		}
+		try {
+			md.update(s.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
+		byte[] buf = md.digest();
 
-		StringBuffer sb = new StringBuffer();
-		for (byte bb : bout.toByteArray()) {
-			int i = 0xff & bb;
-			if (minusHexLiteralAllowed(i))
-				sb.append((char)i); // this *MUST* be casted to char, because the sb.append(char) method must be called - not sb.append(int) - the result is quite different!
-			else {
-				sb.append('-');
-				String s = Integer.toHexString(i);
-				if (s.length() == 1) {
-					sb.append('0');
-					sb.append(s);
-				}
-				else if (s.length() == 2) {
-					sb.append(s);
-				}
-			}
-		}
-		return sb.toString();
-	}
-
-	private boolean minusHexLiteralAllowed(int c)
-	{
-		return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+		int len = buf.length;
+		int pos = 0;
+		StringBuilder hex = new StringBuilder();
+		while (len-- > 0) {
+				byte ch = buf[pos++];
+				int d = (ch >> 4) & 0xf;
+				hex.append((char)(d >= 10 ? 'a' - 10 + d : '0' + d));
+				d = ch & 0xf;
+				hex.append((char)(d >= 10 ? 'a' - 10 + d : '0' + d));
+		 }
+		 return hex.toString();
 	}
 
 	private File getJ2eePluginRuntimeDir()
 	{
-		File tempDir = new File(System.getProperty("java.io.tmpdir"));
+		//		for (Map.Entry<Object, Object> me : System.getProperties().entrySet())
+		//			System.out.println(me.getKey() + " = " + me.getValue());
+		//
+		// relevant properties:
+		//		osgi.instance.area = file:/home/marco/workspaces/runtime-org.nightlabs.jfire.base.ui.product/
+		//		osgi.syspath = /home/marco/workspaces/jfire.branch-1.0/target-rcp-jfire-max-linux-gtk-x86_64/target/plugins
+		//		osgi.instance.area.default = file:/home/marco/.jfire/workspace/
+		//		osgi.install.area = file:/home/marco/workspaces/jfire.branch-1.0/target-rcp-jfire-max-linux-gtk-x86_64/target/
+		String workspace = System.getProperty("osgi.instance.area");
+		if (workspace == null || workspace.isEmpty())
+			workspace = System.getProperty("osgi.instance.area.default");
 
-		String userName = System.getProperty("user.name");
-		String encodedUserName = minusHexEncode(userName);
+		if (workspace == null || workspace.isEmpty())
+			throw new IllegalStateException("There is neither the system property \"osgi.instance.area\" nor \"osgi.instance.area.default\" set! Are we running in OSGI?");
 
-		File j2eePluginRuntimeDir = new File(new File(tempDir, "jfire." + encodedUserName), "org.nightlabs.jfire.base.j2ee");
-		j2eePluginRuntimeDir = j2eePluginRuntimeDir.getAbsoluteFile();
-		return j2eePluginRuntimeDir;
+		String osgiInstallArea = System.getProperty("osgi.install.area");
+
+		if (workspace.startsWith("file:")) {
+			workspace = workspace.substring("file:".length());
+			File workspaceDir = new File(workspace);
+
+			File j2eePluginRuntimeDir = new File(new File(workspaceDir, "data"), "rcl");
+			j2eePluginRuntimeDir = new File(j2eePluginRuntimeDir, hash(osgiInstallArea));
+			j2eePluginRuntimeDir = new File(j2eePluginRuntimeDir, "org.nightlabs.jfire.base.j2ee");
+			j2eePluginRuntimeDir = j2eePluginRuntimeDir.getAbsoluteFile();
+			return j2eePluginRuntimeDir;
+		}
+		throw new UnsupportedOperationException("The system property \"osgi.instance.area\" or \"osgi.instance.area.default\" is not supported! Must start with \"file:\", but does not: " + workspace);
 	}
 //END: Must be exactly the same as in org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 ///////////////////////////////////////////////////////////////////////////////////////////////////
