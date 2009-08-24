@@ -23,6 +23,10 @@ import org.nightlabs.jfire.prop.dao.PropertySetFieldBasedEditLayoutUseCaseDAO;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
+ * A root node that is put into the UIPreferencePage in the prefrence page tree.
+ * The root node will have one child node for each {@link PropertySetFieldBasedEditLayoutUseCase}
+ * found on the server.  
+ * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
 public class PropertySetFieldBasedEditLayoutPreferenceRootNode implements IPreferenceNode {
@@ -33,7 +37,9 @@ public class PropertySetFieldBasedEditLayoutPreferenceRootNode implements IPrefe
 	private Job loadUseCasesJob;
 	
 	/**
-	 * @param id
+	 * Create a new {@link PropertySetFieldBasedEditLayoutPreferenceRootNode}.
+	 * The constructor will start a job that loads all
+	 * {@link PropertySetFieldBasedEditLayoutUseCase}s and adds a child-node for each one found.
 	 */
 	public PropertySetFieldBasedEditLayoutPreferenceRootNode() {
 		loadUseCasesJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferenceRootNode.job.loadPropertySetEditUseCases")) { //$NON-NLS-1$

@@ -43,10 +43,16 @@ import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
+ * Prefrence-page for {@link PropertySetFieldBasedEditLayoutConfigModule}
+ * that lets the user configure the layout of a field-based property-set editor.
+ * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
 public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserConfigModulePreferencePage {
 
+	/**
+	 * {@link IGridLayoutConfig} operating on a {@link PropertySetFieldBasedEditLayoutConfigModule}
+	 */
 	class GridLayoutConfig implements IGridLayoutConfig {
 
 		private PropertySetFieldBasedEditLayoutConfigModule cfMod;
@@ -115,7 +121,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 					} catch (InterruptedException e) {
 						throw new RuntimeException(e);
 					}
-					StructField field;
+					StructField<?> field = null;
 					try {
 						field = structLocal.getStructField(entry.getStructFieldID());
 					} catch (Exception e) {
@@ -204,6 +210,8 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	
 	
 	/**
+	 * Create a new {@link PropertySetFieldBasedEditLayoutPreferencePage} for the 
+	 * given {@link PropertySetFieldBasedEditLayoutUseCase}.
 	 * 
 	 */
 	public PropertySetFieldBasedEditLayoutPreferencePage(PropertySetFieldBasedEditLayoutUseCase editLayoutUseCase) {

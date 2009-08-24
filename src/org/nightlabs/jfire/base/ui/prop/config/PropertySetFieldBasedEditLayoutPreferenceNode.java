@@ -6,7 +6,6 @@ package org.nightlabs.jfire.base.ui.prop.config;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.ui.PlatformUI;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutUseCase;
 
 /**
@@ -40,8 +39,10 @@ public class PropertySetFieldBasedEditLayoutPreferenceNode extends PreferenceNod
 	 */
 	@Override
 	public void disposeResources() {
-		if (page != null)
+		if (page != null) {
 			page.dispose();
+			page = null;
+		}
 	}
 
 	/* (non-Javadoc)

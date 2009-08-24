@@ -7,7 +7,6 @@ import org.eclipse.ui.PlatformUI;
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
