@@ -428,6 +428,25 @@ implements BundleActivator
 		return result;
 	}
 
+	private void deleteOrWriteDeleteMarker(File dir)
+	throws IOException
+	{
+		if (!dir.exists()) // nothing to do since it doesn't exist
+			return;
+
+		if (!dir.isDirectory())
+			throw new IllegalArgumentException("The path does not point to a directory: " + dir.getAbsolutePath());
+
+		IOUtil.deleteDirectoryRecursively(dir);
+		if (!dir.exists()) // deletion was successful - simply return
+			return;
+
+		// If we come here, it wasn't possible to delete it and we thus place a deletion marker
+		// which is processed by RemoteClassLoadingHook on the next start.
+		File deletionMarker = new File(dir, "delete.me");
+		IOUtil.writeTextFile(deletionMarker, "The directory \"" + dir.getAbsolutePath() + "\" could not be deleted and will deleted later.");
+	}
+
 	/**
 	 * This method rewrites (if necessary) the MANIFEST.MF of this plugin (i.e. <code>org.nightlabs.jfire.base.j2ee</code>).
 	 * <p>
@@ -473,7 +492,7 @@ implements BundleActivator
 
 				sourceDirProps = readSourceDirProperties(j2eePluginRuntimeDir);
 				if (sourceFileOrDirModified(sourceDirProps, getJ2eePluginLocations())) {
-					IOUtil.deleteDirectoryRecursively(j2eePluginRuntimeDir);
+					deleteOrWriteDeleteMarker(j2eePluginRuntimeDir);
 					return true;
 				}
 			}
@@ -492,7 +511,7 @@ implements BundleActivator
 				} finally {
 					if (!successful) { // clean up in case it was only partially created.
 						changed = true; // make sure we definitely restart - no matter what
-						IOUtil.deleteDirectoryRecursively(j2eePluginRuntimeDir);
+						deleteOrWriteDeleteMarker(j2eePluginRuntimeDir);
 					}
 				}
 
