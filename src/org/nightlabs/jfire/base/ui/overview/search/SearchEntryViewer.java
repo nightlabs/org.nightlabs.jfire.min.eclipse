@@ -60,6 +60,7 @@ import org.nightlabs.jfire.base.ui.overview.EntryViewer;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 import org.nightlabs.jfire.base.ui.search.ActiveStateButtonManager;
+import org.nightlabs.jfire.base.ui.search.ActiveStateManager;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -473,9 +474,16 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		searchText.setText(""); //$NON-NLS-1$
 		for (Section advancedSearchSection : advancedSearchSections) {
 			advancedSearchSection.setExpanded(false);
+			AbstractQueryFilterComposite filterComposite = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
+			ActiveStateManager activeStateManager = filterComposite.getSectionButtonActiveStateManager();
+			//Chairat Experiment!!!
+			while (activeStateManager.isActive()) {
+				activeStateManager.setActive(Boolean.FALSE);
+			}
 			Button activeButton = (Button)advancedSearchSection.getTextClient();
 			activeButton.setSelection(false);
 		}
+
 
 
 		sashform.setWeights(calculateSashWeights(null));
