@@ -108,6 +108,52 @@ public class RemoteClassLoadingHook implements ClassLoadingHook, HookConfigurato
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * Deletes a directory (or a file) recursively.
+	 * <p>
+	 * Method copied from <code>org.nightlabs.util.IOUtil</code> since we don't have access
+	 * to this bundle from here.
+	 * </p>
+	 */
+	private static boolean deleteDirectoryRecursively(File dir)
+	{
+		if (!dir.exists())
+			return true;
+
+		// If we're running this on linux (that's what I just tested ;) and dir denotes a symlink,
+		// we must not dive into it and delete its contents! We can instead directly delete dir.
+		// There is no way in Java (except for calling system tools) to find out whether it is a symlink,
+		// but we can simply delete it. If the deletion succeeds, it was a symlink, otherwise it's a real directory.
+		// This way, we don't delete the contents in symlinks and thus prevent data loss!
+		try {
+			if (dir.delete())
+				return true;
+		} catch(SecurityException e) {
+			// ignore according to docs.
+			return false; // or should we really ignore this security exception and delete the contents?!?!?! To return false instead is definitely safer.
+		}
+
+		if (dir.isDirectory()) {
+			File[] content = dir.listFiles();
+			for (File f : content) {
+				if (f.isDirectory())
+					deleteDirectoryRecursively(f);
+				else
+					try {
+						f.delete();
+					} catch(SecurityException e) {
+						// ignore according to docs.
+					}
+			}
+		}
+
+		try {
+			return dir.delete();
+		} catch(SecurityException e) {
+			return false;
+		}
+	}
+
+	/**
 	 * If the plugin org.nightlabs.jfire.base.j2ee exists in its runtime-location (i.e. temp-directory,
 	 * where it can be modified), this method installs it into OSGI from there. Otherwise, it will be
 	 * found by the Eclipse RCP plugin-finder and during first login, it will create itself this
@@ -122,9 +168,19 @@ public class RemoteClassLoadingHook implements ClassLoadingHook, HookConfigurato
 		try {
 			File j2eePluginRuntimeDir = getJ2eePluginRuntimeDir();
 			if (j2eePluginRuntimeDir.exists()) {
+				File deletionMarker = new File(j2eePluginRuntimeDir, "delete.me");
+				if (deletionMarker.exists()) {
+					deleteDirectoryRecursively(j2eePluginRuntimeDir);
+
+					if (j2eePluginRuntimeDir.exists())
+						throw new IllegalStateException("Deleting this directory failed (permissions?): " + j2eePluginRuntimeDir.getAbsolutePath());
+				}
+			}
+
+			if (j2eePluginRuntimeDir.exists()) {
 				String j2eePluginRuntimeURL = j2eePluginRuntimeDir.toURI().toURL().toExternalForm();
 				bundleContext.installBundle(j2eePluginRuntimeURL);
-				System.out.println("J2EE plugin installed.");
+				System.out.println("J2EE plugin in runtime directory installed: " + j2eePluginRuntimeDir);
 			}
 			else
 				System.out.println("J2EE plugin runtime directory does not (yet) exist: " + j2eePluginRuntimeDir);
