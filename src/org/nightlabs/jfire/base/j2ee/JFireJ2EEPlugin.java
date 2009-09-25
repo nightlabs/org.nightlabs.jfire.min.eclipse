@@ -428,7 +428,7 @@ implements BundleActivator
 		return result;
 	}
 
-	private void deleteOrWriteDeleteMarker(File dir)
+	private void writeDeleteMarkerAndDelete(File dir)
 	throws IOException
 	{
 		if (!dir.exists()) // nothing to do since it doesn't exist
@@ -437,14 +437,14 @@ implements BundleActivator
 		if (!dir.isDirectory())
 			throw new IllegalArgumentException("The path does not point to a directory: " + dir.getAbsolutePath());
 
-		IOUtil.deleteDirectoryRecursively(dir);
-		if (!dir.exists()) // deletion was successful - simply return
-			return;
+		// First create the deletion marker, thus ensuring that a partially deleted directory
+		// will be removed completely at the next start.
+		File deletionMarker = new File(dir.getParentFile(), dir.getName() + ".delete.me");
+		IOUtil.writeTextFile(deletionMarker, "The directory \"" + dir.getAbsolutePath() + "\" should be deleted. Just in case, deleting it fails, we'll delete it later (thus first placing this marker file).");
 
-		// If we come here, it wasn't possible to delete it and we thus place a deletion marker
-		// which is processed by RemoteClassLoadingHook on the next start.
-		File deletionMarker = new File(dir, "delete.me");
-		IOUtil.writeTextFile(deletionMarker, "The directory \"" + dir.getAbsolutePath() + "\" could not be deleted and will deleted later.");
+		// Then delete. If this fails/completes only partially, the delete-marker created above
+		// should be taken into account by RemoteClassLoadingHook.installJ2eePlugin(...).
+		IOUtil.deleteDirectoryRecursively(dir);
 	}
 
 	/**
@@ -492,7 +492,7 @@ implements BundleActivator
 
 				sourceDirProps = readSourceDirProperties(j2eePluginRuntimeDir);
 				if (sourceFileOrDirModified(sourceDirProps, getJ2eePluginLocations())) {
-					deleteOrWriteDeleteMarker(j2eePluginRuntimeDir);
+					writeDeleteMarkerAndDelete(j2eePluginRuntimeDir);
 					return true;
 				}
 			}
@@ -511,7 +511,7 @@ implements BundleActivator
 				} finally {
 					if (!successful) { // clean up in case it was only partially created.
 						changed = true; // make sure we definitely restart - no matter what
-						deleteOrWriteDeleteMarker(j2eePluginRuntimeDir);
+						writeDeleteMarkerAndDelete(j2eePluginRuntimeDir);
 					}
 				}
 
