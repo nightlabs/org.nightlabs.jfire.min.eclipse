@@ -167,20 +167,37 @@ public class RemoteClassLoadingHook implements ClassLoadingHook, HookConfigurato
 		System.out.println("Installing J2EE plugin...");
 		try {
 			File j2eePluginRuntimeDir = getJ2eePluginRuntimeDir();
+			File deletionMarker = new File(j2eePluginRuntimeDir.getParentFile(), j2eePluginRuntimeDir.getName() + ".delete.me");
 			if (j2eePluginRuntimeDir.exists()) {
-				File deletionMarker = new File(j2eePluginRuntimeDir, "delete.me");
 				if (deletionMarker.exists()) {
 					deleteDirectoryRecursively(j2eePluginRuntimeDir);
 
 					if (j2eePluginRuntimeDir.exists())
 						throw new IllegalStateException("Deleting this directory failed (permissions?): " + j2eePluginRuntimeDir.getAbsolutePath());
 				}
+
+				// BEGIN downward compatibility.
+				File oldDeletionMarker = new File(j2eePluginRuntimeDir, "delete.me");
+				if (oldDeletionMarker.exists()) {
+					deleteDirectoryRecursively(j2eePluginRuntimeDir);
+
+					if (j2eePluginRuntimeDir.exists())
+						throw new IllegalStateException("Deleting this directory failed (permissions?): " + j2eePluginRuntimeDir.getAbsolutePath());
+				}
+				// END downward compatibility.
+			}
+
+			if (deletionMarker.exists() && !j2eePluginRuntimeDir.exists()) {
+				deletionMarker.delete();
+				if (deletionMarker.exists())
+					throw new IllegalStateException("Deleting this file failed (permissions?): " + deletionMarker.getAbsolutePath());
 			}
 
 			if (j2eePluginRuntimeDir.exists()) {
 				// commented because internal bundle start code BundeInstall.begin() fails when path contains URL encoded spaces
 				// which is the case with toURI().toURL() only toURL() leaves spaces unencoded and it works
-//				String j2eePluginRuntimeURL = j2eePluginRuntimeDir.toURI().toURL().toExternalForm(); 
+//				String j2eePluginRuntimeURL = j2eePluginRuntimeDir.toURI().toURL().toExternalForm();
+				@SuppressWarnings("deprecation")
 				String j2eePluginRuntimeURL = j2eePluginRuntimeDir.toURL().toExternalForm();
 				bundleContext.installBundle(j2eePluginRuntimeURL);
 				System.out.println("J2EE plugin in runtime directory installed: " + j2eePluginRuntimeDir);
