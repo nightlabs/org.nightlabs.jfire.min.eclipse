@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.jdo.ObjectID;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.Util;
 
@@ -371,7 +370,7 @@ extends AbstractTreeComposite<JDOObject>
 		 * with the original parameters.
 		 */
 		public void handleLoad(final List<TreeNode> children) {
-			getJDOObjectTreeController().removeJDOTreeNodesChangedListener(this);
+			getJDOObjectTreeController().removeJDOTreeNodesChangedListener(this);	//FIXME: I've just got a java.lang.NullPointerException at this line when loading the tree elements. , Chairat
 			if (expandLevel + 1 <= totalLevel) {
 				logger.debug(Util.addLeadingChars(element.toString(), element.toString().length() + expandLevel + 1, ' '));
 				for (TreeNode childNode : children) {
