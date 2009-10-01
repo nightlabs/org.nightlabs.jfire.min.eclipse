@@ -128,6 +128,13 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	protected abstract Class<? extends JDOObject> getJDOObjectClass();
 
+	protected Set<Class<? extends JDOObject>> getJDOObjectClasses()
+	{
+		Set<Class<? extends JDOObject>> c = new HashSet<Class<? extends JDOObject>>(1);
+		c.add(getJDOObjectClass());
+		return c;
+	}
+	
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
 	 * track new objects that are children of one of the objects referenced by
@@ -140,8 +147,9 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	 */
 	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter(Set<? extends ObjectID> parentObjectIDs)
 	{
+		Set<Class<? extends JDOObject>> classes = getJDOObjectClasses();
 		return new TreeLifecycleListenerFilter(
-				getJDOObjectClass(), true,
+				classes.toArray(new Class[classes.size()]), true,
 				parentObjectIDs, getTreeNodeParentResolver(),
 				new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
@@ -285,7 +293,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 	protected void createRegisterChangeListener() {
 		if (changeListener == null) {
 			changeListener = new ChangeListener(Messages.getString("org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectTreeController.loadingChanges")); //$NON-NLS-1$
-			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClass(), changeListener);
+			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClasses(), changeListener);
 		}
 	}
 
@@ -296,7 +304,7 @@ public abstract class ActiveJDOObjectTreeController<JDOObjectID extends ObjectID
 
 	protected void unregisterChangeListener() {
 		if (changeListener != null) {
-			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), changeListener);
+			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClasses(), changeListener);
 			changeListener = null;
 		}
 	}
