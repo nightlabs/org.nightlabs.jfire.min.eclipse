@@ -1,10 +1,12 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.exceptionhandler;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.ejb.EJBAccessException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -33,9 +35,7 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 	public boolean handleException(ExceptionHandlerParam handlerParam) {
 		logger.info("handleException: called for this triggerException: " + handlerParam.getTriggerException()); //$NON-NLS-1$
 
-		if (!(handlerParam.getTriggerException() instanceof SecurityException))
-			logger.error("triggerException is not an instance of SecurityException! Instead it is: " + (handlerParam.getTriggerException() == null ? null : handlerParam.getTriggerException().getClass().getName()), handlerParam.getThrownException()); //$NON-NLS-1$
-		else {
+		if (handlerParam.getTriggerException() instanceof SecurityException) {
 			try {
 				RemoteExceptionClassHandler handler = new RemoteExceptionClassHandler();
 				if (handler.handleException(handlerParam.getThread(), handlerParam.getThrownException(), (SecurityException) handlerParam.getTriggerException()))
@@ -44,8 +44,17 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 				// ignore and use fallback-dialog below
 			}
 		}
+		else if (handlerParam.getTriggerException() instanceof EJBAccessException) {
+			// Unfortunately, the JBoss does not reveal any detailed information, i.e. what access rights exactly are missing anymore, for EJB3.
+			// Therefore, we cannot (yet) do the same as we did with the SecurityException before: Parsing the missing access rights and
+			// show a specific error message. Thus, we simply use the fallback-dialog below (for now).
+			// See: https://www.jfire.org/modules/bugs/view.php?id=1292
+		}
+		else
+			logger.error("triggerException is neither an instance of SecurityException nor EJBAccessException! Instead it is: " + (handlerParam.getTriggerException() == null ? null : handlerParam.getTriggerException().getClass().getName()), handlerParam.getThrownException()); //$NON-NLS-1$
 
-		ErrorDialogFactory.showError(DefaultErrorDialog.class, 
+
+		ErrorDialogFactory.showError(DefaultErrorDialog.class,
 				Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.dialog.insufficentPermissions.messgae"),  //$NON-NLS-1$
 				Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.dialog.insufficentPermissions.description"),  //$NON-NLS-1$
 				new ExceptionHandlerParam(handlerParam.getThrownException(), handlerParam.getTriggerException()));
@@ -151,11 +160,11 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 							Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.notEnoughPermissionAuthority.message"), //$NON-NLS-1$
 							authorityName);
 
-				ErrorDialogFactory.showError(InsufficientPermissionDialog.class, 
+				ErrorDialogFactory.showError(InsufficientPermissionDialog.class,
 						Messages.getString("org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler.dialog.insufficientPermissions.message"),  //$NON-NLS-1$
-						message, 
+						message,
 						new ExceptionHandlerParam(thrownException, securityException));
-				
+
 			} finally {
 				InsufficientPermissionDialog.removeInsufficientPermissionDialogContext();
 			}
@@ -187,12 +196,12 @@ public class InsufficientPermissionHandler implements IExceptionHandler
 //						public void run() {
 //							InsufficientPermissionDialog.setInsufficientPermissionDialogContext(context);
 //							try {
-//								
-//								ErrorDialogFactory.showError(InsufficientPermissionDialog.class, 
-//										"Insufficient permissions", 
-//										"You don't have enough permissions for the requested action. Contact your boss or your administrator.\n\nYou need at least one of the following role groups:", 
+//
+//								ErrorDialogFactory.showError(InsufficientPermissionDialog.class,
+//										"Insufficient permissions",
+//										"You don't have enough permissions for the requested action. Contact your boss or your administrator.\n\nYou need at least one of the following role groups:",
 //										thrownException, securityException);
-//								
+//
 //							} finally {
 //								InsufficientPermissionDialog.removeInsufficientPermissionDialogContext();
 //							}

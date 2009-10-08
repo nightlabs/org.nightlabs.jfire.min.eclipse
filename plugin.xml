@@ -299,10 +299,20 @@
     </extension>
     
     <extension point="org.nightlabs.base.ui.exceptionhandler">
+    	<!--
+    		https://www.jfire.org/modules/bugs/view.php?id=1292
+    		With EJB3, we get a javax.ejb.EJBAccessException rather than a java.lang.SecurityException. However,
+    		I'm not sure, if the SecurityException might still be thrown in some circumstances. Thus, we keep this
+    		registration and additionally register the handler for javax.ejb.EJBAccessException below.
+    	-->
         <exceptionHandler
             class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
             name="Insufficient permissions: Handler showing the user which role groups are required."
             priority="150" targetType="java.lang.SecurityException"/>
+        <exceptionHandler
+            class="org.nightlabs.jfire.base.ui.exceptionhandler.InsufficientPermissionHandler"
+            name="Insufficient permissions: Handler showing the user which role groups are required."
+            priority="100" targetType="javax.ejb.EJBAccessException"/>
         <exceptionHandler
             class="org.nightlabs.jfire.base.ui.exceptionhandler.ConnectExceptionHandler"
             name="Connection refused. Handler showing a user friendly message when the connection is refused" targetType="java.net.ConnectException"/>
