@@ -79,7 +79,7 @@
                 class="org.nightlabs.jfire.base.admin.ui.configgroup.CreateUserConfigGroupAction"
                 icon="icons/configgroup/CreateUserConfigGroupAction.16x16.png"
                 id="org.nightlabs.jfire.base.admin.ui.configgroup.CreateUserConfigGroupAction#menu"
-                label="%actions.createUserConfigGroup.label"
+                label="%actions.createUserConfigGroup.label "
                 menubarPath="administrationMenu/entityGroup" tooltip="%actions.createUserConfigGroup.tooltip"/>
             <action
                 class="org.nightlabs.jfire.base.admin.ui.usersecuritygroup.CreateUserGroupAction"
@@ -93,6 +93,14 @@
                 id="org.nightlabs.jfire.base.admin.ui.user.CreateUserAction#menu"
                 label="%actions.createUser.label"
                 menubarPath="administrationMenu/entityGroup" tooltip="%actions.createUser.tooltip"/>
+            <action
+                  class="org.nightlabs.jfire.base.admin.ui.rolegroup.GrantRolegroupsAction"
+                  enablesFor="+"
+                  id="org.nightlabs.jfire.base.admin.ui.rolegroups.GrantRolegroupsAction"
+                  label="%actions.grantrolegroups.label "
+                  menubarPath="administrationMenu/organisationGroup"
+                  style="push">
+            </action>
         </actionSet>
     </extension>
     <!--
