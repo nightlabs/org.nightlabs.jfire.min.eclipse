@@ -3,6 +3,8 @@ package org.nightlabs.jfire.base.ui.security;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
@@ -34,7 +36,7 @@ extends ResizableTrayDialog
 		this.flags = flags;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
-	
+
 	/**
 	 * @param parentShell
 	 * @param searchText
@@ -72,9 +74,17 @@ extends ResizableTrayDialog
 			userSearchComposite.getUserIDText().setText(searchText);
 		}
 		userSearchComposite.getUserTable().addDoubleClickListener(userDoubleClickListener);
+		userSearchComposite.getUserTable().addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedUser = userSearchComposite.getSelectedUser();
+				getButton(IDialogConstants.OK_ID).setEnabled(selectedUser != null);
+			}
+		});
+
 		return userSearchComposite;
 	}
-	
+
 	private UserSearchComposite userSearchComposite = null;
 	private String searchText = ""; //$NON-NLS-1$
 	private User selectedUser = null;
@@ -83,15 +93,17 @@ extends ResizableTrayDialog
 	}
 
 	public static final int SEARCH_ID = IDialogConstants.CLIENT_ID + 1;
-	
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent)
 	{
 		super.createButtonsForButtonBar(parent);
 		Button searchButton = createButton(parent, SEARCH_ID, Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchDialog.Search"), true); //$NON-NLS-1$
 		searchButton.addSelectionListener(searchButtonListener);
+
+		getButton(IDialogConstants.OK_ID).setEnabled(false);
 	}
-	
+
 	private SelectionListener searchButtonListener = new SelectionListener(){
 		public void widgetSelected(SelectionEvent e) {
 			userSearchComposite.searchPressed();
@@ -100,21 +112,22 @@ extends ResizableTrayDialog
 			widgetSelected(e);
 		}
 	};
-	
+
+
 	@Override
 	protected void okPressed()
 	{
 		selectedUser = userSearchComposite.getSelectedUser();
 		super.okPressed();
 	}
-	
+
 	@Override
 	protected void cancelPressed()
 	{
 		selectedUser = null;
 		super.cancelPressed();
 	}
-	
+
 	private IDoubleClickListener userDoubleClickListener = new IDoubleClickListener(){
 		public void doubleClick(DoubleClickEvent event) {
 			if (!event.getSelection().isEmpty() && event.getSelection() instanceof StructuredSelection) {
@@ -126,5 +139,5 @@ extends ResizableTrayDialog
 			}
 		}
 	};
-	
+
 }
