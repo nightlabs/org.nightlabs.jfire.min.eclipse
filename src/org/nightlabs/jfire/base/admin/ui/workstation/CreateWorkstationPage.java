@@ -47,12 +47,13 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 {
 	private Text workstationID;
 	private Text workstationDescription;
-	
+
 	public CreateWorkstationPage(String title)
 	{
 		super(CreateWorkstationPage.class.getName(), title,
 				SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(),
 						CreateWorkstationPage.class));
+		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.workstationID.infoText")); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -66,7 +67,7 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 		workstationDescription = f.addTextInput(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.description.labelText"), null); //$NON-NLS-1$
 		return f;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.wizard.DynamicPathWizardPage#onShow()
 	 */
@@ -74,9 +75,9 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 	public void onShow()
 	{
 		super.onShow();
-		verifyInput();
+//		verifyInput();
 	}
-	
+
 	protected void verifyInput()
 	{
 		if("".equals(getWorkstationID())) { //$NON-NLS-1$
@@ -93,7 +94,7 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 	{
 		return workstationID.getText();
 	}
-	
+
 	public String getWorkstationDescription()
 	{
 		return workstationDescription.getText();
