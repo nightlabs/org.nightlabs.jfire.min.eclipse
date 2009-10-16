@@ -47,16 +47,17 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 {
 //	private Text configGroupKey;
 	private Text configGroupName;
-	
+
 	/**
 	 * The configType of the Config
 	 */
 	private String configGroupType;
-	
+
 	public CreateConfigGroupPage(String title, String configGroupType) {
 		super(CreateConfigGroupPage.class.getName(), title,
 				SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(),
 						CreateConfigGroupPage.class));
+		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateConfigGroupPage.configGroupName.infoText")); //$NON-NLS-1$
 		this.configGroupType = configGroupType;
 	}
 
@@ -74,7 +75,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 //		configGroupKey.setVisible(false);
 		return f;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.nightlabs.base.ui.wizard.DynamicPathWizardPage#onShow()
 	 */
@@ -82,9 +83,9 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 	public void onShow()
 	{
 		super.onShow();
-		verifyInput();
+//		verifyInput();
 	}
-	
+
 	protected void verifyInput()
 	{
 		if("".equals(getConfigGroupName())) //$NON-NLS-1$
@@ -92,7 +93,7 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 		else
 			updateStatus(null);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
 	 */
@@ -106,12 +107,12 @@ public class CreateConfigGroupPage extends DynamicPathWizardPage implements Form
 	{
 		return ObjectIDUtil.makeValidIDString(configGroupName.getText(), true);
 	}
-	
+
 	public String getConfigGroupType()
 	{
 		return configGroupType;
 	}
-	
+
 	public String getConfigGroupName()
 	{
 		return configGroupName.getText();
