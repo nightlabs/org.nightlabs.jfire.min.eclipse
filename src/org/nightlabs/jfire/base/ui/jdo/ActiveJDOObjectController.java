@@ -404,7 +404,9 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), notificationListener);
 			listenersExist = false;
 
-			jdoObjectID2jdoObject.clear();
+			if (jdoObjectID2jdoObject != null)
+				jdoObjectID2jdoObject.clear();
+
 			jdoObjects = null;
 		}
 	}
