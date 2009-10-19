@@ -349,6 +349,7 @@ public class StructEditor {
 			throw new RuntimeException(e);
 		}
 
+		structTree.getTreeViewer().expandToLevel(structTree.getCurrentBlockNode(), 1);
 		structTree.select(newField);
 	}
 
