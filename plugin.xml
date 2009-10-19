@@ -326,6 +326,9 @@
         <loginStateListener
               class="org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferenceLoginStateListener">
         </loginStateListener>
+        <loginStateListener
+              class="org.nightlabs.jfire.base.ui.login.ClearRCLCacheListener">
+        </loginStateListener>
     </extension>
 <!-- Added here because of removeExtension of views registered in org.eclipse.ui.ide (e.g. ProblemView) also removed ProgressView -->
     <extension
