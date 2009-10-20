@@ -18,6 +18,7 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.part.PartAdapter;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.notification.NotificationEvent;
@@ -26,6 +27,7 @@ import org.nightlabs.progress.ProgressMonitor;
 
 public abstract class ActiveEntityEditor
 extends EntityEditor
+implements ICloseOnLogoutEditorPart
 {
 	public ActiveEntityEditor()
 	{
