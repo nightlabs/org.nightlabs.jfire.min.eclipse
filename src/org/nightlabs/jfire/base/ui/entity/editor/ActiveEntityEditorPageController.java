@@ -422,7 +422,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			if (logger.isDebugEnabled())
 				logger.debug("retrieveEntity returned: " + newObj); //$NON-NLS-1$
 			if (newObj == null)
-				controllerObject = newObj;
+				setControllerObject(newObj);
 			else {
 				if (controllerObjectClass != null && !controllerObjectClass.equals(newObj.getClass())) {
 					throw new IllegalStateException("The implementation of ActiveEntityEditorPageController '" + this.getClass().getSimpleName() + "' returned different types of objects on retrieveEntity (" + controllerObjectClass.getName() + " and " + newObj.getClass().getName() + ")."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -468,7 +468,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			lastSaveTimestamp = System.currentTimeMillis(); // important to set it *before* we actually store since the storing might cause an event to be dispatched before the below method returns.
 			EntityType newControllerObject = storeEntity(controllerObject, new SubProgressMonitor(monitor, 50));
 			if (newControllerObject != null) {
-				controllerObject = Util.cloneSerializable(newControllerObject);
+				setControllerObject(Util.cloneSerializable(newControllerObject));
 				monitor.worked(50);
 			}
 			else {
@@ -481,14 +481,14 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				if (newControllerObject == oldControllerObject)
 					throw new IllegalStateException("Cache eviction obviously failed! newControllerObject == oldControllerObject (same instance!)"); //$NON-NLS-1$
 
-				controllerObject = Util.cloneSerializable(newControllerObject);
+				setControllerObject(Util.cloneSerializable(newControllerObject));
 			}
 
 			if (logger.isDebugEnabled())
 				logger.debug("storeEntity returned: " + controllerObject); //$NON-NLS-1$
 			// we don't put the result into the Cache, as the Cache will be notified
 			// of the change and the change listener will put the object into the cache
-//			controllerObject = Util.cloneSerializable(controllerObject); // done above
+//			setControllerObject(Util.cloneSerializable(controllerObject)); // done above
 			if (logger.isDebugEnabled())
 				logger.debug("Controller object after clone: " + getControllerObject()); //$NON-NLS-1$
 			setStale(false);
@@ -768,7 +768,10 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	}
 
 	/**
-	 * Sets current object managed by this controller.
+	 * Sets current object managed by this controller. Note, that this is always a clone of the object being
+	 * {@link #retrieveEntity(ProgressMonitor)} retrieved} and thus you can safely override this method and manipulate
+	 * the <code>controllerObject</code> without corrupting the instance stored in the cache.
+	 *
 	 * @param controllerObject The object to set.
 	 */
 	protected void setControllerObject(EntityType controllerObject) {
