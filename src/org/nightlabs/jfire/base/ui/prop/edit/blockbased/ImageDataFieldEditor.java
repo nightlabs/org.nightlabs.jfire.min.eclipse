@@ -198,6 +198,8 @@ extends AbstractDataFieldEditor<ImageDataField>
 		while (top.getParent() != null)
 			top = top.getParent();
 		top.layout(true, true);
+		group.pack(true);	//Added by Chairat
+		group.getParent().layout();
 	}
 
 	/* (non-Javadoc)
