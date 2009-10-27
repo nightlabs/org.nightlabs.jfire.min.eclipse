@@ -48,13 +48,13 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  * that implements the {@link IDataBlockEditorComposite} interface.
  * With a composite implementing this interface the implementation of an editor needs only to
  * create this {@link Composite} in {@link #createEditorComposite(Composite)}.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 
 	private static final Logger logger = Logger.getLogger(AbstractDataBlockEditor.class);
-	
+
 	private IStruct struct;
 	protected DataBlock dataBlock;
 	private ListenerList dataBlockEditorListeners = new ListenerList();
@@ -81,7 +81,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	}
 	/**
 	 * Call this method to notify listeners to this editor of a change.
-	 * 
+	 *
 	 * @param dataFieldEditor The {@link DataFieldEditor} whose data changed.
 	 */
 	protected synchronized void notifyChangeListeners(DataFieldEditor<? extends DataField> dataFieldEditor) {
@@ -92,15 +92,15 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 				((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
 		}
 	}
-	
+
 	private DataFieldEditorChangedListener fieldEditorChangeListener = new DataFieldEditorChangedListener() {
 		@Override
 		public void dataFieldEditorChanged(DataFieldEditorChangedEvent changedEvent) {
 			notifyChangeListeners(changedEvent.getDataFieldEditor());
-			
+
 			validateDataBlock();
 		}
-	};	
+	};
 
 	/**
 	 * Default implementation of updateProp() iterates through all
@@ -121,7 +121,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	public DataBlock getDataBlock() {
 		return dataBlock;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#getStruct()
@@ -139,16 +139,16 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	public void setValidationResultManager(IValidationResultHandler validationResultHandler) {
 		this.validationResultHandler = validationResultHandler;
 		getDataBlockEditorComposite().setValidationResultHandler(validationResultHandler);
-		validateDataBlock();
+//		validateDataBlock(); //Removed by Chairat on 27/10/2009
 	}
-	
+
 	/**
 	 * @return The {@link IValidationResultHandler} set with {@link #setValidationResultManager(IValidationResultHandler)}.
 	 */
 	public IValidationResultHandler getValidationResultManager() {
 		return validationResultHandler;
 	}
-	
+
 	/**
 	 * Validates the data in the {@link DataBlock} associated to this editor.
 	 */
@@ -156,7 +156,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		if (getDataBlock() != null) {
 			long start = System.currentTimeMillis();
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
-			long duration = System.currentTimeMillis() - start;			
+			long duration = System.currentTimeMillis() - start;
 			if (getValidationResultManager() != null) {
 				getValidationResultManager().handleValidationResults(validationResults);
 			}
@@ -164,10 +164,10 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 				logger.debug("Validation of of datablock "+getDataBlock()+" took "+duration+" ms!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		} else {
-			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()");  //$NON-NLS-1$	
+			logger.warn(this.getClass().getName() + ".validateDataBlock() called before setData()");  //$NON-NLS-1$
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#setData(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlock)
@@ -179,7 +179,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		if (dataBlockEditorComposite != null)
 			dataBlockEditorComposite.refresh(struct, dataBlock);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -201,16 +201,16 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 		});
 		if (!(dataBlockEditorComposite instanceof Control))
 			throw new IllegalStateException(this.getClass() + " is not implemented correctly, it did not return a " + Control.class.getName() + " in createEditorComposite()"); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		return (Control) dataBlockEditorComposite;
 	}
-	
+
 	private IDataBlockEditorComposite getDataBlockEditorComposite() {
 		if (dataBlockEditorComposite == null)
 			throw new IllegalStateException("The control of this DataBlockEditor was not created yet, however this implementation relies on it in order to function"); //$NON-NLS-1$
 		return dataBlockEditorComposite;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockEditor#getControl()
@@ -223,7 +223,7 @@ public abstract class AbstractDataBlockEditor implements DataBlockEditor {
 	/**
 	 * Create a {@link Composite} that implements {@link IDataBlockEditorComposite}.
 	 * This will be used by this class to implement the {@link DataBlockEditor} interface.
-	 * 
+	 *
 	 * @param parent The parent to use.
 	 * @return The newly created {@link IDataBlockEditorComposite}.
 	 */

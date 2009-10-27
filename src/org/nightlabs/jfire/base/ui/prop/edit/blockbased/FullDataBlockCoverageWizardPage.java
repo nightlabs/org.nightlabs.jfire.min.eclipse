@@ -41,7 +41,7 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
 /**
  * A {@link WizardPage} that will create a block-based editor showing
  * all blocks that were not covered by a given {@link EditorStructBlockRegistry}.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class FullDataBlockCoverageWizardPage extends WizardHopPage {
@@ -63,9 +63,9 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	 * This variable is used to retain a possible validation error message until the first input by the user was made.
 	 */
 	protected boolean pristine = true;
-	
+
 	/**
-	 * Set in the constructor, defines whether a validation error blocks the page (isComplete returns false) 
+	 * Set in the constructor, defines whether a validation error blocks the page (isComplete returns false)
 	 */
 	protected boolean blockOnValidationErrors;
 
@@ -84,11 +84,11 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 				scheduledUpdateRunnable = null;
 			}
 		}
-	}; 
-	
+	};
+
 	/**
 	 * Constructs a new {@link FullDataBlockCoverageWizardPage}
-	 * 
+	 *
 	 * @param pageName The name (id) of the new page.
 	 * @param title The title of the new page
 	 * @param propSet The {@link PropertySet} to edit.
@@ -98,7 +98,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	public FullDataBlockCoverageWizardPage(
 			String pageName, String title, PropertySet propSet,
 			boolean blockOnValiationErrors,
-			EditorStructBlockRegistry editorStructBlockRegistry) 
+			EditorStructBlockRegistry editorStructBlockRegistry)
 	{
 		super(pageName, title);
 		this.prop = propSet;
@@ -161,7 +161,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isPageComplete() {
 		if (blockOnValidationErrors)
@@ -175,7 +175,7 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * See {@link FullDataBlockCoverageComposite#updatePropertySet()}
 	 */
@@ -197,13 +197,13 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 	public void onShow() {
 		super.onShow();
 		refresh(prop);
-		if (fullDataBlockCoverageComposite != null && !fullDataBlockCoverageComposite.isDisposed()) {
-			fullDataBlockCoverageComposite.getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					fullDataBlockCoverageComposite.validate();
-				}
-			});
-		}
+//		if (fullDataBlockCoverageComposite != null && !fullDataBlockCoverageComposite.isDisposed()) { //Removed by Chairat 27/10/2009
+//			fullDataBlockCoverageComposite.getDisplay().asyncExec(new Runnable() {
+//				public void run() {
+//					fullDataBlockCoverageComposite.validate();
+//				}
+//			});
+//		}
 	}
 
 	@Override
