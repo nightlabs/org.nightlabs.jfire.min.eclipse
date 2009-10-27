@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.search;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -113,11 +114,21 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 */
 	protected void setSearchSectionActive(Button button, boolean active)
 	{
+		if (buttonSet == null) {
+			buttonSet = new HashSet<Button>();
+		}
+		buttonSet.add(button);
+
 		if (button.getSelection() == active)
 			return;
 
 		button.setSelection(active);
 		getSectionButtonActiveStateManager().setActive(active);
+	}
+	
+	private Set<Button> buttonSet = null;
+	public Set<Button> getActiveButtons() {
+		return buttonSet;
 	}
 
 	/**
@@ -161,7 +172,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 //			getQuery().setFieldEnabled(fieldName, false);
 //		}
 //	}
-	
+
 	@Override
 	public void setActive(boolean active)
 	{
@@ -221,7 +232,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 				changedFields = event.getChangedFields();
 			}
 
-			updateUI((QueryEvent) event, changedFields);
+			updateUI(event, changedFields);
 		}
 	};
 

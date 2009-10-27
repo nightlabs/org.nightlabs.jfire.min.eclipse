@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -475,6 +476,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		for (Section advancedSearchSection : advancedSearchSections) {
 			advancedSearchSection.setExpanded(false);
 			AbstractQueryFilterComposite filterComposite = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
+			Set<Button> activeButtons = filterComposite.getActiveButtons();
+			if (activeButtons != null)
+				for (Button activeButton : activeButtons) {
+					activeButton.setSelection(Boolean.FALSE);
+				}
 			ActiveStateManager activeStateManager = filterComposite.getSectionButtonActiveStateManager();
 			//Chairat Experiment!!!
 			while (activeStateManager.isActive()) {

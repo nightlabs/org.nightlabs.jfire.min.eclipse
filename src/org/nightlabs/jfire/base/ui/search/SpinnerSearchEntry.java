@@ -38,7 +38,7 @@ implements ActiveStateManager
 
 	private String text = null;
 	private Button activeButton = null;
-	
+
 //	private Spinner spinner = null;
 //	public Spinner getSpinner() {
 //		return spinner;
@@ -48,12 +48,12 @@ implements ActiveStateManager
 //	public DoubleSpinnerComposite getSpinnerComposite() {
 //		return spinnerComposite;
 //	}
-	
+
 	private NumberSpinnerComposite spinnerComposite = null;
 	public NumberSpinnerComposite getSpinnerComposite() {
 		return spinnerComposite;
 	}
-	
+
 	protected void createComposite(Composite parent)
 	{
 		Group group = new Group(parent, SWT.NONE);
@@ -82,7 +82,7 @@ implements ActiveStateManager
 			}
 		});
 	}
-	
+
 	private SelectionListener activeButtonListener = new SelectionAdapter()
 	{
 		@Override
@@ -95,19 +95,23 @@ implements ActiveStateManager
 	public boolean isActive() {
 		return activeButton.getSelection();
 	}
-	
+
 	public void setActive(boolean active) {
 		activeButton.setSelection(active);
 		spinnerComposite.setEnabled(active);
 	}
-	
+
 	public void addActiveStateChangeListener(SelectionListener listener)
 	{
 		activeButton.addSelectionListener(listener);
 	}
-	
+
 	public void removeActiveStateChangeListener(SelectionListener listener)
 	{
 		activeButton.removeSelectionListener(listener);
+	}
+
+	public Button getActiveButton() {
+		return activeButton;
 	}
 }
