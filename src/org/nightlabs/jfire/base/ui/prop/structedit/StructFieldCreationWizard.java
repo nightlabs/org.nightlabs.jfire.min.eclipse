@@ -54,18 +54,20 @@ public class StructFieldCreationWizard extends DynamicPathWizard {
 
 				public void widgetSelected(SelectionEvent e) {
 					StructFieldMetaData selected = fieldList.getSelectedElement();
-					description.setText(selected.getFieldDescription());
-					StructFieldCreationWizard wizard = (StructFieldCreationWizard) getWizard();
+					if (selected != null) { //This fixes the NPE when the user types for finding an item
+						description.setText(selected.getFieldDescription());
+						StructFieldCreationWizard wizard = (StructFieldCreationWizard) getWizard();
 
-					if (!fieldCreationWizardPages.containsKey(selected)) {
-						DynamicPathWizardPage page = selected.getFieldFactory().createWizardPage();
-						fieldCreationWizardPages.put(selected, page);
+						if (!fieldCreationWizardPages.containsKey(selected)) {
+							DynamicPathWizardPage page = selected.getFieldFactory().createWizardPage();
+							fieldCreationWizardPages.put(selected, page);
+						}
+
+						DynamicPathWizardPage page = fieldCreationWizardPages.get(selected);
+
+						wizard.replaceDetailsWizardPage(page);
+						wizard.setSelectedFieldMetaData(selected);
 					}
-
-					DynamicPathWizardPage page = fieldCreationWizardPages.get(selected);
-
-					wizard.replaceDetailsWizardPage(page);
-					wizard.setSelectedFieldMetaData(selected);
 				}
 			});
 
@@ -90,8 +92,8 @@ public class StructFieldCreationWizard extends DynamicPathWizard {
 		detailsPage = newDetailsPage;
 		addDynamicWizardPage(detailsPage);
 	}
-	
-	
+
+
 
 	public DynamicPathWizardPage getDetailsWizardPage() {
 		return detailsPage;
