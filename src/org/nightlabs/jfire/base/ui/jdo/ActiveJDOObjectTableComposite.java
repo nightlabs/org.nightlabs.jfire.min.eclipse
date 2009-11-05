@@ -7,16 +7,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener;
+import org.nightlabs.util.CollectionUtil;
 
 /**
  * A base class for active tables.
@@ -197,6 +204,21 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	}
 
 	protected void fireSetInputEvent() {
+		if (checkedElements != null) {
+			setCheckedElements(checkedElements);
+			checkedElements = null;
+		}
+
+		if (selectedElements != null) {
+			if (revealSelectedElements != null)
+				setSelection(selectedElements, revealSelectedElements);
+			else
+				setSelection(selectedElements);
+
+			revealSelectedElements = null;
+			selectedElements = null;
+		}
+
 		for (Object listener : tableListeners.getListeners())
 			((ActiveJDOObjectTableListener) listener).inputSet();
 	}
@@ -217,5 +239,68 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 
 	public void removeTableListener(ActiveJDOObjectTableListener listener) {
 		tableListeners.add(listener);
+	}
+
+	/**
+	 * Used to temporarily store the checked elements, just in case {@link #setCheckedElements(Collection)} is
+	 * called before the data is loaded. This is set to <code>null</code> whenever the user
+	 * selects sth.
+	 */
+	private Collection<JDOObject> checkedElements;
+	/**
+	 * Used to temporarily store the selected elements, just in case {@link #setCheckedElements(Collection)} is
+	 * called before the data is loaded. This is set to <code>null</code> whenever the user
+	 * selects sth.
+	 */
+	private List<JDOObject> selectedElements;
+
+	private Boolean revealSelectedElements;
+
+	{
+		addCheckStateChangedListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				checkedElements = null;
+			}
+		});
+
+		addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent e) {
+				selectedElements = null;
+				revealSelectedElements = null;
+			}
+		});
+	}
+
+	@Override
+	public void setCheckedElements(Collection<JDOObject> elements) {
+		this.checkedElements = elements;
+		super.setCheckedElements(elements);
+	}
+
+	@Override
+	public void setSelection(List<JDOObject> elements) {
+		this.selectedElements = elements;
+		revealSelectedElements = null;
+		super.setSelection(elements);
+	}
+
+
+	@Override
+	public void setSelection(List<JDOObject> elements, boolean reveal) {
+		this.selectedElements = elements;
+		revealSelectedElements = Boolean.valueOf(reveal);
+		super.setSelection(elements, reveal);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectedElements = null;
+		if (selection instanceof IStructuredSelection) {
+			selectedElements = CollectionUtil.castList(((IStructuredSelection)selection).toList());
+		}
+
+		super.setSelection(selection);
 	}
 }
