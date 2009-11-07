@@ -74,7 +74,7 @@ public class LanguageWatcher implements LoginStateListener {
 	}
 
 	private void setLanguageChecked(String userName, boolean checked) {
-		languageChecks.put(userName,new Boolean(checked));
+		languageChecks.put(userName, Boolean.valueOf(checked));
 	}
 
 	/* non javadoc
