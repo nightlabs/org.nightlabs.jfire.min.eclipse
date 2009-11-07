@@ -102,7 +102,7 @@ public class TaskListComposite
 				if (task.getNextCalculateNextExecDT() != null)
 					return String.format(
 							Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskListComposite.TaskListLabelProvider.moreThanCalculateNextExecDTFutureYears"), //$NON-NLS-1$
-							new Object[] { new Integer(Task.CALCULATE_NEXT_EXEC_DT_FUTURE_YEARS) });
+							new Object[] { Integer.valueOf(Task.CALCULATE_NEXT_EXEC_DT_FUTURE_YEARS) });
 
 				return task.getNextExecDT() == null ? "" : DateFormatter //$NON-NLS-1$
 						.formatDateShortTimeHM(task.getNextExecDT(), true);

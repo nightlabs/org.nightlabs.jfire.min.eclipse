@@ -145,7 +145,7 @@ public class CreateOrganisationWizard extends Wizard implements INewWizard
 										organisationID,
 										organisationDisplayName,
 										createOrganisationProgress.getLastCreateOrganisationStatus().getCreateOrganisationStep().toString(),
-										new Integer(percentage),
+										Integer.valueOf(percentage),
 										messageArgs
 									}
 							);
