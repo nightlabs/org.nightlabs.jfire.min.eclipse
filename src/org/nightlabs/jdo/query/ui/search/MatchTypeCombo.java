@@ -69,7 +69,7 @@ public abstract class MatchTypeCombo extends XComposite {
 		for (int i = 0; i < MatchTypeCombo.KNOWN_MATCH_TYPES.length; i++) {
 			if (supportsMatchType(MatchTypeCombo.KNOWN_MATCH_TYPES[i])) {
 				combo.add(getMatchTypeDescription(MatchTypeCombo.KNOWN_MATCH_TYPES[i]));
-				displayingTypes.add(new Integer(MatchTypeCombo.KNOWN_MATCH_TYPES[i]));
+				displayingTypes.add(Integer.valueOf(MatchTypeCombo.KNOWN_MATCH_TYPES[i]));
 			}
 		}
 		if (combo.getItemCount() > 0)
