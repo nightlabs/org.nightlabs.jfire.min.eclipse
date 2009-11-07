@@ -396,7 +396,7 @@ public class StructEditor {
 
 		mb.setMessage(String.format(
 				Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.messageBoxRemoveStructFieldConfirmation.message"), //$NON-NLS-1$
-				new Object[] { fieldName, new Long(dataFieldInstanceCount) }));
+				new Object[] { fieldName, Long.valueOf(dataFieldInstanceCount) }));
 
 		mb.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.messageBoxRemoveStructFieldConfirmation.text")); //$NON-NLS-1$
 		int result = mb.open();

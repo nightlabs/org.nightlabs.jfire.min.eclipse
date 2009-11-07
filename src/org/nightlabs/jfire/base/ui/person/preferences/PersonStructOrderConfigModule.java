@@ -165,7 +165,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 				structBlockDisplayOrder = new HashMap();
 				for (Iterator iter = structBlockDisplayOrderList.iterator(); iter.hasNext();) {
 					PersonStructOrderMapEntry entry = (PersonStructOrderMapEntry) iter.next();
-					structBlockDisplayOrder.put(entry.getKey(),new Integer(entry.getPriority()));
+					structBlockDisplayOrder.put(entry.getKey(), Integer.valueOf(entry.getPriority()));
 				}
 			}
 			else
@@ -199,7 +199,7 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 				structFieldDisplayOrder = new HashMap();
 				for (Iterator iter = structFieldDisplayOrderList.iterator(); iter.hasNext();) {
 					PersonStructOrderMapEntry entry = (PersonStructOrderMapEntry) iter.next();
-					structFieldDisplayOrder.put(entry.getKey(),new Integer(entry.getPriority()));
+					structFieldDisplayOrder.put(entry.getKey(), Integer.valueOf(entry.getPriority()));
 				}
 			}
 			else
@@ -215,13 +215,13 @@ public class PersonStructOrderConfigModule extends ConfigModule {
 
 	private Map getDefaultStructBlockDisplayOrder() {
 		Map result = new HashMap();
-		result.put(PersonStruct.PERSONALDATA.getPrimaryKey(),new Integer(0));
-		result.put(PersonStruct.POSTADDRESS.getPrimaryKey(),new Integer(1));
-		result.put(PersonStruct.PHONE.getPrimaryKey(),new Integer(2));
-		result.put(PersonStruct.INTERNET.getPrimaryKey(),new Integer(3));
-		result.put(PersonStruct.FAX.getPrimaryKey(),new Integer(4));
-		result.put(PersonStruct.CREDITCARD.getPrimaryKey(),new Integer(5));
-		result.put(PersonStruct.COMMENT.getPrimaryKey(),new Integer(6));
+		result.put(PersonStruct.PERSONALDATA.getPrimaryKey(), Integer.valueOf(0));
+		result.put(PersonStruct.POSTADDRESS.getPrimaryKey(), Integer.valueOf(1));
+		result.put(PersonStruct.PHONE.getPrimaryKey(), Integer.valueOf(2));
+		result.put(PersonStruct.INTERNET.getPrimaryKey(), Integer.valueOf(3));
+		result.put(PersonStruct.FAX.getPrimaryKey(), Integer.valueOf(4));
+		result.put(PersonStruct.CREDITCARD.getPrimaryKey(), Integer.valueOf(5));
+		result.put(PersonStruct.COMMENT.getPrimaryKey(), Integer.valueOf(6));
 		return result;
 	}
 

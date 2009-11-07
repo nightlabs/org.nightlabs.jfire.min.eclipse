@@ -239,7 +239,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 
 		sizeLabel.setText(
 				String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.sizeMaxKBLabel"), //$NON-NLS-1$
-						new Object[] { new Long(imageStructField.getMaxSizeKB()) }));
+						new Object[] { Long.valueOf(imageStructField.getMaxSizeKB()) }));
 		sizeLabel.pack();
 		sizeLabel.getParent().layout(true, true);
 
@@ -360,7 +360,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.text"), //$NON-NLS-1$
 						String.format(
 								Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.message"), //$NON-NLS-1$
-								new Object[] { new Long(imageStructField.getMaxSizeKB()), new Long((file.length() / 1024))})
+								new Object[] { Long.valueOf(imageStructField.getMaxSizeKB()), Long.valueOf((file.length() / 1024))})
 				);
 				return;
 			}

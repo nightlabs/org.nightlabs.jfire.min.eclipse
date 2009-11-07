@@ -151,9 +151,9 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 			Map.Entry entry = (Map.Entry) iter.next();
 			int swapPriority = ((Integer)entry.getValue()).intValue();
 			if (swapPriority == priority)
-				entry.setValue(new Integer(priority-1));
+				entry.setValue(Integer.valueOf(priority-1));
 			else if (swapPriority == (priority-1))
-				entry.setValue(new Integer(priority));
+				entry.setValue(Integer.valueOf(priority));
 		}
 		sortList();
 	}
@@ -164,9 +164,9 @@ public class BlockOrderListContentProvider implements IStructuredContentProvider
 			Map.Entry entry = (Map.Entry) iter.next();
 			int swapPriority = ((Integer)entry.getValue()).intValue();
 			if (swapPriority == priority)
-				entry.setValue(new Integer(priority+1));
+				entry.setValue(Integer.valueOf(priority+1));
 			else if (swapPriority == (priority+1))
-				entry.setValue(new Integer(priority));
+				entry.setValue(Integer.valueOf(priority));
 		}
 		sortList();
 	}
