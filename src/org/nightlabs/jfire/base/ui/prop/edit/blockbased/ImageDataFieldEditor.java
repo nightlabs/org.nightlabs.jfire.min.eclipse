@@ -236,6 +236,10 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 			displayImage(id);
 		}
+		else {
+			filenameTextbox.setText("");
+			displayImage(null);
+		}
 
 		sizeLabel.setText(
 				String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.sizeMaxKBLabel"), //$NON-NLS-1$
