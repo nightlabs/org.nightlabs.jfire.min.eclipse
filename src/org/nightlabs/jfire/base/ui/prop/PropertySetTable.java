@@ -84,7 +84,20 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 	 * @param style
 	 */
 	public PropertySetTable(Composite parent, int style) {
-		super(parent, style, false);
+		this(parent, style, AbstractTableComposite.DEFAULT_STYLE_MULTI_BORDER);
+//		super(parent, style, false);
+//		this.config = getPropertySetTableConfig();
+//		this.struct = config.getIStruct();
+//		this.structFieldIDs = config.getStructFieldIDs();
+//
+//		initTable();
+	}
+
+	/**
+	 * Creates a new PropertySetTable that allows for a non-default style.
+	 */
+	public PropertySetTable(Composite parent, int style, int viewerStyle) {
+		super(parent, style, false, viewerStyle);
 		this.config = getPropertySetTableConfig();
 		this.struct = config.getIStruct();
 		this.structFieldIDs = config.getStructFieldIDs();

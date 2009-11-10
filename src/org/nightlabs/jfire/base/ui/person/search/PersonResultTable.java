@@ -56,6 +56,13 @@ public class PersonResultTable extends PropertySetTable<Person> {
 		super(parent, style);
 	}
 
+	/**
+	 * Creates a new instance of the PersonResultTable with an option for viewerStyle.
+	 */
+	public PersonResultTable(Composite parent, int style, int viewerStyle) {
+		super(parent, style, viewerStyle);
+	}
+	
 	@Override
 	protected IPropertySetTableConfig getPropertySetTableConfig() {
 		return new PersonResultTableConfig();
