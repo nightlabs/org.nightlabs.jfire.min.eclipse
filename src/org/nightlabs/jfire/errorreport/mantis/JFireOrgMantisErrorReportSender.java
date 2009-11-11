@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.nightlabs.jfire.ui.errorreport.mantis.AbstractMantisErrorReportSender;
+import org.nightlabs.base.ui.errorreport.mantis.AbstractMantisErrorReportSender;
 
 /**
  * @author Niklas Schiffler <nick@nightlabs.de>
