@@ -32,7 +32,8 @@ public class PersonEditorWizardHop extends WizardHop {
 	private PersonEditorWizardOtherPage otherPage;
 	private Job loadJob;
 	private PropertySetFieldBasedEditLayoutConfigModule configModule;
-	
+	private Person person;
+
 	/**
 	 *
 	 */
@@ -44,9 +45,9 @@ public class PersonEditorWizardHop extends WizardHop {
 						PropertySetFieldBasedEditLayoutConfigModule.class,
 						PropertySetFieldBasedEditConstants.USE_CASE_ID_EDIT_PERSON,
 						new String[] {
-							FetchPlan.DEFAULT, PropertySetFieldBasedEditLayoutConfigModule.FETCH_GROUP_GRID_LAYOUT, 
+							FetchPlan.DEFAULT, PropertySetFieldBasedEditLayoutConfigModule.FETCH_GROUP_GRID_LAYOUT,
 							PropertySetFieldBasedEditLayoutConfigModule.FETCH_GROUP_EDIT_LAYOUT_ENTRIES,
-							PropertySetFieldBasedEditLayoutEntry.FETCH_GROUP_STRUCT_FIELD_ID, PropertySetFieldBasedEditLayoutEntry.FETCH_GROUP_GRID_DATA}, 
+							PropertySetFieldBasedEditLayoutEntry.FETCH_GROUP_STRUCT_FIELD_ID, PropertySetFieldBasedEditLayoutEntry.FETCH_GROUP_GRID_DATA},
 						NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 				return Status.OK_STATUS;
 			}
@@ -56,22 +57,23 @@ public class PersonEditorWizardHop extends WizardHop {
 
 
 	public void initialise(Person person) {
+		this.person = person;
 		try {
 			loadJob.join();
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 //		if (personalPage == null) {
 //			personalPage = new PersonEditorWizardPersonalPage(person);
 //			setEntryPage(personalPage);
 //		} else
 //			personalPage.refresh(person);
-		
+
 		if (personalPage == null) {
 			personalPage = new PersonEditorWizardPersonalPage();
 			personalPage.setLayoutConfigModule(configModule);
-			
+
 			setEntryPage(personalPage);
 			personalPage.getEditor().setPropertySet(person, false);
 		} else {
@@ -94,5 +96,8 @@ public class PersonEditorWizardHop extends WizardHop {
 			otherPage.updatePropertySet();
 		}
 	}
-}
 
+	public Person getPerson() {
+		return person;
+	}
+}

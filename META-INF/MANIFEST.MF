@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JFire Base Plug-in
 Bundle-SymbolicName: org.nightlabs.jfire.base.ui;singleton:=true
-Bundle-Version: 1.1.9.qualifier
+Bundle-Version: 1.1.10.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.nightlabs.jfire.base.ui.JFireBasePlugin
 Bundle-Vendor: NightLabs.org
@@ -45,6 +45,7 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.overview,
  org.nightlabs.jfire.base.ui.overview.action,
  org.nightlabs.jfire.base.ui.overview.search,
+ org.nightlabs.jfire.base.ui.person.create,
  org.nightlabs.jfire.base.ui.person.edit.blockbased,
  org.nightlabs.jfire.base.ui.person.edit.blockbased.special,
  org.nightlabs.jfire.base.ui.person.preferences,

@@ -136,7 +136,12 @@ public class FullDataBlockCoverageWizardPage extends WizardHopPage {
 			@Override
 			public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
 				pristine = false;
-				fullDataBlockCoverageComposite.removeChangeListener(listener[0]);
+				fullDataBlockCoverageComposite.getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						fullDataBlockCoverageComposite.validate();
+					}
+				});
+//				fullDataBlockCoverageComposite.removeChangeListener(listener[0]);
 			}
 		};
 		fullDataBlockCoverageComposite.addChangeListener(listener[0]);
