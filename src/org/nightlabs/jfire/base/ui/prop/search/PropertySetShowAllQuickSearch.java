@@ -6,7 +6,7 @@ import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
 
-public class PropertySetShowAllQuickSearch extends PropertySetQuickSearch {
+public abstract class PropertySetShowAllQuickSearch extends PropertySetQuickSearch {
 
 	public PropertySetShowAllQuickSearch(SearchResultFetcher resultFetcher) {
 		super("*", resultFetcher); //$NON-NLS-1$

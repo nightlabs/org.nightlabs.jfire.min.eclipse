@@ -324,19 +324,22 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			}
 		}
 
-		if (isAllStringEmpty) {
-//			MessageDialog warningDialog =
-//				new MessageDialog(getShell(), "Search Warning", null,
-//						"Please Specify Some Critirias for Searching.",
-//						MessageDialog.INFORMATION,
-//						new String[] { "Ok" },
-//						0);
-//			warningDialog.open();
-			// removed dialog and replaced, by entry in table which indicates that no result were found
-			resultTable.setLoadingMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.message.noResultsFound")); //$NON-NLS-1$
-			setResultLabelText();
-			return;
-		}
+//		if (isAllStringEmpty) {
+//			// TODO [At least for the ContactsPerspective] (Testing)
+//			//      If search string is empty, then return ALL records. Kai.
+//			
+////			MessageDialog warningDialog =
+////				new MessageDialog(getShell(), "Search Warning", null,
+////						"Please Specify Some Critirias for Searching.",
+////						MessageDialog.INFORMATION,
+////						new String[] { "Ok" },
+////						0);
+////			warningDialog.open();
+//			// removed dialog and replaced, by entry in table which indicates that no result were found
+//			resultTable.setLoadingMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.PropertySetSearchComposite.message.noResultsFound")); //$NON-NLS-1$
+//			setResultLabelText();
+//			return;
+//		}
 		//---------------End----------------------
 		//----------------------------------------
 

@@ -44,6 +44,7 @@ import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.person.PersonSearchFilter;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
@@ -209,7 +210,7 @@ implements EarlySearchFilterProvider
 	
 	
 	protected PropSearchFilter createSearchFilter() {
-		return new PropSearchFilter();
+		return new PersonSearchFilter();
 	}
 	
 	public void setQuickSearchText(ParsedNameCriteria nameCriteria) {

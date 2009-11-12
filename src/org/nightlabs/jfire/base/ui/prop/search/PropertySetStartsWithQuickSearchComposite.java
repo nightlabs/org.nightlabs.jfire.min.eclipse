@@ -34,24 +34,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.person.search.PersonStartsWithQuickSearch;
-import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.util.IOUtil;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class PropertySetStartsWithQuickSearchComposite extends Composite {
+public abstract class PropertySetStartsWithQuickSearchComposite extends Composite {
 
 	private List<PropertySetQuickSearch> quickSearches;
 	public PropertySetStartsWithQuickSearchComposite(Composite arg0, int arg1) {
 		this(arg0, arg1, null);
 	}
-	
+
 	public PropertySetStartsWithQuickSearchComposite(Composite arg0, int arg1, SearchResultFetcher resultFetcher, boolean showShowAllButton) {
 		super(arg0, arg1);
 		try {
 			Login.getLogin();
-			
+
 			GridLayout layout = new GridLayout();
 			layout.horizontalSpacing = 0;
 			layout.verticalSpacing = 0;
@@ -59,19 +58,19 @@ public class PropertySetStartsWithQuickSearchComposite extends Composite {
 			layout.marginWidth = 0;
 			setLayout(layout);
 			quickSearches = new LinkedList<PropertySetQuickSearch>();
-			
+
 			PropertySetQuickSearch pswqs;
-			
+
 			if (showShowAllButton) {
 				pswqs = getShowAllQuickSearch(resultFetcher);
 				pswqs.createComposite(this);
 				quickSearches.add(pswqs);
 			}
-			
+
 			for (int i=97; i<=122; i++) {
 				String ch;
 				ch = new String(new byte[]{(byte)i}, IOUtil.CHARSET_NAME_UTF_8);
-				
+
 				pswqs = createQuickSearch(resultFetcher, ch);
 				pswqs.createComposite(this);
 				quickSearches.add(pswqs);
@@ -80,7 +79,7 @@ public class PropertySetStartsWithQuickSearchComposite extends Composite {
 			throw new RuntimeException(t);
 		}
 	}
-	
+
 	/**
 	 * @param parent
 	 * @param style
@@ -88,7 +87,7 @@ public class PropertySetStartsWithQuickSearchComposite extends Composite {
 	public PropertySetStartsWithQuickSearchComposite(Composite arg0, int arg1, SearchResultFetcher resultFetcher) {
 		this(arg0, arg1, resultFetcher, false);
 	}
-	
+
 	protected PersonStartsWithQuickSearch createQuickSearch(SearchResultFetcher resultFetcher, String start) {
 		return new PersonStartsWithQuickSearch(resultFetcher, start);
 	}
@@ -96,14 +95,15 @@ public class PropertySetStartsWithQuickSearchComposite extends Composite {
 	public List<PropertySetQuickSearch> getQuickSearches() {
 		return quickSearches;
 	}
-	
-	/**
-	 * Overwrite this method in subclasses and return a {@link PropertySetQuickSearch} that is suitable
-	 * for the {@link PropertySet} for which quick searches should be provided.
-	 * @param resultFetcher The {@link SearchResultFetcher} to be used.
-	 * @return A {@link PropertySetQuickSearch} that is suitable for the {@link PropertySet} for which quick searches should be provided.
-	 */
-	protected PropertySetQuickSearch getShowAllQuickSearch(SearchResultFetcher resultFetcher) {
-		return new PropertySetShowAllQuickSearch(resultFetcher);
-	}
+
+	protected abstract PropertySetQuickSearch getShowAllQuickSearch(SearchResultFetcher resultFetcher);
+//	/**
+//	 * Overwrite this method in subclasses and return a {@link PropertySetQuickSearch} that is suitable
+//	 * for the {@link PropertySet} for which quick searches should be provided.
+//	 * @param resultFetcher The {@link SearchResultFetcher} to be used.
+//	 * @return A {@link PropertySetQuickSearch} that is suitable for the {@link PropertySet} for which quick searches should be provided.
+//	 */
+//	protected PropertySetQuickSearch getShowAllQuickSearch(SearchResultFetcher resultFetcher) {
+//		return new PropertySetShowAllQuickSearch(resultFetcher);
+//	}
 }

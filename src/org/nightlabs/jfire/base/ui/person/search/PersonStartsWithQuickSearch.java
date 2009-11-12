@@ -30,6 +30,7 @@ import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jfire.base.ui.prop.search.PropertySetQuickSearch;
+import org.nightlabs.jfire.person.PersonSearchFilter;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
 import org.nightlabs.jfire.prop.search.PropSearchFilterItem;
@@ -98,5 +99,10 @@ public class PersonStartsWithQuickSearch extends PropertySetQuickSearch {
 	
 	protected PropSearchFilter createSearchFilter() {
 		return super.getSearchFilter(false);
+	}
+
+	@Override
+	protected PropSearchFilter createPropSearchFilter() {
+		return new PersonSearchFilter();
 	}
 }

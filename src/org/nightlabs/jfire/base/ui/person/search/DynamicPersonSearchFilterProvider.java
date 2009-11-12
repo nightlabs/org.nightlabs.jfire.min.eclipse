@@ -30,7 +30,7 @@ import org.nightlabs.jdo.query.ui.search.SearchFilterItemListMutator;
 import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jfire.base.ui.prop.search.DynamicPropertySetSearchFilterProvider;
-import org.nightlabs.jfire.prop.search.PropSearchFilter;
+import org.nightlabs.jfire.person.PersonSearchFilter;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -61,7 +61,7 @@ public class DynamicPersonSearchFilterProvider extends DynamicPropertySetSearchF
 	
 	@Override
 	protected SearchFilter createSearchFilter() {
-		return new PropSearchFilter();
+		return new PersonSearchFilter();
 	}
 	
 	

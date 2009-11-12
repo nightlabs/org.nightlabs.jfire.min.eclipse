@@ -35,7 +35,7 @@ import org.nightlabs.jfire.prop.search.PropSearchFilter;
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class DynamicPropertySetSearchFilterProvider extends
+public abstract class DynamicPropertySetSearchFilterProvider extends
 		ItemBasedSearchFilterProvider {
 
 	/**
@@ -56,11 +56,12 @@ public class DynamicPropertySetSearchFilterProvider extends
 	}
 	
 	/**
-	 * @see org.nightlabs.jdo.query.ui.search.ItemBasedSearchFilterProvider#createSearchFilter()
+	 * Create an instance of a subclass of a {@link PropSearchFilter}.
+	 * <p>
+	 * {@inheritDoc}
+	 * </p>
 	 */
 	@Override
-	protected SearchFilter createSearchFilter() {
-		return new PropSearchFilter(SearchFilter.CONJUNCTION_DEFAULT);
-	}
+	protected abstract SearchFilter createSearchFilter();
 
 }

@@ -52,7 +52,7 @@ import org.nightlabs.jfire.prop.search.PropSearchFilter;
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class PropertySetQuickSearch implements SearchFilterProvider {
+public abstract class PropertySetQuickSearch implements SearchFilterProvider {
 	/**
 	 * LOG4J logger used by this class
 	 */
@@ -134,6 +134,8 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	public Composite getComposite() {
 		return wrapperComposite;
 	}
+	
+	protected abstract PropSearchFilter createPropSearchFilter();
 
 	/**
 	 * Returns and optionally recreates a the PersonSearchFilter.
@@ -143,7 +145,7 @@ public class PropertySetQuickSearch implements SearchFilterProvider {
 	 */
 	protected PropSearchFilter getSearchFilter(boolean refresh) {
 		if (refresh || (personSearchFilter == null)) {
-			personSearchFilter = new PropSearchFilter();
+			personSearchFilter = createPropSearchFilter();
 		}
 		return personSearchFilter;
 	}
