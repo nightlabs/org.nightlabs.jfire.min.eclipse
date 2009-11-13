@@ -27,8 +27,12 @@
 package org.nightlabs.jfire.base.ui.person.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.DefaultPropertySetTableConfig;
 import org.nightlabs.jfire.base.ui.prop.IPropertySetTableConfig;
@@ -61,8 +65,21 @@ public class PersonResultTable extends PropertySetTable<Person> {
 	 */
 	public PersonResultTable(Composite parent, int style, int viewerStyle) {
 		super(parent, style, viewerStyle);
+
+		getTableViewer().setComparator(new ViewerComparator() {
+			@Override
+			public void sort(Viewer viewer, Object[] elements) {
+				Arrays.sort(elements, new Comparator<Object>() {
+					public int compare(Object object1, Object object2) {
+						String s1 = ((Person)object1).getDisplayName();
+						String s2 = ((Person)object2).getDisplayName();
+						return (s1).compareTo(s2);
+					}
+				});
+			}
+		});
 	}
-	
+
 	@Override
 	protected IPropertySetTableConfig getPropertySetTableConfig() {
 		return new PersonResultTableConfig();
