@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -61,7 +60,6 @@ import org.nightlabs.jfire.base.ui.overview.EntryViewer;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 import org.nightlabs.jfire.base.ui.search.ActiveStateButtonManager;
-import org.nightlabs.jfire.base.ui.search.ActiveStateManager;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -350,11 +348,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			@Override
 			public void modifyText(ModifyEvent e)
 			{
-				queryProvider.getManagedQueries().setToExclude( limit.getSelection() );
+				queryProvider.setToExclude( limit.getSelection() );
 			}
 		});
 		limit.setSelection(25);
-		queryProvider.getManagedQueries().setToExclude(25);
+		queryProvider.setToExclude(25);
 
 		Label spacerLabel = new Label(toolBarWrapper, SWT.NONE);
 		spacerLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -468,29 +466,29 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	 */
 	public void doReset()
 	{
-		for (AbstractSearchQuery searchQuery : getQueryProvider().getManagedQueries()) {
+		for (AbstractSearchQuery searchQuery : getQueryProvider())
+		{
 			searchQuery.clearQuery();
 		}
 
+		// clear the parts not listening on query changes...
 		searchText.setText(""); //$NON-NLS-1$
 		for (Section advancedSearchSection : advancedSearchSections) {
 			advancedSearchSection.setExpanded(false);
-			AbstractQueryFilterComposite filterComposite = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
-			Set<Button> activeButtons = filterComposite.getActiveButtons();
-			if (activeButtons != null)
-				for (Button activeButton : activeButtons) {
-					activeButton.setSelection(Boolean.FALSE);
-				}
-			ActiveStateManager activeStateManager = filterComposite.getSectionButtonActiveStateManager();
-			//Chairat Experiment!!!
-			while (activeStateManager.isActive()) {
-				activeStateManager.setActive(Boolean.FALSE);
-			}
-			Button activeButton = (Button)advancedSearchSection.getTextClient();
-			activeButton.setSelection(false);
+//			AbstractQueryFilterComposite filterComposite = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
+//			Set<Button> activeButtons = filterComposite.getActiveButtons();
+//			if (activeButtons != null)
+//				for (Button activeButton : activeButtons) {
+//					activeButton.setSelection(Boolean.FALSE);
+//				}
+//			ActiveStateManager activeStateManager = filterComposite.getSectionButtonActiveStateManager();
+//			//Chairat Experiment!!!
+//			while (activeStateManager.isActive()) {
+//				activeStateManager.setActive(Boolean.FALSE);
+//			}
+//			Button activeButton = (Button)advancedSearchSection.getTextClient();
+//			activeButton.setSelection(false);
 		}
-
-
 
 		sashform.setWeights(calculateSashWeights(null));
 	}
