@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JFire Base Plug-in
 Bundle-SymbolicName: org.nightlabs.jfire.base.ui;singleton:=true
-Bundle-Version: 1.1.14
+Bundle-Version: 1.1.15
 Bundle-ClassPath: .
 Bundle-Activator: org.nightlabs.jfire.base.ui.JFireBasePlugin
 Bundle-Vendor: NightLabs.org
@@ -59,7 +59,6 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.prop.search,
  org.nightlabs.jfire.base.ui.prop.structedit,
  org.nightlabs.jfire.base.ui.prop.structedit.action,
- org.nightlabs.jfire.base.ui.resource,
  org.nightlabs.jfire.base.ui.search,
  org.nightlabs.jfire.base.ui.security,
  org.nightlabs.jfire.base.ui.update,

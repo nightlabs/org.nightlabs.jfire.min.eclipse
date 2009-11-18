@@ -119,10 +119,6 @@ extends AbstractDataFieldEditor<ImageDataField>
 
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA, group);
 
-		GridData gd = new GridData();
-		gd.horizontalSpan = 4;
-		gd.horizontalAlignment = SWT.LEFT;
-
 		filenameTextbox = new Text(group, XComposite.getBorderStyle(parent));
 		filenameTextbox.setEditable(false);
 		filenameTextbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -159,7 +155,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 					imageLabel.getImage().dispose();
 			}
 		});
-		gd = new GridData();
+		GridData gd = new GridData();
 		gd.horizontalSpan = 4;
 		gd.horizontalAlignment = SWT.CENTER;
 		gd.verticalAlignment = SWT.CENTER;
