@@ -13,6 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -29,6 +30,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
+import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
@@ -39,6 +42,7 @@ import org.nightlabs.jfire.prop.datafield.IContentDataField;
 import org.nightlabs.jfire.prop.datafield.ImageDataField;
 import org.nightlabs.jfire.prop.structfield.ImageStructField;
 import org.nightlabs.language.LanguageCf;
+import org.nightlabs.util.IOUtil;
 import org.nightlabs.util.NLLocale;
 
 /**
@@ -83,8 +87,10 @@ extends AbstractDataFieldEditor<ImageDataField>
 
 	private static Logger LOGGER = Logger.getLogger(ImageDataFieldEditor.class);
 
+	private Shell shell;
 	private LanguageCf language;
 
+	private Button saveToDiskButton;
 	private Text filenameTextbox;
 	private Button openFileChooserButton;
 	private Button clearButton;
@@ -114,32 +120,46 @@ extends AbstractDataFieldEditor<ImageDataField>
 	 */
 	@Override
 	public Control createControl(final Composite parent) {
+		shell = parent.getShell();
 		group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout(4, false));
+		group.setLayout(new GridLayout(5, false));
 
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA, group);
+
+		saveToDiskButton = new Button(group, SWT.PUSH);
+		saveToDiskButton.setEnabled(false);
+		saveToDiskButton.setImage(SharedImages.getSharedImage(JFireBasePlugin.getDefault(), ImageDataFieldEditor.class, "saveToDiskButton")); //$NON-NLS-1$
+		saveToDiskButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.saveToDiskButton.toolTipText")); //$NON-NLS-1$
+		saveToDiskButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				saveToDiskButtonPressed();
+			}
+		});
 
 		filenameTextbox = new Text(group, XComposite.getBorderStyle(parent));
 		filenameTextbox.setEditable(false);
 		filenameTextbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		openFileChooserButton = new Button(group, SWT.PUSH);
-		openFileChooserButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.openFileChooserButton.text")); //$NON-NLS-1$
+//		openFileChooserButton.setText("...");
+		openFileChooserButton.setImage(SharedImages.getSharedImage(JFireBasePlugin.getDefault(), ImageDataFieldEditor.class, "openFileChooserButton")); //$NON-NLS-1$
 		openFileChooserButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.openFile.tooltip")); //$NON-NLS-1$
 		openFileChooserButton.setLayoutData(new GridData());
-		openFileChooserButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {}
+		openFileChooserButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				fileChooserButtonPressed();
 			}
 		});
 
 		clearButton = new Button(group, SWT.PUSH);
-		clearButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.clear.text")); //$NON-NLS-1$
+//		clearButton.setText("&Clear");
+		clearButton.setImage(SharedImages.getSharedImage(JFireBasePlugin.getDefault(), ImageDataFieldEditor.class, "clearButton")); //$NON-NLS-1$
 		clearButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.button.clear.tooltip")); //$NON-NLS-1$
 		clearButton.setLayoutData(new GridData());
-		clearButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {}
+		clearButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				clearButtonPressed();
 			}
@@ -194,8 +214,67 @@ extends AbstractDataFieldEditor<ImageDataField>
 		while (top.getParent() != null)
 			top = top.getParent();
 		top.layout(true, true);
-		group.pack(true);	//Added by Chairat
-		group.getParent().layout();
+	}
+
+	private void showFileDoesNotExistDialog(File file)
+	{
+		MessageDialog.openError(
+				shell,
+				Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.fileDoesNotExistDialog.title"), //$NON-NLS-1$
+				String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.fileDoesNotExistDialog.text"), file.getAbsolutePath()) //$NON-NLS-1$
+		);
+	}
+
+	private boolean determineSaveToDiskButtonEnabled()
+	{
+		boolean result = true;
+		if (!isChanged() && getDataField().isEmpty())
+			result = false;
+
+		if (isChanged() && filenameTextbox.getText().isEmpty())
+			result = false;
+
+		if (saveToDiskButton.isEnabled() != result)
+			saveToDiskButton.setEnabled(result);
+
+		return result;
+	}
+
+	private void saveToDiskButtonPressed()
+	{
+		if (!determineSaveToDiskButtonEnabled())
+			return;
+
+		File localFile = null;
+		String fileName;
+		if (isChanged()) {
+			localFile = new File(filenameTextbox.getText());
+			if (!localFile.exists()) {
+				showFileDoesNotExistDialog(localFile);
+				return;
+			}
+
+			fileName = localFile.getName();
+		}
+		else
+			fileName = getDataField().getFileName();
+
+		FileDialog fileDialog = new FileDialog(shell, SWT.SAVE);
+		fileDialog.setFileName(fileName);
+		String saveFilePath = fileDialog.open();
+		if (saveFilePath == null)
+			return; // User cancelled.
+
+		File saveFile = new File(saveFilePath);
+
+		try {
+			if (localFile != null)
+				IOUtil.copyFile(localFile, saveFile);
+			else
+				getDataField().saveToFile(saveFile);
+		} catch (IOException x) {
+			throw new RuntimeException(x);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -232,18 +311,15 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 			displayImage(id);
 		}
-		else {
-			filenameTextbox.setText("");
-			displayImage(null);
-		}
 
 		sizeLabel.setText(
 				String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.sizeMaxKBLabel"), //$NON-NLS-1$
-						new Object[] { Long.valueOf(imageStructField.getMaxSizeKB()) }));
+						new Object[] { new Long(imageStructField.getMaxSizeKB()) }));
 		sizeLabel.pack();
 		sizeLabel.getParent().layout(true, true);
 
 		handleManagedBy(dataField.getManagedBy());
+		determineSaveToDiskButtonEnabled();
 	}
 
 	protected void handleManagedBy(String managedBy)
@@ -360,7 +436,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.text"), //$NON-NLS-1$
 						String.format(
 								Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxImageExceedsMaxSizeKB.message"), //$NON-NLS-1$
-								new Object[] { Long.valueOf(imageStructField.getMaxSizeKB()), Long.valueOf((file.length() / 1024))})
+								new Object[] { new Long(imageStructField.getMaxSizeKB()), new Long((file.length() / 1024))})
 				);
 				return;
 			}
@@ -382,6 +458,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.messageBoxInvalidImageFile.message") //$NON-NLS-1$
 				);
 			}
+			determineSaveToDiskButtonEnabled();
 		}
 	}
 
@@ -393,6 +470,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 		filenameTextbox.setText(""); //$NON-NLS-1$
 		setChanged(true);
 		displayImage(null);
+		determineSaveToDiskButtonEnabled();
 	}
 }
 
