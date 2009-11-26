@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
@@ -28,7 +28,7 @@ import org.nightlabs.util.NLLocale;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField> {
-	
+
 	public static class Factory extends AbstractDataFieldEditorFactory<RegexDataField> {
 
 		/**
@@ -61,20 +61,20 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 	private Text valueText;
 	private boolean modified = false;
 	private boolean ignoreModify = false;
-	
+
 	private RegexDataField regexDataField;
 	private RegexStructField regexStructField;
-	
+
 	public RegexDataFieldEditor(IStruct struct, RegexDataField data) {
 		super(struct, data);
 		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
-	
+
 	@Override
 	protected void setDataField(RegexDataField dataField) {
 		super.setDataField(dataField);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
@@ -96,10 +96,10 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 					modified = true;
 					setChanged(modified);
 				}
-				
+
 			}
 		});
-		
+
 //		// TODO: Validation disabled, see https://www.jfire.org/modules/bugs/view.php?id=692
 //		valueText.addFocusListener(new FocusListener() {
 //			public void focusGained(FocusEvent e) {}
@@ -117,7 +117,7 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 //				}
 //			}
 //		});
-		
+
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueText);
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, title);
 		return comp;
@@ -141,9 +141,11 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 		ignoreModify = true;
 		if (!regexDataField.isEmpty())
 			valueText.setText(regexDataField.getText());
+		else
+			valueText.setText("");
 		ignoreModify = false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
@@ -159,19 +161,19 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 	public void updatePropertySet() {
 		if (!isChanged())
 			return;
-		
+
 		String text = valueText.getText();
-		
+
 //		// TODO: Validation disabled, see https://www.jfire.org/modules/bugs/view.php?id=692
 //		if (regexStructField.validateValue(text)) {
 //				regexDataField.setText(text);
 //		}
 		regexDataField.setText(text);
 		// END Validation disabled
-		
+
 		modified = false;
 	}
-	
+
 	public LanguageCf getLanguage() {
 		return language;
 	}
