@@ -26,9 +26,8 @@
 
 package org.nightlabs.jfire.base.ui.person.search;
 
+import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -67,15 +66,13 @@ public class PersonResultTable extends PropertySetTable<Person> {
 		super(parent, style, viewerStyle);
 
 		getTableViewer().setComparator(new ViewerComparator() {
+			private Collator collator = Collator.getInstance();
+
 			@Override
-			public void sort(Viewer viewer, Object[] elements) {
-				Arrays.sort(elements, new Comparator<Object>() {
-					public int compare(Object object1, Object object2) {
-						String s1 = ((Person)object1).getDisplayName();
-						String s2 = ((Person)object2).getDisplayName();
-						return (s1).compareTo(s2);
-					}
-				});
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				String s1 = ((Person)e1).getDisplayName();
+				String s2 = ((Person)e2).getDisplayName();
+				return collator.compare(s1, s2);
 			}
 		});
 	}
