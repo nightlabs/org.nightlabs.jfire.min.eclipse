@@ -46,10 +46,13 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.job.Job;
+import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
+import org.nightlabs.base.ui.message.MessageType;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.toolkit.IToolkit;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.datastructure.Pair;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jdo.query.DefaultQueryProvider;
 import org.nightlabs.jdo.query.QueryCollection;
@@ -102,12 +105,12 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	protected QueryProvider<Q> queryProvider;
 
 	private ScrolledComposite scrollableSearchWrapper;
-	private XComposite toolbarAndAdvancedSearchWrapper = null;
-	private SashForm sashform = null;
-	private ToolItem searchItem = null;
-	/************By Yo**************/
-	private ToolItem resetItem = null;
-	private ToolBar searchTextToolBar = null;
+	private XComposite toolbarAndAdvancedSearchWrapper;
+	private SashForm sashform;
+	private ToolItem searchItem;
+	private ToolItem resetItem;
+	private ToolBar searchTextToolBar;
+	private IErrorMessageDisplayer errMsgDisplayer;
 
 	public Composite createComposite(Composite parent)
 	{
@@ -144,7 +147,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 			if (resultXComposite instanceof AbstractTableComposite<?>)
 			{
-				// TODO: I don't know why, but since I changed the layout to the WeightedTableLayout, no scrollbar is shown for the table as well... wtf! (marius)
 				final AbstractTableComposite<?> tableComp = (AbstractTableComposite<?>) resultXComposite;
 				final GridData tableData = (GridData) tableComp.getTableViewer().getTable().getLayoutData();
 				tableData.minimumWidth = 500;
@@ -318,7 +320,15 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 					return;
 
 				QuickSearchEntry<?> activeQuickSearchEntry = (QuickSearchEntry<?>) activeMenuItem.getData();
-				activeQuickSearchEntry.setSearchConditionValue(searchText.getText());
+				final String newSearchValue = searchText.getText();
+				final Pair<MessageType, String> valResult = activeQuickSearchEntry.validateSearchCondionValue(newSearchValue);
+				if (valResult == null)
+				{
+					errMsgDisplayer.setMessage(null, MessageType.NONE);
+					activeQuickSearchEntry.setSearchConditionValue(newSearchValue);
+				}
+				else
+					errMsgDisplayer.setMessage(valResult.getSecond(), valResult.getFirst());
 			}
 		});
 
@@ -721,8 +731,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			{
 				if (activeMenuItem != null) // there is already an item declared as default.
 				{
-					logger.warn("There is already a quick search entry marked as default! This entry wit id="+ //$NON-NLS-1$
-						quickSearchEntryFactory.getId() + " and with name=" +quickSearchEntryFactory.getName() + //$NON-NLS-1$
+					logger.warn("There is already a quick search entry marked as default! This entry with id="+ //$NON-NLS-1$
+						quickSearchEntryFactory.getId() + " and name=" +quickSearchEntryFactory.getName() + //$NON-NLS-1$
 					" is also declared as 'default'! This declaration is ignored."); //$NON-NLS-1$
 				}
 				else
@@ -778,11 +788,21 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 			// update selected search entry with possibly changed search text
 			newSelectedItem.setSelection(true);
-			QuickSearchEntry<?> entry = (QuickSearchEntry<?>) newSelectedItem.getData();
-			entry.setSearchConditionValue(searchText.getText());
-
 			// update last element pointer
 			activeMenuItem = newSelectedItem;
+
+			final QuickSearchEntry<?> entry = (QuickSearchEntry<?>) newSelectedItem.getData();
+			final String searchValue = searchText.getText();
+			final Pair<MessageType, String> valResult = entry.validateSearchCondionValue(searchValue);
+			if (valResult != null)
+			{
+				errMsgDisplayer.setMessage(valResult.getSecond(), valResult.getFirst());
+				return;
+			}
+
+			// no error occurred -> set value
+			errMsgDisplayer.setMessage(null, MessageType.NONE);
+			entry.setSearchConditionValue(searchValue);
 
 			// start a new search
 			search();
@@ -861,5 +881,17 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	public QueryProvider<Q> getQueryProvider()
 	{
 		return queryProvider;
+	}
+
+	@Override
+	public IErrorMessageDisplayer getErrorMessageDisplayer()
+	{
+		return errMsgDisplayer;
+	}
+
+	@Override
+	public void setErrorMessageDisplayer(IErrorMessageDisplayer displayer)
+	{
+		this.errMsgDisplayer = displayer;
 	}
 }

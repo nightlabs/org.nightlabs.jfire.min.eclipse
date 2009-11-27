@@ -4,6 +4,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
 
 /**
  * {@link EntryViewer}s might be used to create a detailed
@@ -13,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
  * One use case of the {@link EntryViewer} is {@link OverviewEntryEditor}
  * that will display its {@link Composite}.
  * </p>
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public interface EntryViewer {
@@ -28,7 +29,7 @@ public interface EntryViewer {
 	 * @return The {@link Composite} of this {@link EntryViewer}.
 	 */
 	Composite createComposite(Composite parent);
-	
+
 	/**
 	/**
 	 * Returns the {@link Composite} of this {@link EntryViewer} that
@@ -47,23 +48,36 @@ public interface EntryViewer {
 	 * @return The {@link Entry} that created this {@link EntryViewer}.
 	 */
 	Entry getEntry();
-	
+
 	/**
 	 * Returns the optional {@link MenuManager}, may be null
 	 * @return The optional menuManager
 	 */
 	MenuManager getMenuManager();
-	
+
 	/**
 	 * Returns the optional {@link SelectionProvider}, may be null
 	 * @return The optional SelectionProvider
 	 */
 	ISelectionProvider getSelectionProvider();
-	
+
 	/**
 	 * Returns the optional {@link ToolBarManager}, may be null
 	 * @return The optional toolbarManager
 	 */
 	ToolBarManager getToolBarManager();
-	
+
+	/**
+	 * Set the displayer to show error messages as well as additional information.
+	 *
+	 * @param displayer The Displayer that presents the messages.
+	 */
+	void setErrorMessageDisplayer(IErrorMessageDisplayer displayer);
+
+	/**
+	 * Returns the currently set message displayer.
+	 *
+	 * @return The currently active message displayer.
+	 */
+	IErrorMessageDisplayer getErrorMessageDisplayer();
 }

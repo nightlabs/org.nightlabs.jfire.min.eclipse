@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.prop.validation;
 
 import java.util.ResourceBundle;
@@ -12,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
+import org.nightlabs.base.ui.message.MessageType;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.expression.IExpression;
@@ -24,7 +22,7 @@ import org.nightlabs.jfire.prop.validation.ValidationResultType;
  * @author Daniel Mazurek - Daniel.Mazurek [dot] nightlabs [dot] de
  *
  */
-public class ExpressionValidatorDialog extends ResizableTitleAreaDialog 
+public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 {
 	private ExpressionValidatorComposite expressionValidatorComposite;
 	private IExpression expression;
@@ -34,13 +32,13 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 	private IExpressionValidatorHandler handler;
 	private Mode mode;
 	private String dialogMessage;
-	
+
 	/**
 	 * @param shell
 	 * @param resourceBundle
 	 */
 	public ExpressionValidatorDialog(Shell shell, ResourceBundle resourceBundle, IExpression expression,
-			IStruct struct, IExpressionValidatorHandler handler, Mode mode) 
+			IStruct struct, IExpressionValidatorHandler handler, Mode mode)
 	{
 		super(shell, resourceBundle);
 		this.expression = expression;
@@ -50,14 +48,14 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent) 
+	protected Control createDialogArea(Composite parent)
 	{
 		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog.dialog.title")); //$NON-NLS-1$
 		getShell().setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog.window.title")); //$NON-NLS-1$
 		dialogMessage = Messages.getString("org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog.dialog.message"); //$NON-NLS-1$
 		setMessage(dialogMessage);
-		
-		expressionValidatorComposite = new ExpressionValidatorComposite(parent, SWT.NONE, 
+
+		expressionValidatorComposite = new ExpressionValidatorComposite(parent, SWT.NONE,
 				expression, struct, handler, mode, new MessageDisplayer());
 		if (message != null) {
 			expressionValidatorComposite.setMessage(message);
@@ -101,8 +99,8 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 		super.createButtonsForButtonBar(parent);
 		expressionValidatorComposite.refresh();
 	}
-	
-	class MessageDisplayer implements IErrorMessageDisplayer 
+
+	class MessageDisplayer implements IErrorMessageDisplayer
 	{
 		/* (non-Javadoc)
 		 * @see org.nightlabs.base.ui.message.IMessageDisplayer#setMessage(java.lang.String, int)
@@ -114,7 +112,7 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 			}
 			else {
 				ExpressionValidatorDialog.this.setMessage(dialogMessage);
-			}			
+			}
 			Button okButton = getButton(IDialogConstants.OK_ID);
 			if (okButton != null)
 				okButton.setEnabled(message == null);
@@ -129,6 +127,16 @@ public class ExpressionValidatorDialog extends ResizableTitleAreaDialog
 			Button okButton = getButton(IDialogConstants.OK_ID);
 			if (okButton != null)
 				okButton.setEnabled(errorMessage == null);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see org.nightlabs.base.ui.message.IMessageDisplayer#setMessage(java.lang.String, org.nightlabs.base.ui.message.MessageType)
+		 */
+		@Override
+		public void setMessage(String message, MessageType type)
+		{
+			setMessage(message, type.ordinal());
 		}
 	}
 }

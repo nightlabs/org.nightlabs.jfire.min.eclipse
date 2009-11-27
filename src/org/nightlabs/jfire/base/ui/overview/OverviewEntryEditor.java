@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -28,6 +29,8 @@ import org.nightlabs.base.ui.action.registry.editor.XEditorActionBarContributor;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.form.AbstractBaseFormPage;
+import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
+import org.nightlabs.base.ui.message.MessageType;
 import org.nightlabs.base.ui.part.ControllablePart;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
@@ -38,7 +41,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
  * Editor displaying the {@link EntryViewer} of an {@link Entry}.
  * It therefore requires an {@link OverviewEntryEditorInput} as input.
  * Each editor instance will create its own {@link EntryViewer} instance.
- * 
+ *
  * @author Daniel.Mazurek [at] NightLabs [dot] de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
@@ -47,14 +50,14 @@ public class OverviewEntryEditor
 	implements ControllablePart, ICloseOnLogoutEditorPart
 {
 	private static final Logger logger = Logger.getLogger(OverviewEntryEditor.class);
-	
+
 	public OverviewEntryEditor() {
 		super();
-		
+
 		// Register the view at the view-controller
 		LSDPartController.sharedInstance().registerPart(this);
 	}
-	
+
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 
@@ -87,24 +90,24 @@ public class OverviewEntryEditor
 		}
 		getSite().getPage().addPartListener(partListener);
 	}
-	
+
 	private EntryViewer entryViewer;
 	public EntryViewer getEntryViewer() {
 		return entryViewer;
 	}
-	
+
 	private Composite composite;
 	public void createPartContents(Composite parent)
 	{
 		addPages();
 	}
-	
+
 	@Override
 	public void setFocus() {
 		if (composite != null && !composite.isDisposed())
 			composite.setFocus();
 	}
-	
+
 	protected void updateContextMenu()
 	{
 		EditorActionBarContributor actionBarContributor =
@@ -128,7 +131,7 @@ public class OverviewEntryEditor
 			}
 		}
 	}
-	
+
 	protected void removeContextMenu()
 	{
 		EditorActionBarContributor actionBarContributor =
@@ -167,7 +170,7 @@ public class OverviewEntryEditor
 			}
 		}
 	}
-	
+
 	protected void removeToolbar()
 	{
 		EditorActionBarContributor actionBarContributor =
@@ -182,7 +185,7 @@ public class OverviewEntryEditor
 			}
 		}
 	}
-	
+
 	private IPartListener partListener = new IPartListener(){
 		public void partOpened(IWorkbenchPart part) {
 		}
@@ -200,20 +203,20 @@ public class OverviewEntryEditor
 			updateToolbar();
 		}
 	};
-		
+
 	protected void editorDisposed() {
 		getSite().getPage().removePartListener(partListener);
 		if (entryViewer != null)
 			getSite().setSelectionProvider(entryViewer.getSelectionProvider());
 	}
-	
+
 	private ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener(){
 		public void selectionChanged(SelectionChangedEvent event) {
 			logger.debug("selection changed "+event.getSelection()); //$NON-NLS-1$
 			fireSelectionChanged(event);
 		}
 	};
-	
+
 	private ListenerList listeners = new ListenerList();
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.add(listener);
@@ -236,10 +239,10 @@ public class OverviewEntryEditor
 	{
 		if (entryViewer == null)
 			return ""; //$NON-NLS-1$
-		
+
 		return entryViewer.getEntry().getEntryFactory().getName();
 	}
-	
+
 	@Override
 	protected void addPages()
 	{
@@ -249,18 +252,38 @@ public class OverviewEntryEditor
 				@Override
 				protected void createFormContent(IManagedForm managedForm)
 				{
-					ScrolledForm form = managedForm.getForm();
+					final ScrolledForm form = managedForm.getForm();
 					Composite formBody = form.getBody();
 					formBody.setLayout(XComposite.getLayout(LayoutMode.ORDINARY_WRAPPER));
 					composite = entryViewer.createComposite(form.getBody());
 					GridData resultData = new GridData(SWT.FILL, SWT.FILL, true, true);
 					composite.setLayoutData(resultData);
-					
+					entryViewer.setErrorMessageDisplayer(new IErrorMessageDisplayer()
+					{
+						@Override
+						public void setErrorMessage(String errorMessage)
+						{
+							setMessage(errorMessage, IMessageProvider.ERROR);
+						}
+
+						@Override
+						public void setMessage(String message, MessageType type)
+						{
+							setMessage(message, type.ordinal());
+						}
+
+						@Override
+						public void setMessage(String message, int type)
+						{
+							form.setMessage(message, type);
+						}
+					});
+
 					if (entryViewer.getSelectionProvider() != null) {
 						getSite().setSelectionProvider(entryViewer.getSelectionProvider());
 						entryViewer.getSelectionProvider().addSelectionChangedListener(selectionChangedListener);
 					}
-					
+
 					if (getEditorSite().getActionBarContributor() != null &&
 						getEditorSite().getActionBarContributor() instanceof XEditorActionBarContributor)
 					{
@@ -268,18 +291,18 @@ public class OverviewEntryEditor
 							(XEditorActionBarContributor) getEditorSite().getActionBarContributor();
 						addSelectionChangedListener(editorActionBarContributor);
 					}
-					
+
 					updateContextMenu();
 					updateToolbar();
 				}
-				
+
 				@Override
 				protected boolean includeFixForVerticalScrolling()
 				{
 					return true;
 				}
 			};
-			
+
 			try
 			{
 				addPage(searchPage);
@@ -289,7 +312,7 @@ public class OverviewEntryEditor
 				throw new RuntimeException("Couldn't initialise searchFormPage!", e); //$NON-NLS-1$
 			}
 		}
-		
+
     // Ensures that this editor will only display the page's tab
     // area if there are more than one page
     //
@@ -315,7 +338,7 @@ public class OverviewEntryEditor
 	{
 		return Login.isLoggedIn();
 	}
-	
+
   /**
    * If there is just one page in the multi-page editor part,
    * this hides the single tab at the bottom.
