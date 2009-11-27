@@ -26,6 +26,8 @@
 
 package org.nightlabs.jfire.base.admin.ui.workstation;
 
+import java.util.Set;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,8 +38,12 @@ import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jdo.ObjectIDUtil;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.jfire.workstation.WorkstationManagerRemote;
+import org.nightlabs.jfire.workstation.id.WorkstationID;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -47,6 +53,7 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 {
 	private Text workstationID;
 	private Text workstationDescription;
+	private boolean pristine = true;
 
 	public CreateWorkstationPage(String title)
 	{
@@ -78,18 +85,35 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 //		verifyInput();
 	}
 
-	protected void verifyInput()
-	{
-		if("".equals(getWorkstationID())) { //$NON-NLS-1$
+	/**
+	 * Extended verification mechanism. 
+	 * It is now tested whether a workstation with the chosen ID already exists.
+	 * Frederik Loeser <frederik[AT]nightlabs[DOT]de>
+	 */
+	protected void verifyInput() {
+		if ("".equals(getWorkstationID())) {
 			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDMissing")); //$NON-NLS-1$
-		}
-		else if (!ObjectIDUtil.isValidIDString(getWorkstationID())) {
+		} else if (!ObjectIDUtil.isValidIDString(getWorkstationID())) {
 			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDInvalid")); //$NON-NLS-1$
-		}
-		else
+		} else {
+			WorkstationManagerRemote workstationManager = JFireEjb3Factory.getRemoteBean(WorkstationManagerRemote.class, SecurityReflector.getInitialContextProperties());
+			String chosenWSID = getWorkstationID();
+			Set<WorkstationID> wsIDs = workstationManager.getWorkstationIDs();
+			for (WorkstationID wsID : wsIDs) {
+				if (wsID.workstationID.equals(chosenWSID)) {
+					updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDCollision")); //$NON-NLS-1$
+					return;
+				}
+			}
 			updateStatus(null);
+		}
 	}
 
+	@Override
+	public boolean isPageComplete() {
+		return !pristine && super.isPageComplete();
+	}
+	
 	public String getWorkstationID()
 	{
 		return workstationID.getText();
@@ -105,6 +129,8 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 	 */
 	public void formularChanged(FormularChangedEvent event)
 	{
+		pristine = false;
 		verifyInput();
 	}
+	
 }
