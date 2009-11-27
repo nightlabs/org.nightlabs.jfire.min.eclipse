@@ -29,7 +29,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditor;
 import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.config.id.ConfigID;

@@ -32,7 +32,6 @@ import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.admin.ui.asyncinvoke.AsyncInvokeProblemView;
 import org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView;
 import org.nightlabs.jfire.base.admin.ui.organisation.registration.PendingOrganisationRegistrationsView;
-import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 
 /**
  * Administration perspective for Users, UserGroups,
