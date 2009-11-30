@@ -31,26 +31,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jdo.FetchPlan;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
-import org.nightlabs.base.ui.notification.NotificationAdapterJob;
-import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.config.ConfigSetup;
 import org.nightlabs.jfire.config.UserConfigSetup;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;
 import org.nightlabs.jfire.config.dao.ConfigSetupDAO;
 import org.nightlabs.jfire.config.id.ConfigID;
-import org.nightlabs.jfire.config.id.ConfigSetupID;
-import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
-import org.nightlabs.notification.NotificationEvent;
-import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -65,8 +55,8 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.configsetupvisualiser"; //$NON-NLS-1$
 
-	private static final String[] CONFIG_SETUP_FETCH_GROUPS = new String[]
-	  { FetchPlan.DEFAULT, ConfigSetup.FETCH_GROUP_CONFIG_MODULE_CLASSES };
+//	private static final String[] CONFIG_SETUP_FETCH_GROUPS = new String[]
+//	  { FetchPlan.DEFAULT, ConfigSetup.FETCH_GROUP_CONFIG_MODULE_CLASSES };
 //	private static final String[] DEFAULT_FETCH_GROUP_CONFIGS = new String[]
 //    { FetchPlan.DEFAULT, Config.FETCH_GROUP_CONFIG_GROUP };
 
@@ -78,16 +68,16 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	 * 		<code>groupConfigType</code> equal to <code>Objectclass</code>.</p>
 	 */
 
-	/**
-	 * key: String ConfigSetup.configType
-	 * value: ConfigSetup configSetup
-	 */
-	private final Map<String, ConfigSetup> configSetupsByType = null;
-
-	/**
-	 * key: String ConfigSetup.groupConfigType
-	 */
-	private final Map<String, ConfigSetup> configSetupsByGroupType = null;
+//	/**
+//	 * key: String ConfigSetup.configType
+//	 * value: ConfigSetup configSetup
+//	 */
+//	private final Map<String, ConfigSetup> configSetupsByType = null;
+//
+//	/**
+//	 * key: String ConfigSetup.groupConfigType
+//	 */
+//	private final Map<String, ConfigSetup> configSetupsByGroupType = null;
 
 	/**
 	 * key: String configSetupType
@@ -206,26 +196,27 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 		}
 	}
 
-	/**
-	 * Listener for changes of ConfigSetups.
-	 */
-	private final NotificationListener setupChangeListener = new NotificationAdapterJob() {
-		public void notify(NotificationEvent notificationEvent) {
-			if (notificationEvent.getFirstSubject() instanceof DirtyObjectID) {
-				DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
-				if (dirtyObjectID.getObjectID() instanceof ConfigSetupID) {
-					ConfigSetupID setupID = (ConfigSetupID)dirtyObjectID.getObjectID();
-					try {
-						ConfigSetup newSetup = ConfigSetupDAO.sharedInstance().getConfigSetup(setupID,
-								CONFIG_SETUP_FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitor());
-//						integrateConfigSetup(newSetup);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			}
-		}
-	};
+// Since new ConfigSetups aren't integrated anymore, this is commented out (marius).
+//	/**
+//	 * Listener for changes of ConfigSetups.
+//	 */
+//	private final NotificationListener setupChangeListener = new NotificationAdapterJob() {
+//		public void notify(NotificationEvent notificationEvent) {
+//			if (notificationEvent.getFirstSubject() instanceof DirtyObjectID) {
+//				DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
+//				if (dirtyObjectID.getObjectID() instanceof ConfigSetupID) {
+//					ConfigSetupID setupID = (ConfigSetupID)dirtyObjectID.getObjectID();
+//					try {
+//						ConfigSetup newSetup = ConfigSetupDAO.sharedInstance().getConfigSetup(setupID,
+//								CONFIG_SETUP_FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, getProgressMonitor());
+////						integrateConfigSetup(newSetup);
+//					} catch (Exception e) {
+//						throw new RuntimeException(e);
+//					}
+//				}
+//			}
+//		}
+//	};
 
 
 	/**
@@ -252,7 +243,8 @@ public class ConfigSetupRegistry extends AbstractEPProcessor
 	public static ConfigSetupRegistry sharedInstance() {
 		if (sharedInstance == null) {
 			sharedInstance = new ConfigSetupRegistry();
-			JDOLifecycleManager.sharedInstance().addNotificationListener(ConfigSetup.class, sharedInstance.setupChangeListener);
+//			The next line was used although the listener didn't do anything (marius).
+//			JDOLifecycleManager.sharedInstance().addNotificationListener(ConfigSetup.class, sharedInstance.setupChangeListener);
 //			JDOLifecycleManager.sharedInstance().addNotificationListener(Config.class, sharedInstance.configChangeListener);
 //			JDOLifecycleManager.sharedInstance().addNotificationListener(ConfigGroup.class, sharedInstance.configGroupChangeListener);
 			// FIXME: where are these listeners deregistered?

@@ -112,6 +112,7 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 			if (!(page instanceof AbstractConfigModulePreferencePage))
 				return;
 			AbstractConfigModulePreferencePage configPage = (AbstractConfigModulePreferencePage) page;
+			page.setTitle(name);
 			ConfigPreferenceNode preferenceNode = new ConfigPreferenceNode(
 					id, name, category,
 					null, element,

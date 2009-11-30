@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.nightlabs.jfire.base.ui.login.Login;
 
@@ -150,8 +151,15 @@ public class ConfigPreferenceNode {
 	 * @return A new {@link AbstractConfigModulePreferencePage}.
 	 * @throws CoreException If something fails.
 	 */
-	public AbstractConfigModulePreferencePage createPreferencePage() throws CoreException {
-		return (AbstractConfigModulePreferencePage) element.createExecutableExtension(ConfigPreferencePageRegistry.CLASS_ELEMENT);
+	public AbstractConfigModulePreferencePage createPreferencePage()
+		throws CoreException
+	{
+		AbstractConfigModulePreferencePage page = (AbstractConfigModulePreferencePage)
+			element.createExecutableExtension(ConfigPreferencePageRegistry.CLASS_ELEMENT);
+		page.setTitle(getConfigPreferenceName());
+		if (getIcon() != null)
+			page.setImageDescriptor(ImageDescriptor.createFromImage(getIcon()));
+		return page;
 	}
 
 	public AbstractConfigModulePreferencePage getPreferencePage() {

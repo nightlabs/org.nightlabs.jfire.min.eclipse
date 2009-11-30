@@ -88,9 +88,43 @@ extends ResizableTitleAreaDialog
 		@Override
 		public String getText(Object element) {
 			if (element instanceof Config)
-				return ((Config) element).getConfigKey();
-//			return ((PageModulePair) element).getUpdatedConfigModule().getCfModKey();
+				return getConfigLabel(((Config) element));
+
 			return ((PageModulePair) element).getCorrespondingPage().getTitle();
+		}
+
+		/**
+		 * Get a better human readable output from the ConfigKey of a Config.
+		 *
+		 * @param config The Config to label.
+		 * @return The ObjectID - "ID" + first letter in upper-case of the object the Config is attached to appended with
+		 * 	the id string. E.g. "jdo/org.nightlabs.jfire.security.id.UserID?organisationID=chezfrancois.jfire.org&userID=francois"
+		 * 	-\> 'User "francois"'.
+		 */
+		protected String getConfigLabel(Config config)
+		{
+			StringBuilder labelBldr = new StringBuilder();
+			final String configKey = config.getConfigKey();
+			int beginningOfParams = configKey.indexOf('?');
+			if (beginningOfParams == -1)
+				return configKey;
+
+			String paramsString = configKey.substring(beginningOfParams+1);
+			String[] params = paramsString.split("&");
+			for (String param : params)
+			{
+				if (!param.contains("ID") || param.contains("organisationID"))
+					continue;
+
+				String[] keyValue = param.split("=");
+				String affectedObjectID = keyValue[0].replaceFirst("ID", "");
+				String firstChar = String.valueOf(affectedObjectID.charAt(0));
+				affectedObjectID = firstChar.toUpperCase() + affectedObjectID.substring(1);
+
+				labelBldr.append(affectedObjectID).append(" \"").append(keyValue[1]).append("\"");
+				break;
+			}
+			return labelBldr.toString();
 		}
 	}
 
