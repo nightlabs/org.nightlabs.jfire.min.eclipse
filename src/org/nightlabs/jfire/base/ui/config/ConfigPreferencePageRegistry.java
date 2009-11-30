@@ -89,6 +89,11 @@ public class ConfigPreferencePageRegistry extends AbstractEPProcessor
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception
 	{
+		// ignores the preference pages defined by eclipse in order to get rid of the annoying exception stack traces in
+		// the client log
+		if (element.getAttribute(CLASS_ELEMENT).startsWith("org.eclipse"))
+			return;
+
 		if (element.getName().equals(PAGE_ELEMENT)) {
 			String id = element.getAttribute(ID_ELEMENT);
 			String category = element.getAttribute(CATEGORY_ELEMENT);
