@@ -40,6 +40,10 @@
             <menu id="administrationMenu" label="%administrationMenu.label">
                 <separator name="organisationGroup"/>
                 <separator name="entityGroup"/>
+                <separator name="languageAddGroup"/>
+                <groupMarker name="languageRemoveGroup"/>
+                <!--<groupMarker name="languageAdd"/>
+                <groupMarker name="languageRemove"/>--> 
                 <!-- DEPRECTATED: was only for testing
             <separator name="customerGroup"/>
             -->
@@ -93,6 +97,16 @@
                 id="org.nightlabs.jfire.base.admin.ui.user.CreateUserAction#menu"
                 label="%actions.createUser.label"
                 menubarPath="administrationMenu/entityGroup" tooltip="%actions.createUser.tooltip"/>
+            <action
+                  class="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
+                  id="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction#menu"
+                  label="%actions.addLanguage.label "
+                  menubarPath="administrationMenu/languageAddGroup" tooltip="%actions.addLanguage.tooltip"/>
+            <action
+                  class="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction"
+                  id="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction#menu"
+                  label="%actions.removeLanguage.label "
+                  menubarPath="administrationMenu/languageRemoveGroup" tooltip="%actions.removeLanguage.tooltip"/>      
             <action
                   class="org.nightlabs.jfire.base.admin.ui.rolegroup.GrantRolegroupsAction"
                   enablesFor="+"
@@ -157,6 +171,11 @@
                 id="org.nightlabs.jfire.base.admin.ui.user.CreateUserAction"
                 label="%actions.createUser.label" style="push"
                 toolbarPath="additions" tooltip="%actions.createUser.tooltip"/>
+            <!--<action
+                class="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
+                id="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
+                label="%actions.addLanguage.label" style="push"
+                toolbarPath="additions" tooltip="%actions.addLanguage.tooltip"/>-->    
         </viewContribution>
         <viewContribution
             id="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView" targetID="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView">
@@ -251,6 +270,12 @@
               id="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
               name="%org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor.name">
         </editor>
+        <!-- <editor
+              class="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor"
+              icon="icons/editor/localorganisation/LocalOrganisationEditor.16x16.png"
+              id="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor"
+              name="%org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor.name">
+        </editor> -->
     </extension>
     <extension
           point="org.nightlabs.base.ui.entityEditor">
@@ -391,6 +416,20 @@
               editorID="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
               indexHint="20">
         </pageFactory>
+        <!-- <category
+              class="org.nightlabs.jfire.base.admin.ui.editor.language.EntityTreeCategoryLanguage"
+              icon="icons/keys.png"
+              id="org.nightlabs.jfire.base.admin.ui.editor.language.EntityTreeCategoryLanguage"
+              name="%entityEditor.category.language">
+           <viewBinding
+                 editorID="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor"
+                 viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView">
+           </viewBinding>
+        </category>
+        <pageFactory
+              class="org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage$Factory"
+              editorID="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor">
+        </pageFactory>-->
     </extension>
     <extension
           point="org.eclipse.ui.newWizards">
@@ -426,6 +465,13 @@
              id="org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard"
              name="%org.nightlabs.jfire.base.admin.ui.organisation.create.CreateOrganisationWizard.name">
        </wizard>
+       <wizard
+             category="org.nightlabs.jfire.base.admin.ui"
+             class="org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard"
+             icon="icons/user/CreateUserAction.16x16.png"
+             id="org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard"
+             name="%org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.name"> 
+       </wizard>       
     </extension>
     <extension
           point="org.nightlabs.base.ui.editor2perspective">
