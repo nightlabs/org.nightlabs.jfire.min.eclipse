@@ -31,6 +31,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.jfire.base.ui.login.Login;
 
 /**
  * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
@@ -40,13 +41,15 @@ public class RemoveLanguageAction extends WorkbenchWindowAndViewActionDelegate {
 	@Override
 	public void run(IAction arg0) {
 		try {
+			Login.getLogin(false).setForceLogin(true);
+			Login.getLogin();
 			RemoveLanguageWizard wiz = new RemoveLanguageWizard();
 			WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wiz);
 			if (wizardDialog.open() == Window.OK) {
 				;
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+//			throw new RuntimeException(e);
 		}
 	}
 
