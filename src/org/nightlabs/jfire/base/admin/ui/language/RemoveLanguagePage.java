@@ -68,11 +68,11 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 	private XCombo combo;
 	private MouseWheelListenerImpl mouseWheelListener;
 	private Map<String, String> displayNameToLanguageID = new HashMap<String, String>();
-	private Set<String> languageIDsForbidden = new HashSet<String>() {
+	private Set<String> languageIDsInalienable = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{
 			add("en");
-			add("de");
+//			add("de");
 		}
 	};
 	
@@ -105,7 +105,7 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		while (it.hasNext()) {
 			final LanguageCf languageCf = it.next();
 			final String languageID = languageCf.getLanguageID();
-			if (!languageIDsForbidden.contains(languageID)) {
+			if (!languageIDsInalienable.contains(languageID)) {
 				final Locale locale = LanguageManager.getLocale(languageID);
 				final String displayName = locale.getDisplayName();
 				displayNameToLanguageID.put(displayName, languageID);
