@@ -311,7 +311,11 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 			displayImage(id);
 		}
-
+		else { //@Marco, why did you remove these 2 lines? 
+			filenameTextbox.setText("");
+			displayImage(null);
+		}
+		
 		sizeLabel.setText(
 				String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.sizeMaxKBLabel"), //$NON-NLS-1$
 						new Object[] { new Long(imageStructField.getMaxSizeKB()) }));
