@@ -29,7 +29,6 @@ package org.nightlabs.jfire.base.ui.language;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -115,11 +114,10 @@ public class LanguageWatcher implements LoginStateListener {
 				remoteLanguageManager = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, Login.getLogin().getInitialContextProperties());
 
 				// download all languages known to the organisation on the server
-				Collection languages = remoteLanguageManager.getLanguages();
+				Collection<? extends Language> languages = remoteLanguageManager.getLanguages();
 				Set<String> languageIDs = new HashSet<String>();
-				Set remoteLanguageIDSet = new HashSet(languages.size());
-				for (Iterator it = languages.iterator(); it.hasNext(); ) {
-					Language language = (Language) it.next();
+				Set<String> remoteLanguageIDSet = new HashSet<String>(languages.size());
+				for (Language language : languages) {
 					String languageID = language.getLanguageID();
 					remoteLanguageIDSet.add(languageID);
 					LanguageCf langCf = localLanguageManager.getLanguage(language.getLanguageID(), false);
@@ -141,14 +139,12 @@ public class LanguageWatcher implements LoginStateListener {
 					}
 				}
 
-				for (Iterator it = localLanguageManager.getLanguages().iterator(); it.hasNext(); ) {
-					LanguageCf langCf = (LanguageCf) it.next();
+				for (LanguageCf langCf : localLanguageManager.getLanguages()) {
 					languageIDs.add(langCf.getLanguageID());
 				}
 
 				// check client's languages and create the ones which are missing on the server
-				for (Iterator it = localLanguageManager.getLanguages().iterator(); it.hasNext(); ) {
-					LanguageCf langCf = (LanguageCf) it.next();
+				for (LanguageCf langCf : localLanguageManager.getLanguages()) {
 
 					{ // init langCf again
 						int namesCount = langCf.getName().getTexts().size();
@@ -157,12 +153,12 @@ public class LanguageWatcher implements LoginStateListener {
 							localLanguageManager.makeDirty(langCf);
 					}
 
-					boolean addedLanguage = false;
+//					boolean addedLanguage = false;
 					String languageID = langCf.getLanguageID();
 					if (!remoteLanguageIDSet.contains(languageID)) {
 						// language does not exist in the organisation on the server => create it
 						try {
-							remoteLanguageManager.createLanguage(langCf); // TODO we should add additional translations of the language name to the server
+							remoteLanguageManager.createLanguage(langCf, true, false); // TODO we should add additional translations of the language name to the server
 						} catch (LanguageException ex) {
 							logger.error("Failed creating language: " + langCf.getLanguageID(), ex); //$NON-NLS-1$
 							localLanguageManager.removeLanguage(langCf.getLanguageID());
