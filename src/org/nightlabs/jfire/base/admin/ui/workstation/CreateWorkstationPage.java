@@ -96,6 +96,7 @@ public class CreateWorkstationPage extends DynamicPathWizardPage implements Form
 		} else if (!ObjectIDUtil.isValidIDString(getWorkstationID())) {
 			updateStatus(Messages.getString("org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage.errorWorkstationIDInvalid")); //$NON-NLS-1$
 		} else {
+			// TODO do not perform request for workstation IDs on UI thread
 			WorkstationManagerRemote workstationManager = JFireEjb3Factory.getRemoteBean(WorkstationManagerRemote.class, SecurityReflector.getInitialContextProperties());
 			String chosenWSID = getWorkstationID();
 			Set<WorkstationID> wsIDs = workstationManager.getWorkstationIDs();
