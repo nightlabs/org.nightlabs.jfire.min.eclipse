@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.admin.ui.language;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,22 +36,32 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.language.LanguageException;
+import org.nightlabs.jfire.language.LanguageManagerRemote;
+import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.language.LanguageCf;
 
 /**
  * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
  */
 public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 
+	/**
+	 * LOG4J logger used by this class
+	 */
+	private static final Logger logger = Logger.getLogger(AddLanguageWizard.class);
+
 	private AddLanguagePage addLanguagePage;
-	
+
 	public AddLanguageWizard() {
 		super();
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.wizardTitle")); //$NON-NLS-1$
 		addLanguagePage = new AddLanguagePage(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.pageTitle")); //$NON-NLS-1$
 		addPage(addLanguagePage);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -64,7 +75,20 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 					final String chosenDisplayName = addLanguagePage.getChosenDisplayName();
 					for (AddLanguagePage.LocaleDescriptor localeDescriptor : addLanguagePage.getLocaleDescriptors()) {
 						if (localeDescriptor.getDisplayName().equals(chosenDisplayName)) {
-							LanguageManager.sharedInstance().addLanguage(localeDescriptor.getLocale());
+							boolean isLangCreatedRemote = true;
+							// Create new LanguageCf instance and initialize it.
+							LanguageCf langCf = LanguageManager.createLanguage(LanguageManager.getLanguageID(localeDescriptor.getLocale()));
+							LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+							try {
+								lm.createLanguage(langCf, true, true);		// server-side
+							} catch (LanguageException e) {
+								isLangCreatedRemote = false;
+								logger.error("Failed creating language: " + langCf.getLanguageID(), e); //$NON-NLS-1$
+							}
+							// Language is added on client side only in the case it has been successfully created on server side.
+							if (isLangCreatedRemote) {
+								LanguageManager.sharedInstance().addLanguage(localeDescriptor.getLocale());		// client-side
+							}
 						}
 					}
 					result[0] = true;
