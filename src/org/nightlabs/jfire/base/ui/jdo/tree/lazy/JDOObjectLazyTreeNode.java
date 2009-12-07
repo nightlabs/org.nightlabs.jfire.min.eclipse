@@ -8,7 +8,6 @@ import javax.jdo.JDOHelper;
 
 import org.apache.log4j.Logger;
 import org.nightlabs.jdo.ObjectID;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  *
