@@ -42,7 +42,7 @@ import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 
 /**
- * Provides login-state-dependency for WorkbenchWindowActions wich are
+ * Provides login-state-dependency for WorkbenchWindowActions which are
  * actions contributed into the workbench window menu or tool bar.
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>

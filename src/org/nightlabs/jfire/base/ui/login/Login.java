@@ -527,7 +527,7 @@ extends AbstractEPProcessor
 	 * To do so it calls {@link ILoginHandler#handleLogin(LoginData, LoginConfigModule, Login.AsyncLoginResult)}
 	 * of the LoginHandler defined with {@link #setLoginHandler(ILoginHandler)}.
 	 *
-	 * @param forceLogoutFirst Defines weather to logout first
+	 * @param forceLogoutFirst Defines wether to logout first
 	 *
 	 * @throws LoginException Exception is thrown whenever some error occurs during login.
 	 * But not that the user might be presented the possibility to work OFFLINE.
