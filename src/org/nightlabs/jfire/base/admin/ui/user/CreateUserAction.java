@@ -29,8 +29,8 @@ package org.nightlabs.jfire.base.admin.ui.user;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Point;
-import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * An action that opens the {@link CreateUserWizard}.
@@ -38,11 +38,12 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class CreateUserAction extends WorkbenchWindowAndViewActionDelegate
+public class CreateUserAction extends LSDWorkbenchWindowActionDelegate
 {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action)
 	{
 		try

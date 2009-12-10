@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.admin.ui.organisation.create;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 
 /**
@@ -36,15 +36,17 @@ import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateOrganisationAction extends WorkbenchWindowAndViewActionDelegate
+public class CreateOrganisationAction
+extends LSDWorkbenchWindowActionDelegate
 {
   /* (non-Javadoc)
    * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
    */
-  public void run(IAction action)
+  @Override
+	public void run(IAction action)
   {
   	try {
-      new WizardDialog(getShell(), new CreateOrganisationWizard()).open();
+      new WizardDialog(getWindow().getShell(), new CreateOrganisationWizard()).open();
   	} catch(Exception e) {
   		throw new RuntimeException(e);
   	}

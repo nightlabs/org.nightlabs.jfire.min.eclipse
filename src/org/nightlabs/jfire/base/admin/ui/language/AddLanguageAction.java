@@ -29,14 +29,15 @@ package org.nightlabs.jfire.base.admin.ui.language;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
-import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
  */
-public class AddLanguageAction extends WorkbenchWindowAndViewActionDelegate {
+public class AddLanguageAction
+extends LSDWorkbenchWindowActionDelegate
+{
 
 	@Override
 	public void run(IAction arg0) {
@@ -44,7 +45,7 @@ public class AddLanguageAction extends WorkbenchWindowAndViewActionDelegate {
 			Login.getLogin(false).setForceLogin(true);
 			Login.getLogin();
 			final AddLanguageWizard wiz = new AddLanguageWizard();
-			final WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wiz);
+			final WizardDialog wizardDialog = new WizardDialog(getWindow().getShell(), wiz);
 			if (wizardDialog.open() == Window.OK) {
 				;
 			}

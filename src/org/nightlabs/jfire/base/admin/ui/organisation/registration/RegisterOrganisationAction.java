@@ -27,54 +27,24 @@
 package org.nightlabs.jfire.base.admin.ui.organisation.registration;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de
  */
-public class RegisterOrganisationAction implements IWorkbenchWindowActionDelegate
+public class RegisterOrganisationAction
+extends LSDWorkbenchWindowActionDelegate
 {
-
-	private IWorkbenchWindow window;
-
-	public RegisterOrganisationAction()
-	{
-	}
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
-	 */
-	public void dispose()
-	{
-	}
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
-	public void init(IWorkbenchWindow window)
-	{
-		this.window = window;
-	}
-
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action)
 	{
 		RegisterOrganisationWizard registerOrganisationWizard = new RegisterOrganisationWizard();
-		WizardDialog wd = new WizardDialog(window.getShell(), registerOrganisationWizard);
+		WizardDialog wd = new WizardDialog(getWindow().getShell(), registerOrganisationWizard);
 		wd.open();
 	}
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-	}
-
 }

@@ -28,8 +28,8 @@ package org.nightlabs.jfire.base.admin.ui.workstation;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
-import org.nightlabs.base.ui.action.WorkbenchWindowAndViewActionDelegate;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * Action to create a new Workstation using a {@link CreateWorkstationWizard}.
@@ -37,15 +37,18 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateWorkstationAction extends WorkbenchWindowAndViewActionDelegate
+public class CreateWorkstationAction
+extends LSDWorkbenchWindowActionDelegate
 {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action)
 	{
 		CreateWorkstationWizard wiz = new CreateWorkstationWizard();
-		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(wiz);
+//		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(wiz);
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getWindow().getShell(), wiz);
 		if (wzd.open() == Window.OK) {
 //			try {
 //				Editor2PerspectiveRegistry.sharedInstance().openEditor(

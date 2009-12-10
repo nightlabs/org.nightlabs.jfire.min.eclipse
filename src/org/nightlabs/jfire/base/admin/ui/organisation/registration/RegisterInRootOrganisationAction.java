@@ -27,41 +27,18 @@
 package org.nightlabs.jfire.base.admin.ui.organisation.registration;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 
 
 /**
  * @author Marco Schulze - marco at nightlabs dot de
  */
-public class RegisterInRootOrganisationAction implements IWorkbenchWindowActionDelegate
+public class RegisterInRootOrganisationAction
+extends LSDWorkbenchWindowActionDelegate
 {
-
-//	private IWorkbenchWindow window;
-
-	public RegisterInRootOrganisationAction()
-	{
-	}
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
-	 */
-	public void dispose()
-	{
-	}
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
-	public void init(IWorkbenchWindow window)
-	{
-//		this.window = window;
-	}
-
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
@@ -74,12 +51,4 @@ public class RegisterInRootOrganisationAction implements IWorkbenchWindowActionD
 			throw new RuntimeException(e);
 		}
 	}
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-	}
-
 }
