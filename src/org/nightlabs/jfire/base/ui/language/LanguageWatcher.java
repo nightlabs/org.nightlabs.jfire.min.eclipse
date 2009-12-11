@@ -29,6 +29,7 @@ package org.nightlabs.jfire.base.ui.language;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -144,7 +145,10 @@ public class LanguageWatcher implements LoginStateListener {
 				}
 
 				// check client's languages and create the ones which are missing on the server
-				for (LanguageCf langCf : localLanguageManager.getLanguages()) {
+				
+				// Iterating over a collection and removing items later yields a ConcurrentModificationException. Tobias
+				// for (LanguageCf langCf : localLanguageManager.getLanguages()) {
+				for (LanguageCf langCf : new LinkedList<LanguageCf>(localLanguageManager.getLanguages())) {
 
 					{ // init langCf again
 						int namesCount = langCf.getName().getTexts().size();
