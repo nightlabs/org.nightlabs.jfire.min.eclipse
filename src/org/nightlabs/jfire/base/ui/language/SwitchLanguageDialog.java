@@ -71,6 +71,9 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		LanguageCf langCf = languageChooser.getLanguage();
+		if (langCf == null) {
+			return;
+		}
 		String languageID = langCf.getLanguageID();
 		super.okPressed();
 		if (LanguageManager.sharedInstance().getCurrentLanguageID().equals(languageID))
