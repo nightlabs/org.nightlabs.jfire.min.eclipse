@@ -436,13 +436,13 @@
               editorID="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
               indexHint="20">
         </pageFactory>
-        <category
+        <!--<category
               class="org.nightlabs.jfire.base.admin.ui.editor.language.EntityTreeCategoryLanguage"
               icon="icons/language/world.16x16.png"
               id="org.nightlabs.jfire.base.admin.ui.editor.language.EntityTreeCategoryLanguage"
               name="%entityEditor.category.language">
         </category>
-        <!-- <pageFactory
+        <pageFactory
               class="org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage$Factory"
               editorID="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor">
         </pageFactory>-->
