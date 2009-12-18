@@ -33,7 +33,8 @@ import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
- * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
+ *
+ * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class AddLanguageAction
 extends LSDWorkbenchWindowActionDelegate
