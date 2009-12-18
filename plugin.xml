@@ -99,14 +99,18 @@
                 menubarPath="administrationMenu/entityGroup" tooltip="%actions.createUser.tooltip"/>
             <action
                   class="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
+                  icon="icons/language/world_add.16x16.png"
                   id="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction#menu"
                   label="%actions.addLanguage.label "
-                  menubarPath="administrationMenu/languageAddGroup" tooltip="%actions.addLanguage.tooltip"/>
+                  menubarPath="administrationMenu/languageAddGroup"
+                  tooltip="%actions.addLanguage.tooltip"/>
             <action
                   class="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction"
+                  icon="icons/language/world_delete.16x16.png"
                   id="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction#menu"
                   label="%actions.removeLanguage.label "
-                  menubarPath="administrationMenu/languageRemoveGroup" tooltip="%actions.removeLanguage.tooltip"/>      
+                  menubarPath="administrationMenu/languageRemoveGroup"
+                  tooltip="%actions.removeLanguage.tooltip"/>      
             <action
                   class="org.nightlabs.jfire.base.admin.ui.rolegroup.GrantRolegroupsAction"
                   enablesFor="+"
@@ -172,15 +176,21 @@
                 label="%actions.createUser.label" style="push"
                 toolbarPath="additions" tooltip="%actions.createUser.tooltip"/>
             <action
-                class="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
-                id="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
-                label="%actions.addLanguage.label" style="push"
-                toolbarPath="additions" tooltip="%actions.addLanguage.tooltip"/>
+                  class="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
+                  icon="icons/language/world_add.16x16.png"
+                  id="org.nightlabs.jfire.base.admin.ui.language.AddLanguageAction"
+                  label="%actions.addLanguage.label"
+                  style="push"
+                  toolbarPath="additions"
+                  tooltip="%actions.addLanguage.tooltip"/>
             <action
-                class="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction"
-                id="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction"
-                label="%actions.removeLanguage.label" style="push"
-                toolbarPath="additions" tooltip="%actions.removeLanguage.tooltip"/>        
+                  class="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction"
+                  icon="icons/language/world_delete.16x16.png"
+                  id="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction"
+                  label="%actions.removeLanguage.label"
+                  style="push"
+                  toolbarPath="additions"
+                  tooltip="%actions.removeLanguage.tooltip"/>        
         </viewContribution>
         <viewContribution
             id="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView" targetID="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView">
@@ -300,6 +310,11 @@
              editorID="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
              indexHint="10">
        </pageFactory>
+       <!-- <pageFactory
+             class="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationLanguageConfigPage$Factory"
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
+             indexHint="20">
+       </pageFactory>-->
         <category
             class="org.nightlabs.jfire.base.admin.ui.editor.user.EntityTreeCategoryUser"
             icon="icons/editor/user/EntityTreeCategoryUser.16x16.png"
@@ -421,17 +436,13 @@
               editorID="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
               indexHint="20">
         </pageFactory>
-        <!--<category
+        <category
               class="org.nightlabs.jfire.base.admin.ui.editor.language.EntityTreeCategoryLanguage"
-              icon="icons/keys.png"
+              icon="icons/language/world.16x16.png"
               id="org.nightlabs.jfire.base.admin.ui.editor.language.EntityTreeCategoryLanguage"
               name="%entityEditor.category.language">
-           <viewBinding
-                 editorID="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor"
-                 viewID="org.nightlabs.jfire.base.admin.ui.editor.SysAdminEntityTreeView">
-           </viewBinding>
         </category>
-        <pageFactory
+        <!-- <pageFactory
               class="org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage$Factory"
               editorID="org.nightlabs.jfire.base.admin.ui.editor.language.LanguageEditor">
         </pageFactory>-->
