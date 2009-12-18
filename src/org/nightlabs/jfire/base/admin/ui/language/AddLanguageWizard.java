@@ -44,13 +44,12 @@ import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.language.LanguageCf;
 
 /**
- * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
+ *
+ * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 
-	/**
-	 * LOG4J logger used by this class
-	 */
+	/** LOG4J logger used by this class. */
 	private static final Logger logger = Logger.getLogger(AddLanguageWizard.class);
 
 	private AddLanguagePage addLanguagePage;
@@ -76,7 +75,7 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 					for (AddLanguagePage.LocaleDescriptor localeDescriptor : addLanguagePage.getLocaleDescriptors()) {
 						if (localeDescriptor.getDisplayName().equals(chosenDisplayName)) {
 							boolean isLangCreatedRemote = true;
-							// Create new LanguageCf instance and initialize it.
+							// Create new LanguageCf instance.
 							LanguageCf langCf = LanguageManager.createLanguage(LanguageManager.getLanguageID(localeDescriptor.getLocale()));
 							LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
 							try {
@@ -85,8 +84,9 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 								isLangCreatedRemote = false;
 								logger.error("Failed creating language: " + langCf.getLanguageID(), e); //$NON-NLS-1$
 							}
-							// Language is added on client side only in the case it has been successfully created on server side.
+							// Language is added on client side only in the case it has successfully been created on server side before.
 							if (isLangCreatedRemote) {
+								logger.info("Created language on server-side");
 								LanguageManager.sharedInstance().addLanguage(localeDescriptor.getLocale());		// client-side
 							}
 						}

@@ -37,6 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -50,118 +51,168 @@ import org.nightlabs.base.ui.composite.Formular;
 import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.custom.XCombo;
-import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
+import org.nightlabs.i18n.I18nUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
-import org.nightlabs.language.LanguageCf;
 
 /**
- * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
+ *
+ * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class AddLanguagePage extends DynamicPathWizardPage implements FormularChangeListener {
-	
-	private XCombo combo;
-	private MouseWheelListenerImpl mouseWheelListener;
-	private Set<LocaleDescriptor> localeDescriptors = new HashSet<LocaleDescriptor>();
 
-	public AddLanguagePage(String title) {
+	private static final Logger LOGGER = Logger.getLogger(AddLanguagePage.class);
+
+	private static final String PATH_RESOURCE_LANGUAGES = "resource/language/";
+
+	private static final String PATH_RESOURCE_COUNTRIES = "resource/country/";
+
+	/** {@link XCombo} representing all available languages to add. */
+	private XCombo combo;
+	/** {@link MouseWheelListener} implementation used for enabling scrolling. */
+	private MouseWheelListenerImpl mouseWheelListener;
+	/** Keeps track of all wrapper classes used for wrapping Locale objects and further local-specific information. */
+	private static Set<LocaleDescriptor> localeDescriptors = new HashSet<LocaleDescriptor>();
+	/** Keeps track of all contributions added to language XCombo. */
+	private static List<ComboContributionDescriptor> comboContributionDescriptors = null;
+	/** True if local-specific information has already been prepared, otherwise false. */
+	private static boolean localesPrepared = false;
+
+	/** The constructor. */
+	public AddLanguagePage(final String title) {
+		// TODO Find appropriate image for this wizard.
 		super(AddLanguagePage.class.getName(), title,
-		// TODO create image for this wizard	
-		SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), CreateWorkstationPage.class));
+			SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), CreateWorkstationPage.class));
 		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage.infoText"));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Control createPageContents(Composite parent) {
-		int idx = 0;
-		final List<String> displayNames = new ArrayList<String>();
-		final Map<String, LocaleDescriptor> displayNameToLocaleDescriptor = new HashMap<String, LocaleDescriptor>();
-		
-		// Collect all available Locale objects and create appropriate descriptors.
-		final Locale[] locales = Locale.getAvailableLocales();
-		final Locale currentLocale = LanguageManager.getLocale(LanguageManager.sharedInstance().getCurrentLanguageID());
-		final String currentLangDisplayName = currentLocale.getDisplayName();
-		
-		for (int i = 0; i < locales.length; i++) {
-			final Locale locale = locales[i];
-//			System.out.println("Locale country code: " + locale.getCountry());
-//			System.out.println("Locale country code (display): " + locale.getDisplayCountry());
-//			System.out.println("Locale language code: " + locale.getLanguage());
-//			System.out.println("Locale language code (display): " + locale.getDisplayLanguage());
-//			System.out.println("Locale name (display): " + locale.getDisplayName());
-//			System.out.println("Locale ISO3 country: " + locale.getISO3Country());
-//			System.out.println("Locale IOS3 language: " + locale.getISO3Language());
-			
-			/* Example:
-			Locale country code: 			CH
-			Locale country code (display): 	Schweiz
-			Locale language code: 			de
-			Locale language code (display): Deutsch
-			Locale name (display): 			Deutsch (Schweiz)
-			Locale ISO3 country: 			CHE
-			Locale IOS3 language: 			deu
-			*/
-			
-			final String displayName = locale.getDisplayName();
-			displayNames.add(displayName);
-			final LocaleDescriptor localeDescriptor = new LocaleDescriptor(locale, displayName);
-			displayNameToLocaleDescriptor.put(displayName, localeDescriptor);
-			localeDescriptors.add(localeDescriptor);
-		}
+//		final Locale currentLocale = LanguageManager.getLocale(LanguageManager.sharedInstance().getCurrentLanguageID());
 
-		// Create contents of page (Label and XCombo).	
+		AddLanguagePage.prepareLocales();
+
+		// Create contents of page (Label and XCombo).
 		final Formular f = new Formular(parent, SWT.NONE, this);
 		final Label label = new Label(f, SWT.NULL);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage.labelText"));
-		combo = new XCombo(f, SWT.READ_ONLY);
+		combo = new XCombo(f, SWT.READ_ONLY, 2);
 		combo.setVisibleItemCount(8);
-		
+
 		mouseWheelListener = new MouseWheelListenerImpl();
 		combo.addMouseWheelListener(mouseWheelListener);
-		
-		Collections.sort(displayNames);
-		for (String displayName : displayNames) {
-			final LocaleDescriptor localeDescriptor = displayNameToLocaleDescriptor.get(displayName);
-			if (localeDescriptor != null) {
-				final String languageID = localeDescriptor.getLocale().getLanguage();
-//				final Image img = LanguageManager.sharedInstance().getFlag16x16Image(languageID);	// not possible as languages are not created yet
-				final String flagResource = "resource/" + languageID + ".png";
-				final InputStream in = LanguageCf.class.getResourceAsStream(flagResource);
-				if (in != null) {
-					final ImageData imageData = new ImageData(in);
-					final ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(imageData);
-					final Image img = imageDescriptor.createImage();
-					combo.add(img, displayName);
-				} else {
-					combo.add(null, displayName);
-				}
-				try {
-					if (in != null) {
-						in.close();
-					}
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			} else {
-				combo.add(null, displayName);
-			}
-			if (currentLangDisplayName.equals(displayName)) {
-				combo.select(idx);
-			}
-			idx++;
+
+		for (ComboContributionDescriptor ccDesc : comboContributionDescriptors) {
+			combo.add(ccDesc.getImgLanguage(), ccDesc.getDisplayName(), ccDesc.getImgCountry(), ccDesc.getPos());
 		}
 		if (combo.getSelectionIndex() == -1 && combo.getItemCount() > 0) {
 			combo.select(0);
 		}
 		return f;
 	}
-	
+
+	private static void prepareLocales() {
+		if (!localesPrepared) {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("preparing Locales...");
+			}
+
+			comboContributionDescriptors = new ArrayList<ComboContributionDescriptor>();
+			final List<String> displayNames = new ArrayList<String>();
+			final Map<String, LocaleDescriptor> displayNameToLocaleDescriptor = new HashMap<String, LocaleDescriptor>();
+			final Locale[] locales = Locale.getAvailableLocales();
+
+			for (int i = 0; i < locales.length; i++) {
+				final Locale locale = locales[i];
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("***************************************************");
+					LOGGER.debug("Locale country code: " + locale.getCountry());
+					LOGGER.debug("Locale country code (display): " + locale.getDisplayCountry());
+					LOGGER.debug("Locale language code: " + locale.getLanguage());
+					LOGGER.debug("Locale language code (display): " + locale.getDisplayLanguage());
+					LOGGER.debug("Locale name (display): " + locale.getDisplayName());
+					LOGGER.debug("Locale ISO3 country: " + locale.getISO3Country());
+					LOGGER.debug("Locale IOS3 language: " + locale.getISO3Language());
+					LOGGER.debug("***************************************************");
+				}
+
+				/* Example:
+				Locale country code: 			CH
+				Locale country code (display): 	Schweiz
+				Locale language code: 			de
+				Locale language code (display): Deutsch
+				Locale name (display): 			Deutsch (Schweiz)
+				Locale ISO3 country: 			CHE
+				Locale IOS3 language: 			deu
+				*/
+
+//				if (locale.getDisplayName().contains("("))		// This is not very sophisticated, but...
+//					continue;
+
+				final String displayName = locale.getDisplayName();
+				displayNames.add(displayName);
+				final LocaleDescriptor localeDescriptor = new LocaleDescriptor(locale, displayName);
+				displayNameToLocaleDescriptor.put(displayName, localeDescriptor);
+				localeDescriptors.add(localeDescriptor);
+			}
+			Collections.sort(displayNames);
+
+			for (String displayName : displayNames) {
+				final LocaleDescriptor localeDescriptor = displayNameToLocaleDescriptor.get(displayName);
+				if (localeDescriptor != null) {
+					final String languageID = localeDescriptor.getLocale().getLanguage();
+					final String countryID = localeDescriptor.getLocale().getCountry().toLowerCase();
+					final String flagResourceLanguage = PATH_RESOURCE_LANGUAGES + languageID + ".png";
+					final String flagResourceCountry = PATH_RESOURCE_COUNTRIES + countryID + ".png";
+//					final String countryID = localeDescriptor.getLocale().getCountry().toLowerCase();
+//					final Image img = LanguageManager.sharedInstance().getFlag16x16Image(languageID);	// not possible as languages are not created yet
+					final InputStream isLanguage = I18nUtil.class.getResourceAsStream(flagResourceLanguage);
+					final InputStream isCountry = I18nUtil.class.getResourceAsStream(flagResourceCountry);
+					if (isLanguage != null) {
+						final ImageData imageDataLanguage = new ImageData(isLanguage);
+						final ImageDescriptor imageDescriptorLanguage = ImageDescriptor.createFromImageData(imageDataLanguage);
+						final Image imgLanguage = imageDescriptorLanguage.createImage();
+						Image imgCountry = null;
+						if (isCountry != null) {
+							final ImageData imageDataCountry = new ImageData(isCountry);
+							final ImageDescriptor imageDescriptorCountry = ImageDescriptor.createFromImageData(imageDataCountry);
+							imgCountry = imageDescriptorCountry.createImage();
+						}
+						if (imgCountry == null) {
+							comboContributionDescriptors.add(new ComboContributionDescriptor(imgLanguage, displayName, null, -1));
+						} else {
+							comboContributionDescriptors.add(new ComboContributionDescriptor(imgLanguage, displayName, imgCountry, -1));
+						}
+					} else {
+						comboContributionDescriptors.add(new ComboContributionDescriptor(null, displayName, null, -1));
+					}
+					try {
+						if (isLanguage != null) {
+							isLanguage.close();
+						}
+						if (isCountry != null) {
+							isCountry.close();
+						}
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+			localesPrepared = true;
+		} else {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Locales have already been prepared");
+			}
+		}
+	}
+
+
 	public String getChosenDisplayName() {
 		int idx = combo.getSelectionIndex();
 		if (idx > -1 && idx < combo.getItemCount()) {
@@ -176,11 +227,12 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	@Override
 	public void formularChanged(FormularChangedEvent event) {
 	}
-	
+
+	@Override
 	public void setPageComplete(boolean complete) {
 		super.setPageComplete(complete);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -193,7 +245,7 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		}
 		return false;
 	}*/
-	
+
 	private class MouseWheelListenerImpl implements MouseWheelListener {
 		@Override
 		public void mouseScrolled(MouseEvent arg0) {
@@ -211,17 +263,17 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 			combo.select(newSelection);
 		}
 	}
-	
+
 	public static class LocaleDescriptor {
-		
+
 		private Locale locale;
 		private String displayName;
-				
+
 		public LocaleDescriptor(Locale locale, String displayName) {
 			this.locale = locale;
 			this.displayName = displayName;
 		}
-		
+
 		public Locale getLocale() {
 			return locale;
 		}
@@ -230,7 +282,39 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 			return displayName;
 		}
 	}
-	
+
+	public static class ComboContributionDescriptor {
+
+		private Image imgLanguage;
+		private String displayName;
+		private Image imgCountry;
+		private int pos;
+
+		public ComboContributionDescriptor(final Image imgLanguage, final String displayName, final Image imgCountry, final int pos) {
+			this.imgLanguage = imgLanguage;
+			this.displayName = displayName;
+			this.imgCountry = imgCountry;
+			this.pos = pos;
+		}
+
+		public Image getImgLanguage() {
+			return imgLanguage;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		public Image getImgCountry() {
+			return imgCountry;
+		}
+
+		public int getPos() {
+			return pos;
+		}
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -240,11 +324,11 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 			combo.removeMouseWheelListener(mouseWheelListener);
 		}
 	}
-	
+
 	public MouseWheelListenerImpl getMouseWheelListener() {
 		return mouseWheelListener;
 	}
-	
+
 	public Set<LocaleDescriptor> getLocaleDescriptors() {
 		return localeDescriptors;
 	}

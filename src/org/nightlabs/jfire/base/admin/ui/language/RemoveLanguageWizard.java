@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.admin.ui.language;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,22 +36,31 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.language.LanguageManagerRemote;
+import org.nightlabs.jfire.language.id.LanguageID;
+import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.language.LanguageCf;
 
 /**
- * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
+ *
+ * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class RemoveLanguageWizard extends DynamicPathWizard implements INewWizard {
 
+	/** LOG4J logger used by this class. */
+	private static final Logger logger = Logger.getLogger(RemoveLanguageWizard.class);
+
 	private RemoveLanguagePage removeLanguagePage;
-	
+
 	public RemoveLanguageWizard() {
 		super();
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageWizard.wizardTitle")); //$NON-NLS-1$
 		removeLanguagePage = new RemoveLanguagePage(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageWizard.pageTitle")); //$NON-NLS-1$
 		addPage(removeLanguagePage);
 	}
-	
+
 	@Override
 	public boolean performFinish() {
 		final boolean[] result = new boolean[] {false};
@@ -60,6 +70,14 @@ public class RemoveLanguageWizard extends DynamicPathWizard implements INewWizar
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					final String chosenLanguageID = removeLanguagePage.getChosenLanguageID();
 					if (!chosenLanguageID.equals("")) {
+						LanguageCf langCf = LanguageManager.createLanguage(chosenLanguageID);
+						LanguageID languageID = LanguageID.create(langCf.getLanguageID());
+						LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+						if (languageID != null) {
+							boolean res = lm.deleteLanguage(languageID);		// server-side
+							if (res)
+								logger.info("Removed existing language on server-side");
+						}
 						LanguageManager.sharedInstance().removeLanguage(chosenLanguageID);
 					}
 					result[0] = true;

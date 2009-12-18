@@ -55,13 +55,15 @@ import org.nightlabs.base.ui.custom.XCombo;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
+import org.nightlabs.i18n.I18nUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
 import org.nightlabs.language.LanguageCf;
 
 /**
- * @author Frederik Löser <frederik[AT]nightlabs[DOT]de>
+ *
+ * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class RemoveLanguagePage extends DynamicPathWizardPage implements FormularChangeListener {
 
@@ -71,18 +73,23 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 	private Set<String> languageIDsInalienable = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{
-			add("en");
+//			add("en");
 //			add("de");
 		}
 	};
-	
+	private boolean lastItem = false;
+
+	public boolean isLastItem() {
+		return lastItem;
+	}
+
 	public RemoveLanguagePage(String title) {
 		super(RemoveLanguagePage.class.getName(), title,
 		// TODO create image for this wizard
 		SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), CreateWorkstationPage.class));
 		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguagePage.infoText"));
 	}
-	
+
 	@Override
 	public Control createPageContents(Composite parent) {
 		int idx = 0;
@@ -91,36 +98,41 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		final String currentLangDisplayName = currentLocale.getDisplayName();
 		final Collection<LanguageCf> registeredLanguages = LanguageManager.sharedInstance().getLanguages();
 		final Iterator<LanguageCf> it = registeredLanguages.iterator();
-		
-		// Create contents of page (Label and XCombo).	
+		if (registeredLanguages.size() <= 1) {
+			lastItem = true;
+		}
+
+		// Create contents of page (Label and XCombo).
 		final Formular f = new Formular(parent, SWT.NONE, this);
 		final Label label = new Label(f, SWT.NULL);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguagePage.labelText"));
 		combo = new XCombo(f, SWT.READ_ONLY);
 		combo.setVisibleItemCount(8);
-		
+
 		mouseWheelListener = new MouseWheelListenerImpl();
 		combo.addMouseWheelListener(mouseWheelListener);
-		
+
+		if (lastItem)
+			return f;
 		while (it.hasNext()) {
 			final LanguageCf languageCf = it.next();
 			final String languageID = languageCf.getLanguageID();
-			if (!languageIDsInalienable.contains(languageID)) {
+//			if (!languageIDsInalienable.contains(languageID)) {
 				final Locale locale = LanguageManager.getLocale(languageID);
 				final String displayName = locale.getDisplayName();
 				displayNameToLanguageID.put(displayName, languageID);
 				displayNames.add(displayName);
-			}
+//			}
 		}
-		
+
 		Collections.sort(displayNames);
 		for (String displayName : displayNames) {
 			final String languageID = displayNameToLanguageID.get(displayName);
 			if (languageID != null) {
-				final String flagResource = "resource/" + languageID + ".png";
-				final InputStream in = LanguageCf.class.getResourceAsStream(flagResource);
-				if (in != null) {
-					final ImageData imageData = new ImageData(in);
+				final String flagResourceLanguage = "resource/language/" + languageID + ".png";
+				final InputStream isLanguage = I18nUtil.class.getResourceAsStream(flagResourceLanguage);
+				if (isLanguage != null) {
+					final ImageData imageData = new ImageData(isLanguage);
 					final ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(imageData);
 					final Image img = imageDescriptor.createImage();
 					combo.add(img, displayName);
@@ -128,8 +140,8 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 					combo.add(null, displayName);
 				}
 				try {
-					if (in != null) {
-						in.close();
+					if (isLanguage != null) {
+						isLanguage.close();
 					}
 				} catch (IOException e) {
 					throw new RuntimeException(e);
@@ -157,11 +169,11 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		}
 		return "";
 	}
-	
+
 	@Override
 	public void formularChanged(FormularChangedEvent event) {
 	}
-	
+
 	private class MouseWheelListenerImpl implements MouseWheelListener {
 		@Override
 		public void mouseScrolled(MouseEvent arg0) {
@@ -179,7 +191,7 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 			combo.select(newSelection);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
