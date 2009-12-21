@@ -32,12 +32,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -62,62 +60,67 @@ import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
 import org.nightlabs.language.LanguageCf;
 
 /**
- *
+ * Wizard page for removing languages from client and server. Every language can be removed except the last
+ * one registered and the one that is currently used.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class RemoveLanguagePage extends DynamicPathWizardPage implements FormularChangeListener {
 
+	/** {@link XCombo} representing all registered languages that can be removed. */
 	private XCombo combo;
+	/** {@link MouseWheelListener} implementation used for enabling scrolling. */
 	private MouseWheelListenerImpl mouseWheelListener;
+	/** Keeps track of all display name/language ID pairs registered. */
 	private Map<String, String> displayNameToLanguageID = new HashMap<String, String>();
-	private Set<String> languageIDsInalienable = new HashSet<String>() {
-		private static final long serialVersionUID = 1L;
-		{
-//			add("en");
-//			add("de");
-		}
-	};
+	/** True if there is only one language registered, otherwise false. */
 	private boolean lastItem = false;
 
-	public boolean isLastItem() {
-		return lastItem;
-	}
-
+	/**
+	 * The constructor.
+	 * @param title The title of the page.
+	 */
 	public RemoveLanguagePage(String title) {
-		super(RemoveLanguagePage.class.getName(), title,
-		// TODO create image for this wizard
-		SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), CreateWorkstationPage.class));
+		// TODO Find appropriate image for this wizard.
+		super(
+			RemoveLanguagePage.class.getName(),
+			title,
+			SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), CreateWorkstationPage.class));
 		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguagePage.infoText"));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Control createPageContents(Composite parent) {
-		int idx = 0;
 		final List<String> displayNames = new ArrayList<String>();
 		final Locale currentLocale = LanguageManager.getLocale(LanguageManager.sharedInstance().getCurrentLanguageID());
-		final String currentLangDisplayName = currentLocale.getDisplayName();
+		final String currentLocaleDisplayName = currentLocale.getDisplayName();
 		final Collection<LanguageCf> registeredLanguages = LanguageManager.sharedInstance().getLanguages();
 		final Iterator<LanguageCf> it = registeredLanguages.iterator();
 		if (registeredLanguages.size() <= 1) {
 			lastItem = true;
 		}
 
-		// Create contents of page (Label and XCombo).
+		// Create contents of this wizard page.
 		final Formular f = new Formular(parent, SWT.NONE, this);
+		if (lastItem) {
+			final Label label = new Label(f, SWT.NULL);
+			label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguagePage.labelText_RemovingNotPossible"));
+			setPageComplete(false);
+			return f;
+		}
 		final Label label = new Label(f, SWT.NULL);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguagePage.labelText"));
 		combo = new XCombo(f, SWT.READ_ONLY);
 		combo.setVisibleItemCount(8);
-
 		mouseWheelListener = new MouseWheelListenerImpl();
 		combo.addMouseWheelListener(mouseWheelListener);
 
-		if (lastItem)
-			return f;
+
 		while (it.hasNext()) {
 			final LanguageCf languageCf = it.next();
 			final String languageID = languageCf.getLanguageID();
-//			if (!languageIDsInalienable.contains(languageID)) {
 				final Locale locale = LanguageManager.getLocale(languageID);
 				final String displayName = locale.getDisplayName();
 				displayNameToLanguageID.put(displayName, languageID);
@@ -127,6 +130,8 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 
 		Collections.sort(displayNames);
 		for (String displayName : displayNames) {
+			if (displayName.equals(currentLocaleDisplayName))
+				continue;
 			final String languageID = displayNameToLanguageID.get(displayName);
 			if (languageID != null) {
 				final String flagResourceLanguage = "resource/language/" + languageID + ".png";
@@ -143,13 +148,9 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 					if (isLanguage != null) {
 						isLanguage.close();
 					}
-				} catch (IOException e) {
-					throw new RuntimeException(e);
+				} catch (final IOException exception) {
+					throw new RuntimeException(exception);
 				}
-				if (currentLangDisplayName.equals(displayName)) {
-					combo.select(idx);
-				}
-				idx++;
 			}
 		}
 		if (combo.getSelectionIndex() == -1 && combo.getItemCount() > 0) {
@@ -158,6 +159,12 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		return f;
 	}
 
+	/**
+	 * Gets language ID according to text of selected {@link XCombo} item.
+	 * Called when performing finish in {@link RemoveLanguageWizard}.
+	 * @return language ID according to text of selected {@link XCombo} item
+	 * or the empty string if index is out of range or no item has been selected.
+	 */
 	public String getChosenLanguageID() {
 		int idx = combo.getSelectionIndex();
 		if (idx > -1 && idx < combo.getItemCount()) {
@@ -170,10 +177,17 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		return "";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void formularChanged(FormularChangedEvent event) {
 	}
 
+	/**
+	 * {@link MouseWheelListener} implementation used for {@link XCombo}.
+	 * @author Frederik Loeser - frederik[at]nightlabs[dot]de
+	 */
 	private class MouseWheelListenerImpl implements MouseWheelListener {
 		@Override
 		public void mouseScrolled(MouseEvent arg0) {
@@ -200,5 +214,12 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		if (combo != null && mouseWheelListener != null) {
 			combo.removeMouseWheelListener(mouseWheelListener);
 		}
+	}
+
+	/**
+	 * @return true in the case only one language is registered, otherwise false.
+	 */
+	public boolean isLastItem() {
+		return lastItem;
 	}
 }
