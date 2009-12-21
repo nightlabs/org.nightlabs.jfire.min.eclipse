@@ -58,7 +58,6 @@ import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
 
-
 /**
  * Wizard page for adding new languages to client and server. After a certain language has been added successfully,
  * it can be selected in the language-chooser combo.
@@ -66,7 +65,7 @@ import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
  */
 public class AddLanguagePage extends DynamicPathWizardPage implements FormularChangeListener {
 
-	/** Logger used for this class. */
+	/** Log4j logger used for this class. */
 	private static final Logger LOGGER = Logger.getLogger(AddLanguagePage.class);
 	/** Path fraction to language-specific resources. The name of each resource in here corresponds to a language ID. */
 	private static final String PATH_RESOURCE_LANGUAGES = "resource/language/";
@@ -85,7 +84,7 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 
 	/**
 	 * The constructor.
-	 * @param title The title for the page.
+	 * @param title The title of the page.
 	 */
 	public AddLanguagePage(final String title) {
 		// TODO Find appropriate image for this wizard.
@@ -205,9 +204,10 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	}
 
 	/**
-	 * Gets text of selected {@link XCombo} item. Called when performing finish in {@link AddLanguageWizard}.
-	 * @return text of selected {@link XCombo} item or the empty string if index is out of range or no item has
-	 * been selected.
+	 * Gets text of selected {@link XCombo} item. Called when performing finish
+	 * in {@link AddLanguageWizard}.
+	 * @return text of selected {@link XCombo} item or the empty string if index
+	 * is out of range or no item has been selected.
 	 */
 	public String getChosenDisplayName() {
 		int idx = combo.getSelectionIndex();
