@@ -44,16 +44,19 @@ import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.language.LanguageCf;
 
 /**
- *
+ * Wizard for removing languages from client and server.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class RemoveLanguageWizard extends DynamicPathWizard implements INewWizard {
 
-	/** LOG4J logger used by this class. */
+	/** Log4j logger used for this class. */
 	private static final Logger logger = Logger.getLogger(RemoveLanguageWizard.class);
-
+	/** The page added to this wizard. */
 	private RemoveLanguagePage removeLanguagePage;
 
+	/**
+	 * The constructor.
+	 */
 	public RemoveLanguageWizard() {
 		super();
 		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageWizard.wizardTitle")); //$NON-NLS-1$
@@ -70,21 +73,23 @@ public class RemoveLanguageWizard extends DynamicPathWizard implements INewWizar
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					final String chosenLanguageID = removeLanguagePage.getChosenLanguageID();
 					if (!chosenLanguageID.equals("")) {
-						LanguageCf langCf = LanguageManager.createLanguage(chosenLanguageID);
-						LanguageID languageID = LanguageID.create(langCf.getLanguageID());
-						LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+						final LanguageCf langCf = LanguageManager.createLanguage(chosenLanguageID);
+						final LanguageID languageID = LanguageID.create(langCf.getLanguageID());
+						final LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(
+							LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
 						if (languageID != null) {
-							boolean res = lm.deleteLanguage(languageID);		// server-side
-							if (res)
+							final boolean res = lm.deleteLanguage(languageID);		// server-side
+							if (res) {
 								logger.info("Removed existing language on server-side");
+							}
 						}
 						LanguageManager.sharedInstance().removeLanguage(chosenLanguageID);
 					}
 					result[0] = true;
 				}
 			});
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (final Exception exception) {
+			throw new RuntimeException(exception);
 		}
 		return result[0];
 	}
