@@ -58,33 +58,40 @@ import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
 
+
 /**
- *
+ * Wizard page for adding new languages to client and server. After a certain language has been added successfully,
+ * it can be selected in the language-chooser combo.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class AddLanguagePage extends DynamicPathWizardPage implements FormularChangeListener {
 
+	/** Logger used for this class. */
 	private static final Logger LOGGER = Logger.getLogger(AddLanguagePage.class);
-
+	/** Path fraction to language-specific resources. The name of each resource in here corresponds to a language ID. */
 	private static final String PATH_RESOURCE_LANGUAGES = "resource/language/";
-
+	/** Path fraction to country-specific resources. The name of each resource in here corresponds to a country ID. */
 	private static final String PATH_RESOURCE_COUNTRIES = "resource/country/";
-
-	/** {@link XCombo} representing all available languages to add. */
+	/** {@link XCombo} representing all available languages that can be added. */
 	private XCombo combo;
 	/** {@link MouseWheelListener} implementation used for enabling scrolling. */
 	private MouseWheelListenerImpl mouseWheelListener;
-	/** Keeps track of all wrapper classes used for wrapping Locale objects and further local-specific information. */
+	/** Keeps track of all created {@link LocaleDescriptor} instances. */
 	private static Set<LocaleDescriptor> localeDescriptors = new HashSet<LocaleDescriptor>();
-	/** Keeps track of all contributions added to language XCombo. */
+	/** Keeps track of all contributions added to language {@link XCombo}. */
 	private static List<ComboContributionDescriptor> comboContributionDescriptors = null;
 	/** True if local-specific information has already been prepared, otherwise false. */
 	private static boolean localesPrepared = false;
 
-	/** The constructor. */
+	/**
+	 * The constructor.
+	 * @param title The title for the page.
+	 */
 	public AddLanguagePage(final String title) {
 		// TODO Find appropriate image for this wizard.
-		super(AddLanguagePage.class.getName(), title,
+		super(
+			AddLanguagePage.class.getName(),
+			title,
 			SharedImages.getWizardPageImageDescriptor(BaseAdminPlugin.getDefault(), CreateWorkstationPage.class));
 		setDescription(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage.infoText"));
 	}
@@ -94,20 +101,16 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	 */
 	@Override
 	public Control createPageContents(Composite parent) {
-//		final Locale currentLocale = LanguageManager.getLocale(LanguageManager.sharedInstance().getCurrentLanguageID());
-
 		AddLanguagePage.prepareLocales();
 
-		// Create contents of page (Label and XCombo).
+		// Create contents of this wizard page.
 		final Formular f = new Formular(parent, SWT.NONE, this);
 		final Label label = new Label(f, SWT.NULL);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguagePage.labelText"));
 		combo = new XCombo(f, SWT.READ_ONLY, 2);
 		combo.setVisibleItemCount(8);
-
 		mouseWheelListener = new MouseWheelListenerImpl();
 		combo.addMouseWheelListener(mouseWheelListener);
-
 		for (ComboContributionDescriptor ccDesc : comboContributionDescriptors) {
 			combo.add(ccDesc.getImgLanguage(), ccDesc.getDisplayName(), ccDesc.getImgCountry(), ccDesc.getPos());
 		}
@@ -117,6 +120,10 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		return f;
 	}
 
+	/**
+	 * Prepares all available {@link Locale} objects for presentation in {@link XCombo} used for adding new languages.
+	 * Therefore, appropriate flags are fetched and display names of {@link Locale}s are sorted.
+	 */
 	private static void prepareLocales() {
 		if (!localesPrepared) {
 			if (LOGGER.isDebugEnabled()) {
@@ -131,30 +138,16 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 			for (int i = 0; i < locales.length; i++) {
 				final Locale locale = locales[i];
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("***************************************************");
-					LOGGER.debug("Locale country code: " + locale.getCountry());
-					LOGGER.debug("Locale country code (display): " + locale.getDisplayCountry());
-					LOGGER.debug("Locale language code: " + locale.getLanguage());
-					LOGGER.debug("Locale language code (display): " + locale.getDisplayLanguage());
-					LOGGER.debug("Locale name (display): " + locale.getDisplayName());
-					LOGGER.debug("Locale ISO3 country: " + locale.getISO3Country());
-					LOGGER.debug("Locale IOS3 language: " + locale.getISO3Language());
+					LOGGER.debug("***************************************************");			// e.g.
+					LOGGER.debug("Locale country code: " + locale.getCountry());					// CH
+					LOGGER.debug("Locale country code (display): " + locale.getDisplayCountry());	// Schweiz
+					LOGGER.debug("Locale language code: " + locale.getLanguage());					// de
+					LOGGER.debug("Locale language code (display): " + locale.getDisplayLanguage());	// Deutsch
+					LOGGER.debug("Locale name (display): " + locale.getDisplayName());				// Deutsch (Schweiz)
+					LOGGER.debug("Locale ISO3 country: " + locale.getISO3Country());				// CHE
+					LOGGER.debug("Locale IOS3 language: " + locale.getISO3Language());				// deu
 					LOGGER.debug("***************************************************");
 				}
-
-				/* Example:
-				Locale country code: 			CH
-				Locale country code (display): 	Schweiz
-				Locale language code: 			de
-				Locale language code (display): Deutsch
-				Locale name (display): 			Deutsch (Schweiz)
-				Locale ISO3 country: 			CHE
-				Locale IOS3 language: 			deu
-				*/
-
-//				if (locale.getDisplayName().contains("("))		// This is not very sophisticated, but...
-//					continue;
-
 				final String displayName = locale.getDisplayName();
 				displayNames.add(displayName);
 				final LocaleDescriptor localeDescriptor = new LocaleDescriptor(locale, displayName);
@@ -170,8 +163,6 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 					final String countryID = localeDescriptor.getLocale().getCountry().toLowerCase();
 					final String flagResourceLanguage = PATH_RESOURCE_LANGUAGES + languageID + ".png";
 					final String flagResourceCountry = PATH_RESOURCE_COUNTRIES + countryID + ".png";
-//					final String countryID = localeDescriptor.getLocale().getCountry().toLowerCase();
-//					final Image img = LanguageManager.sharedInstance().getFlag16x16Image(languageID);	// not possible as languages are not created yet
 					final InputStream isLanguage = I18nUtil.class.getResourceAsStream(flagResourceLanguage);
 					final InputStream isCountry = I18nUtil.class.getResourceAsStream(flagResourceCountry);
 					if (isLanguage != null) {
@@ -190,6 +181,7 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 							comboContributionDescriptors.add(new ComboContributionDescriptor(imgLanguage, displayName, imgCountry, -1));
 						}
 					} else {
+						// Should never happen as every Locale object refers to a non-empty language code (in contrast to country/region code).
 						comboContributionDescriptors.add(new ComboContributionDescriptor(null, displayName, null, -1));
 					}
 					try {
@@ -212,7 +204,11 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		}
 	}
 
-
+	/**
+	 * Gets text of selected {@link XCombo} item. Called when performing finish in {@link AddLanguageWizard}.
+	 * @return text of selected {@link XCombo} item or the empty string if index is out of range or no item has
+	 * been selected.
+	 */
 	public String getChosenDisplayName() {
 		int idx = combo.getSelectionIndex();
 		if (idx > -1 && idx < combo.getItemCount()) {
@@ -228,6 +224,9 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	public void formularChanged(FormularChangedEvent event) {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setPageComplete(boolean complete) {
 		super.setPageComplete(complete);
@@ -246,6 +245,10 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		return false;
 	}*/
 
+	/**
+	 * {@link MouseWheelListener} implementation used for {@link XCombo}.
+	 * @author Frederik Loeser - frederik[at]nightlabs[dot]de
+	 */
 	private class MouseWheelListenerImpl implements MouseWheelListener {
 		@Override
 		public void mouseScrolled(MouseEvent arg0) {
@@ -264,32 +267,67 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		}
 	}
 
+	/**
+	 * Helper class used for wrapping Locale objects and further local-specific information.
+	 * This class is used by {@link AddLanguageWizard}.
+	 * @author Frederik Loeser - frederik[at]nightlabs[dot]de
+	 */
 	public static class LocaleDescriptor {
-
+		/** The {@link Locale} object wrapped by this wrapper class instance. */
 		private Locale locale;
+		/** The name for the {@link Locale} wrapped by this wrapper class instance. */
 		private String displayName;
 
+		/**
+		 * The constructor.
+		 * @param locale The {@link Locale} object to wrap by this wrapper class instance.
+		 * @param displayName The name for the {@link Locale}, that is appropriate for display to the user,
+		 * to wrap by this wrapper class instance.
+		 */
 		public LocaleDescriptor(Locale locale, String displayName) {
 			this.locale = locale;
 			this.displayName = displayName;
 		}
 
+		/**
+		 * Gets the {@link Locale} object wrapped by this wrapper class instance.
+		 * @return the {@link Locale} object wrapped.
+		 */
 		public Locale getLocale() {
 			return locale;
 		}
-
+		/**
+		 * Gets the name for the {@link Locale} object wrapped by this wrapper class instance.
+		 * @return the name for the {@link Locale} object wrapped.
+		 */
 		public String getDisplayName() {
 			return displayName;
 		}
 	}
 
-	public static class ComboContributionDescriptor {
-
+	/**
+	 * Helper class for preparing contributions to the {@link XCombo}.
+	 * @author Frederik Loeser - frederik[at]nightlabs[dot]de
+	 */
+	private static class ComboContributionDescriptor {
+		/** The flag of the country the language code of the currently considered {@link Locale} corresponds to. */
 		private Image imgLanguage;
+		/** The name for the currently considered {@link Locale} that is appropriate for display to the user. */
 		private String displayName;
+		/** The flag of the country the country/region code of the currently considered {@link Locale} corresponds to. */
 		private Image imgCountry;
+		/** The index the item shall be added at in the {@link XCombo}. */
 		private int pos;
 
+		/**
+		 * The constructor.
+		 * @param imgLanguage The flag of the country the language code of the currently considered {@link Locale} corresponds to.
+		 * Should never be null.
+		 * @param displayName The name for the currently considered {@link Locale} that is appropriate for display to the user.
+		 * @param imgCountry The flag of the country the country/region code of the currently considered {@link Locale} corresponds to.
+		 * Can be null.
+		 * @param pos The index the item shall be added at in the {@link XCombo}.
+		 */
 		public ComboContributionDescriptor(final Image imgLanguage, final String displayName, final Image imgCountry, final int pos) {
 			this.imgLanguage = imgLanguage;
 			this.displayName = displayName;
@@ -297,18 +335,31 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 			this.pos = pos;
 		}
 
+		/**
+		 * Gets the flag of the country the language code of the currently considered {@link Locale} corresponds to.
+		 * @return the flag corresponding to language code.
+		 */
 		public Image getImgLanguage() {
 			return imgLanguage;
 		}
-
+		/**
+		 * Gets the name for the currently considered {@link Locale} that is appropriate for display to the user.
+		 * @return the display name of the {@link Locale}.
+		 */
 		public String getDisplayName() {
 			return displayName;
 		}
-
+		/**
+		 * Gets the flag of the country the country/region code of the currently considered {@link Locale} corresponds to.
+		 * @return the flag corresponding to country code.
+		 */
 		public Image getImgCountry() {
 			return imgCountry;
 		}
-
+		/**
+		 * Gets the index the item shall be added at in the {@link XCombo}.
+		 * @return the index.
+		 */
 		public int getPos() {
 			return pos;
 		}
@@ -325,10 +376,18 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		}
 	}
 
+	/**
+	 * Gets the {@link MouseWheelListener} implementation used for enabling scrolling.
+	 * @return the {@link MouseWheelListener} implementation.
+	 */
 	public MouseWheelListenerImpl getMouseWheelListener() {
 		return mouseWheelListener;
 	}
 
+	/**
+	 * Gets the set of all created {@link LocaleDescriptor} instances.
+	 * @return the set of all created {@link LocaleDescriptor} instances.
+	 */
 	public Set<LocaleDescriptor> getLocaleDescriptors() {
 		return localeDescriptors;
 	}
