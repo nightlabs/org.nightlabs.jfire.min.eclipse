@@ -158,6 +158,19 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			toolkit.adapt(resultComposite);
 		}
 
+		//Footer
+		footerComposite = createFooterComposite(sashform);
+		if (footerComposite instanceof XComposite)
+		{
+			final XComposite footerXComposite = (XComposite) footerComposite;
+			footerXComposite.setToolkit(toolkit);
+			footerXComposite.adaptToToolkit();
+		}
+		else if (toolkit != null)
+		{
+			toolkit.adapt(footerComposite);
+		}
+		
 		// Context Menu
 		menuManager = new MenuManager();
 		Menu contextMenu = menuManager.createContextMenu(parent);
@@ -395,6 +408,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	public abstract Composite createResultComposite(Composite parent);
 
 	/**
+	 * Implement this method for displaying the footer
+	 *
+	 * @param parent the parent {@link Composite}
+	 * @return a Composite which displays the footer
+	 */
+	public abstract Composite createFooterComposite(Composite parent);
+	
+	/**
 	 * @return the global scope, i.e. the scope where a GUI reflecting all fields of the Query is
 	 * registered for every Query.
 	 */
@@ -417,6 +438,11 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		return resultComposite;
 	}
 
+	private Composite footerComposite;
+	public Composite getFooterComposite() {
+		return footerComposite;
+	}
+	
 	/**
 	 * Performs a search with the current criteria.
 	 *
@@ -620,6 +646,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		// Calculate the total space available for both composites (search comp and result comp)
 		int completeHeight;
 		int searchHeight;
+		int footerHeight = 0;
 		if (expandedStateChangedSection == null)
 		{
 			// we need to initialise size values because these composites haven't been layed out correctly.
@@ -654,7 +681,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			return sashform.getWeights();
 		}
 
-		int resultHeight = completeHeight - searchHeight;
+		if (footerComposite != null)
+			footerHeight = 25;
+		
+		int resultHeight = completeHeight - searchHeight - footerHeight;
+		
+		if (footerComposite != null)
+			return new int[] { searchHeight, resultHeight, footerHeight };
+		
 		return new int[] { searchHeight, resultHeight };
 	}
 

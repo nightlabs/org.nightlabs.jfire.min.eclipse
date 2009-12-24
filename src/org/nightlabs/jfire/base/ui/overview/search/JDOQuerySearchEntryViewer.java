@@ -42,6 +42,11 @@ public abstract class JDOQuerySearchEntryViewer<R, Q extends AbstractSearchQuery
 		addResultTableListeners(tableComposite);
 		return tableComposite;
 	}
+	
+	@Override
+	public Composite createFooterComposite(Composite parent) {
+		return null;
+	}
 
 	/**
 	 * creates an {@link AbstractTableComposite} which is used as result composite
