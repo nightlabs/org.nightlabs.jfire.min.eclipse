@@ -167,7 +167,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			if (footerComposite instanceof XComposite)
 			{
 				final XComposite footerXComposite = (XComposite) footerComposite;
-				footerXComposite.getGridData().minimumHeight = 30;
+				footerXComposite.getGridData().minimumHeight = 55;
 				footerXComposite.setToolkit(toolkit);
 				footerXComposite.adaptToToolkit();
 			}
@@ -688,7 +688,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		}
 
 		if (footerComposite != null && footerComposite instanceof XComposite) {
-			footerHeight = 30;
+			footerHeight = 55;
 		}
 		
 		int resultHeight = completeHeight - searchHeight - footerHeight;
