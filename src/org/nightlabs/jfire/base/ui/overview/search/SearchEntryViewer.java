@@ -116,7 +116,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	{
 		sashform = new SashForm(parent, SWT.VERTICAL);
 		IToolkit toolkit = XComposite.retrieveToolkit(parent);
-
+		
+		//Adapts the sashform to fit into the parent (removes the gray area)
+		toolkit.adapt(sashform);
+		
 		scrollableSearchWrapper = new ScrolledComposite(sashform, SWT.V_SCROLL);
 		scrollableSearchWrapper.setExpandHorizontal(true);
 		scrollableSearchWrapper.setExpandVertical(true);
@@ -160,15 +163,18 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 		//Footer
 		footerComposite = createFooterComposite(sashform);
-		if (footerComposite instanceof XComposite)
-		{
-			final XComposite footerXComposite = (XComposite) footerComposite;
-			footerXComposite.setToolkit(toolkit);
-			footerXComposite.adaptToToolkit();
-		}
-		else if (toolkit != null)
-		{
-			toolkit.adapt(footerComposite);
+		if (footerComposite != null) {
+			if (footerComposite instanceof XComposite)
+			{
+				final XComposite footerXComposite = (XComposite) footerComposite;
+				footerXComposite.getGridData().minimumHeight = 30;
+				footerXComposite.setToolkit(toolkit);
+				footerXComposite.adaptToToolkit();
+			}
+			else if (toolkit != null)
+			{
+				toolkit.adapt(footerComposite);
+			}
 		}
 		
 		// Context Menu
@@ -681,8 +687,9 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			return sashform.getWeights();
 		}
 
-		if (footerComposite != null)
-			footerHeight = 25;
+		if (footerComposite != null && footerComposite instanceof XComposite) {
+			footerHeight = 30;
+		}
 		
 		int resultHeight = completeHeight - searchHeight - footerHeight;
 		
