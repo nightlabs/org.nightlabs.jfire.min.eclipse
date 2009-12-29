@@ -39,9 +39,10 @@ public class JDOObjectLazyTreeNode
 	{
 		this.parent = parent;
 	}
-	public JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller> getParent()
-	{
-		return parent;
+
+	@SuppressWarnings("unchecked")
+	public <N extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> N getParent() {
+		return (N)parent;
 	}
 
 	public void setJdoObjectID(JDOObjectID jdoObjectID) {
@@ -173,5 +174,32 @@ public class JDOObjectLazyTreeNode
 	@Override
 	public String toString() {
 		return this.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(this)) + '[' + jdoObjectID  + ']';
+	}
+
+
+	// ---- Nodal methods ------------------------------------------------------------------------------------------->> Kai >>
+	/**
+	 * Returns the root node, related to the Tree.
+	 */
+	@SuppressWarnings("unchecked")
+	public <N extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> N getRoot() {
+		return (N)(parent.parent == null ? this : parent.getRoot()); // Kai: Strangely, I have to check the parent's parent to be null before I identify the root. --> Well, apparently, there is a "hidden" root!!
+	}
+
+	/**
+	 * @return a List of JDOObjectIDs contained in this node up until the root.
+	 */
+	public List<JDOObjectID> getJDOObjectIDsToRoot() {
+		return getJDOObjectIDsToRoot(this, new ArrayList<JDOObjectID>());
+	}
+
+	private <N extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> List<JDOObjectID> getJDOObjectIDsToRoot(N node, List<JDOObjectID> jdoObjectIDs) {
+		// Base case.
+		if (node.parent == null)
+			return jdoObjectIDs;
+
+		// Iterative case.
+		jdoObjectIDs.add(node.jdoObjectID);
+		return getJDOObjectIDsToRoot(node.parent, jdoObjectIDs);
 	}
 }
