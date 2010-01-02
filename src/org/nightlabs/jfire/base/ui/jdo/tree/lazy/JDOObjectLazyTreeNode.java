@@ -40,9 +40,8 @@ public class JDOObjectLazyTreeNode
 		this.parent = parent;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <N extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> N getParent() {
-		return (N)parent;
+	public JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller> getParent() {
+		return parent;
 	}
 
 	public void setJdoObjectID(JDOObjectID jdoObjectID) {
