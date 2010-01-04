@@ -9,7 +9,6 @@ import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TreeItem;
 import org.nightlabs.jdo.ObjectID;
 
 public class JDOObjectLazyTreeContentProvider
@@ -76,7 +75,7 @@ implements ILazyTreeContentProvider
 
 		long realChildCount;
 		long childCount = getController().getNodeCount(parent);
-		
+
 		if (childCount < 0) // loading
 			realChildCount = 1; // the "Loading..." message
 		else
@@ -86,8 +85,8 @@ implements ILazyTreeContentProvider
 			logger.debug("updateChildCount: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " childCount=" + childCount); //$NON-NLS-1$ //$NON-NLS-2$
 
 		long start = System.currentTimeMillis();
-		if (realChildCount != currentChildCount) {			
-			getTreeViewer().setChildCount(element, (int)realChildCount);			
+		if (realChildCount != currentChildCount) {
+			getTreeViewer().setChildCount(element, (int)realChildCount);
 			if (logger.isDebugEnabled()){
 				long duration = System.currentTimeMillis() - start;
 				logger.debug(duration+" ms took getTreeViewer().setChildCount("+element+", "+realChildCount+")");
@@ -182,7 +181,7 @@ implements ILazyTreeContentProvider
 			if (childChildNodeCount < 0)
 				childChildNodeCount = 1; // the "Loading..." message
 
-			long start = System.currentTimeMillis(); 
+			long start = System.currentTimeMillis();
 			getTreeViewer().setChildCount(child, (int)childChildNodeCount);
 			if (logger.isDebugEnabled()) {
 				long duration = System.currentTimeMillis() - start;
