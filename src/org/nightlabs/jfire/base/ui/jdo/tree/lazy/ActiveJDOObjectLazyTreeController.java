@@ -1335,21 +1335,6 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	 * Kai, Marius.
 	 */
 	public List<TreePath> expandPaths(final Set<Deque<JDOObjectID>> paths) {
-//		final Set<JDOObjectID> oids = new HashSet<JDOObjectID>();
-//		for(Deque<? extends JDOObjectID> path : paths)
-//			for(JDOObjectID oid : path)
-//				oids.add(oid);
-
-		// --------------------------------------------------------- FARK-MARK ---->>
-//		Job job = new Job("Loading...") {
-//			@Override
-//			protected IStatus run(ProgressMonitor monitor) throws Exception {
-//				Collection<JDOObject> result = retrieveJDOObjects(oids, monitor);
-//				List<JDOObjectLazyTreeNode<JDOObjectID, JDOObject, ?>> childNodes = hiddenRootNode.getChildNodes();
-//				return Status.OK_STATUS;
-//			}
-//		};
-
 		TreeNode currentRootNode = hiddenRootNode;
 
 		List<TreePath> treePaths = new ArrayList<TreePath>(paths.size());
@@ -1372,6 +1357,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 								continue;
 
 							// we found the already existing treenode corresponding to the current path element 'currentPathNodeID'
+							if (treeNode.getJdoObject() == null)
+							{
+								Collection<JDOObject> objects = retrieveJDOObjects(Collections.singleton(currentPathNodeID), new NullProgressMonitor());
+								treeNode.setJdoObject(objects.iterator().next());
+							}
+//							treeNode.setChildNodeCount(treeNode.getChildNodeCount()+1);
 							currentRootNode = treeNode;
 							parentsToRefresh.add(treeNode);
 							segments.add(treeNode);
@@ -1383,15 +1374,20 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 					{
 						TreeNode newNode = createNode();
 						newNode.setJdoObjectID(currentPathNodeID);
+						Collection<JDOObject> objects = retrieveJDOObjects(Collections.singleton(currentPathNodeID), new NullProgressMonitor());
+						newNode.setJdoObject(objects.iterator().next());
 						currentRootNode.addChildNode(newNode);
+						currentRootNode.setChildNodeCount(currentRootNode.getChildNodeCount()+1);
 						newNode.setParent(currentRootNode);
-						List<TreeNode> list = objectID2TreeNodeList.get(currentPathNodeID);
-						if (list == null)
-						{
-							list = new LinkedList<TreeNode>();
-							objectID2TreeNodeList.put(currentPathNodeID, list);
-						}
-						list.add(newNode);
+						newNode.setChildNodeCount(0);
+						addTreeNode(newNode);
+//						List<TreeNode> list = objectID2TreeNodeList.get(currentPathNodeID);
+//						if (list == null)
+//						{
+//							list = new LinkedList<TreeNode>();
+//							objectID2TreeNodeList.put(currentPathNodeID, list);
+//						}
+//						list.add(newNode);
 						newNodes.add(newNode);
 						segments.add(newNode);
 						currentRootNode = newNode;
@@ -1410,50 +1406,6 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		});
 
 		return treePaths;
-//		Job job = new Job("Loading...") {
-//			@Override
-//			protected IStatus run(ProgressMonitor monitor) throws Exception {
-//				Collection<JDOObject> result = retrieveJDOObjects(oids, monitor);
-////				List<JDOObjectLazyTreeNode<JDOObjectID, JDOObject, ?>> childNodes = hiddenRootNode.getChildNodes();
-//				TreeNode currentRootNode = hiddenRootNode;
-//
-//				List<TreeNode> newNodes = new LinkedList<TreeNode>();
-//				for (Deque<JDOObjectID> path : paths) {
-//					while (!path.isEmpty())
-//					{
-//						JDOObjectID currentPathNodeID = path.pop();
-//						List<TreeNode> potentialNodes = objectID2TreeNodeList.get(currentPathNodeID);
-//						if (potentialNodes != null && !potentialNodes.isEmpty())
-//						{
-//							boolean alreadyExisting = false;
-//							for (TreeNode treeNode : potentialNodes) {
-//								if (treeNode.getParent() != currentRootNode)
-//									continue;
-//
-//								currentRootNode = treeNode;
-//								alreadyExisting = true;
-//								break;
-//							}
-//							// we found the already existing treenode corresponding to the current path element 'currentPathNodeID'
-//							if (alreadyExisting)
-//								continue;
-//
-//
-//							TreeNode newNode = createNode();
-//							newNode.setJdoObjectID(currentPathNodeID);
-//
-//							dummyNode.setJdoObject(jdoObject)
-//							childNodes.indexOf(o)
-//						}
-//					}
-//				}
-//
-//				fireJDOObjectsChangedEvent(new JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode>())
-//				return Status.OK_STATUS;
-//			}
-//		};
-//
-//		job.setPriority(Job.SHORT);
-//		job.schedule();
 	}
+
 }
