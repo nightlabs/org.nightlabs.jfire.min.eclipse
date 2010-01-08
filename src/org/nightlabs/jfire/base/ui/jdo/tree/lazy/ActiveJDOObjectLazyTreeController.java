@@ -63,6 +63,8 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 	protected abstract Collection<JDOObjectID> retrieveChildObjectIDs(JDOObjectID parentID, ProgressMonitor monitor);
 
+	protected abstract Collection<JDOObjectID> retrieveChildObjectIDs(List<JDOObjectID> objectIDsToRoot, ProgressMonitor monitor); // <-- FARK-MARKed.
+
 	protected abstract Map<JDOObjectID, Long> retrieveChildCount(Set<JDOObjectID> parentIDs, ProgressMonitor monitor);
 
 	/**
@@ -958,7 +960,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 		if (childNodes != null) {
 			if (index >= childNodes.size()) {
-				logger.warn("getNode: index >= childNodes.size() :: " + index + " >= " + childNodes.size(), new Exception("StackTrace")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//				logger.warn("getNode: index >= childNodes.size() :: " + index + " >= " + childNodes.size(), new Exception("StackTrace")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				_parent.setChildNodes(null);
 				_parent.setChildNodeCount(-1);
 			}
@@ -1020,7 +1022,10 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 							if (logger.isDebugEnabled())
 								logger.debug("getNode.job1#run: retrieving children for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 
-							Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parentJDOID, monitor);
+							// -------------------------------------------------------------------------------------------------- FARK-MARK ------>>
+//							Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parentJDOID, monitor);
+							Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parent.getJDOObjectIDsToRoot(), monitor);
+							// -------------------------------------------------------------------------------------------------- FARK-MARK ------>>
 
 							if (jdoObjectIDs == null)
 								throw new IllegalStateException("Your implementation of retrieveChildObjectIDs(...) returned null! The error is probably in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName()); //$NON-NLS-1$

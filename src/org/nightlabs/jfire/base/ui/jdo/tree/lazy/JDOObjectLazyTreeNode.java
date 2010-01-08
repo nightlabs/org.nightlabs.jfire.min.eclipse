@@ -182,7 +182,7 @@ public class JDOObjectLazyTreeNode
 	 */
 	@SuppressWarnings("unchecked")
 	public <N extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> N getRoot() {
-		return (N)(parent.parent == null ? this : parent.getRoot()); // Kai: Strangely, I have to check the parent's parent to be null before I identify the root. --> Well, apparently, there is a "hidden" root!!
+		return (N)(parent.parent == null ? this : parent.getRoot());
 	}
 
 	/**
