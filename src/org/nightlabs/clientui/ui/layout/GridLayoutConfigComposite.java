@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.clientui.ui.layout;
 
 import java.beans.PropertyChangeEvent;
@@ -32,22 +29,22 @@ import org.nightlabs.clientui.ui.resource.Messages;
 /**
  * Composite that serves for editing an instance of {@link IGridLayoutConfig}.
  * <p>
- * It lets the user configure the properties of the {@link GridLayout} in the {@link IGridLayoutConfig} 
+ * It lets the user configure the properties of the {@link GridLayout} in the {@link IGridLayoutConfig}
  * (numColumns, makeColumnsEqualWidth) and the list of its entries ({@link IGridDataEntry}).
  * </p>
  * <p>
- * Instantiate a {@link GridLayoutConfigComposite} and set the {@link IGridLayoutConfig} to edit by {@link #setGridLayoutConfig(IGridLayoutConfig)}. 
+ * Instantiate a {@link GridLayoutConfigComposite} and set the {@link IGridLayoutConfig} to edit by {@link #setGridLayoutConfig(IGridLayoutConfig)}.
  * </p>
  * <p>
  * Instantiate a {@link GridLayoutConfigComposite} and set the {@link IGridLayoutConfig} to edit by {@link #setGridLayoutConfig(IGridLayoutConfig)}.
  * Note, that this Composites directly writes changes to the {@link IGridLayoutConfig} it edits, however, before using the {@link IGridLayoutConfig} again,
- * call {@link #updateGridLayoutConfig()} to be sure that all changes made by the user are reflected in the config. 
+ * call {@link #updateGridLayoutConfig()} to be sure that all changes made by the user are reflected in the config.
  * </p>
  * <p>
  * You can add {@link PropertyChangeListener} to react on changes made to the layout. Notifications are made for the following
- * properties {@link #PROP_GRID_LAYOUT_CONFIG}, {@link #PROP_GRID_LAYOUT}, {@link #PROP_GRID_DATA_ENTRY}. 
+ * properties {@link #PROP_GRID_LAYOUT_CONFIG}, {@link #PROP_GRID_LAYOUT}, {@link #PROP_GRID_DATA_ENTRY}.
  * </p>
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
 public class GridLayoutConfigComposite extends XComposite {
@@ -62,33 +59,33 @@ public class GridLayoutConfigComposite extends XComposite {
 	 */
 	public static final String PROP_GRID_LAYOUT_CONFIG = "gridLayoutConfig"; //$NON-NLS-1$
 	/**
-	 * Property name for notifications made when one of the entries inside the edited {@link IGridLayoutConfig} chagned. 
-	 * 
+	 * Property name for notifications made when one of the entries inside the edited {@link IGridLayoutConfig} chagned.
+	 *
 	 */
 	public static final String PROP_GRID_DATA_ENTRY = "gridDataEntry"; //$NON-NLS-1$
 	/** The currently edited layout config */
 	private IGridLayoutConfig gridLayoutConfig;
-	
+
 	private Text numColText;
 	private Button colsEqualWidthCB;
-	
+
 	private GridDataEntryTable gridDataEntryTable;
 	private Button addEntryButton;
 	private Button removeEntryButton;
 	private Button moveEntryUpButton;
 	private Button moveEntryDownButton;
-	
+
 	private GridDataEntryConfigComposite gridDataEntryConfigComposite;
-	
+
 	private PropertyChangeSupport propertyChangeSupport;
-	
+
 	private PropertyChangeListener entryListener = new PropertyChangeListener() {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			propertyChangeSupport.firePropertyChange(PROP_GRID_DATA_ENTRY, evt.getOldValue(), evt.getNewValue());
 		}
 	};
-	
+
 	private SelectionListener cbListener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
@@ -100,7 +97,7 @@ public class GridLayoutConfigComposite extends XComposite {
 	};
 
 	private boolean updating = false;
-	
+
 	private ModifyListener textListener = new ModifyListener() {
 		@Override
 		public void modifyText(ModifyEvent e) {
@@ -110,7 +107,7 @@ public class GridLayoutConfigComposite extends XComposite {
 			}
 		}
 	};
-	
+
 
 	private ISelectionChangedListener selectionChangeListener = new ISelectionChangedListener() {
 		@Override
@@ -118,7 +115,7 @@ public class GridLayoutConfigComposite extends XComposite {
 			updateGridDataEntryConfigComposite();
 		}
 	};
-	
+
 	/**
 	 * Construct a new {@link GridLayoutConfigComposite}.
 	 * @param parent The parent Composite.
@@ -132,7 +129,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		layoutWrapper.getGridLayout().makeColumnsEqualWidth = false;
 		Label numColLabel = new Label(layoutWrapper, SWT.NONE);
 		numColLabel.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.label.numberOfColumns.text")); //$NON-NLS-1$
-		
+
 		Button previewButton = new Button(layoutWrapper, SWT.PUSH);
 		GridData previewGD = new GridData();
 		previewGD.verticalSpan = 3;
@@ -150,27 +147,27 @@ public class GridLayoutConfigComposite extends XComposite {
 				}
 			}
 		});
-		
+
 		numColText = new Text(layoutWrapper, getBorderStyle());
 		GridData gd = new GridData();
 		gd.widthHint = 80;
 		numColText.setLayoutData(gd);
 		numColText.addModifyListener(textListener);
-		
+
 		colsEqualWidthCB = new Button(layoutWrapper, SWT.CHECK);
 		colsEqualWidthCB.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		colsEqualWidthCB.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.columnsEqualWidth.text")); //$NON-NLS-1$
 		colsEqualWidthCB.addSelectionListener(cbListener);
-		
+
 		XComposite bottomWrapper = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		bottomWrapper.getGridLayout().numColumns = 2;
 		bottomWrapper.getGridLayout().makeColumnsEqualWidth = false;
-		
+
 		gridDataEntryTable = new GridDataEntryTable(bottomWrapper, SWT.NONE);
 		gridDataEntryTable.addSelectionChangedListener(selectionChangeListener);
-		
+
 		XComposite buttonWrapper = new XComposite(bottomWrapper, SWT.NONE);
-		
+
 		addEntryButton = new Button(buttonWrapper, SWT.PUSH);
 		addEntryButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		addEntryButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.add.text")); //$NON-NLS-1$
@@ -184,10 +181,10 @@ public class GridLayoutConfigComposite extends XComposite {
 						gridDataEntryTable.setSelection(new StructuredSelection(entry), true);
 						fireGridLayoutConfigChanged();
 					}
-				}					
+				}
 			}
 		});
-		
+
 		removeEntryButton = new Button(buttonWrapper, SWT.PUSH);
 		removeEntryButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		removeEntryButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.remove.text")); //$NON-NLS-1$
@@ -204,8 +201,8 @@ public class GridLayoutConfigComposite extends XComposite {
 				}
 			}
 		});
-		
-		
+
+
 		moveEntryUpButton = new Button(buttonWrapper, SWT.PUSH);
 		moveEntryUpButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		moveEntryUpButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.up.text")); //$NON-NLS-1$
@@ -224,7 +221,7 @@ public class GridLayoutConfigComposite extends XComposite {
 				}
 			}
 		});
-		
+
 		moveEntryDownButton  = new Button(buttonWrapper, SWT.PUSH);
 		moveEntryDownButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		moveEntryDownButton.setText(Messages.getString("org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite.button.down.text")); //$NON-NLS-1$
@@ -244,7 +241,7 @@ public class GridLayoutConfigComposite extends XComposite {
 				}
 			}
 		});
-		
+
 		gridDataEntryConfigComposite = new GridDataEntryConfigComposite(buttonWrapper, SWT.NONE, LayoutDataMode.NONE);
 		GridData gdEntry = new GridData(GridData.FILL_VERTICAL);
 		gdEntry.horizontalAlignment = SWT.FILL;
@@ -252,11 +249,11 @@ public class GridLayoutConfigComposite extends XComposite {
 		gridDataEntryConfigComposite.setLayoutData(gdEntry);
 		gridDataEntryConfigComposite.addPropertyChangeListener(entryListener);
 	}
-	
+
 	/**
 	 * Set the {@link IGridLayoutConfig} that should be edited by this {@link GridLayoutConfigComposite}.
 	 * After the user finished editing make sure you call {@link #updateGridLayoutConfig()}.
-	 * 
+	 *
 	 * @param gridLayoutConfig The {@link IGridLayoutConfig} to edit.
 	 */
 	public void setGridLayoutConfig(IGridLayoutConfig gridLayoutConfig) {
@@ -293,11 +290,11 @@ public class GridLayoutConfigComposite extends XComposite {
 			}
 		});
 	}
-	
+
 	/**
 	 * Copies all changes made to the {@link IGridLayoutConfig} currently edited.
-	 * Note, that some changes might already have been made to the layout while it 
-	 * was edited. 
+	 * Note, that some changes might already have been made to the layout while it
+	 * was edited.
 	 */
 	protected void updateGridLayout() {
 		if (isDisposed())
@@ -327,41 +324,41 @@ public class GridLayoutConfigComposite extends XComposite {
 			}
 		});
 	}
-	
+
 	public void updateGridLayoutConfig() {
 		updateGridDataEntryConfigComposite();
 		updateGridLayout();
 	}
-	
+
 	protected void updateGridDataEntryConfigComposite() {
 		gridDataEntryConfigComposite.updateGridDataEntry();
 		if (gridDataEntryTable.getFirstSelectedElement() != null) {
 			gridDataEntryConfigComposite.setGridDataEntry(gridDataEntryTable.getFirstSelectedElement());
-		}		
+		}
 	}
-	
+
 	protected void refreshEntryTable() {
 		if (gridLayoutConfig != null) {
 			gridDataEntryTable.setInput(gridLayoutConfig.getGridDataEntries());
 			gridDataEntryTable.refresh();
 		}
 	}
-	
+
 	private void fireGridLayoutConfigChanged() {
 		propertyChangeSupport.firePropertyChange(PROP_GRID_LAYOUT_CONFIG, null, gridLayoutConfig);
 	}
 	private void fireGridLayoutChanged() {
 		propertyChangeSupport.firePropertyChange(PROP_GRID_LAYOUT, null, gridLayoutConfig);
 	}
-	
+
 	public IGridLayoutConfig getGridLayoutConfig() {
 		return gridLayoutConfig;
 	}
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
-	
+
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
