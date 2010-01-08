@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.ui.prop.config;
 
 import java.util.ResourceBundle;
@@ -25,13 +22,14 @@ import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructTreeComposite;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
+import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry2;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 
 /**
  * Dialog used internally to add a new StructField or Separator entry to a {@link PropertySetFieldBasedEditLayoutConfigModuleController}.
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
 class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
@@ -44,20 +42,20 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 
 	/**
 	 * Construct a new {@link AddStructFieldEntryDialog}.
-	 * 
+	 *
 	 * @param shell The parent shell.
 	 * @param resourceBundle The resource bundle to get initial sizes from.
 	 * @param ignoreIDs All ids that should not be addable.
 	 * @param structLocal The StructLocal to select fields from.
 	 */
 	public AddStructFieldEntryDialog(
-			Shell shell, ResourceBundle resourceBundle, 
+			Shell shell, ResourceBundle resourceBundle,
 			Set<StructFieldID> ignoreIDs, StructLocal structLocal) {
 		super(shell, resourceBundle);
 		this.ignoreIDs = ignoreIDs;
 		this.structLocal = structLocal;
 	}
-	
+
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		XComposite comp = new XComposite(parent, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
@@ -70,7 +68,7 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 			}
 		});
 		separatorType.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.button.separator")); //$NON-NLS-1$
-		
+
 		Button structFieldReferenceType = new Button(radioGroup, SWT.RADIO);
 		structFieldReferenceType.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -100,47 +98,47 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 		});
 		return comp;
 	}
-	
+
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.window.title")); //$NON-NLS-1$
 	}
-	
+
 	protected void setOKButtonEnabled(boolean value) {
 		Button button = getButton(IDialogConstants.OK_ID);
 		if (button != null)
 			button.setEnabled(value);
 	}
-	
+
 	protected void updateOKButtonEnabled() {
 		setOKButtonEnabled(
-				PropertySetFieldBasedEditLayoutEntry.ENTRY_TYPE_SEPARATOR.equals(entryType) || (
+				EditLayoutEntry.ENTRY_TYPE_SEPARATOR.equals(entryType) || (
 						structFieldID != null &&
 						!(ignoreIDs != null ? ignoreIDs.contains(structFieldID) : false)
 				)
 			);
 	}
-	
+
 	protected void separatorSelected() {
-		entryType = PropertySetFieldBasedEditLayoutEntry.ENTRY_TYPE_SEPARATOR;
+		entryType = EditLayoutEntry.ENTRY_TYPE_SEPARATOR;
 		structTree.setEnabled(false);
 		updateOKButtonEnabled();
 	}
 
 	protected void structFieldReferenceSelected() {
-		entryType = PropertySetFieldBasedEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
+		entryType = PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
 		structTree.setEnabled(true);
 		updateOKButtonEnabled();
 	}
-	
+
 	/**
 	 * @return The selected type.
 	 */
 	public String getEntryType() {
 		return entryType;
 	}
-	
+
 	/**
 	 * @return The selected {@link StructFieldID}.
 	 */
