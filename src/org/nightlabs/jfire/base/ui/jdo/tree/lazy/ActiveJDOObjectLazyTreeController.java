@@ -3,10 +3,8 @@ package org.nightlabs.jfire.base.ui.jdo.tree.lazy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +17,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
@@ -1327,85 +1324,6 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			treeNodesWaitingForChildCountRetrieval.clear();
 			jobChildCountRetrieval = null;
 		}
-	}
-
-
-	/**
-	 * Attempt to expand the tree given a path of ObjectIDs.
-	 * Kai, Marius.
-	 */
-	public List<TreePath> expandPaths(final Set<Deque<JDOObjectID>> paths) {
-		TreeNode currentRootNode = hiddenRootNode;
-
-		List<TreePath> treePaths = new ArrayList<TreePath>(paths.size());
-		final List<TreeNode> newNodes = new LinkedList<TreeNode>();
-		final Set<TreeNode> parentsToRefresh = new HashSet<TreeNode>();
-
-		synchronized (mutex) {
-			for (Deque<? extends JDOObjectID> path : paths) {
-				currentRootNode = hiddenRootNode;
-				List<TreeNode> segments = new ArrayList<TreeNode>(path.size());
-				while (!path.isEmpty())
-				{
-					JDOObjectID currentPathNodeID = path.pop();
-					List<TreeNode> potentialNodes = objectID2TreeNodeList.get(currentPathNodeID);
-					boolean alreadyExisting = false;
-					if (potentialNodes != null && !potentialNodes.isEmpty())
-					{
-						for (TreeNode treeNode : potentialNodes) {
-							if (treeNode.getParent() != currentRootNode)
-								continue;
-
-							// we found the already existing treenode corresponding to the current path element 'currentPathNodeID'
-							if (treeNode.getJdoObject() == null)
-							{
-								Collection<JDOObject> objects = retrieveJDOObjects(Collections.singleton(currentPathNodeID), new NullProgressMonitor());
-								treeNode.setJdoObject(objects.iterator().next());
-							}
-//							treeNode.setChildNodeCount(treeNode.getChildNodeCount()+1);
-							currentRootNode = treeNode;
-							parentsToRefresh.add(treeNode);
-							segments.add(treeNode);
-							alreadyExisting = true;
-							break;
-						}
-					}
-					if (! alreadyExisting)
-					{
-						TreeNode newNode = createNode();
-						newNode.setJdoObjectID(currentPathNodeID);
-						Collection<JDOObject> objects = retrieveJDOObjects(Collections.singleton(currentPathNodeID), new NullProgressMonitor());
-						newNode.setJdoObject(objects.iterator().next());
-						currentRootNode.addChildNode(newNode);
-						currentRootNode.setChildNodeCount(currentRootNode.getChildNodeCount()+1);
-						newNode.setParent(currentRootNode);
-						newNode.setChildNodeCount(0);
-						addTreeNode(newNode);
-//						List<TreeNode> list = objectID2TreeNodeList.get(currentPathNodeID);
-//						if (list == null)
-//						{
-//							list = new LinkedList<TreeNode>();
-//							objectID2TreeNodeList.put(currentPathNodeID, list);
-//						}
-//						list.add(newNode);
-						newNodes.add(newNode);
-						segments.add(newNode);
-						currentRootNode = newNode;
-					}
-				}
-				treePaths.add( new TreePath(segments.toArray()) );
-			}
-		}
-
-		Display.getDefault().asyncExec(new Runnable()
-		{
-			public void run()
-			{
-				fireJDOObjectsChangedEvent(new JDOLazyTreeNodesChangedEvent<JDOObjectID, TreeNode>(this, parentsToRefresh, newNodes));
-			}
-		});
-
-		return treePaths;
 	}
 
 }
