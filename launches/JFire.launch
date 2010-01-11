@@ -19,7 +19,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}&#13;&#10;--login.password test&#13;&#10;-clean"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.framework.extensions=org.nightlabs.jfire.base.j2ee.osgi&#13;&#10;-Dorg.nightlabs.environment=development&#13;&#10;-Xmx512M&#10;-XX:MaxPermSize=256m&#13;&#10;-XX:+UnlockDiagnosticVMOptions&#13;&#10;-XX:+UnsyncloadClass&#13;&#10;-enableassertions"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.framework.extensions=org.nightlabs.jfire.base.j2ee.osgi&#13;&#10;-Dorg.nightlabs.environment=development&#13;&#10;-Xmx512M&#10;-XX:MaxPermSize=256m&#13;&#10;-XX:+UnlockDiagnosticVMOptions&#13;&#10;-XX:+UnsyncloadClass"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.nightlabs.jfire.base.ui.product"/>
 <booleanAttribute key="restart" value="false"/>

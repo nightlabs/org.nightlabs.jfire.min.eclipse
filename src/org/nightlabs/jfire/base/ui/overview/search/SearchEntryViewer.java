@@ -105,6 +105,7 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	protected QueryProvider<Q> queryProvider;
 
 	private ScrolledComposite scrollableSearchWrapper;
+	private ScrolledComposite scrollableFooterWrapper;
 	private XComposite toolbarAndAdvancedSearchWrapper;
 	private SashForm sashform;
 	private ToolItem searchItem;
@@ -163,14 +164,20 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		}
 
 		//Footer
+//		scrollableFooterWrapper = new ScrolledComposite(sashform, SWT.V_SCROLL);
+//		scrollableFooterWrapper.setExpandHorizontal(true);
+//		scrollableFooterWrapper.setExpandVertical(true);
+		
 		footerComposite = createFooterComposite(sashform);
 		if (footerComposite != null) {
 			if (footerComposite instanceof XComposite)
 			{
-				final XComposite footerXComposite = (XComposite) footerComposite;
-				footerXComposite.getGridData().minimumHeight = 55;
-				footerXComposite.setToolkit(toolkit);
-				footerXComposite.adaptToToolkit();
+//				final XComposite footerXComposite = (XComposite) footerComposite;
+//				footerXComposite.getGridData().minimumHeight = 55;
+//				footerXComposite.setToolkit(toolkit);
+//				footerXComposite.adaptToToolkit();
+				
+//				scrollableFooterWrapper.setContent(footerComposite);
 			}
 			else if (toolkit != null)
 			{
