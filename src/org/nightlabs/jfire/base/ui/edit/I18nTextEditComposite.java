@@ -24,26 +24,23 @@
  *                                                                             *
  ******************************************************************************/
 
-package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
+package org.nightlabs.jfire.base.ui.edit;
 
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.I18nTextEditorMultiLine;
 import org.nightlabs.base.ui.language.I18nTextEditor.EditMode;
 import org.nightlabs.i18n.I18nText;
-import org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite;
-import org.nightlabs.jfire.prop.structfield.I18nTextStructField;
 
 /**
- * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite<I18nTextDataFieldEditor> {
+public class I18nTextEditComposite
+extends AbstractInlineEditComposite {
 
-	private ModifyListener modifyListener;
 	private I18nTextEditor i18nTextEditor;
+	private int lineCount;
 	
 	/**
 	 * Assumes to have a parent composite with GridLaout and
@@ -52,10 +49,10 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 	 * @param parent
 	 * @param style
 	 */
-	public I18nTextDataFieldComposite(I18nTextDataFieldEditor editor, Composite parent, int style, ModifyListener modListener) {
-		super(parent, style, editor);
-		if (!(parent.getLayout() instanceof GridLayout))
-			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
+	public I18nTextEditComposite(Composite parent, int style, int lineCount) {
+		super(parent, style);
+		
+		this.lineCount = lineCount;
 		
 //		GridLayout layout = new GridLayout();
 //		setLayout(layout);
@@ -71,13 +68,13 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 //		nameData.grabExcessHorizontalSpace = true;
 //		fieldName.setLayoutData(nameData);
 //
-		createEditor(modListener);
+		createEditor();
 	}
 	
-	private void createEditor(ModifyListener modListener) {
-		I18nTextStructField field = (I18nTextStructField) getEditor().getStructField();
-		if (field.getLineCount() > 1)
-			i18nTextEditor = new I18nTextEditorMultiLine(this, null, null, field.getLineCount());
+	private void createEditor() {
+//		I18nTextStructField field = (I18nTextStructField) getEditor().getStructField();
+		if (lineCount > 1)
+			i18nTextEditor = new I18nTextEditorMultiLine(this, null, null, lineCount);
 		else
 			i18nTextEditor = new I18nTextEditor(this);
 		
@@ -89,27 +86,32 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 			((Composite)i18nTextEditor).setEnabled(true);
 			((Composite)i18nTextEditor).setLayoutData(textData);
 		}
-		this.modifyListener = modListener;
-		i18nTextEditor.addModifyListener(modifyListener);
+		
+		i18nTextEditor.addModifyListener(getSwtModifyListener());
+	}
+	
+	public void setInput(I18nText input) {
+		i18nTextEditor.getI18nText().copyFrom(input);
+		i18nTextEditor.refresh();
 	}
 
-	/**
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite#refresh()
-	 */
-	@Override
-	public void _refresh() {
-		if (i18nTextEditor != null)
-			i18nTextEditor.dispose();
-		
-		createEditor(modifyListener);
-		
-//		StructField field = getEditor().getStructField();
-//		fieldName.setText(field.getName().getText());
-		i18nTextEditor.getI18nText().copyFrom(getEditor().getDataField().getI18nText());
-		i18nTextEditor.refresh();
-		// TODO set the text fields maximum line count to the one given by the struct field
-		// ((TextStructField)editor.getDataField().getStructField()).getLineCount();
-	}
+//	/**
+//	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldEditComposite#refresh()
+//	 */
+//	@Override
+//	public void _refresh() {
+//		if (i18nTextEditor != null)
+//			i18nTextEditor.dispose();
+//
+//		createEditor(modifyListener);
+//
+////		StructField field = getEditor().getStructField();
+////		fieldName.setText(field.getName().getText());
+//		i18nTextEditor.getI18nText().copyFrom(getEditor().getDataField().getI18nText());
+//		i18nTextEditor.refresh();
+//		// TODO set the text fields maximum line count to the one given by the struct field
+//		// ((TextStructField)editor.getDataField().getStructField()).getLineCount();
+//	}
 	
 	public void updateFieldText(I18nText fieldText) {
 		i18nTextEditor.getI18nText().copyTo(fieldText);
@@ -117,7 +119,7 @@ public class I18nTextDataFieldComposite extends AbstractInlineDataFieldComposite
 	
 	@Override
 	public void dispose() {
-		i18nTextEditor.removeModifyListener(modifyListener);
+		i18nTextEditor.removeModifyListener(getSwtModifyListener());
 		super.dispose();
 	}
 }

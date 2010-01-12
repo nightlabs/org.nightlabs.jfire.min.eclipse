@@ -44,6 +44,8 @@ import org.nightlabs.jfire.prop.StructField;
  * implementing this interface directly: {@link AbstractDataFieldEditor}.
  * </p>
  * @author  Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * 
+ * @param <F> The {@link DataField} type that can be edited with this editor.
  */
 public interface DataFieldEditor<F extends DataField> {
 
@@ -152,5 +154,10 @@ public interface DataFieldEditor<F extends DataField> {
 	 * @return Whether the value of this field editor has changed.
 	 */
 	boolean isChanged();
-
+	
+//	/**
+//	 * Returns the {@link DataFieldComposite} used to edit the {@link DataField}.
+//	 * @return the {@link DataFieldComposite} used to edit the {@link DataField}.
+//	 */
+//	DataFieldComposite getDataFieldComposite();
 }

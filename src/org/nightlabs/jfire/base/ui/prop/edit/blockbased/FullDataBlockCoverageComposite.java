@@ -64,7 +64,6 @@ public class FullDataBlockCoverageComposite extends Composite {
 	 * @param structBlockRegistry The registry where the blocks already covered can be obtained from. Might be <code>null</code>.
 	 * @param validationResultHandler Handler for validation results.
 	 */
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public FullDataBlockCoverageComposite(
 			Composite parent, int style,
 			PropertySet propertySet,

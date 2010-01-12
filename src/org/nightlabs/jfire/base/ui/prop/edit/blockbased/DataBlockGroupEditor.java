@@ -51,7 +51,7 @@ import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
  * A Composite that manages the editing of a {@link DataBlockGroup}.
  * It therefore retrieves and uses {@link DataBlockEditor}s from the
  * {@link DataBlockEditorFactoryRegistry} for each {@link DataBlock}
- * in the edited {@link DataBlockGroup}.  
+ * in the edited {@link DataBlockGroup}.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */

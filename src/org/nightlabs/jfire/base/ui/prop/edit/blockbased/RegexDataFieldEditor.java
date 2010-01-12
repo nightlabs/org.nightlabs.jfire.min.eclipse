@@ -4,15 +4,10 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
-import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
+import org.nightlabs.jfire.base.ui.edit.TextEditComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
@@ -21,8 +16,6 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.RegexDataField;
 import org.nightlabs.jfire.prop.structfield.RegexStructField;
-import org.nightlabs.language.LanguageCf;
-import org.nightlabs.util.NLLocale;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -54,51 +47,45 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 			return new RegexDataFieldEditor(struct, data);
 		}
 	}
+	
+	private TextEditComposite textEditComposite;
 
-	private LanguageCf language;
-	private XComposite comp;
-	private Label title;
-	private Text valueText;
-	private boolean modified = false;
-	private boolean ignoreModify = false;
-
-	private RegexDataField regexDataField;
-	private RegexStructField regexStructField;
+//	private LanguageCf language;
+//	private XComposite comp;
+//	private Label title;
+//	private Text valueText;
 
 	public RegexDataFieldEditor(IStruct struct, RegexDataField data) {
 		super(struct, data);
-		language = new LanguageCf(NLLocale.getDefault().getLanguage());
+//		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
 
-	@Override
-	protected void setDataField(RegexDataField dataField) {
-		super.setDataField(dataField);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Control createControl(Composite parent) {
-		comp = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
-		comp.getGridLayout().horizontalSpacing = 0;
-// TODO: this is a quickfix for the Formtoolkit Boarderpainter, which paints to the
-// 	outside of the elements -> there needs to be space in the enclosing composite for the borders
-		comp.getGridLayout().verticalSpacing = 2;
-		comp.getGridLayout().marginHeight = 2;
-		comp.getGridLayout().marginWidth = 2;
-		title = new Label(comp, SWT.NONE);
-		valueText = new Text(comp, comp.getBorderStyle());
-		valueText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (!ignoreModify) {
-					modified = true;
-					setChanged(modified);
-				}
-
-			}
-		});
+		if (textEditComposite == null) {
+			textEditComposite = new TextEditComposite(parent, SWT.NONE, 1);
+			textEditComposite.addModificationListener(getModifyListener());
+		}
+		
+		return textEditComposite;
+//		comp = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
+//		comp.getGridLayout().horizontalSpacing = 0;
+//// TODO: this is a quickfix for the Formtoolkit Boarderpainter, which paints to the
+//// 	outside of the elements -> there needs to be space in the enclosing composite for the borders
+//		comp.getGridLayout().verticalSpacing = 2;
+//		comp.getGridLayout().marginHeight = 2;
+//		comp.getGridLayout().marginWidth = 2;
+//		title = new Label(comp, SWT.NONE);
+//		valueText = new Text(comp, comp.getBorderStyle());
+//		valueText.addModifyListener(new ModifyListener() {
+//			public void modifyText(ModifyEvent e) {
+//				if (!ignoreModify) {
+//					modified = true;
+//					setChanged(modified);
+//				}
+//
+//			}
+//		});
 
 //		// TODO: Validation disabled, see https://www.jfire.org/modules/bugs/view.php?id=692
 //		valueText.addFocusListener(new FocusListener() {
@@ -118,32 +105,30 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 //			}
 //		});
 
-		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueText);
-		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, title);
-		return comp;
+//		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueText);
+//		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, title);
+//		return comp;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()
-	 */
 	@Override
 	public void doRefresh() {
-		regexDataField = getDataField();
-		regexStructField = (RegexStructField) getStructField();
-		title.setText(regexStructField.getName().getText(language.getLanguageID()));
-		valueText.setToolTipText(
-				String.format(
+		if (textEditComposite != null) {
+			if (getStructField() != null) {
+				textEditComposite.setTitle("&" + getStructField().getName().getText()); //$NON-NLS-1$
+				textEditComposite.setToolTipText(String.format(
 						Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.RegexDataFieldEditor.valueText.toolTipText"), //$NON-NLS-1$
-						new Object[] { regexStructField.getRegex() }
-				)
-		);
-		ignoreModify = true;
-		if (!regexDataField.isEmpty())
-			valueText.setText(regexDataField.getText());
-		else
-			valueText.setText("");
-		ignoreModify = false;
+						((RegexStructField) getStructField()).getRegex()));
+			}
+			
+			if (getDataField() != null) {
+				ignoreModifyEvents(true);
+				if (!getDataField().isEmpty())
+					textEditComposite.setContent(getDataField().getText());
+				else
+					textEditComposite.setContent(""); // $NON-NLS-1$
+				ignoreModifyEvents(false);
+			}
+		}
 	}
 
 	/*
@@ -151,7 +136,7 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
 	 */
 	public Control getControl() {
-		return comp;
+		return textEditComposite;
 	}
 
 	/*
@@ -162,20 +147,23 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 		if (!isChanged())
 			return;
 
-		String text = valueText.getText();
+		String text = textEditComposite.getContent();
 
 //		// TODO: Validation disabled, see https://www.jfire.org/modules/bugs/view.php?id=692
 //		if (regexStructField.validateValue(text)) {
 //				regexDataField.setText(text);
 //		}
-		regexDataField.setText(text);
+		getDataField().setText(text);
 		// END Validation disabled
-
-		modified = false;
 	}
 
-	public LanguageCf getLanguage() {
-		return language;
+//	public LanguageCf getLanguage() {
+//		return language;
+//	}
+
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return textEditComposite;
 	}
 }
 

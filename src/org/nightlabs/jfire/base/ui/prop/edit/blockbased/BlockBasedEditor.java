@@ -212,7 +212,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 * and serves as proxy that notifies the listeners of this editor.
 	 */
 	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
-	private ListenerList displayNameChangedListeners = new ListenerList()	;
+//	private ListenerList displayNameChangedListeners = new ListenerList()	;
 	/**
 	 * Stores the {@link ContentProvider} with the DataBlock-key as key.
 	 */
@@ -321,7 +321,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
 	 * This property change listener will be triggered on a change of the additional data
 	 * of a PropertySet which might be the display name of a PropertySet or each other
-	 * property introduced by a subclass of PropertySet. 
+	 * property introduced by a subclass of PropertySet.
 	 * 
 	 * @param listener The listener to add.
 	 */
@@ -340,7 +340,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	/**
 	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
 	 * This property change listener will be triggered on a change of the given property
-	 * of a PropertySet. 
+	 * of a PropertySet.
 	 *
 	 * @param property The additional property of a PropertySet to listen for changes.
 	 * @param listener The listener to add.

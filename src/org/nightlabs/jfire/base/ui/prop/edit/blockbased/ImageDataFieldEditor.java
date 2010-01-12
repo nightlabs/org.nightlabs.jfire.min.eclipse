@@ -15,7 +15,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
@@ -32,6 +31,7 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
@@ -41,9 +41,7 @@ import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.IContentDataField;
 import org.nightlabs.jfire.prop.datafield.ImageDataField;
 import org.nightlabs.jfire.prop.structfield.ImageStructField;
-import org.nightlabs.language.LanguageCf;
 import org.nightlabs.util.IOUtil;
-import org.nightlabs.util.NLLocale;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -51,6 +49,7 @@ import org.nightlabs.util.NLLocale;
  */
 public class ImageDataFieldEditor
 extends AbstractDataFieldEditor<ImageDataField>
+implements IEntryEditor
 {
 	/**
 	 * Use this before extension.
@@ -88,7 +87,6 @@ extends AbstractDataFieldEditor<ImageDataField>
 	private static Logger LOGGER = Logger.getLogger(ImageDataFieldEditor.class);
 
 	private Shell shell;
-	private LanguageCf language;
 
 	private Button saveToDiskButton;
 	private Text filenameTextbox;
@@ -104,20 +102,13 @@ extends AbstractDataFieldEditor<ImageDataField>
 
 	public ImageDataFieldEditor(IStruct struct, ImageDataField data) {
 		super(struct, data);
-		language = new LanguageCf(NLLocale.getDefault().getLanguage());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#setDataField(org.nightlabs.jfire.prop.DataField)
-	 */
 	@Override
 	protected void setDataField(ImageDataField dataField) {
 		super.setDataField(dataField);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Control createControl(final Composite parent) {
 		shell = parent.getShell();
@@ -277,14 +268,11 @@ extends AbstractDataFieldEditor<ImageDataField>
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()
-	 */
 	@Override
 	public void doRefresh() {
 		ImageStructField imageStructField = (ImageStructField) getStructField();
-
-		group.setText(imageStructField.getName().getText(language.getLanguageID()));
+		
+		setTitle(imageStructField.getName().getText());
 
 		ImageDataField dataField = getDataField();
 		if (!dataField.isEmpty()) {
@@ -311,7 +299,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 			}
 			displayImage(id);
 		}
-		else { //@Marco, why did you remove these 2 lines? 
+		else { //@Marco, why did you remove these 2 lines?
 			filenameTextbox.setText("");
 			displayImage(null);
 		}
@@ -326,17 +314,18 @@ extends AbstractDataFieldEditor<ImageDataField>
 		determineSaveToDiskButtonEnabled();
 	}
 
-	protected void handleManagedBy(String managedBy)
-	{
-		for (Control child : group.getChildren()) {
-			if (child != imageLabel)
-				child.setEnabled(managedBy == null);
-		}
-		if (managedBy != null)
-			group.setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.group.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
-		else
-			group.setToolTipText(null);
-	}
+//	@Override
+//	protected void handleManagedBy(String managedBy)
+//	{
+//		for (Control child : group.getChildren()) {
+//			if (child != imageLabel)
+//				child.setEnabled(managedBy == null);
+//		}
+//		if (managedBy != null)
+//			group.setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.group.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
+//		else
+//			group.setToolTipText(null);
+//	}
 
 	/**
 	 * Open the image file browse dialog.
@@ -375,17 +364,11 @@ extends AbstractDataFieldEditor<ImageDataField>
 		return filename;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
-	 */
 	@Override
 	public Control getControl() {
 		return group;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#updatePropertySet()
-	 */
 	@Override
 	public void updatePropertySet() {
 		if (!isChanged())
@@ -421,10 +404,6 @@ extends AbstractDataFieldEditor<ImageDataField>
 		}
 	}
 
-	public LanguageCf getLanguage() {
-		return language;
-	}
-
 	/**
 	 * Called when the file chooser button was pressed.
 	 */
@@ -449,6 +428,7 @@ extends AbstractDataFieldEditor<ImageDataField>
 				ImageData data = new ImageData(filename);
 				filenameTextbox.setText(filename);
 				setChanged(true);
+//				notifyChangeListeners();
 				displayImage(data);
 				// there is already layout code in displayImage()... I moved this top-level layout stuff to this method, too. Marc
 //						Composite top = parent;
@@ -472,9 +452,34 @@ extends AbstractDataFieldEditor<ImageDataField>
 	private void clearButtonPressed()
 	{
 		filenameTextbox.setText(""); //$NON-NLS-1$
+//		notifyChangeListeners();
 		setChanged(true);
 		displayImage(null);
 		determineSaveToDiskButtonEnabled();
+	}
+
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return this;
+	}
+
+	@Override
+	public void setEnabledState(boolean enabled, String tooltip) {
+		for (Control child : group.getChildren()) {
+			if (child != imageLabel)
+				child.setEnabled(enabled);
+		}
+		
+		if (!enabled) {
+			group.setToolTipText(tooltip);
+		} else {
+			group.setToolTipText(null);
+		}
+	}
+
+	@Override
+	public void setTitle(String title) {
+		group.setText(title);
 	}
 }
 

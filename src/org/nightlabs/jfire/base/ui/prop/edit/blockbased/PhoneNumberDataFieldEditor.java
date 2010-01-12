@@ -1,7 +1,6 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -11,26 +10,26 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.PhoneNumberDataField;
-import org.nightlabs.util.NLLocale;
 
-public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNumberDataField> {
+public class PhoneNumberDataFieldEditor
+extends AbstractDataFieldEditor<PhoneNumberDataField> {
 
 	public PhoneNumberDataFieldEditor(IStruct struct, PhoneNumberDataField data) {
 		super(struct, data);
 	}
 
 	public static class PhoneNumberDataFieldEditorFactory extends AbstractDataFieldEditorFactory<PhoneNumberDataField> {
-//		@Override
-//		public Class<? extends DataFieldEditor<PhoneNumberDataField>> getDataFieldEditorClass() {
-//			return PhoneNumberDataFieldEditor.class;
-//		}
+		//		@Override
+		//		public Class<? extends DataFieldEditor<PhoneNumberDataField>> getDataFieldEditorClass() {
+		//			return PhoneNumberDataFieldEditor.class;
+		//		}
 
 		@Override
 		public DataFieldEditor<PhoneNumberDataField> createPropDataFieldEditor(IStruct struct, PhoneNumberDataField data) {
@@ -56,7 +55,7 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 
 	@Override
 	public Control createControl(Composite parent) {
-		comp = new PhoneNumberDataFieldEditorComposite(parent, this);
+		comp = new PhoneNumberDataFieldEditorComposite(parent, getSwtModifyListener());
 		return comp;
 	}
 
@@ -66,8 +65,8 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 		comp.countryCodeTextBox.setText(dataField.getCountryCode() != null ? dataField.getCountryCode() : ""); //$NON-NLS-1$
 		comp.areaCodeTextBox.setText(dataField.getAreaCode() != null ? dataField.getAreaCode() : ""); //$NON-NLS-1$
 		comp.localNumberTextBox.setText(dataField.getLocalNumber() != null ? dataField.getLocalNumber() : ""); //$NON-NLS-1$
-		comp.compGroup.setText(getStructField().getName().getText(NLLocale.getDefault().getLanguage()));
-		comp.handleManagedBy(dataField.getManagedBy());
+		comp.setTitle(getStructField().getName().getText());
+		//		comp.handleManagedBy(dataField.getManagedBy());
 	}
 
 	public Control getControl() {
@@ -81,18 +80,23 @@ public class PhoneNumberDataFieldEditor extends AbstractDataFieldEditor<PhoneNum
 		dataField.setLocalNumber(comp.localNumberTextBox.getText());
 	}
 
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return comp;
+	}
 }
 
-class PhoneNumberDataFieldEditorComposite extends XComposite {
-	private PhoneNumberDataFieldEditor phoneNumberDataFieldEditor;
+class PhoneNumberDataFieldEditorComposite
+extends XComposite
+implements IEntryEditor
+{
 	protected Text countryCodeTextBox;
 	protected Text areaCodeTextBox;
 	protected Text localNumberTextBox;
 	protected Group compGroup;
 
-	public PhoneNumberDataFieldEditorComposite(Composite parent, PhoneNumberDataFieldEditor editor) {
+	public PhoneNumberDataFieldEditorComposite(Composite parent, ModifyListener modifyListener) {
 		super (parent, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 1);
-		this.phoneNumberDataFieldEditor = editor;
 
 		getGridLayout().horizontalSpacing = 0;
 		getGridLayout().marginLeft = 0;
@@ -123,25 +127,31 @@ class PhoneNumberDataFieldEditorComposite extends XComposite {
 		//XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, areaCodeTextBox);
 		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, localNumberTextBox);
 
-		ModifyListener modifyListener = new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				phoneNumberDataFieldEditor.setChanged(true);
-			}
-		};
+//		ModifyListener modifyListener = new ModifyListener() {
+//			public void modifyText(ModifyEvent e) {
+//				phoneNumberDataFieldEditor.setChanged(true);
+//			}
+//		};
 		countryCodeTextBox.addModifyListener(modifyListener);
 		areaCodeTextBox.addModifyListener(modifyListener);
 		localNumberTextBox.addModifyListener(modifyListener);
 	}
 
-	protected void handleManagedBy(String managedBy)
-	{
-//		compGroup.setEnabled(managedBy == null);
-		countryCodeTextBox.setEditable(managedBy == null);
-		areaCodeTextBox.setEditable(managedBy == null);
-		localNumberTextBox.setEditable(managedBy == null);
-		if (managedBy != null)
-			setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.PhoneNumberDataFieldEditor.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
+	@Override
+	public void setEnabledState(boolean enabled, String tooltip) {
+		//		compGroup.setEnabled(managedBy == null);
+		countryCodeTextBox.setEditable(enabled);
+		areaCodeTextBox.setEditable(enabled);
+		localNumberTextBox.setEditable(enabled);
+		
+		if (!enabled)
+			setToolTipText(tooltip);
 		else
 			setToolTipText(null);
+	}
+	
+	@Override
+	public void setTitle(String title) {
+		compGroup.setText(title);
 	}
 }

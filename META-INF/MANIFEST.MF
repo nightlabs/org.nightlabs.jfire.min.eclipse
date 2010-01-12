@@ -29,6 +29,7 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui,
  org.nightlabs.jfire.base.ui.app,
  org.nightlabs.jfire.base.ui.config,
+ org.nightlabs.jfire.base.ui.edit,
  org.nightlabs.jfire.base.ui.editlock,
  org.nightlabs.jfire.base.ui.entity.editor,
  org.nightlabs.jfire.base.ui.entity.tree,
@@ -63,3 +64,4 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.security,
  org.nightlabs.jfire.base.ui.update,
  org.nightlabs.jfire.base.ui.workstation
+Import-Package: org.nightlabs.jfire.base.ui.prop.edit.blockbased

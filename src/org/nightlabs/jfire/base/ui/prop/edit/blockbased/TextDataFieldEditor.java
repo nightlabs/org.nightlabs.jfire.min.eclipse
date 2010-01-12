@@ -29,12 +29,16 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
+import org.nightlabs.jfire.base.ui.edit.TextEditComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.TextDataField;
+import org.nightlabs.jfire.prop.structfield.TextStructField;
 
 /**
  * Represents an editor for {@link TextDataField} within a
@@ -42,7 +46,9 @@ import org.nightlabs.jfire.prop.datafield.TextDataField;
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> {
+public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> implements DataFieldEditor<TextDataField> {
+	
+	private TextEditComposite textEditComposite;
 
 	public TextDataFieldEditor(IStruct struct, TextDataField data) {
 		super(struct, data);
@@ -63,43 +69,69 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 		}
 	}
 
-	private TextDataFieldComposite<TextDataField> composite;
-	
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Control createControl(Composite parent) {
-		if (composite == null) {
-			composite = new TextDataFieldComposite<TextDataField>(this, parent, SWT.NONE, getSwtModifyListener());
+		if (textEditComposite == null) {
+			textEditComposite = new TextEditComposite(parent, SWT.NONE, getLineCount());
+			textEditComposite.addModificationListener(getModifyListener());
 		}
-		composite.refresh();
-		return composite;
+		
+		refresh();
+		
+		return textEditComposite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
-	 */
 	@Override
 	public Control getControl() {
-		return composite;
+		return textEditComposite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#updatePropertySet()
-	 */
 	@Override
-	public void updatePropertySet()
-	{
-		getDataField().setText(composite.getText());
+	public void updatePropertySet() {
+		getDataField().setText(textEditComposite.getContent());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()
-	 */
 	@Override
 	public void doRefresh() {
-		if (composite != null)
-			composite.refresh();
+		if (textEditComposite != null) {
+			if (getStructField() != null && getDataField() != null) {
+				textEditComposite.setTitle("&" + getStructField().getName().getText()); //$NON-NLS-1$
+				textEditComposite.setContent(getDataField().getText());
+			}
+		}
+	}
+	
+//	@Override
+//	protected void handleManagedBy(String managedBy) {
+//		super.handleManagedBy(managedBy);
+		// The super method disables the whole composite thus making it impossible to select (and copy to clipboard) some text.
+		// Thus, we make the text read-only.
+//		textEditComposite.setEnabled(managedBy == null, String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.TextDataFieldComposite.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
+//		fieldText.setEditable(managedBy == null);
+//		if (managedBy != null)
+//			setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.TextDataFieldComposite.managedBy.tooltip"), managedBy));
+//		else
+//			setToolTipText(null);
+//	}
+
+//	private boolean isMultiLine() {
+//		StructField<?> structField = getStructField();
+//		if (structField instanceof TextStructField) {
+//			return ((TextStructField) structField).getLineCount() > 1;
+//		}
+//		return false;
+//	}
+
+	private int getLineCount() {
+		StructField<?> structField = getStructField();
+		if (structField instanceof TextStructField) {
+			return Math.max(((TextStructField) structField).getLineCount(), 1);
+		}
+		return 1;
+	}
+
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return textEditComposite;
 	}
 }

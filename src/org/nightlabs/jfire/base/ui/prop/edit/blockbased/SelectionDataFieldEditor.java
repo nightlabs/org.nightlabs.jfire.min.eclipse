@@ -3,15 +3,25 @@
  */
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
+import org.nightlabs.jfire.base.ui.edit.SelectionEditComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.SelectionDataField;
+import org.nightlabs.jfire.prop.exception.StructFieldValueNotFoundException;
+import org.nightlabs.jfire.prop.structfield.SelectionStructField;
+import org.nightlabs.jfire.prop.structfield.StructFieldValue;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -28,11 +38,6 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 		public String[] getEditorTypes() {
 			return new String[] {ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE, FieldBasedEditor.EDITORTYPE_FIELD_BASED};
 		}
-
-//		@Override
-//		public Class<? extends DataFieldEditor<SelectionDataField>> getDataFieldEditorClass() {
-//			return SelectionDataFieldEditor.class;
-//		}
 	
 		@Override
 		public DataFieldEditor<SelectionDataField> createPropDataFieldEditor(IStruct struct, SelectionDataField data) {
@@ -46,42 +51,80 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 
 	};
 
-	private SelectionDataFieldComposite composite;
+	private SelectionEditComposite<StructFieldValue> selectionEditComposite;
+	
+	private LabelProvider labelProvider = new LabelProvider() {
+		@Override
+		public String getText(Object element) {
+//			FieldValueHolder valueHolder = (FieldValueHolder) element;
+//			if (valueHolder == EMPTY_SELECTION)
+//				return "[enpty]";
+//			else
+//				return valueHolder.value.getValueName().getText();
+			StructFieldValue value = (StructFieldValue) element;
+			if (value == null)
+				return Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.SelectionDataFieldComposite.value.empty"); //$NON-NLS-1$
+			else
+				return value.getValueName().getText();
+		}
+	};
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Control createControl(Composite parent) {
-		composite = new SelectionDataFieldComposite(this, parent, SWT.NONE, getModifyListener());
-		return composite;
+		if (selectionEditComposite == null) {
+			selectionEditComposite = new SelectionEditComposite<StructFieldValue>(parent, SWT.NONE, labelProvider);
+			selectionEditComposite.addModificationListener(getModifyListener());
+		}
+		return selectionEditComposite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()
-	 */
 	@Override
 	public void doRefresh() {
-		if (composite != null)
-			composite.refresh();
+		if (selectionEditComposite != null) {
+			SelectionStructField field = (SelectionStructField) getStructField();
+
+			List<StructFieldValue> structFieldValues = new LinkedList<StructFieldValue>(field.getStructFieldValues());
+			if (field.allowsEmptySelection())
+				structFieldValues.add(0, null);
+
+			selectionEditComposite.setInput(structFieldValues);
+
+			SelectionDataField dataField = getDataField();
+			if (dataField.getStructFieldValueID() != null) {
+				try {
+					selectionEditComposite.setSelectedElement(field.getStructFieldValue(dataField.getStructFieldValueID()));
+				} catch (StructFieldValueNotFoundException e) {
+					if (structFieldValues.size() > 0) {
+						selectionEditComposite.setSelectedIndex(0);
+					}
+					else {
+						selectionEditComposite.setSelectedIndex(-1);
+					}
+					throw new RuntimeException("Could not find the referenced structFieldValue with id "+dataField.getStructFieldValueID()); //$NON-NLS-1$
+				}
+			} else {
+				selectionEditComposite.setSelectedElement(null);
+//				if (field.getDefaultValue() != null)
+//					fieldValueCombo.selectElement(field.getDefaultValue());
+//				else
+//					fieldValueCombo.selectElementByIndex(-1);
+			}
+			
+//			fieldValueCombo.setEnabled(getEditor().getDataField().getManagedBy() == null);
+		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
-	 */
 	public Control getControl() {
-		return composite;
+		return selectionEditComposite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#updateProp()
-	 */
 	public void updatePropertySet() {
-		getDataField().setSelection(composite.getFieldValueCombo().getSelectedElement());
+		getDataField().setSelection(selectionEditComposite.getSelectedElement());
+	}
+
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return selectionEditComposite;
 	}
 }
 

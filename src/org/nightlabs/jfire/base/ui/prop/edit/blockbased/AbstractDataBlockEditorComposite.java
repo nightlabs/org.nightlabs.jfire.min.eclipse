@@ -52,7 +52,7 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  * <p>
  * Implementations can rely on the data already being set for the {@link DataBlockEditor}
  * that the Composite is created with, so it is usually a good practice to create
- * the {@link DataFieldEditor}s in the constructor. All {@link StructField}s of the 
+ * the {@link DataFieldEditor}s in the constructor. All {@link StructField}s of the
  * edited {@link DataBlock} can be obtained using {@link #getOrderedStructFields()}.
  * </p>
  * 
@@ -86,7 +86,7 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	 * {@inheritDoc}
 	 * <p>
 	 * Implemented by iterating the {@link DataFieldEditor}s that were added by {@link #addFieldEditor(DataField, DataFieldEditor)}
-	 * and calling their {@link DataFieldEditor#setData(IStruct, DataField)} 
+	 * and calling their {@link DataFieldEditor#setData(IStruct, DataField)}
 	 * </p>
 	 */
 	@Override
@@ -110,6 +110,10 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 		@Override
 		public void dataFieldEditorChanged(DataFieldEditorChangedEvent changedEvent) {
 			notifyChangeListeners(changedEvent.getDataFieldEditor());
+			
+			// TODO Added the line below because otherwise the validation does not know of the changes made in the editor.
+			// Think about whether this is correct. Tobias
+			changedEvent.getDataFieldEditor().updatePropertySet();
 
 			List<ValidationResult> validationResults = getDataBlock().validate(getStruct());
 			if (getValidationResultManager() != null)
@@ -172,7 +176,7 @@ public abstract class AbstractDataBlockEditorComposite extends Composite impleme
 	 * to be editing the given {@link DataField}.
 	 * 
 	 * @param dataField The {@link DataField} to search the {@link DataFieldEditor} for.
-	 * @return The {@link DataFieldEditor} editing the given {@link DataField} or 
+	 * @return The {@link DataFieldEditor} editing the given {@link DataField} or
 	 *         <code>null</code> if none could be found.
 	 */
 	protected DataFieldEditor<DataField> getFieldEditor(DataField dataField) {

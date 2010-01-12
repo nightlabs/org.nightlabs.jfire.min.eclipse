@@ -1,20 +1,29 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
+import java.util.Collections;
+
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
+import org.nightlabs.jfire.base.ui.edit.MultiSelectionEditComposite;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.MultiSelectionDataField;
+import org.nightlabs.jfire.prop.structfield.MultiSelectionStructField;
+import org.nightlabs.jfire.prop.structfield.MultiSelectionStructFieldValue;
 
 /**
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de --> (Original SelectionDataFieldEditor code)
  */
-public class MultiSelectionDataFieldEditor extends AbstractDataFieldEditor<MultiSelectionDataField> {
+public class MultiSelectionDataFieldEditor
+extends AbstractDataFieldEditor<MultiSelectionDataField> {
 
 	public MultiSelectionDataFieldEditor(IStruct struct, MultiSelectionDataField data) {
 		super(struct, data);
@@ -33,7 +42,9 @@ public class MultiSelectionDataFieldEditor extends AbstractDataFieldEditor<Multi
 //		}
 	
 		@Override
-		public DataFieldEditor<MultiSelectionDataField> createPropDataFieldEditor(IStruct struct, MultiSelectionDataField data) {
+		public DataFieldEditor<MultiSelectionDataField> createPropDataFieldEditor(
+				IStruct struct, MultiSelectionDataField data)
+		{
 			return new MultiSelectionDataFieldEditor(struct, data);
 		}
 
@@ -44,43 +55,51 @@ public class MultiSelectionDataFieldEditor extends AbstractDataFieldEditor<Multi
 
 	};
 
-	private MultiSelectionDataFieldComposite composite;
+	private MultiSelectionEditComposite<MultiSelectionStructFieldValue> multiSelectionEditComposite;
+	private static final ILabelProvider LABEL_PROVIDER = new LabelProvider() {
+		@Override
+		public String getText(Object element) {
+			if (!MultiSelectionStructFieldValue.class.isAssignableFrom(element.getClass()))
+				throw new RuntimeException("Given element is not of type MultiSelectionStructFieldValue");
+			
+			MultiSelectionStructFieldValue msfv = (MultiSelectionStructFieldValue) element;
+			
+			return msfv.getValueName().getText();
+		};
+	};
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Control createControl(Composite parent) {
-		composite = new MultiSelectionDataFieldComposite(this, parent, SWT.NONE, getModifyListener());
-		return composite;
+		if (multiSelectionEditComposite == null) {
+			multiSelectionEditComposite = new MultiSelectionEditComposite<MultiSelectionStructFieldValue>(parent, SWT.NONE, LABEL_PROVIDER);
+			multiSelectionEditComposite.addModificationListener(getModifyListener());
+		}
+		
+		return multiSelectionEditComposite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor#doRefresh()
-	 */
 	@Override
 	public void doRefresh() {
-		if (composite != null)
-			composite.refresh();
+		MultiSelectionDataField df = getDataField();
+		MultiSelectionStructField sf = (MultiSelectionStructField) getStructField();
+		
+//		if (multiSelectionEditComposite != null)
+//			multiSelectionEditComposite.refresh();
+		
+		multiSelectionEditComposite.setInput(Collections.unmodifiableCollection(sf.getStructFieldValues()), Collections.unmodifiableCollection(df.getStructFieldValues()));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getControl()
-	 */
 	public Control getControl() {
-		return composite;
+		return multiSelectionEditComposite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#updateProp()
-	 */
-	public void updatePropertySet() 
-	{
-		getDataField().setSelection(composite.getSelection());
+	public void updatePropertySet()	{
+		getDataField().setSelection(multiSelectionEditComposite.getSelection());
+	}
+
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return multiSelectionEditComposite;
 	}
 }
 

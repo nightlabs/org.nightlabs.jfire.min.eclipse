@@ -29,6 +29,9 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.i18n.I18nText;
+import org.nightlabs.jfire.base.ui.edit.I18nTextEditComposite;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditorFactory;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
@@ -36,6 +39,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditor;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.datafield.I18nTextDataField;
 import org.nightlabs.jfire.prop.datafield.TextDataField;
+import org.nightlabs.jfire.prop.structfield.I18nTextStructField;
 
 /**
  * Represents an editor for {@link TextDataField} within a
@@ -43,7 +47,8 @@ import org.nightlabs.jfire.prop.datafield.TextDataField;
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDataField> {
+public class I18nTextDataFieldEditor
+extends AbstractDataFieldEditor<I18nTextDataField> {
 
 	public I18nTextDataFieldEditor(IStruct struct, I18nTextDataField data) {
 		super(struct, data);
@@ -80,28 +85,29 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 //		return ExpandableBlocksEditor.EDITORTYPE_BLOCK_BASED_EXPANDABLE;
 //	}
 
-	private I18nTextDataFieldComposite composite;
+	private I18nTextEditComposite i18nTextEditComposite;
 
 	@Override
 	public Control createControl(Composite parent) {
-		if (composite == null) {
-			composite = new I18nTextDataFieldComposite(this, parent, SWT.NONE, getSwtModifyListener());
+		if (i18nTextEditComposite == null) {
+			I18nTextStructField sf = (I18nTextStructField) getStructField();
+			i18nTextEditComposite = new I18nTextEditComposite(parent, SWT.NONE, sf.getLineCount());
+			i18nTextEditComposite.addModificationListener(getModifyListener());
 		}
 //		composite.refresh(); // I think the framework calls refresh() anyway, hence it's not necessary to call this method here. Marco.
-		return composite;
+		return i18nTextEditComposite;
 	}
 
 	@Override
 	public Control getControl() {
-		return composite;
+		return i18nTextEditComposite;
 	}
 
 	@Override
-	public void updatePropertySet()
-	{
+	public void updatePropertySet() {
 //		Display.getDefault().syncExec(new Runnable(){
 //			public void run() {
-				composite.updateFieldText(getDataField().getI18nText());
+				i18nTextEditComposite.updateFieldText(getDataField().getI18nText());
 //			}
 //		});
 	}
@@ -116,8 +122,18 @@ public class I18nTextDataFieldEditor extends AbstractDataFieldEditor<I18nTextDat
 
 	@Override
 	public void doRefresh() {
-		if (composite != null)
-			composite.refresh();
+		if (i18nTextEditComposite != null) {
+			I18nText text = getDataField().getI18nText();
+			i18nTextEditComposite.setInput(text);
+			
+//			getI18nText().copyFrom(getEditor().getDataField().getI18nText());
+//			i18nTextEditor.refresh();
+		}
+	}
+
+	@Override
+	protected IEntryEditor getEntryViewer() {
+		return i18nTextEditComposite;
 	}
 
 }

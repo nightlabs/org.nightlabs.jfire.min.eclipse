@@ -28,13 +28,15 @@ package org.nightlabs.jfire.base.ui.prop.edit;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.events.ModifyEvent;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.ModifyListener;
 import org.nightlabs.jfire.prop.StructField;
 
 /**
- * Abstract base class for all  {@link DataFieldEditor}s with implementations for the listener stuff and other
+ * Abstract base class for all {@link DataFieldEditor}s with implementations for the listener stuff and other
  * common things for all field editors.<br/>
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -50,12 +52,13 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 
 	private boolean refreshing;
 	private boolean changed;
-
+	
 	private org.eclipse.swt.events.ModifyListener swtModifyListener = new org.eclipse.swt.events.ModifyListener() {
 		@Override
 		public void modifyText(ModifyEvent e) {
 			if (!refreshing) {
-				notifyChangeListeners();
+//				notifyChangeListeners();
+				setChanged(true);
 			}
 		}
 	};
@@ -64,7 +67,8 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		@Override
 		public void modifyData() {
 			if (!refreshing) {
-				notifyChangeListeners();
+//				notifyChangeListeners();
+				setChanged(true);
 			}
 		}
 	};
@@ -87,15 +91,16 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		if (refreshing) // Added this, because otherwise refreshing might be set "false" too early. If this is incorrect, then refreshing must be changed to an int and become a (recursion-)counter. Marco.
 			return;
 
-		refreshing = true;
+		ignoreModifyEvents(true);
 		this.struct = struct;
 		try  {
 			setDataField(data);
 		} finally {
-			refreshing = false;
+			ignoreModifyEvents(false);
 		}
-		if (getControl() != null && !getControl().isDisposed())
+		if (getControl() != null && !getControl().isDisposed()) {
 			refresh();
+		}
 	}
 	
 	
@@ -132,27 +137,49 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		if (refreshing) // Added this, because otherwise refreshing might be set "false" too early. If this is incorrect, then refreshing must be changed to an int and become a (recursion-)counter. Marco.
 			return;
 
-		refreshing = true;
+		ignoreModifyEvents(true);
 		try {
+//			getDataFieldComposite().setContent(getDataField().getData());
+			
+//			setDataField(getDataField());
 			doRefresh();
+			handleManagedBy(getDataField().getManagedBy());
+			getEntryViewer().setTitle(getStructField().getName().getText());
 		} finally {
-			refreshing = false;
+			ignoreModifyEvents(false);
 		}
 	}
+	
+	protected void handleManagedBy(String managedBy) {
+//		Composite composite = getEditComposite();
+//
+//		for (Control child : composite.getChildren()) {
+//			if (title != child)
+//				child.setEnabled(managedBy == null);
+//		}
+//		if (managedBy != null)
+//			composite.setToolTipText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
+//		else
+//			composite.setToolTipText(null);
+		if (getEntryViewer() != null)
+			getEntryViewer().setEnabledState(managedBy == null, String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.AbstractInlineDataFieldComposite.managedBy.tooltip"), managedBy)); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Returns the {@link IEntryEditor} that is used to display the value of the
+	 * data field.
+	 * @return the {@link IEntryEditor} that is used to display the value of the
+	 * data field.
+	 */
+	protected abstract IEntryEditor getEntryViewer();
 
 	private ListenerList changeListener = new ListenerList();
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#addDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
-	 */
 	@Override
 	public synchronized void addDataFieldEditorChangedListener(DataFieldEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#removeDataFieldEditorChangedListener(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorChangedListener)
-	 */
 	@Override
 	public synchronized void removeDataFieldEditorChangedListener(DataFieldEditorChangedListener listener) {
 		changeListener.remove(listener);
@@ -167,9 +194,6 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setChanged(boolean)
-	 */
 	@Override
 	public void setChanged(boolean changed) {
 		this.changed = changed;
@@ -180,18 +204,11 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#isChanged()
-	 */
 	@Override
 	public boolean isChanged() {
 		return changed;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getStructField()
-	 */
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public StructField<F> getStructField() {
 		if (structField == null) {
@@ -213,17 +230,11 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		return structField;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#getPropDataFieldEditorFactory()
-	 */
 	@Override
 	public DataFieldEditorFactory<F> getPropDataFieldEditorFactory() {
 		return factory;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor#setPropDataFieldEditorFactory(org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditorFactory)
-	 */
 	@Override
 	public void setPropDataFieldEditorFactory(DataFieldEditorFactory<F> factory) {
 		this.factory = factory;
@@ -253,6 +264,19 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	 */
 	protected ModifyListener getModifyListener() {
 		return modifyListener;
+	}
+	
+	/**
+	 * Sets whether modification events triggered by the ModifyListeners returned by either {@link #getModifyListener()} or
+	 * {@link #getSwtModifyListener()} should be ignored or not.<br />
+	 * This method is intended to be used when the contents of the {@link DataFieldEditor} are set programmatically and
+	 * therefore no modification events should be triggered.<br />
+	 * <b>WARNING:</b> Don't forget to call {@link #ignoreModifyEvents(boolean)} with <code>false</code> when you're done with updating.
+	 * 
+	 * @param ignore Boolean indicating whether modification events should be ignored or not.
+	 */
+	protected void ignoreModifyEvents(boolean ignore) {
+		this.refreshing = ignore;
 	}
 
 	/**
