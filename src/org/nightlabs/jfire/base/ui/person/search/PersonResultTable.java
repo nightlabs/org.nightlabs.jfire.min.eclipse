@@ -30,8 +30,10 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.DefaultPropertySetTableConfig;
 import org.nightlabs.jfire.base.ui.prop.IPropertySetTableConfig;
@@ -40,6 +42,7 @@ import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.IStruct;
+import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -64,17 +67,6 @@ public class PersonResultTable extends PropertySetTable<Person> {
 	 */
 	public PersonResultTable(Composite parent, int style, int viewerStyle) {
 		super(parent, style, viewerStyle);
-
-		getTableViewer().setComparator(new ViewerComparator() {
-			private Collator collator = Collator.getInstance();
-
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				String s1 = ((Person)e1).getDisplayName();
-				String s2 = ((Person)e2).getDisplayName();
-				return collator.compare(s1, s2);
-			}
-		});
 	}
 
 	@Override
@@ -111,5 +103,20 @@ public class PersonResultTable extends PropertySetTable<Person> {
 			l.add(new StructFieldID[]{PersonStruct.INTERNET_EMAIL});
 			return l;
 		}
+	}
+	
+	@Override
+	protected void setTableProvider(TableViewer tableViewer) {
+		super.setTableProvider(tableViewer);
+		tableViewer.setComparator(new ViewerComparator() {
+			private Collator collator = Collator.getInstance();
+
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				String s1 = ((PropertySet)e1).getDisplayName();
+				String s2 = ((PropertySet)e2).getDisplayName();
+				return collator.compare(s1, s2);
+			}
+		});				
 	}
 }
