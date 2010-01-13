@@ -45,6 +45,7 @@ import org.nightlabs.jfire.prop.structfield.TextStructField;
  * block based ExpandableBlocksEditor.
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> implements DataFieldEditor<TextDataField> {
 	
@@ -72,13 +73,24 @@ public class TextDataFieldEditor extends AbstractDataFieldEditor<TextDataField> 
 	@Override
 	public Control createControl(Composite parent) {
 		if (textEditComposite == null) {
-			textEditComposite = new TextEditComposite(parent, SWT.NONE, getLineCount());
+			textEditComposite = createTextEditComposite(parent);
 			textEditComposite.addModificationListener(getModifyListener());
 		}
 		
 		refresh();
 		
 		return textEditComposite;
+	}
+	
+	/**
+	 * Creates the composite to edit the text entry with the given <code>parent</code>.<br/>
+	 * Subclasses may override this method if they want to create a {@link TextEditComposite} with different properties.
+	 * 
+	 * @param parent The parent of the composite to be created.
+	 * @return The composite to edit the text entry.
+	 */
+	protected TextEditComposite createTextEditComposite(Composite parent) {
+		return new TextEditComposite(parent, SWT.NONE, getLineCount());
 	}
 
 	@Override

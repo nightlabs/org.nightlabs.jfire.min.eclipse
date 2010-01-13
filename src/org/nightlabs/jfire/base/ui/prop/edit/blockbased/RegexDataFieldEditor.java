@@ -63,7 +63,7 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 	@Override
 	public Control createControl(Composite parent) {
 		if (textEditComposite == null) {
-			textEditComposite = new TextEditComposite(parent, SWT.NONE, 1);
+			textEditComposite = createComposite(parent);
 			textEditComposite.addModificationListener(getModifyListener());
 		}
 		
@@ -108,6 +108,10 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 //		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, valueText);
 //		XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA_HORIZONTAL, title);
 //		return comp;
+	}
+	
+	protected TextEditComposite createComposite(Composite parent) {
+		return new TextEditComposite(parent, SWT.NONE, 1);
 	}
 
 	@Override
