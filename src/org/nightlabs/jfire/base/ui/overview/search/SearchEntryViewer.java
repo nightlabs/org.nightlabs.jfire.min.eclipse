@@ -677,6 +677,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 
 		int resultHeight = completeHeight - searchHeight;
+		if (footerComposite != null) 
+		 resultHeight -= footerComposite.getBounds().height;
 
 		return new int[] { searchHeight, resultHeight };
 	}
