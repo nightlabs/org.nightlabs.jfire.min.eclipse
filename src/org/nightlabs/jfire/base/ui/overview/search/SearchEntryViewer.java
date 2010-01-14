@@ -105,7 +105,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 	protected QueryProvider<Q> queryProvider;
 
 	private ScrolledComposite scrollableSearchWrapper;
-	private ScrolledComposite scrollableFooterWrapper;
 	private XComposite toolbarAndAdvancedSearchWrapper;
 	private SashForm sashform;
 	private ToolItem searchItem;
@@ -164,26 +163,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		}
 
 		//Footer
-//		scrollableFooterWrapper = new ScrolledComposite(sashform, SWT.V_SCROLL);
-//		scrollableFooterWrapper.setExpandHorizontal(true);
-//		scrollableFooterWrapper.setExpandVertical(true);
-		
-		footerComposite = createFooterComposite(sashform);
-		if (footerComposite != null) {
-			if (footerComposite instanceof XComposite)
-			{
-//				final XComposite footerXComposite = (XComposite) footerComposite;
-//				footerXComposite.getGridData().minimumHeight = 55;
-//				footerXComposite.setToolkit(toolkit);
-//				footerXComposite.adaptToToolkit();
-				
-//				scrollableFooterWrapper.setContent(footerComposite);
-			}
-			else if (toolkit != null)
-			{
-				toolkit.adapt(footerComposite);
-			}
-		}
+		footerComposite = createFooterComposite(parent);
+		toolkit.adapt(footerComposite);
 
 		// Context Menu
 		menuManager = new MenuManager();
@@ -660,7 +641,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		// Calculate the total space available for both composites (search comp and result comp)
 		int completeHeight;
 		int searchHeight;
-		int footerHeight = 0;
 		if (expandedStateChangedSection == null)
 		{
 			// we need to initialise size values because these composites haven't been layed out correctly.
@@ -695,14 +675,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 			return sashform.getWeights();
 		}
 
-		if (footerComposite != null && footerComposite instanceof XComposite) {
-			footerHeight = 55;
-		}
 
-		int resultHeight = completeHeight - searchHeight - footerHeight;
-
-		if (footerComposite != null)
-			return new int[] { searchHeight, resultHeight, footerHeight };
+		int resultHeight = completeHeight - searchHeight;
 
 		return new int[] { searchHeight, resultHeight };
 	}
