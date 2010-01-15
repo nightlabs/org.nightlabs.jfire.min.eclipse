@@ -164,7 +164,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 		//Footer
 		footerComposite = createFooterComposite(parent);
-		toolkit.adapt(footerComposite);
+		if (footerComposite != null)
+			toolkit.adapt(footerComposite);
 
 		// Context Menu
 		menuManager = new MenuManager();
