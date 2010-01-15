@@ -112,7 +112,7 @@ extends RestorableSectionPart
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 			public void widgetSelected(SelectionEvent e) {
-				if (TimePatternSetBuilderWizard.open(task.getTimePatternSet())) {
+				if (TimePatternSetBuilderWizard.open(buildTimePattern.getShell(), task.getTimePatternSet())) {
 					timePatternSetComposite.refresh(true);
 					TaskDetailSection.this.markDirty();
 				}
