@@ -26,6 +26,7 @@
 
 package org.nightlabs.jfire.base.ui.prop;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -33,9 +34,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
-import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.base.ui.table.TableLabelProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;
@@ -43,7 +42,6 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.datafield.II18nTextDataField;
 import org.nightlabs.jfire.prop.exception.PropertyException;
 import org.nightlabs.jfire.prop.id.StructFieldID;
-import org.nightlabs.util.NLLocale;
 
 /**
  * Table Composite that displays a configurable set of {@link StructField}s
@@ -121,13 +119,13 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Set a default {@link TableContentProvider} and
+	 * Set a default {@link ArrayContentProvider} and
 	 * the internal {@link LabelProvider}.
 	 * </p>
 	 */
 	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
-		tableViewer.setContentProvider(new TableContentProvider());
+		tableViewer.setContentProvider(new ArrayContentProvider());
 		tableViewer.setLabelProvider(new LabelProvider());
 	}
 

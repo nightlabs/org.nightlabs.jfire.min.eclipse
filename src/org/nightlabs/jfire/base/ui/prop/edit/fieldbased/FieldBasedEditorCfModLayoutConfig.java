@@ -46,7 +46,7 @@ import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * A field-based {@link PropertySetEditor} that configures the fields it displays and 
+ * A field-based {@link PropertySetEditor} that configures the fields it displays and
  * the layout to present them from an {@link PropertySetFieldBasedEditLayoutConfigModule}.
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
@@ -65,7 +65,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	private Composite editorWrapper;
 	private String editorType = FieldBasedEditor.EDITORTYPE_FIELD_BASED;
 	
-	private ListenerList fieldEditorChangedListeners = new ListenerList(); 
+	private ListenerList fieldEditorChangedListeners = new ListenerList();
 	
 	private IValidationResultHandler validationResultHandler;
 	
@@ -77,7 +77,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 * Constructs a new {@link FieldBasedEditorCfModLayoutConfig} that reads its configuration
 	 * from the given config module.
 	 * @param configModule The config module this editor can read its layout from
-	 * @param showDisplayNameEdit Whether this editor should show a control where the user can edit the display-name of the property-set 
+	 * @param showDisplayNameEdit Whether this editor should show a control where the user can edit the display-name of the property-set
 	 */
 	public FieldBasedEditorCfModLayoutConfig(PropertySetFieldBasedEditLayoutConfigModule configModule, boolean showDisplayNameEdit) {
 		this.showDisplayNameEdit = showDisplayNameEdit;
@@ -96,7 +96,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	/**
 	 * Constructs a new {@link FieldBasedEditorCfModLayoutConfig}.
 	 * Note, that in order to use that editor you have to set the config module it can
-	 * read is configuration from (see {@link #setConfigModule(PropertySetFieldBasedEditLayoutConfigModule)}).   
+	 * read is configuration from (see {@link #setConfigModule(PropertySetFieldBasedEditLayoutConfigModule)}).
 	 */
 	public FieldBasedEditorCfModLayoutConfig(boolean showDisplayNameEdit) {
 		this.showDisplayNameEdit = showDisplayNameEdit;
@@ -264,7 +264,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 //								editor.refresh();
 							}
 						} else {
-							// the field-editors have been initialized already, only re-set their data 
+							// the field-editors have been initialized already, only re-set their data
 							for (PropertySetFieldBasedEditLayoutEntry editLayoutEntry : configModule.getEditLayoutEntries()) {
 								StructFieldID structFieldID = editLayoutEntry.getStructFieldID();
 								if (structFieldID != null) {
@@ -368,7 +368,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
 	 * This property change listener will be triggered on a change of the additional data
 	 * of a PropertySet which might be the display name of a PropertySet or each other
-	 * property introduced by a subclass of PropertySet. 
+	 * property introduced by a subclass of PropertySet.
 	 * 
 	 * @param listener The listener to add.
 	 */
@@ -387,7 +387,7 @@ public class FieldBasedEditorCfModLayoutConfig implements PropertySetEditor {
 	/**
 	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
 	 * This property change listener will be triggered on a change of the given property
-	 * of a PropertySet. 
+	 * of a PropertySet.
 	 *
 	 * @param property The additional property of a PropertySet to listen for changes.
 	 * @param listener The listener to add.

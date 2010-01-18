@@ -12,8 +12,8 @@ extends AbstractInlineEditComposite
 	private Text fieldText;
 	private int lineCount;
 	
-	public TextEditComposite(Composite parent, int style, int lineCount) {
-		super(parent, style);
+	public TextEditComposite(Composite parent, int style, int lineCount, boolean showTitle) {
+		super(parent, style, showTitle);
 		
 		this.lineCount = lineCount;
 		
@@ -22,6 +22,10 @@ extends AbstractInlineEditComposite
 		fieldText.setLayoutData(createTextLayoutData());
 		
 		fieldText.addModifyListener(getSwtModifyListener());
+	}
+	
+	public TextEditComposite(Composite parent, int style, int lineCount) {
+		this(parent, style, lineCount, false);
 	}
 	
 	protected int createTextStyle() {

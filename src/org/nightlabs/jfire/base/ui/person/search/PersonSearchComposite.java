@@ -37,43 +37,35 @@ import org.nightlabs.jfire.person.Person;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
- *
+ * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 	/**
-	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String)}
+	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String, String)}
 	 */
 	public PersonSearchComposite(Composite parent, int style,
-			String quickSearchText) {
-		super(parent, style, quickSearchText);
+			String quickSearchText, String useCase) {
+		super(parent, style, quickSearchText, useCase);
 	}
 
 	/**
-	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String, boolean)}
+	 * See {@link PropertySetSearchComposite#PropertySetSearchComposite(Composite, int, String, boolean, String)}
 	 */
 	public PersonSearchComposite(Composite parent, int style,
-			String quickSearchText, boolean doIDSearchAndUsePropertySetCache) {
-		super(parent, style, quickSearchText, doIDSearchAndUsePropertySetCache);
+			String quickSearchText, boolean doIDSearchAndUsePropertySetCache, String useCase) {
+		super(parent, style, quickSearchText, doIDSearchAndUsePropertySetCache, useCase);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected PropertySetTable<Person> createResultTable(Composite parent) {
 		return new PersonResultTable(parent, SWT.NONE);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected SearchFilterProvider createStaticSearchFilterProvider(SearchResultFetcher resultFetcher) {
 		return new StaticPersonSearchFilterProvider(resultFetcher, false);
 	}
-	/**
-	 * {@inheritDoc}
-	 */
+
 	@Override
 	protected SearchFilterProvider createDynamicSearchFilterProvider(SearchResultFetcher resultFetcher) {
 		return new DynamicPersonSearchFilterProvider(new PropertySetSearchFilterItemListMutator(), resultFetcher);

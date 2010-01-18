@@ -11,17 +11,23 @@ public abstract class AbstractInlineEditComposite
 extends AbstractEditComposite
 {
 	protected Label title;
-
-	public AbstractInlineEditComposite(Composite parent, int style) {
-		super(parent, style | SWT.NONE);
+	
+	public AbstractInlineEditComposite(Composite parent, int style, boolean showTitle) {
+		super(parent, style);
 		
 		if (!(parent.getLayout() instanceof GridLayout))
 			throw new IllegalArgumentException("Parent should have a GridLayout!"); //$NON-NLS-1$
 		
 		setLayout(getDefaultLayout());
-		// FIXME: titles used within TextDataFieldComposite always indent some pixels. Why? Marc
-		title = new Label(this, SWT.NONE);
-		title.setLayoutData(createTitleLayoutData());
+		if (showTitle) {
+			// FIXME: titles used within TextDataFieldComposite always indent some pixels. Why? Marc
+			title = new Label(this, SWT.NONE);
+			title.setLayoutData(createTitleLayoutData());
+		}
+	}
+
+	public AbstractInlineEditComposite(Composite parent, int style) {
+		this (parent, style, false);
 	}
 
 	protected Object createTitleLayoutData() {
@@ -35,7 +41,8 @@ extends AbstractEditComposite
 	 * @param title The title to set.
 	 */
 	public void setTitle(String title) {
-		this.title.setText(title);
+		if (this.title != null)
+			this.title.setText(title);
 	}
 
 	/**

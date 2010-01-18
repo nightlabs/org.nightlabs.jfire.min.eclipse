@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui.prop.search;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -45,7 +46,8 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.nightlabs.jdo.search.ISearchFilterItem;
+import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
@@ -54,7 +56,6 @@ import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.dao.StructDAO;
 import org.nightlabs.jfire.prop.id.StructID;
-import org.nightlabs.jfire.prop.structfield.TextStructField;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -91,8 +92,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 			comboSearchField.setLayoutData(gdCombo);
 
 			comboSearchField.addSelectionListener(this);
-			// TODO: temporär -> ExtensionPoint
-			PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().addEditorFactory(TextStructField.class, new TextStructFieldSearchItemEditorHelper.Factory());
+			
 			fillSearchFieldCombo();
 		}
 		return wrapper;
@@ -144,7 +144,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		IStruct struct = StructDAO.sharedInstance().getStruct(StructID.create(Organisation.DEV_ORGANISATION_ID, Person.class, Person.STRUCT_SCOPE), monitor);
 		for (StructBlock structBlock : struct.getStructBlocks()) {
 			for (StructField<?> structField : structBlock.getStructFields()) {
-				if (PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance().hasHelper(structField.getClass()))
+				if (StructFieldSearchFilterEditorRegistry.sharedInstance().hasEditor((Class<? extends StructField<?>>) structField.getClass()))
 					helperList.add(new PropertySetStructFieldSearchItemEditorManager(structField));
 			}
 		}
@@ -157,7 +157,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#getSearchFilterItem()
 	 */
 	@Override
-	public SearchFilterItem getSearchFilterItem() {
+	public ISearchFilterItem getSearchFilterItem() {
 		return getCurrentHelper().getSearchFilterItem();
 	}
 
@@ -215,4 +215,15 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		comboSearchField.removeSelectionListener(this);
 	}
 
+	@Override
+	public Control createControl(Composite parent, boolean showTitle) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EnumSet<MatchType> getSupportedMatchTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

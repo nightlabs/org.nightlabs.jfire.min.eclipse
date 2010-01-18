@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.nightlabs.jfire.base.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.nightlabs.jfire.base.ui" id="structFieldSearchFilterItemEditor" name="StructFieldSearchFilterItemEditor extension point"/>
+      </appInfo>
+      <documentation>
+         This extension point serves to register editors for search filter items for invididual StructFields. These editors must provide UI to acquire the sought after data and also a SearchFilterItem suitable for searching.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="specialisedStructFieldSearchFilterItemEditor"/>
+            <element ref="structFieldSearchFilterItemEditor"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="structFieldSearchFilterItemEditor">
+      <complexType>
+         <attribute name="structFieldClass" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The StructField class for whose instances a SearchFilterEditor is provided.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.nightlabs.jfire.prop.StructField:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="structFieldSearchFilterItemEditorFactory" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Factory for the implementation of SearchFilterItemEditor used to edit SearchFilterItems for the StructField instances of the given type.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.nightlabs.jfire.base.ui.prop.search.IStructFieldSearchFilterItemEditorFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The priority of this definition. Extensions can override this definition by using a lower priority.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="specialisedStructFieldSearchFilterItemEditor">
+      <complexType>
+         <attribute name="structFieldID" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The string representation of the StructFieldID for whose StructField a specialised SearchFilterEditor is to be registered
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="structFieldSearchFilterItemEditorFactory" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Factory for the implementation of SearchFilterItemEditor used to edit SearchFilterItems for the StructField instances of the given type.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.nightlabs.jfire.base.ui.prop.search.IStructFieldSearchFilterItemEditorFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The priority of this definition. Extensions can override this definition by using a lower priority.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>

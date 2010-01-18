@@ -27,6 +27,7 @@
 package org.nightlabs.jfire.base.ui.person.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.ListenerList;
@@ -41,20 +42,20 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.jdo.query.ui.search.EarlySearchFilterProvider;
 import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
+import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jdo.search.SearchFilter;
-import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.PersonSearchFilter;
 import org.nightlabs.jfire.person.PersonStruct;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
-import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
+import org.nightlabs.jfire.prop.search.TextStructFieldSearchFilterItem;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class StaticPersonSearchFilterProvider 
-implements EarlySearchFilterProvider 
+public class StaticPersonSearchFilterProvider
+implements EarlySearchFilterProvider
 {
 	private StaticPersonSearchFilterProviderComposite searchFilterProviderComposite;
 	private boolean createOwnSearchButton;
@@ -236,7 +237,7 @@ implements EarlySearchFilterProvider
 		};
 	
 		for (String needle : needles) {
-			filter.addSearchFilterItem(new TextPropSearchFilterItem(nameCriteriaFieldIDs, SearchFilterItem.MATCHTYPE_CONTAINS, needle));
+			filter.addSearchFilterItem(new TextStructFieldSearchFilterItem(Arrays.asList(nameCriteriaFieldIDs), MatchType.CONTAINS, needle));
 		}
 		
 //		if (nameCriteria.company != null || !"".equals(nameCriteria.company))
@@ -254,17 +255,26 @@ implements EarlySearchFilterProvider
 //		if (!searchFilterProviderComposite.getControlCompany().getTextControl().getText().equals(""))
 //			filter.addSearchFilterItem(new TextPersonSearchFilterItem(PersonStruct.PERSONALDATA_COMPANY,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlCompany().getTextControl().getText()));
 		if (!searchFilterProviderComposite.getControlAddress().getTextControl().getText().equals("")) //$NON-NLS-1$
-			filter.addSearchFilterItem(new TextPropSearchFilterItem(PersonStruct.POSTADDRESS_ADDRESS,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlAddress().getTextControl().getText()));
+			filter.addSearchFilterItem(new TextStructFieldSearchFilterItem(PersonStruct.POSTADDRESS_ADDRESS,MatchType.CONTAINS,searchFilterProviderComposite.getControlAddress().getTextControl().getText()));
 		if (!searchFilterProviderComposite.getControlCity().getTextControl().getText().equals("")) //$NON-NLS-1$
-			filter.addSearchFilterItem(new TextPropSearchFilterItem(PersonStruct.POSTADDRESS_CITY,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlCity().getTextControl().getText()));
+			filter.addSearchFilterItem(new TextStructFieldSearchFilterItem(PersonStruct.POSTADDRESS_CITY,MatchType.CONTAINS,searchFilterProviderComposite.getControlCity().getTextControl().getText()));
 		if (!searchFilterProviderComposite.getControlPostCode().getTextControl().getText().equals("")) //$NON-NLS-1$
-			filter.addSearchFilterItem(new TextPropSearchFilterItem(PersonStruct.POSTADDRESS_POSTCODE,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlPostCode().getTextControl().getText()));
+			filter.addSearchFilterItem(new TextStructFieldSearchFilterItem(PersonStruct.POSTADDRESS_POSTCODE,MatchType.CONTAINS,searchFilterProviderComposite.getControlPostCode().getTextControl().getText()));
 //		if (!searchFilterProviderComposite.getControlPhonePre().getTextControl().getText().equals(""))
 //			filter.addSearchFilterItem(new TextPersonSearchFilterItem(PersonStruct.PHONE_AREACODE,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlPhonePre().getTextControl().getText()));
 //		if (!searchFilterProviderComposite.getControlPhone().getTextControl().getText().equals(""))
 //			filter.addSearchFilterItem(new TextPropSearchFilterItem(PersonStruct.PHONE_LOCALNUMBER,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlPhone().getTextControl().getText()));
 		if (!searchFilterProviderComposite.getControlEmail().getTextControl().getText().equals("")) //$NON-NLS-1$
-			filter.addSearchFilterItem(new TextPropSearchFilterItem(PersonStruct.INTERNET_EMAIL,SearchFilterItem.MATCHTYPE_CONTAINS,searchFilterProviderComposite.getControlEmail().getTextControl().getText()));
+			filter.addSearchFilterItem(new TextStructFieldSearchFilterItem(PersonStruct.INTERNET_EMAIL,MatchType.CONTAINS,searchFilterProviderComposite.getControlEmail().getTextControl().getText()));
+		
+		if (searchFilterProviderComposite.getEditor().hasSearchConstraint())
+			filter.addSearchFilterItem(searchFilterProviderComposite.getEditor().getSearchFilterItem());
+		
+		if (searchFilterProviderComposite.getCreditCardEditor().hasSearchConstraint())
+		filter.addSearchFilterItem(searchFilterProviderComposite.getCreditCardEditor().getSearchFilterItem());
+		
+		if (searchFilterProviderComposite.getNameEditor().hasSearchConstraint())
+		filter.addSearchFilterItem(searchFilterProviderComposite.getNameEditor().getSearchFilterItem());
 		
 		return filter;
 	}

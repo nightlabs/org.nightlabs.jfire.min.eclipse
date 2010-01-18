@@ -35,7 +35,21 @@ import org.nightlabs.base.ui.composite.LabeledText;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.jdo.search.MatchType;
+import org.nightlabs.jfire.base.ui.prop.search.IStructFieldSearchFilterItemEditor;
+import org.nightlabs.jfire.base.ui.prop.search.StructFieldSearchFilterEditorRegistry;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.organisation.Organisation;
+import org.nightlabs.jfire.person.Person;
+import org.nightlabs.jfire.person.PersonStruct;
+import org.nightlabs.jfire.prop.Struct;
+import org.nightlabs.jfire.prop.dao.StructDAO;
+import org.nightlabs.jfire.prop.exception.PropertyException;
+import org.nightlabs.jfire.prop.id.StructID;
+import org.nightlabs.jfire.prop.structfield.NumberStructField;
+import org.nightlabs.jfire.prop.structfield.SelectionStructField;
+import org.nightlabs.jfire.prop.structfield.TextStructField;
+import org.nightlabs.progress.NullProgressMonitor;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -54,6 +68,9 @@ public class StaticPersonSearchFilterProviderComposite extends org.eclipse.swt.w
 	private LabeledText controlPhone;
 	private LabeledText controlEmail;
 	private Button searchButton;
+	private IStructFieldSearchFilterItemEditor salutationEditor;
+	private IStructFieldSearchFilterItemEditor creditCardEditor;
+	private IStructFieldSearchFilterItemEditor nameEditor;
 
 	public StaticPersonSearchFilterProviderComposite(Composite parent, int style, boolean createSearchButton) {
 		super(parent, style);
@@ -150,6 +167,34 @@ public class StaticPersonSearchFilterProviderComposite extends org.eclipse.swt.w
 		controlEmailLData.horizontalAlignment = GridData.FILL;
 //		controlPhoneLData.widthHint = 160;
 		controlEmail.setLayoutData(controlEmailLData);
+		
+		// TODO remove this again, only for testing
+		Composite fourthRow = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE, 3);
+		
+		StructID personStructID = StructID.create(Organisation.DEV_ORGANISATION_ID, Person.class.getName(), Person.STRUCT_LOCAL_SCOPE);
+		Struct struct = StructDAO.sharedInstance().getStruct(personStructID, new NullProgressMonitor());
+		SelectionStructField saluationField;
+		NumberStructField creditCardExpiryField;
+		TextStructField nameField;
+		try {
+			saluationField = (SelectionStructField) struct.getStructField(PersonStruct.PERSONALDATA, PersonStruct.PERSONALDATA_SALUTATION);
+			creditCardExpiryField = (NumberStructField) struct.getStructField(PersonStruct.CREDITCARD, PersonStruct.CREDITCARD_EXPIRYYEAR);
+			nameField = (TextStructField) struct.getStructField(PersonStruct.PERSONALDATA, PersonStruct.PERSONALDATA_NAME);
+		} catch (PropertyException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+//		// TODO remove the below again, only for testing
+//		salutationEditor = StructFieldSearchFilterEditorRegistry.sharedInstance().createSearchFilterItemEditor(saluationField, MatchType.EQUALS);
+//		salutationEditor.createControl(fourthRow, true);
+//		
+//		creditCardEditor = StructFieldSearchFilterEditorRegistry.sharedInstance().createSearchFilterItemEditor(creditCardExpiryField, null);
+//		creditCardEditor.createControl(fourthRow, true);
+//		
+//		nameEditor = StructFieldSearchFilterEditorRegistry.sharedInstance().createSearchFilterItemEditor(nameField, null);
+//		nameEditor.createControl(fourthRow, true);
+//		// TODO remove the above again, only for testing.
 
 		if (createSearchButton) {
 			searchButton = new Button(thirdRow, SWT.PUSH);
@@ -194,5 +239,14 @@ public class StaticPersonSearchFilterProviderComposite extends org.eclipse.swt.w
 	}
 	public Button getSearchButton() {
 		return searchButton;
+	}
+	public IStructFieldSearchFilterItemEditor getEditor() {
+		return salutationEditor;
+	}
+	public IStructFieldSearchFilterItemEditor getCreditCardEditor() {
+		return creditCardEditor;
+	}
+	public IStructFieldSearchFilterItemEditor getNameEditor() {
+		return nameEditor;
 	}
 }

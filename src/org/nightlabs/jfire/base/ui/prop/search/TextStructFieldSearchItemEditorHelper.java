@@ -26,17 +26,21 @@
 
 package org.nightlabs.jfire.base.ui.prop.search;
 
+import java.util.Arrays;
+
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.nightlabs.base.ui.composite.ComboComposite;
+import org.nightlabs.jdo.search.ISearchFilterItem;
+import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
-import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
+import org.nightlabs.jfire.prop.search.TextStructFieldSearchFilterItem;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -51,7 +55,7 @@ public class TextStructFieldSearchItemEditorHelper
 	}
 
 	private Composite helperComposite;
-	private Combo comboMatchType;
+	private ComboComposite<MatchType> comboMatchType;
 	private Text textNeedle;
 
 	/**
@@ -69,21 +73,21 @@ public class TextStructFieldSearchItemEditorHelper
 		super(structField);
 	}
 
-	protected class MatchTypeOrderEntry {
-		int matchType;
-		String displayName;
-		public MatchTypeOrderEntry(int matchType, String displayName) {
-			this.matchType = matchType;
-			this.displayName = displayName;
-		}
-	}
-	private MatchTypeOrderEntry[] matchTypeOrder = new MatchTypeOrderEntry[7];
-	private MatchTypeOrderEntry setMatchTypeOrderEntry(int idx, int matchType) {
-		String displayName = SearchFilterItem.getLocalisedMatchType(matchType);
-		MatchTypeOrderEntry result = new MatchTypeOrderEntry(matchType, displayName);
-		matchTypeOrder[idx] = result;
-		return result;
-	}
+//	protected class MatchTypeOrderEntry {
+//		MatchType matchType;
+//		String displayName;
+//		public MatchTypeOrderEntry(MatchType matchType, String displayName) {
+//			this.matchType = matchType;
+//			this.displayName = displayName;
+//		}
+//	}
+//	private MatchTypeOrderEntry[] matchTypeOrder = new MatchTypeOrderEntry[7];
+//	private MatchTypeOrderEntry setMatchTypeOrderEntry(int idx, MatchType matchType) {
+//		String displayName = matchType.getLocalisedName();
+//		MatchTypeOrderEntry result = new MatchTypeOrderEntry(matchType, displayName);
+//		matchTypeOrder[idx] = result;
+//		return result;
+//	}
 	
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getControl(org.eclipse.swt.widgets.Composite)
@@ -98,20 +102,27 @@ public class TextStructFieldSearchItemEditorHelper
 			helperComposite.setLayout(wrapperLayout);
 			helperComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 			
-			comboMatchType = new Combo(helperComposite,SWT.READ_ONLY);
-			comboMatchType.add(setMatchTypeOrderEntry(0, SearchFilterItem.MATCHTYPE_CONTAINS).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(1, SearchFilterItem.MATCHTYPE_NOTCONTAINS).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(2, SearchFilterItem.MATCHTYPE_BEGINSWITH).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(3, SearchFilterItem.MATCHTYPE_ENDSWITH).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(4, SearchFilterItem.MATCHTYPE_EQUALS).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(5, SearchFilterItem.MATCHTYPE_MATCHES).displayName);
-			comboMatchType.add(setMatchTypeOrderEntry(6, SearchFilterItem.MATCHTYPE_NOTEQUALS).displayName);
+			comboMatchType = new ComboComposite<MatchType>(helperComposite,SWT.READ_ONLY, new LabelProvider() {
+				@Override
+				public String getText(Object element) {
+					return ((MatchType) element).getLocalisedName();
+				}
+			});
+			
+			comboMatchType.setInput(Arrays.asList(MatchType.values()));
+//			comboMatchType.add(setMatchTypeOrderEntry(0, MatchType.MATCHTYPE_CONTAINS).displayName);
+//			comboMatchType.add(setMatchTypeOrderEntry(1, MatchType.MATCHTYPE_NOTCONTAINS).displayName);
+//			comboMatchType.add(setMatchTypeOrderEntry(2, MatchType.MATCHTYPE_BEGINSWITH).displayName);
+//			comboMatchType.add(setMatchTypeOrderEntry(3, MatchType.MATCHTYPE_ENDSWITH).displayName);
+//			comboMatchType.add(setMatchTypeOrderEntry(4, MatchType.MATCHTYPE_EQUALS).displayName);
+//			comboMatchType.add(setMatchTypeOrderEntry(5, MatchType.MATCHTYPE_MATCHES).displayName);
+//			comboMatchType.add(setMatchTypeOrderEntry(6, MatchType.MATCHTYPE_NOTEQUALS).displayName);
 			
 			GridData gdCombo = new GridData();
 			gdCombo.grabExcessHorizontalSpace = true;
 			gdCombo.horizontalAlignment = GridData.FILL;
 			comboMatchType.setLayoutData(gdCombo);
-			comboMatchType.select(SearchFilterItem.MATCHTYPE_DEFAULT-1);
+			comboMatchType.setSelection(MatchType.CONTAINS);
 			
 			textNeedle = new Text(helperComposite,SWT.BORDER);
 			GridData gd = new GridData();
@@ -127,16 +138,16 @@ public class TextStructFieldSearchItemEditorHelper
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getSearchFilterItem()
 	 */
 	@Override
-	public SearchFilterItem getSearchFilterItem() {
+	public ISearchFilterItem getSearchFilterItem() {
 		StructFieldID id = StructFieldID.create(
 			personStructField.getStructBlockOrganisationID(),
 			personStructField.getStructBlockID(),
 			personStructField.getStructFieldOrganisationID(),
 			personStructField.getStructFieldID()
 		);
-		int matchType = matchTypeOrder[comboMatchType.getSelectionIndex()].matchType;
+		MatchType matchType = comboMatchType.getSelectedElement(); // matchTypeOrder[comboMatchType.getSelectionIndex()].matchType;
 		String needle = textNeedle.getText();
-		TextPropSearchFilterItem result = new TextPropSearchFilterItem(
+		TextStructFieldSearchFilterItem result = new TextStructFieldSearchFilterItem(
 			id,
 			matchType,
 			needle

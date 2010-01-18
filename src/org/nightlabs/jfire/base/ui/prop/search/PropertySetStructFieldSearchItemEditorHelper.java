@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.nightlabs.jdo.search.ISearchFilterItem;
 import org.nightlabs.jfire.prop.StructField;
 
 /**
@@ -69,7 +69,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getSearchFilterItem()
 	 */
-	public abstract SearchFilterItem getSearchFilterItem();
+	public abstract ISearchFilterItem getSearchFilterItem();
 
 	/**
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#newInstance()

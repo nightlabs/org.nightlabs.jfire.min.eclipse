@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.nightlabs.jdo.search.ISearchFilterItem;
 import org.nightlabs.jfire.prop.StructField;
 
 /**
@@ -75,17 +75,27 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 			if (helperControl != null)
 				return helperControl;
 			
-		PropertySetSearchFilterItemEditorHelperRegistry registry = PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance();
+//		PropertySetSearchFilterItemEditorHelperRegistry registry = PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance();
+		StructFieldSearchFilterEditorRegistry registry = StructFieldSearchFilterEditorRegistry.sharedInstance();
 		if (personStructField == null)
 			throw new IllegalStateException("Member personStructField is null. init(personStructField) might not have been called."); //$NON-NLS-1$
 		
-		try {
-			helper = registry.createEditorHelper(personStructField.getClass());
-		} catch (PropertySetSearchFilterItemEditorHelperNotFoundException e) {
-			IllegalStateException ill = new IllegalStateException("No helper found for class "+personStructField.getClass().getName()); //$NON-NLS-1$
-			ill.initCause(e);
-			throw ill;
-		}
+		final IStructFieldSearchFilterItemEditor filterItemEditor = registry.createSearchFilterItemEditor(this.personStructField, null);
+		helper = new PropertySetStructFieldSearchItemEditorHelper() {
+			@Override
+			public ISearchFilterItem getSearchFilterItem() {
+				return filterItemEditor.getSearchFilterItem();
+			}
+
+			@Override
+			public Control getControl(Composite parent) {
+				return filterItemEditor.createControl(parent, false);
+			}
+
+			@Override
+			public void close() {
+			}
+		};
 		
 		if (helper instanceof PropertySetStructFieldSearchItemEditorHelper)
 			((PropertySetStructFieldSearchItemEditorHelper)helper).init(this.personStructField);
@@ -99,7 +109,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getSearchFilterItem()
 	 */
 	@Override
-	public SearchFilterItem getSearchFilterItem() {
+	public ISearchFilterItem getSearchFilterItem() {
 		if (helper == null)
 			throw new IllegalStateException("SearchItemEditorHelper is null and can not be asked for the SearchFilterItem"); //$NON-NLS-1$
 		

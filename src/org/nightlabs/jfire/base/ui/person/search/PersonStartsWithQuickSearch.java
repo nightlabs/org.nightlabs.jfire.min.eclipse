@@ -27,14 +27,14 @@
 package org.nightlabs.jfire.base.ui.person.search;
 
 import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
+import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jdo.search.SearchFilter;
-import org.nightlabs.jdo.search.SearchFilterItem;
 import org.nightlabs.jfire.base.ui.prop.search.PropertySetQuickSearch;
 import org.nightlabs.jfire.person.PersonSearchFilter;
 import org.nightlabs.jfire.person.PersonStruct;
+import org.nightlabs.jfire.prop.search.AbstractStructFieldSearchFilterItem;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
-import org.nightlabs.jfire.prop.search.PropSearchFilterItem;
-import org.nightlabs.jfire.prop.search.TextPropSearchFilterItem;
+import org.nightlabs.jfire.prop.search.TextStructFieldSearchFilterItem;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -84,7 +84,7 @@ public class PersonStartsWithQuickSearch extends PropertySetQuickSearch {
 	public SearchFilter getSearchFilter() {
 		PropSearchFilter filter = createSearchFilter();
 		// add Name filter
-		PropSearchFilterItem item = new TextPropSearchFilterItem(PersonStruct.PERSONALDATA_NAME, SearchFilterItem.MATCHTYPE_BEGINSWITH, startWithNeedle);
+		AbstractStructFieldSearchFilterItem item = new TextStructFieldSearchFilterItem(PersonStruct.PERSONALDATA_NAME, MatchType.BEGINSWITH, startWithNeedle);
 		filter.addSearchFilterItem(item);
 		// TODO: WORKAROUND: Add other items when JPOX query bug (mixed || and && in query) is fixed
 //		// add Firstname filter

@@ -149,7 +149,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 	 */
 	@Override
 	public Control createPageContents(Composite parent) {
-		searchComposite = new PersonSearchComposite(parent, SWT.NONE, quickSearchText);
+		searchComposite = new PersonSearchComposite(parent, SWT.NONE, quickSearchText, PersonSearchUseCaseConstants.USE_CASE_ID_DEFAULT);
 		Composite buttonBar = searchComposite.getButtonBar();
 		final Display display = searchComposite.getDisplay();
 		display.addFilter(SWT.FocusIn, focusListener);

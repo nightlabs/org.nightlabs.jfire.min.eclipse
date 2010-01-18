@@ -28,7 +28,6 @@ package org.nightlabs.jfire.base.ui.login.action;
 
 import javax.security.auth.login.LoginException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -50,7 +49,7 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
 public abstract class LSDWorkbenchWindowActionDelegate
 implements IWorkbenchWindowActionDelegate, LoginStateListener
 {
-	private static final Logger logger = Logger.getLogger(LSDWorkbenchWindowActionDelegate.class);
+	// private static final Logger logger = Logger.getLogger(LSDWorkbenchWindowActionDelegate.class);
 	private IWorkbenchWindow window;
 
 	/**

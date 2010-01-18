@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.nightlabs.jdo.search.ISearchFilterItem;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
@@ -48,7 +48,7 @@ public interface PropertySetSearchFilterItemEditorHelper {
 	 * {@link org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#getSearchFilterItem()}
 	 * @return
 	 */
-	public SearchFilterItem getSearchFilterItem();
+	public ISearchFilterItem getSearchFilterItem();
 	
 	/**
 	 * Should return a string that can be displayed
