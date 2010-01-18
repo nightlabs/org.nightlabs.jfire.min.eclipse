@@ -49,7 +49,7 @@ public class CreateUserAction extends LSDWorkbenchWindowActionDelegate
 		try
 		{
 			CreateUserWizard wiz = new CreateUserWizard();
-			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(wiz) {
+			DynamicPathWizardDialog dynamicPathWizardDialog = new DynamicPathWizardDialog(wiz.getShell(), wiz) {
 				@Override
 				protected Point getInitialSize() {
 					return new Point(780,650);
