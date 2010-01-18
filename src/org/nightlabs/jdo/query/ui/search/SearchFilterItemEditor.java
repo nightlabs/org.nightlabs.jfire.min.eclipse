@@ -28,13 +28,14 @@ package org.nightlabs.jdo.query.ui.search;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jdo.search.SearchFilterItem;
+import org.nightlabs.jdo.search.ISearchFilterItem;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
-public abstract class SearchFilterItemEditor {
-	
+public abstract class SearchFilterItemEditor
+implements ISearchFilterItemEditor
+{
 	/**
 	 * After the first call this method should always
 	 * return the same control. So from the second call
@@ -51,7 +52,7 @@ public abstract class SearchFilterItemEditor {
 	 * 
 	 * @return
 	 */
-	public abstract SearchFilterItem getSearchFilterItem();
+	public abstract ISearchFilterItem getSearchFilterItem();
 	
 	/**
 	 * Will be called when the
