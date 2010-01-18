@@ -267,14 +267,14 @@ implements EarlySearchFilterProvider
 		if (!searchFilterProviderComposite.getControlEmail().getTextControl().getText().equals("")) //$NON-NLS-1$
 			filter.addSearchFilterItem(new TextStructFieldSearchFilterItem(PersonStruct.INTERNET_EMAIL,MatchType.CONTAINS,searchFilterProviderComposite.getControlEmail().getTextControl().getText()));
 		
-		if (searchFilterProviderComposite.getEditor().hasSearchConstraint())
-			filter.addSearchFilterItem(searchFilterProviderComposite.getEditor().getSearchFilterItem());
-		
-		if (searchFilterProviderComposite.getCreditCardEditor().hasSearchConstraint())
-		filter.addSearchFilterItem(searchFilterProviderComposite.getCreditCardEditor().getSearchFilterItem());
-		
-		if (searchFilterProviderComposite.getNameEditor().hasSearchConstraint())
-		filter.addSearchFilterItem(searchFilterProviderComposite.getNameEditor().getSearchFilterItem());
+//		if (searchFilterProviderComposite.getEditor().hasSearchConstraint())
+//			filter.addSearchFilterItem(searchFilterProviderComposite.getEditor().getSearchFilterItem());
+//
+//		if (searchFilterProviderComposite.getCreditCardEditor().hasSearchConstraint())
+//		filter.addSearchFilterItem(searchFilterProviderComposite.getCreditCardEditor().getSearchFilterItem());
+//
+//		if (searchFilterProviderComposite.getNameEditor().hasSearchConstraint())
+//		filter.addSearchFilterItem(searchFilterProviderComposite.getNameEditor().getSearchFilterItem());
 		
 		return filter;
 	}
