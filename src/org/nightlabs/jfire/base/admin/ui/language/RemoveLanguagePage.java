@@ -70,7 +70,8 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 	private XCombo combo;
 	/** {@link MouseWheelListener} implementation used for enabling scrolling. */
 	private MouseWheelListenerImpl mouseWheelListener;
-	/** Keeps track of all display name/language ID pairs registered. */
+	/** Keeps track of all display name/language ID pairs registered.<br>
+	 *  TODO do not use display name as key although it seems that it could be considered as one, but... */
 	private Map<String, String> displayNameToLanguageID = new HashMap<String, String>();
 	/** True if there is only one language registered, otherwise false. */
 	private boolean lastItem = false;
@@ -105,6 +106,7 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		// Create contents of this wizard page.
 		final Formular f = new Formular(parent, SWT.NONE, this);
 		if (lastItem) {
+			// There is only one item left that cannot be removed.
 			final Label label = new Label(f, SWT.NULL);
 			label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.RemoveLanguagePage.labelText_RemovingNotPossible"));
 			setPageComplete(false);
@@ -117,20 +119,19 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		mouseWheelListener = new MouseWheelListenerImpl();
 		combo.addMouseWheelListener(mouseWheelListener);
 
-
 		while (it.hasNext()) {
 			final LanguageCf languageCf = it.next();
 			final String languageID = languageCf.getLanguageID();
-				final Locale locale = LanguageManager.getLocale(languageID);
-				final String displayName = locale.getDisplayName();
-				displayNameToLanguageID.put(displayName, languageID);
-				displayNames.add(displayName);
-//			}
+			final Locale locale = LanguageManager.getLocale(languageID);
+			final String displayName = locale.getDisplayName();
+			displayNameToLanguageID.put(displayName, languageID);
+			displayNames.add(displayName);
 		}
 
 		Collections.sort(displayNames);
 		for (String displayName : displayNames) {
 			if (displayName.equals(currentLocaleDisplayName))
+				// The current Locale cannot be removed.
 				continue;
 			final String languageID = displayNameToLanguageID.get(displayName);
 			if (languageID != null) {
