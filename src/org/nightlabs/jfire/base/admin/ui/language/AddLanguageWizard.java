@@ -99,7 +99,8 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 									Messages.getString(
 										"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageErrorMessage")); //$NON-NLS-1$
 							}
-							// The selected language is added on client-side only in the case it has been created successfully on server-side before.
+							// The selected language is added on client-side only in the case it has been created successfully
+							// on server-side before.
 							if (isLanguageCreatedServerSide) {
 								logger.info("Created language on server-side"); //$NON-NLS-1$
 								LanguageManager.sharedInstance().addLanguage(localeDescriptor.getLocale());		// client-side
@@ -109,6 +110,7 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 									Messages.getString(
 										"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageSuccessMessage")); //$NON-NLS-1$
 							}
+							break;
 						}
 					}
 					result[0] = true;
