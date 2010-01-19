@@ -59,8 +59,8 @@ import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
 
 /**
- * Wizard page for adding new languages to client and server. After a certain language has been added successfully,
- * it can be selected in the language-chooser combo.
+ * Wizard page for adding new languages to client and server. After a certain language has been
+ * added successfully, it can be selected in the language-chooser combo.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class AddLanguagePage extends DynamicPathWizardPage implements FormularChangeListener {
@@ -310,11 +310,11 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	 * @author Frederik Loeser - frederik[at]nightlabs[dot]de
 	 */
 	private static class ComboContributionDescriptor {
-		/** The flag of the country the language code of the currently considered {@link Locale} corresponds to. */
+		/** The flag of the country the language code of the currently considered {@link Locale} corresponds to. Is set for every Locale. */
 		private Image imgLanguage;
 		/** The name for the currently considered {@link Locale} that is appropriate for display to the user. */
 		private String displayName;
-		/** The flag of the country the country/region code of the currently considered {@link Locale} corresponds to. */
+		/** The flag of the country the country/region code of the currently considered {@link Locale} corresponds to. Is not set for every Locale. */
 		private Image imgCountry;
 		/** The index the item shall be added at in the {@link XCombo}. */
 		private int pos;
