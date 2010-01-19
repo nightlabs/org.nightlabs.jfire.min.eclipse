@@ -110,7 +110,14 @@
                   id="org.nightlabs.jfire.base.admin.ui.language.RemoveLanguageAction#menu"
                   label="%actions.removeLanguage.label "
                   menubarPath="administrationMenu/languageRemoveGroup"
-                  tooltip="%actions.removeLanguage.tooltip"/>      
+                  tooltip="%actions.removeLanguage.tooltip"/>
+            <action
+                  class="org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeAction"
+                  icon="icons/language/world_edit.16x16.png"
+                  id="org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeAction#menu"
+                  label="%actions.configureLanguageMode.label"
+                  menubarPath="administrationMenu/languageRemoveGroup"
+                  tooltip="%actions.configureLanguageMode.tooltip"/>            
             <action
                   class="org.nightlabs.jfire.base.admin.ui.rolegroup.GrantRolegroupsAction"
                   enablesFor="+"
@@ -190,7 +197,15 @@
                   label="%actions.removeLanguage.label"
                   style="push"
                   toolbarPath="additions"
-                  tooltip="%actions.removeLanguage.tooltip"/>        
+                  tooltip="%actions.removeLanguage.tooltip"/>
+            <action
+                  class="org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeAction"
+                  icon="icons/language/world_edit.16x16.png"
+                  id="org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeAction"
+                  label="%actions.configureLanguageMode.label"
+                  style="push"
+                  toolbarPath="additions"
+                  tooltip="%actions.configureLanguageMode.tooltip"/>
         </viewContribution>
         <viewContribution
             id="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView" targetID="org.nightlabs.jfire.base.admin.ui.timer.TaskDetailView">
