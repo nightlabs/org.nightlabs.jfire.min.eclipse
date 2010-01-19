@@ -26,8 +26,17 @@
 
 package org.nightlabs.jfire.base.admin.ui.language;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.language.LanguageConfig;
+import org.nightlabs.jfire.language.LanguageManagerRemote;
+import org.nightlabs.jfire.language.LanguageSyncMode;
+import org.nightlabs.jfire.security.SecurityReflector;
 
 /**
  * Wizard for configuring language-specific settings.
@@ -40,14 +49,47 @@ public class ConfigureLanguageModeWizard extends DynamicPathWizard {
 	public ConfigureLanguageModeWizard() {
 		super();
 		setWindowTitle(Messages.getString(
-				"org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeWizard.wizardTitle")); //$NON-NLS-1$
+			"org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeWizard.wizardTitle")); //$NON-NLS-1$
 		configureLanguageModePage = new ConfigureLanguageModePage(Messages.getString(
-				"org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeWizard.pageTitle")); //$NON-NLS-1$
+			"org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeWizard.pageTitle")); //$NON-NLS-1$
 		addPage(configureLanguageModePage);
 	}
 
 	@Override
 	public boolean performFinish() {
-		return false;
+		final boolean[] result = new boolean[] {false};
+		try {
+			getContainer().run(false, false, new IRunnableWithProgress() {
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					final String chosenLanguageSyncMode = configureLanguageModePage.getChosenLanguageSyncMode();
+					if (chosenLanguageSyncMode.equals("")) {
+						result[0] = true;
+						return;
+					}
+
+					final LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(
+						LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+					LanguageConfig languageConfig = lm.getLanguageConfig(null, -1);
+					if (languageConfig.getLanguageSyncMode().toString().equals(chosenLanguageSyncMode)) {
+						result[0] = true;
+						return;
+					}
+
+					LanguageSyncMode[] syncModes = LanguageSyncMode.values();
+					for (int i = 0; i < syncModes.length; i++) {
+						if (syncModes[i].toString().equals(chosenLanguageSyncMode)) {
+							languageConfig.setLanguageSyncMode(syncModes[i]);
+							System.out.println("new language sync mode: " + languageConfig.getLanguageSyncMode().toString());
+							break;
+						}
+					}
+					result[0] = true;
+				}
+			});
+		} catch (final Exception exception) {
+			throw new RuntimeException(exception);
+		}
+		return result[0];
 	}
 }

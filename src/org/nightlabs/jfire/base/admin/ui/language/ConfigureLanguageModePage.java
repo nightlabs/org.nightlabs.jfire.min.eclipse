@@ -40,16 +40,22 @@ import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
+import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
+import org.nightlabs.jfire.language.LanguageConfig;
+import org.nightlabs.jfire.language.LanguageManagerRemote;
 import org.nightlabs.jfire.language.LanguageSyncMode;
+import org.nightlabs.jfire.security.SecurityReflector;
 
 /**
  * Wizard page for configuring language-specific settings,
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class ConfigureLanguageModePage extends DynamicPathWizardPage implements FormularChangeListener {
+
+	private Combo languageSyncModeCombo;
 
 	/**
 	 * The constructor.
@@ -79,13 +85,25 @@ public class ConfigureLanguageModePage extends DynamicPathWizardPage implements 
 		label.setLayoutData(gd);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModePage.labelText"));
 
-		final Combo languageSyncModeCombo = new Combo(f, SWT.NONE);
+		languageSyncModeCombo = new Combo(f, SWT.NONE);
 		languageSyncModeCombo.setLayoutData(gd);
-		languageSyncModeCombo.add(LanguageSyncMode.off.toString());
-		languageSyncModeCombo.add(LanguageSyncMode.on.toString());
-		languageSyncModeCombo.add(LanguageSyncMode.oneOnly.toString());
+
+		final LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(
+			LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+		LanguageConfig languageConfig = lm.getLanguageConfig(null, -1);
+		final String currentLanguageSyncMode = languageConfig.getLanguageSyncMode().toString();
+
+		int idx = 0;
+		LanguageSyncMode[] syncModes = LanguageSyncMode.values();
+		for (int i = 0; i < syncModes.length; i++) {
+			final String syncModeName = syncModes[i].toString();
+			languageSyncModeCombo.add(syncModeName);
+			if (syncModeName.equals(currentLanguageSyncMode)) {
+				idx = i;
+			}
+		}
 //		languageSyncModeCombo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-		languageSyncModeCombo.select(0);
+		languageSyncModeCombo.select(idx);
 		languageSyncModeCombo.addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent event) {
@@ -96,6 +114,14 @@ public class ConfigureLanguageModePage extends DynamicPathWizardPage implements 
 			}
 		});
 		return f;
+	}
+
+	public String getChosenLanguageSyncMode() {
+		int idx = languageSyncModeCombo.getSelectionIndex();
+		if (idx > -1 && idx < languageSyncModeCombo.getItemCount()) {
+			return languageSyncModeCombo.getItem(idx);
+		}
+		return "";
 	}
 
 	@Override
