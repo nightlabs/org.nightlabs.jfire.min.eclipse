@@ -27,32 +27,29 @@
 package org.nightlabs.jfire.base.admin.ui.language;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
- *
+ * Action opening wizard dialog for {@link RemoveLanguageWizard}.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
-public class RemoveLanguageAction
-extends LSDWorkbenchWindowActionDelegate
-{
+public class RemoveLanguageAction extends LSDWorkbenchWindowActionDelegate {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void run(IAction arg0) {
 		try {
 			Login.getLogin(false).setForceLogin(true);
 			Login.getLogin();
-			RemoveLanguageWizard wiz = new RemoveLanguageWizard();
-			WizardDialog wizardDialog = new WizardDialog(getWindow().getShell(), wiz);
-			if (wizardDialog.open() == Window.OK) {
-				;
-			}
-		} catch (Exception e) {
+			final RemoveLanguageWizard wiz = new RemoveLanguageWizard();
+			final WizardDialog wizardDialog = new WizardDialog(getWindow().getShell(), wiz);
+			wizardDialog.open();
+		} catch (final Exception e) {
 //			throw new RuntimeException(e);
 		}
 	}
-
 }
