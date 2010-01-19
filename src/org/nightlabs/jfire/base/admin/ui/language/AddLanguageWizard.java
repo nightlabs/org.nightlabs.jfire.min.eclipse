@@ -30,10 +30,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.nightlabs.base.ui.language.LanguageManager;
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
@@ -77,21 +79,31 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 					final String chosenDisplayName = addLanguagePage.getChosenDisplayName();
 					for (AddLanguagePage.LocaleDescriptor localeDescriptor : addLanguagePage.getLocaleDescriptors()) {
 						if (localeDescriptor.getDisplayName().equals(chosenDisplayName)) {
-							boolean isLangCreatedServerSide = true;
+							boolean isLanguageCreatedServerSide = true;
 							final String languageID = LanguageManager.getLanguageID(localeDescriptor.getLocale());
 							final LanguageCf langCf = LanguageManager.createLanguage(languageID);
 							final LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(
-									LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+								LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
 							try {
 								lm.createLanguage(langCf, true, true);		// server-side
 							} catch (final LanguageException exception) {
-								isLangCreatedServerSide = false;
+								isLanguageCreatedServerSide = false;
 								logger.error("Failed creating language: " + langCf.getLanguageID(), exception); //$NON-NLS-1$
+								// Actually this is somehow not an error in the case language sync mode is set to "one only".
+								// However, the creation of the selected language failed.
+								MessageDialog.openError(
+									PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+									Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageErrorTitle"), //$NON-NLS-1$
+									Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageErrorMessage")); //$NON-NLS-1$
 							}
-							// Language is only added on client-side in the case it has been created successfully on server-side before.
-							if (isLangCreatedServerSide) {
-								logger.info("Created language on server-side");
+							// The selected language is added on client-side only in the case it has been created successfully on server-side before.
+							if (isLanguageCreatedServerSide) {
+								logger.info("Created language on server-side"); //$NON-NLS-1$
 								LanguageManager.sharedInstance().addLanguage(localeDescriptor.getLocale());		// client-side
+								MessageDialog.openInformation(
+									PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+									Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageSuccessTitle"), //$NON-NLS-1$
+									Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageSuccessMessage")); //$NON-NLS-1$
 							}
 						}
 					}
