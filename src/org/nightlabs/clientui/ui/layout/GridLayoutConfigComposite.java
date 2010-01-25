@@ -192,11 +192,17 @@ public class GridLayoutConfigComposite extends XComposite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (gridLayoutConfig != null) {
+					int index = gridDataEntryTable.getSelectionIndex();
+					
 					Collection<IGridDataEntry> entries = gridDataEntryTable.getSelectedElements();
 					for (IGridDataEntry entry : entries) {
 						gridLayoutConfig.removeGridDataEntry(entry);
 					}
 					refreshEntryTable();
+
+					if (!gridDataEntryTable.getElements().isEmpty()) {
+						gridDataEntryTable.select(index);
+					}
 					fireGridLayoutConfigChanged();
 				}
 			}
@@ -320,6 +326,7 @@ public class GridLayoutConfigComposite extends XComposite {
 							updating = true;
 						}
 					}
+					gridLayout.setNumColumns(numCols);
 				}
 			}
 		});
@@ -337,7 +344,7 @@ public class GridLayoutConfigComposite extends XComposite {
 		}
 	}
 
-	protected void refreshEntryTable() {
+	public void refreshEntryTable() {
 		if (gridLayoutConfig != null) {
 			gridDataEntryTable.setInput(gridLayoutConfig.getGridDataEntries());
 			gridDataEntryTable.refresh();
@@ -361,5 +368,12 @@ public class GridLayoutConfigComposite extends XComposite {
 
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+	
+	public IGridDataEntry getSelectedGridDataEntry() {
+		if (!gridDataEntryTable.getSelectedElements().isEmpty())
+			return gridDataEntryTable.getSelectedElements().iterator().next();
+		else
+			return null;
 	}
 }

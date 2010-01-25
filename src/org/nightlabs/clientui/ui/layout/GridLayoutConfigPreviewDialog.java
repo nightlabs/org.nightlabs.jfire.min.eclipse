@@ -16,7 +16,7 @@ import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 
 /**
  * Dialog that previews an {@link IGridLayoutConfig} by using simple place-holders of the cells ({@link IGridDataEntry})
- * showing only their name. 
+ * showing only their name.
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
@@ -52,7 +52,7 @@ public class GridLayoutConfigPreviewDialog extends ResizableTitleAreaDialog {
 			XComposite entryComp = new XComposite(wrapper, SWT.BORDER);
 			Label label = new Label(entryComp, SWT.LEFT);
 			org.eclipse.swt.layout.GridData gd = new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_BOTH);
-			label.setText(entry.getName().getText());
+			label.setText(entry.getName());
 			label.setLayoutData(gd);
 			entryComp.setLayoutData(GridLayoutUtil.createGridData(entry.getGridData()));
 		}

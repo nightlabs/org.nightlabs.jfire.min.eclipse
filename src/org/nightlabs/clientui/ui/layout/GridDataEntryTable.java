@@ -25,7 +25,7 @@ public class GridDataEntryTable extends AbstractTableComposite<IGridDataEntry> {
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			if (element instanceof IGridDataEntry) {
-				return ((IGridDataEntry) element).getName().getText();
+				return ((IGridDataEntry) element).getName();
 			}
 			return String.valueOf(element);
 		}
