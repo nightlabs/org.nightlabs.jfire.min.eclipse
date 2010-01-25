@@ -40,4 +40,33 @@ extends ISearchFilterItemEditor
 	 * <b>of the same type</b> in one go.<p>
 	 */
 	public boolean canHandleMultipleFields();
+	
+	/**
+	 * Returns the data that the user entered in a string representation. Every editor must be able
+	 * to restore the user input when the return value of this method is fed into {@link #setInput(String)}.
+	 * 
+	 * @return the data that the user entered in a string representation.
+	 */
+	public String getInput();
+	
+	/**
+	 * Loads the user input given as string obtained by {@link #getInput()}.
+	 * 
+	 * @param input The input to load.
+	 */
+	public void setInput(String input);
+	
+	/**
+	 * Adds a listener that is triggered when the search is triggered from this editor i.e. by pressing the enter key.
+	 * 
+	 * @param listener The listener to be added.
+	 */
+	public void addSearchTriggerListener(ISearchTriggerListener listener);
+	
+	/**
+	 * Removes the given listener.
+	 * 
+	 * @param listener The listener to be removed.
+	 */
+	public void removeSearchTriggerListener(ISearchTriggerListener listener);
 }

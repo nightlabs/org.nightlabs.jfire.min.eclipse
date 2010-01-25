@@ -27,6 +27,7 @@
     <extension-point id="queryFilterComposite"
         name="QueryFilterComposite" schema="schema/queryFilterComposite.exsd"/>
     <extension-point id="structFieldSearchFilterItemEditor" name="structFieldSearchFilterItemEditor" schema="schema/structFieldSearchFilterItemEditor.exsd"/>
+    <extension-point id="propertySetSearchResultViewer" name="PropertySet Search ResultViewer" schema="schema/propertySetSearchResultViewer.exsd"/>
     <!-- Extensions -->
     <!-- 
         Pruduct and application.
@@ -359,6 +360,26 @@
              structFieldClass="org.nightlabs.jfire.prop.structfield.NumberStructField"
              structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor$Factory">
        </structFieldSearchFilterItemEditor>
+       <structFieldSearchFilterItemEditor
+             priority="500"
+             structFieldClass="org.nightlabs.jfire.prop.structfield.RegexStructField"
+             structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.RegexStructFieldSearchFilterItemEditor$Factory">
+       </structFieldSearchFilterItemEditor>
+    </extension>
+    <extension
+          point="org.eclipse.ui.preferencePages">
+       <page
+             category="org.nightlabs.base.ui.preference.UIPreferencePage"
+             class="org.nightlabs.jfire.base.ui.preferences.PersonSearchCategoryPreferencePage"
+             id="org.nightlabs.jfire.base.ui.preferences.PersonSearchPreferencePage"
+             name="Person Search Configuration">
+       </page>
+       <page
+             category="org.nightlabs.jfire.base.ui.preferences.PersonSearchPreferencePage"
+             class="org.nightlabs.jfire.base.ui.prop.search.config.DefaultPersonSearchEditLayoutPreferencePage"
+             id="org.nightlabs.jfire.base.ui.prop.search.config.DefaultPersonSearchEditLayoutPreferencePage"
+             name="Default Search">
+       </page>
     </extension>
     
     <!--

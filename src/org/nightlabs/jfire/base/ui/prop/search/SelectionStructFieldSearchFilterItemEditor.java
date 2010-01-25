@@ -8,10 +8,13 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.base.ui.edit.SelectionEditComposite;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.search.IStructFieldSearchFilterItem;
 import org.nightlabs.jfire.prop.search.SelectionStructFieldSearchFilterItem;
@@ -23,7 +26,7 @@ extends AbstractStructFieldSearchFilterItemEditor<SelectionStructField>
 {
 	public static class Factory implements IStructFieldSearchFilterItemEditorFactory {
 		@Override
-		public IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<?>> structFields, MatchType matchType) {
+		public <T extends DataField> IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<T>> structFields, MatchType matchType) {
 			StructField<?> structField = structFields.iterator().next();
 			if (!SelectionStructField.class.isAssignableFrom(structField.getClass()))
 				throw new IllegalArgumentException("The given structField is not of type SelectionStructField");
@@ -48,11 +51,19 @@ extends AbstractStructFieldSearchFilterItemEditor<SelectionStructField>
 				
 				return ((StructFieldValue) element).getValueName().getText();
 			}
+		}, false);
+		
+		selectionEditComposite.getCombo().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				notifySearchTriggerListeners();
+			}
 		});
 		
 		final List<StructFieldValue> structFieldValues = new LinkedList<StructFieldValue>(getFirstStructField().getStructFieldValues());
 		structFieldValues.add(0, null);
 		selectionEditComposite.setInput(structFieldValues);
+		selectionEditComposite.setTitle(getFirstStructField().getName().getText());
 		
 		return selectionEditComposite;
 	}
@@ -92,5 +103,20 @@ extends AbstractStructFieldSearchFilterItemEditor<SelectionStructField>
 	@Override
 	public boolean hasSearchConstraint() {
 		return getSelectedStructFieldValueID() != null;
+	}
+
+	@Override
+	public String getInput() {
+		return getSelectedStructFieldValueID().toString();
+	}
+
+	@Override
+	public void setInput(String input) {
+		for (StructFieldValue value : selectionEditComposite.getElements()) {
+			if (value != null && value.getStructFieldValueID().equals(input)) {
+				selectionEditComposite.setSelectedElement(value);
+				break;
+			}
+		}
 	}
 }

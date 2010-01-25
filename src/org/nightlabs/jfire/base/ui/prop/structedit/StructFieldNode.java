@@ -54,7 +54,7 @@ public class StructFieldNode extends TreeNode //implements Comparable<StructFiel
 		return false;
 	}
 
-	public StructField getField()
+	public StructField<?> getField()
 	{
 		return field;
 	}

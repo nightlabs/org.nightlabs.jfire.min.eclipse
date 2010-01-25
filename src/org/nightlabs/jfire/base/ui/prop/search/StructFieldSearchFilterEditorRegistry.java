@@ -1,9 +1,9 @@
 package org.nightlabs.jfire.base.ui.prop.search;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.datastructure.Pair;
 import org.nightlabs.jdo.ObjectIDUtil;
 import org.nightlabs.jdo.search.MatchType;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 
@@ -107,23 +108,21 @@ extends AbstractEPProcessor
 		return specialisedStructFieldSearchItemEditors;
 	}
 	
-	public IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(StructField<?> structField, MatchType matchType) {
+	public <T extends DataField> IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(StructField<T> structField, MatchType matchType) {
 		StructFieldID structFieldID = structField.getStructFieldIDObj();
-		Collection<StructField<?>> coll = new LinkedList<StructField<?>>();
-		coll.add(structField);
 		
 		Pair<IStructFieldSearchFilterItemEditorFactory, Integer> pair = getSpecialisedStructFieldSearchItemEditors().get(structFieldID);
 				
 		if (pair != null) {
 			IStructFieldSearchFilterItemEditorFactory factory = pair.getFirst();
 			if (factory != null) {
-				return factory.createEditorInstance(coll, matchType);
+				return factory.createEditorInstance(Collections.singleton(structField), matchType);
 			}
 		}
-		return createSearchFilterItemEditor(coll, matchType);
+		return createSearchFilterItemEditor(Collections.singleton(structField), matchType);
 	}
 	
-	public IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(Collection<StructField<?>> structFields, MatchType matchType) {
+	public <T extends DataField> IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(Set<StructField<T>> structFields, MatchType matchType) {
 		if (structFields.isEmpty())
 			throw new IllegalArgumentException("Parameter structFields must contain at least one element.");
 		
@@ -144,7 +143,8 @@ extends AbstractEPProcessor
 		return null;
 	}
 	
-	public boolean hasEditor(Class<? extends StructField<?>> structFieldClass) {
+	@SuppressWarnings("unchecked")
+	public boolean hasEditor(Class<? extends StructField> structFieldClass) {
 		return getGeneralStructFieldSearchItemEditors().get(structFieldClass) != null;
 	}
 }

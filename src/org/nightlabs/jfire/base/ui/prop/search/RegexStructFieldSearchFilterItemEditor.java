@@ -6,27 +6,27 @@ import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.search.IStructFieldSearchFilterItem;
-import org.nightlabs.jfire.prop.search.TextStructFieldSearchFilterItem;
-import org.nightlabs.jfire.prop.structfield.TextStructField;
+import org.nightlabs.jfire.prop.search.RegexStructFieldSearchFilterItem;
+import org.nightlabs.jfire.prop.structfield.RegexStructField;
 import org.nightlabs.util.CollectionUtil;
 
-public class TextStructFieldSearchFilterItemEditor extends AbstractTextBasedStructFieldSearchFilterItemEditor<TextStructField> {
+public class RegexStructFieldSearchFilterItemEditor extends AbstractTextBasedStructFieldSearchFilterItemEditor<RegexStructField> {
 	
 	public static class Factory implements IStructFieldSearchFilterItemEditorFactory {
 		@Override
 		public <T extends DataField> IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<T>> structFields, MatchType matchType) {
-			Collection<TextStructField> textStructFields = CollectionUtil.castCollection(structFields);
+			Collection<RegexStructField> textStructFields = CollectionUtil.castCollection(structFields);
 			
-			return new TextStructFieldSearchFilterItemEditor(textStructFields, matchType);
+			return new RegexStructFieldSearchFilterItemEditor(textStructFields, matchType);
 		}
 	}
 	
-	public TextStructFieldSearchFilterItemEditor(Collection<TextStructField> structFields, MatchType matchType) {
+	public RegexStructFieldSearchFilterItemEditor(Collection<RegexStructField> structFields, MatchType matchType) {
 		super(structFields, matchType);
 	}
 
 	@Override
 	public IStructFieldSearchFilterItem getSearchFilterItem() {
-		return new TextStructFieldSearchFilterItem(getStructFieldIDs(), getMatchType(), textEditComposite.getContent());
+		return new RegexStructFieldSearchFilterItem(getStructFieldIDs(), getMatchType(), textEditComposite.getContent());
 	}
 }

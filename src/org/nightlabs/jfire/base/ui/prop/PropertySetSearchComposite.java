@@ -66,7 +66,6 @@ import org.nightlabs.jdo.search.SearchFilter;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.ui.config.ConfigUtil;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.person.search.StaticPersonSearchFilterProvider;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.AbstractEditLayoutConfigModule;
 import org.nightlabs.jfire.person.PersonSearchConfigModule;
@@ -325,15 +324,15 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		//--------------There are still some fields that don't work properly. It's needed to be fixed!!!
 		//--------------PersonID and Person's Phone, for example----------------------------------------
 		SearchFilter filter = filterProvider.getSearchFilter();
-		List<ISearchFilterItem> filterItems = filter.getFilters();
+		List<ISearchFilterItem> filterItems = filter.getFilterItems();
 		
 		// This should already be done and is done by the filter itself. Tobias.
 		// ------------------ START ----------------------------------
 //		@SuppressWarnings("unused")
 //		boolean isAllStringEmpty = true;
 //		for (ISearchFilterItem filterItem : filterItems) {
-//			if (filterItem instanceof TextStructFieldSearchFilterItem) {
-//				TextStructFieldSearchFilterItem textItem = (TextStructFieldSearchFilterItem) filterItem;
+//			if (filterItem instanceof AbstractTextBasedStructFieldSearchFilterItem) {
+//				AbstractTextBasedStructFieldSearchFilterItem textItem = (AbstractTextBasedStructFieldSearchFilterItem) filterItem;
 //				if (!textItem.getSearchString().isEmpty()) {
 //					isAllStringEmpty = false;
 //					break;
@@ -558,20 +557,20 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public void setQuickSearchText(String text)
 	{
 		earlySearchText = text;
-		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
-			staticTab.setQuickSearchText(earlySearchText);
-		}
+//		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+//			staticTab.setQuickSearchText(earlySearchText);
+//		}
 	}
 
 	public String getSearchText()
 	{
-		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
-			if (staticTab.getFilterProvider() instanceof StaticPersonSearchFilterProvider) {
-				StaticPersonSearchFilterProvider provider = (StaticPersonSearchFilterProvider) staticTab.getFilterProvider();
-				return provider.getSearchText();
-			}
-		}
-		return null;
+//		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+//			if (staticTab.getFilterProvider() instanceof PersonSearchEditLayoutFilterProvider) {
+//				PersonSearchEditLayoutFilterProvider provider = (PersonSearchEditLayoutFilterProvider) staticTab.getFilterProvider();
+//				return provider.getSearchText();
+//			}
+//		}
+		return earlySearchText;
 	}
 
 	public boolean addSearchTextModifyListener(ModifyListener listener) {

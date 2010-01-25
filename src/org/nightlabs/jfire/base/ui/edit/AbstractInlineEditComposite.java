@@ -27,7 +27,7 @@ extends AbstractEditComposite
 	}
 
 	public AbstractInlineEditComposite(Composite parent, int style) {
-		this (parent, style, false);
+		this (parent, style, true);
 	}
 
 	protected Object createTitleLayoutData() {

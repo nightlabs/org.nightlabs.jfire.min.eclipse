@@ -14,8 +14,8 @@ public class SelectionEditComposite<T> extends AbstractInlineEditComposite {
 
 	private XComboComposite<T> combo;
 	
-	public SelectionEditComposite(Composite parent, int style, LabelProvider labelProvider) {
-		super(parent, style);
+	public SelectionEditComposite(Composite parent, int style, LabelProvider labelProvider, boolean showTitle) {
+		super(parent, style, showTitle);
 		
 		combo = new XComboComposite<T>(
 				this,
@@ -60,5 +60,13 @@ public class SelectionEditComposite<T> extends AbstractInlineEditComposite {
 	
 	public void setSelectedIndex(int index) {
 		combo.setSelection(index);
+	}
+	
+	public Collection<T> getElements() {
+		return combo.getElements();
+	}
+	
+	public XComboComposite<T> getCombo() {
+		return combo;
 	}
 }

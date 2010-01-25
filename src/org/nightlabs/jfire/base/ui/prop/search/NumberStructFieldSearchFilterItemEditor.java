@@ -8,10 +8,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.jdo.search.MatchType;
+import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.search.IStructFieldSearchFilterItem;
 import org.nightlabs.jfire.prop.search.NumberStructFieldSearchFilterItem;
@@ -22,7 +25,7 @@ extends AbstractStructFieldSearchFilterItemEditor<NumberStructField>
 {
 	public static class Factory implements IStructFieldSearchFilterItemEditorFactory {
 		@Override
-		public IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<?>> structFields, MatchType matchType) {
+		public <T extends DataField> IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<T>> structFields, MatchType matchType) {
 			StructField<?> structField = structFields.iterator().next();
 			if (!NumberStructField.class.isAssignableFrom(structField.getClass()))
 				throw new IllegalArgumentException("The given structField is not of type NumberStructField");
@@ -65,6 +68,12 @@ extends AbstractStructFieldSearchFilterItemEditor<NumberStructField>
 	@Override
 	protected Control createEditControl(Composite parent) {
 		numberEditComposite = new Text(parent, SWT.BORDER);
+		numberEditComposite.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				notifySearchTriggerListeners();
+			}
+		});
 		
 		final int min, max;
 		if (getFirstStructField().isBounded()) {
@@ -104,5 +113,15 @@ extends AbstractStructFieldSearchFilterItemEditor<NumberStructField>
 	@Override
 	protected MatchType getDefaultMatchType() {
 		return MatchType.EQUALS;
+	}
+
+	@Override
+	public String getInput() {
+		return numberEditComposite.getText();
+	}
+
+	@Override
+	public void setInput(String input) {
+		numberEditComposite.setText(input);
 	}
 }

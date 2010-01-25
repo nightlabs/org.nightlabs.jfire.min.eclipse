@@ -12,8 +12,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -162,16 +160,17 @@ public class PersonSearchWizardPage extends WizardHopPage
 			}
 		});
 
-		searchComposite.addSearchTextModifyListener(new ModifyListener(){
-			@Override
-			public void modifyText(ModifyEvent e) {
-				String text = searchComposite.getSearchText();
-				if (text != null) {
-					quickSearchText = text;
-					logger.debug("quickSearchText = "+quickSearchText); //$NON-NLS-1$
-				}
-			}
-		});
+		// This doesn't seem to be necessary. Tobias.
+//		searchComposite.addSearchTextModifyListener(new ModifyListener(){
+//			@Override
+//			public void modifyText(ModifyEvent e) {
+//				String text = searchComposite.getSearchText();
+//				if (text != null) {
+//					quickSearchText = text;
+//					logger.debug("quickSearchText = "+quickSearchText); //$NON-NLS-1$
+//				}
+//			}
+//		});
 
 		GridLayout gl = new GridLayout();
 		XComposite.configureLayout(LayoutMode.LEFT_RIGHT_WRAPPER, gl);
@@ -224,6 +223,9 @@ public class PersonSearchWizardPage extends WizardHopPage
 
 	protected void newPersonPressed()
 	{
+		// TODO Think about how we can get the search data that was entered by the user to fill the
+		// new person with some data for a start. Tobias.
+		
 		switchingToNewPerson = true;
 		try {
 			if (newPerson == null) {

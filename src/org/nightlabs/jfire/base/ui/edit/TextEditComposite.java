@@ -25,7 +25,7 @@ extends AbstractInlineEditComposite
 	}
 	
 	public TextEditComposite(Composite parent, int style, int lineCount) {
-		this(parent, style, lineCount, false);
+		this(parent, style, lineCount, true);
 	}
 	
 	protected int createTextStyle() {
@@ -60,7 +60,7 @@ extends AbstractInlineEditComposite
 		return getBorderStyle();
 	}
 	
-	protected Text getFieldText() {
+	public Text getFieldText() {
 		return fieldText;
 	}
 

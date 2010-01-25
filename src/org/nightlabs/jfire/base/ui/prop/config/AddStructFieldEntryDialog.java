@@ -1,7 +1,7 @@
 package org.nightlabs.jfire.base.ui.prop.config;
 
+import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.jdo.JDOHelper;
 
@@ -23,6 +23,7 @@ import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructTreeComposite;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
+import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry2;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -32,12 +33,14 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
  *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
-class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
+public class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 
 	private String entryType;
 	private StructTreeComposite structTree;
 	private StructFieldID structFieldID;
-	private Set<StructFieldID> ignoreIDs;
+	private StructField structField;
+//	private Set<StructFieldID> ignoreIDs;
+	private Map<StructFieldID, String> ignoreIDs;
 	private StructLocal structLocal;
 
 	/**
@@ -50,7 +53,7 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 	 */
 	public AddStructFieldEntryDialog(
 			Shell shell, ResourceBundle resourceBundle,
-			Set<StructFieldID> ignoreIDs, StructLocal structLocal) {
+			Map<StructFieldID, String> ignoreIDs, StructLocal structLocal) {
 		super(shell, resourceBundle);
 		this.ignoreIDs = ignoreIDs;
 		this.structLocal = structLocal;
@@ -82,6 +85,7 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
 				StructFieldNode node = structTree.getStructFieldNode();
+				structField = node != null ? node.getField() : null;
 				structFieldID = (StructFieldID) (node != null ? JDOHelper.getObjectId(node.getField()) : null);
 				updateOKButtonEnabled();
 			}
@@ -96,8 +100,18 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 				setOKButtonEnabled(false);
 			}
 		});
+		
+		createAdditionalUI(comp);
+		
 		return comp;
 	}
+	
+	/**
+	 * Extendors can use this method to create additional UI below the struct tree.
+	 * 
+	 * @param parent The parent to be used.
+	 */
+	protected void createAdditionalUI(Composite parent) {}
 
 	@Override
 	protected void configureShell(Shell newShell) {
@@ -115,9 +129,16 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 		setOKButtonEnabled(
 				EditLayoutEntry.ENTRY_TYPE_SEPARATOR.equals(entryType) || (
 						structFieldID != null &&
-						!(ignoreIDs != null ? ignoreIDs.contains(structFieldID) : false)
+						!(ignoreIDs != null ? ignoreIDs.containsKey(structFieldID) : false)
 				)
 			);
+		
+		if (ignoreIDs.containsKey(structFieldID)) {
+			String message = ignoreIDs.get(structFieldID);
+			setErrorMessage(message);
+		} else {
+			setErrorMessage(null);
+		}
 	}
 
 	protected void separatorSelected() {
@@ -130,6 +151,10 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 		entryType = PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
 		structTree.setEnabled(true);
 		updateOKButtonEnabled();
+	}
+	
+	protected StructTreeComposite getStructTree() {
+		return structTree;
 	}
 
 	/**
@@ -144,5 +169,12 @@ class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 	 */
 	public StructFieldID getStructFieldID() {
 		return structFieldID;
+	}
+	
+	/**
+	 * @return The selected {@link StructField}.
+	 */
+	public StructField getStructField() {
+		return structField;
 	}
 }

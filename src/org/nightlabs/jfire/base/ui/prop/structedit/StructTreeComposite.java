@@ -25,9 +25,9 @@ import org.nightlabs.jfire.prop.StructField;
 public class StructTreeComposite extends AbstractTreeComposite<TreeNode> implements LanguageChangeListener {
 	private List<StructBlockNode> blockNodes;
 	private String currLanguageId;
-
-	public StructTreeComposite(Composite parent, boolean init, LanguageChooser langChooser) {
-		super(parent, getBorderStyle(parent) | SWT.H_SCROLL, true, init, false);
+	
+	public StructTreeComposite(Composite parent, boolean init, LanguageChooser langChooser, int treeViewerStyle) {
+		super(parent, getBorderStyle(parent) | SWT.H_SCROLL | treeViewerStyle, true, init, false);
 		getGridLayout().marginHeight = 2;
 		getGridLayout().marginWidth = 2;
 		if (langChooser != null) {
@@ -37,6 +37,10 @@ public class StructTreeComposite extends AbstractTreeComposite<TreeNode> impleme
 		else {
 			this.currLanguageId = Locale.getDefault().getLanguage();
 		}
+	}
+
+	public StructTreeComposite(Composite parent, boolean init, LanguageChooser langChooser) {
+		this(parent, init, langChooser, SWT.NONE);
 	}
 
 	@Override
@@ -144,7 +148,7 @@ public class StructTreeComposite extends AbstractTreeComposite<TreeNode> impleme
 
 				for (StructBlock psb : struct.getStructBlocks()) {
 					StructBlockNode newBlockNode = new StructBlockNode(psb);
-					blockNodes.add(newBlockNode);					
+					blockNodes.add(newBlockNode);
 				}
 			}
 

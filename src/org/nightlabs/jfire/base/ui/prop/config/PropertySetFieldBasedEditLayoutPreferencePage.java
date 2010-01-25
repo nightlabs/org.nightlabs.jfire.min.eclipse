@@ -6,11 +6,9 @@ package org.nightlabs.jfire.base.ui.prop.config;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,7 +25,6 @@ import org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite;
 import org.nightlabs.clientui.ui.layout.IGridDataEntry;
 import org.nightlabs.clientui.ui.layout.IGridLayoutConfig;
 import org.nightlabs.i18n.I18nText;
-import org.nightlabs.i18n.StaticI18nText;
 import org.nightlabs.jfire.base.ui.config.AbstractUserConfigModulePreferencePage;
 import org.nightlabs.jfire.base.ui.config.IConfigModuleController;
 import org.nightlabs.jfire.base.ui.resource.Messages;
@@ -81,12 +78,12 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
-			Set<StructFieldID> ignoreIDs = new HashSet<StructFieldID>();
+			Map<StructFieldID, String> ignoreIDs = new HashMap<StructFieldID, String>();
 			for (IGridDataEntry gdEntry : getGridDataEntries()) {
 				PropertySetFieldBasedEditLayoutEntry entry = entriesMap.get(gdEntry);
 				if (entry != null && PropertySetFieldBasedEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE.equals(entry.getEntryType())) {
 					if (entry.getStructFieldID() != null)
-						ignoreIDs.add(entry.getStructFieldID());
+						ignoreIDs.put(entry.getStructFieldID(), "This field cannot be added because it has already been assigned.");
 				}
 			}
 			AddStructFieldEntryDialog dlg = new AddStructFieldEntryDialog(getShell(), null, ignoreIDs, structLocal);
@@ -112,9 +109,9 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 				}
 
 				@Override
-				public I18nText getName() {
+				public String getName() {
 					if (entry.getStructFieldID() == null) {
-						return new StaticI18nText("Separator"); //$NON-NLS-1$
+						return "Separator";
 					}
 					try {
 						loadStructLocalJob.join();
@@ -127,7 +124,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
-					return field.getName();
+					return field.getName().getText();
 				}
 				
 			};
@@ -210,7 +207,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	
 	
 	/**
-	 * Create a new {@link PropertySetFieldBasedEditLayoutPreferencePage} for the 
+	 * Create a new {@link PropertySetFieldBasedEditLayoutPreferencePage} for the
 	 * given {@link PropertySetFieldBasedEditLayoutUseCase}.
 	 * 
 	 */

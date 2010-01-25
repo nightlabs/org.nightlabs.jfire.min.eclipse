@@ -72,7 +72,7 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 	@Override
 	public Control createControl(Composite parent) {
 		if (selectionEditComposite == null) {
-			selectionEditComposite = new SelectionEditComposite<StructFieldValue>(parent, SWT.NONE, labelProvider);
+			selectionEditComposite = new SelectionEditComposite<StructFieldValue>(parent, SWT.NONE, labelProvider, true);
 			selectionEditComposite.addModificationListener(getModifyListener());
 		}
 		return selectionEditComposite;

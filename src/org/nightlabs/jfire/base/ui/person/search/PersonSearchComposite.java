@@ -63,7 +63,7 @@ public class PersonSearchComposite extends PropertySetSearchComposite<Person> {
 
 	@Override
 	protected SearchFilterProvider createStaticSearchFilterProvider(SearchResultFetcher resultFetcher) {
-		return new StaticPersonSearchFilterProvider(resultFetcher, false);
+		return new PersonSearchEditLayoutFilterProvider(resultFetcher, false, getUseCase(), getSearchText());
 	}
 
 	@Override

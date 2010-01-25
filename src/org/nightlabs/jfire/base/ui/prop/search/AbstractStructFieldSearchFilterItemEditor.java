@@ -3,6 +3,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -22,6 +23,8 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 	private MatchType matchType;
 	private ComboComposite<MatchType> matchTypeCombo;
 	private boolean showTitle;
+	
+	private ListenerList searchTriggerListener = new ListenerList();
 	
 	public AbstractStructFieldSearchFilterItemEditor(Collection<SF> structFields, MatchType matchType) {
 		this.structFields = structFields;
@@ -45,26 +48,31 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 //	}
 	
 	@Override
-	public Control createControl(Composite par, boolean showTitle) {
-		Composite parent = par;
+	public Control createControl(Composite parent, boolean showTitle) {
+		Composite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
+		
 		if (showTitle) {
-			parent = new XComposite(par, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
-			Label titleLabel = new Label(parent, SWT.NONE);
-			titleLabel.setText(getFirstStructField().getName().getText());
+			Label titleLabel = new Label(wrapper, SWT.NONE);
+			String name = "";
+			for (StructField<?> structField : getStructFields()) {
+				name += structField.getName().getText() + ", ";
+			}
+			titleLabel.setText(name.substring(0, name.length()-2));
 		}
 		
 		// No MatchType specified in constructor, thus create combo to select it
 		if (matchType == null) {
-			XComposite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
-			matchTypeCombo = new ComboComposite<MatchType>(wrapper, SWT.NONE);
+			XComposite editWrapper = new XComposite(wrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
+			matchTypeCombo = new ComboComposite<MatchType>(editWrapper, SWT.NONE);
 			matchTypeCombo.setInput(getSupportedMatchTypes());
 			matchTypeCombo.selectElement(getDefaultMatchType());
 			
-			createEditControl(wrapper);
-			return wrapper;
+			createEditControl(editWrapper);
 		} else {
-			return createEditControl(parent);
+			createEditControl(wrapper);
 		}
+		
+		return wrapper;
 	}
 	
 	/**
@@ -105,5 +113,21 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 	
 	protected Collection<StructFieldID> getStructFieldIDs() {
 		return NLJDOHelper.getObjectIDList(getStructFields());
+	}
+	
+	@Override
+	public void addSearchTriggerListener(ISearchTriggerListener listener) {
+		searchTriggerListener.add(listener);
+	}
+	
+	@Override
+	public void removeSearchTriggerListener(ISearchTriggerListener listener) {
+		searchTriggerListener.remove(listener);
+	}
+	
+	protected void notifySearchTriggerListeners() {
+		for (Object listener : searchTriggerListener.getListeners()) {
+			((ISearchTriggerListener) listener).searchTriggered();
+		}
 	}
 }
