@@ -4,20 +4,14 @@
 package org.nightlabs.jfire.base.ui.timer;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
-import org.nightlabs.base.ui.timepattern.TimePatternSetEditComposite;
-import org.nightlabs.base.ui.timepattern.TimePatternSetModifyEvent;
-import org.nightlabs.base.ui.timepattern.TimePatternSetModifyListener;
 import org.nightlabs.jfire.timer.Task;
 
 /**
@@ -27,9 +21,9 @@ import org.nightlabs.jfire.timer.Task;
 public class TaskDetailSection
 extends ToolBarSectionPart
 {
+
 	private Task task;
-	private Button enableButton;
-	private TimePatternSetEditComposite timePatternSetEditComposite;
+	private TaskDetailEditComposite detailEditComposite;
 	
 	public TaskDetailSection(IFormPage page, Composite parent) {
 		this(page, parent, "Task scheduling", "Enable task");
@@ -44,23 +38,8 @@ extends ToolBarSectionPart
 		client.getGridLayout().numColumns = 1;
 
 		getSection().setClient(client);
-		
-		enableButton = new Button(client, SWT.CHECK);
-		enableButton.setText(enabledCaption);
-		enableButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				markDirty();
-			}
-		});
-		
-		timePatternSetEditComposite = new TimePatternSetEditComposite(client, SWT.NONE, "Time pattern set");
-		timePatternSetEditComposite.addTimePatternSetModifyListener(new TimePatternSetModifyListener() {
-			@Override
-			public void timePatternSetModified(TimePatternSetModifyEvent event) {
-				markDirty();
-			}
-		});
+	
+		detailEditComposite = new TaskDetailEditComposite(client, SWT.NONE, enabledCaption, this);
 	}
 	
 	@Override
@@ -80,15 +59,14 @@ extends ToolBarSectionPart
 	public void refresh() {
 		super.refresh();
 		if (task != null) {
-			timePatternSetEditComposite.setTimePatternSet(task.getTimePatternSet());
-			enableButton.setSelection(task.isEnabled());
+			detailEditComposite.setTask(task);
 		}
 	}
 	
 	@Override
 	public void commit(boolean onSave) {
 		super.commit(onSave);
-		task.setEnabled(enableButton.getSelection());
+		detailEditComposite.commitPropeties();
 	}
 	
 }
