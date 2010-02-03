@@ -111,13 +111,13 @@
                   label="%actions.removeLanguage.label "
                   menubarPath="administrationMenu/languageRemoveGroup"
                   tooltip="%actions.removeLanguage.tooltip"/>
-            <action
+            <!-- <action
                   class="org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeAction"
                   icon="icons/language/world_edit.16x16.png"
                   id="org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModeAction#menu"
                   label="%actions.configureLanguageMode.label"
                   menubarPath="administrationMenu/languageRemoveGroup"
-                  tooltip="%actions.configureLanguageMode.tooltip"/>            
+                  tooltip="%actions.configureLanguageMode.tooltip"/>-->            
             <action
                   class="org.nightlabs.jfire.base.admin.ui.rolegroup.GrantRolegroupsAction"
                   enablesFor="+"
@@ -518,5 +518,17 @@
              editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor"
              perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
        </registry>
+    </extension>
+    <extension
+          point="org.eclipse.ui.preferencePages">
+          <page
+            class="org.nightlabs.jfire.base.admin.ui.language.preference.LanguagePreferencePage"
+            id="org.nightlabs.jfire.base.admin.ui.language.preference.LanguagePreferencePage"
+            name="%org.nightlabs.jfire.base.admin.ui.language.preference.LanguagePreferencePage.name"/>
+          <page
+            class="org.nightlabs.jfire.base.admin.ui.language.preference.LanguageSyncModePreferencePage"
+            id="org.nightlabs.jfire.base.admin.ui.language.preference.LanguageSyncModePreferencePage"
+            name="%org.nightlabs.jfire.base.admin.ui.language.preference.LanguageSyncModePreferencePage.name"
+            category="org.nightlabs.jfire.base.admin.ui.language.preference.LanguagePreferencePage"/>
     </extension>
 </plugin>
