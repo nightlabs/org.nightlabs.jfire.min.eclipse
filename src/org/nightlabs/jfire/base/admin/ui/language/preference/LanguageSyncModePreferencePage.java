@@ -49,6 +49,14 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 		Composite content = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		content.setLayout(new GridLayout(2, false));
 		content.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// TODO when to login?
+		try {
+			Login.getLogin(false).setForceLogin(true);
+			Login.getLogin();
+		} catch (final LoginException e) {
+			// throw new RuntimeException(e);
+			return content;
+		}
 
 		final Label languageSyncModeChooseLabel = new Label(content, SWT.NONE);
 		languageSyncModeChooseLabel.setText(Messages.getString(
@@ -94,12 +102,12 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 	@Override
 	public boolean performOk() {
 		// TODO when to login? Is this necessary here at all?
-		try {
-			Login.getLogin(false).setForceLogin(true);
-			Login.getLogin();
-		} catch (final LoginException e) {
-			// throw new RuntimeException(e);
-		}
+//		try {
+//			Login.getLogin(false).setForceLogin(true);
+//			Login.getLogin();
+//		} catch (final LoginException e) {
+//			// throw new RuntimeException(e);
+//		}
 		if (!currentLanguageSyncMode.equals(selectedLanguageSyncMode)) {
 			LanguageSyncMode[] syncModes = LanguageSyncMode.values();
 			for (int i = 0; i < syncModes.length; i++) {
