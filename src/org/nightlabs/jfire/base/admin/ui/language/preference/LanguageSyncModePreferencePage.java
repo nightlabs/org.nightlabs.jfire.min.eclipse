@@ -3,6 +3,7 @@ package org.nightlabs.jfire.base.admin.ui.language.preference;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.FetchPlan;
 import javax.security.auth.login.LoginException;
 
 import org.eclipse.jface.preference.PreferencePage;
@@ -35,6 +36,7 @@ import org.nightlabs.jfire.security.SecurityReflector;
  */
 public class LanguageSyncModePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
+	private LanguageManagerRemote lm;
 	private LanguageConfig languageConfig;
 	private String currentLanguageSyncMode;
 	private String selectedLanguageSyncMode;
@@ -49,12 +51,11 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 		Composite content = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		content.setLayout(new GridLayout(2, false));
 		content.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		// TODO when to login?
 		try {
 			Login.getLogin(false).setForceLogin(true);
 			Login.getLogin();
 		} catch (final LoginException e) {
-			// throw new RuntimeException(e);
+			setValid(false);
 			return content;
 		}
 
@@ -64,9 +65,8 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 		languageSyncModeChooseCombo = new XComboComposite<String>(content, SWT.READ_ONLY, languageSyncModeLabelProvider);
 		languageSyncModeChooseCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		final LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class,
-				SecurityReflector.getInitialContextProperties());
-		languageConfig = lm.getLanguageConfig(null, -1);
+		lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+		languageConfig = lm.getLanguageConfig(new String[]{FetchPlan.DEFAULT}, -1);
 		currentLanguageSyncMode = languageConfig.getLanguageSyncMode().toString();
 
 		final List<String> languageSyncModeNames = new ArrayList<String>();
@@ -101,18 +101,12 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 	 */
 	@Override
 	public boolean performOk() {
-		// TODO when to login? Is this necessary here at all?
-//		try {
-//			Login.getLogin(false).setForceLogin(true);
-//			Login.getLogin();
-//		} catch (final LoginException e) {
-//			// throw new RuntimeException(e);
-//		}
 		if (!currentLanguageSyncMode.equals(selectedLanguageSyncMode)) {
 			LanguageSyncMode[] syncModes = LanguageSyncMode.values();
 			for (int i = 0; i < syncModes.length; i++) {
 				if (syncModes[i].toString().equals(selectedLanguageSyncMode)) {
 					languageConfig.setLanguageSyncMode(syncModes[i]);
+					lm.storeLanguageConfig(languageConfig, false, null, -1);
 					break;
 				}
 			}
@@ -125,8 +119,10 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 	 */
 	@Override
 	protected void performDefaults() {
-		languageSyncModeChooseCombo.selectElementByIndex(idx);
-		super.performDefaults();
+		if (Login.isLoggedIn()) {
+			languageSyncModeChooseCombo.selectElementByIndex(idx);
+			super.performDefaults();
+		}
 	}
 
 	/**
@@ -138,7 +134,7 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 			if (element instanceof String) {
 				return (String) element;
 			}
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	};
 }
