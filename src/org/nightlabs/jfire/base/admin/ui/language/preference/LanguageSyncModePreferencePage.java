@@ -31,7 +31,7 @@ import org.nightlabs.jfire.language.LanguageSyncMode;
 import org.nightlabs.jfire.security.SecurityReflector;
 
 /**
- *
+ * Preference page used for setting language synchronisation mode.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
 public class LanguageSyncModePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -51,6 +51,7 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 		Composite content = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		content.setLayout(new GridLayout(2, false));
 		content.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
 		try {
 			Login.getLogin(false).setForceLogin(true);
 			Login.getLogin();
@@ -59,16 +60,19 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 			return content;
 		}
 
+		// Create label and combo.
 		final Label languageSyncModeChooseLabel = new Label(content, SWT.NONE);
 		languageSyncModeChooseLabel.setText(Messages.getString(
-				"org.nightlabs.jfire.base.admin.ui.language.preference.LanguageSyncModePreferencePage.labelText")); //$NON-NLS-1$
+			"org.nightlabs.jfire.base.admin.ui.language.preference.LanguageSyncModePreferencePage.labelText")); //$NON-NLS-1$
 		languageSyncModeChooseCombo = new XComboComposite<String>(content, SWT.READ_ONLY, languageSyncModeLabelProvider);
 		languageSyncModeChooseCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+		// Get language manager, configuration and current sync mode.
 		lm = JFireEjb3Factory.getRemoteBean(LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
 		languageConfig = lm.getLanguageConfig(new String[]{FetchPlan.DEFAULT}, -1);
 		currentLanguageSyncMode = languageConfig.getLanguageSyncMode().toString();
 
+		// Collect all available language synchronisation modes.
 		final List<String> languageSyncModeNames = new ArrayList<String>();
 		final LanguageSyncMode[] syncModes = LanguageSyncMode.values();
 		for (int i = 0; i < syncModes.length; i++) {
@@ -78,6 +82,8 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 				idx = i;
 			}
 		}
+
+		// Fill combo, select current mode and add selection listener.
 		languageSyncModeChooseCombo.setInput(languageSyncModeNames);
 		languageSyncModeChooseCombo.selectElementByIndex(idx);
 		languageSyncModeChooseCombo.addSelectionListener(new SelectionAdapter() {
@@ -126,7 +132,7 @@ public class LanguageSyncModePreferencePage extends PreferencePage implements IW
 	}
 
 	/**
-	 *
+	 * {@link ILabelProvider} for language sync mode combo.
 	 */
 	private ILabelProvider languageSyncModeLabelProvider = new LabelProvider() {
 		@Override
