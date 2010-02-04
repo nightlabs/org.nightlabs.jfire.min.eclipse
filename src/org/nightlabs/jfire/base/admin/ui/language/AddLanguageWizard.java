@@ -62,8 +62,10 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 	 */
 	public AddLanguageWizard() {
 		super();
-		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.wizardTitle")); //$NON-NLS-1$
-		addLanguagePage = new AddLanguagePage(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.pageTitle")); //$NON-NLS-1$
+		setWindowTitle(Messages.getString(
+			"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.wizardTitle")); //$NON-NLS-1$
+		addLanguagePage = new AddLanguagePage(Messages.getString(
+			"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.pageTitle")); //$NON-NLS-1$
 		addPage(addLanguagePage);
 	}
 
@@ -87,14 +89,11 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 								LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
 							final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 							try {
-								lm.createLanguage(langCf, true, true);		// server-side
+								lm.createLanguage(langCf, false, false);	// server-side, not using language sync mode
 							} catch (final LanguageException exception) {
 								isLanguageCreatedServerSide = false;
 								logger.error("Failed creating language: " + langCf.getLanguageID(), exception); //$NON-NLS-1$
-								// Actually this is somehow not an error in the case language sync mode is set to "one only".
-								// However, the creation of the selected language failed.
-								MessageDialog.openError(shell,
-									Messages.getString(
+								MessageDialog.openError(shell, Messages.getString(
 										"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageErrorTitle"), //$NON-NLS-1$
 									Messages.getString(
 										"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageErrorMessage")); //$NON-NLS-1$
@@ -104,8 +103,7 @@ public class AddLanguageWizard extends DynamicPathWizard implements INewWizard {
 							if (isLanguageCreatedServerSide) {
 								logger.info("Created language on server-side"); //$NON-NLS-1$
 								LanguageManager.sharedInstance().addLanguage(localeDescriptor.getLocale());		// client-side
-								MessageDialog.openInformation(shell,
-									Messages.getString(
+								MessageDialog.openInformation(shell, Messages.getString(
 										"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageSuccessTitle"), //$NON-NLS-1$
 									Messages.getString(
 										"org.nightlabs.jfire.base.admin.ui.language.AddLanguageWizard.addLanguageSuccessMessage")); //$NON-NLS-1$
