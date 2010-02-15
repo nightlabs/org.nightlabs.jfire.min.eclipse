@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.jdo.tree.lazy;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jdo.JDOHelper;
@@ -39,8 +40,8 @@ public class JDOObjectLazyTreeNode
 	{
 		this.parent = parent;
 	}
-
-	public JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller> getParent() {
+	public JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller> getParent()
+	{
 		return parent;
 	}
 
@@ -189,7 +190,7 @@ public class JDOObjectLazyTreeNode
 	 * @return a List of JDOObjectIDs contained in this node up until the root.
 	 */
 	public List<JDOObjectID> getJDOObjectIDsToRoot() {
-		return getJDOObjectIDsToRoot(this, new ArrayList<JDOObjectID>());
+		return getJDOObjectIDsToRoot(this, new LinkedList<JDOObjectID>());
 	}
 
 	private <N extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller>> List<JDOObjectID> getJDOObjectIDsToRoot(N node, List<JDOObjectID> jdoObjectIDs) {
@@ -200,5 +201,21 @@ public class JDOObjectLazyTreeNode
 		// Iterative case.
 		jdoObjectIDs.add(node.jdoObjectID);
 		return getJDOObjectIDsToRoot(node.parent, jdoObjectIDs);
+	}
+
+	/**
+	 * @return the {@link ObjectID}s of the children of this node.
+	 */
+	public synchronized List<JDOObjectID> getChildrenJDOObjectIDs() {
+		List<JDOObjectID> objIDs = new LinkedList<JDOObjectID>();
+		List<JDOObjectLazyTreeNode<JDOObjectID,JDOObject,Controller>> childNodes = getChildNodes();
+		if (childNodes != null) {
+			for (JDOObjectLazyTreeNode<JDOObjectID, JDOObject, Controller> child : childNodes) {
+				if (child != null)
+					objIDs.add(child.jdoObjectID);
+			}
+		}
+
+		return objIDs;
 	}
 }
