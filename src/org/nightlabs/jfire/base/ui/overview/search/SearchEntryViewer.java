@@ -114,6 +114,8 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 	public Composite createComposite(Composite parent)
 	{
+		parent.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE)); //TODO Should we do this?! Otherwise, there is a gray area between the composites.
+		
 		sashform = new SashForm(parent, SWT.VERTICAL);
 		IToolkit toolkit = XComposite.retrieveToolkit(parent);
 
