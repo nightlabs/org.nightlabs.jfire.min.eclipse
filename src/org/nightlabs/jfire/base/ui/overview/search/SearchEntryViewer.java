@@ -166,8 +166,6 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 		//Footer
 		footerComposite = createFooterComposite(parent);
-		if (footerComposite != null)
-			toolkit.adapt(footerComposite);
 
 		// Context Menu
 		menuManager = new MenuManager();
@@ -681,11 +679,19 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 
 		int resultHeight = completeHeight - searchHeight;
 		if (footerComposite != null) 
-		 resultHeight -= footerComposite.getBounds().height;
+			resultHeight -= footerComposite.getBounds().height;
 
 		return new int[] { searchHeight, resultHeight };
 	}
 
+	/**
+	 * Sets the viewer's footer. This should be used after the footer has finished loading its data.
+	 * @param footer
+	 */
+	protected void setFooter(Composite footer) {
+		this.footerComposite = footer;
+	}
+	
 	/**
 	 * @return the complete height of the search area.
 	 */
