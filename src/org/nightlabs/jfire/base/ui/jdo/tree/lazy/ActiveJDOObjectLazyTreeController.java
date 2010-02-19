@@ -1021,13 +1021,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 							if (logger.isDebugEnabled())
 								logger.debug("getNode.job1#run: retrieving children for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 
-							// FIXME Find a better way to do this. ---------------------------------------------------------------------------------- FARK-MARK ------------>>
-//							Collection<JDOObjectID> jdoObjectIDs = (Collection<JDOObjectID>) retrieveChildObjectIDs(parent.getJDOObjectIDsToRoot(), monitor);
-//							if (jdoObjectIDs == null)
-//								jdoObjectIDs = retrieveChildObjectIDs(parentJDOID, monitor);	// <-- Original method.
 							Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parentJDOID, monitor);
-							// ---------------------------------------------------------------------------------------------------------------------- FARK-MARK ------------>>
-
 							if (jdoObjectIDs == null)
 								throw new IllegalStateException("Your implementation of retrieveChildObjectIDs(...) returned null! The error is probably in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName()); //$NON-NLS-1$
 
@@ -1302,13 +1296,13 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		}
 	}
 
-//	protected TreeNode getTreeNode(JDOObjectID jdoObjectID) {
-//		return objectID2TreeNode.get(jdoObjectID);
-//	}
 
-	// FIXME Redo this properly. Need this to ensure children are not repeated. See overridden method in PersonRelationTreeController.
-	protected Collection<ObjectID> retrieveChildObjectIDs(List<ObjectID> objectIDsToRoot, ProgressMonitor monitor) {
-		return null;
+
+	// Needs access to the map to perform filters.
+	//   Filter #1: Ensures the tree-path terminates and stops the cyclic operation (at least with the PersonRelationTree).
+	//   Filter #2: Ensures no child is repeated.
+	protected List<TreeNode> getTreeNodeList(JDOObjectID jdoObjectID) {
+		return objectID2TreeNodeList.get(jdoObjectID);
 	}
 
 
