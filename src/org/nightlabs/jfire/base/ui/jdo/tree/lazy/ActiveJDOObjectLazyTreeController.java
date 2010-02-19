@@ -818,7 +818,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 						if (retrieveRootCount) {
 							Set<JDOObjectID> s = new HashSet<JDOObjectID>(1);
 							s.add(null);
-							Map<JDOObjectID, Long> parentOID2childCount = retrieveChildCount(
+							Map<JDOObjectID, Long> parentOID2childCount = retrieveChildCount(parentTreeNodes,
 									s, new SubProgressMonitor(monitor, 50) // TODO correct % numbers!
 							);
 							Long count = parentOID2childCount.isEmpty() ? 0 : parentOID2childCount.get(null);
@@ -830,7 +830,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 						}
 
 						if (!parentObjectID2ParentTreeNodeList.isEmpty()) {
-							Map<JDOObjectID, Long> parentOID2childCount = retrieveChildCount(
+							Map<JDOObjectID, Long> parentOID2childCount = retrieveChildCount(parentTreeNodes,
 									new HashSet<JDOObjectID>(parentObjectID2ParentTreeNodeList.keySet()), // We need to pass a new HashSet here, because the keySet is not serializable which is often necessary for retrieveChildCount implementations. Marco.
 									new SubProgressMonitor(monitor, 50) // TODO correct % numbers!
 							);
@@ -1015,13 +1015,10 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 								logger.debug("getNode.job1#run: children already loaded for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\". Skipping!"); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 						else {
-							@SuppressWarnings("unchecked")
-							JDOObjectID parentJDOID = (JDOObjectID) parent.getJdoObjectID();
-
 							if (logger.isDebugEnabled())
 								logger.debug("getNode.job1#run: retrieving children for parentTreeNode.jdoObjectID=\"" + parent.getJdoObjectID() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 
-							Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parentJDOID, monitor);
+							Collection<JDOObjectID> jdoObjectIDs = retrieveChildObjectIDs(parent, monitor); // Since 2010-02-19. Kai.
 							if (jdoObjectIDs == null)
 								throw new IllegalStateException("Your implementation of retrieveChildObjectIDs(...) returned null! The error is probably in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName()); //$NON-NLS-1$
 
@@ -1298,12 +1295,37 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 
 
-	// Needs access to the map to perform filters.
-	//   Filter #1: Ensures the tree-path terminates and stops the cyclic operation (at least with the PersonRelationTree).
-	//   Filter #2: Ensures no child is repeated.
+	// -------------------------------------------------------------------------------------------------- ++ ------>>
+	/**
+	 * Returns a List of TreeNodes answering to the given JDOObjectID.
+	 * Note that this is NOT ALWAYS a one-to-one mapping; while TreeNodes with the same JDOObjectID all have the same children,
+	 * their ancestors are different. Thus one needs to check for the correct instance of the TreeNode if one is dealing with
+	 * specific domain application.
+	 */
 	protected List<TreeNode> getTreeNodeList(JDOObjectID jdoObjectID) {
+		// Needs access to the map to perform filters.
+		//   Filter #1: Ensures the tree-path terminates and stops the cyclic operation (at least with the PersonRelationTree).
+		//   Filter #2: Ensures no child is repeated.
 		return objectID2TreeNodeList.get(jdoObjectID);
 	}
+
+	/**
+	 * Retrieves all child ObjectIDs given a very specific parentNode.
+	 * FOR SPECIFICITY: Override this method to gain access to other information from the parentNode. For example, when filtering children is required.
+	 */
+	@SuppressWarnings("unchecked")
+	protected Collection<JDOObjectID> retrieveChildObjectIDs(TreeNode parentNode, ProgressMonitor monitor) {
+		return retrieveChildObjectIDs((JDOObjectID) parentNode.getJdoObjectID(), monitor); // <-- Original abstract method declared in this class.
+	}
+
+	/**
+	 * Retrieves the number of children for each specific parent TreeNode.
+	 * FOR SPECIFICITY: Override this method to gain access to other information from the parentNodes. For example, when filtering children is required.
+	 */
+	protected Map<JDOObjectID, Long> retrieveChildCount(Set<TreeNode> parentNodes, Set<JDOObjectID> parentIDs, ProgressMonitor monitor) {
+		return retrieveChildCount(parentIDs, monitor); // <-- Original abstract method declared in this class.
+	}
+	// -------------------------------------------------------------------------------------------------- ++ ------>>
 
 
 	protected TreeNode getHiddenRootNode() {
