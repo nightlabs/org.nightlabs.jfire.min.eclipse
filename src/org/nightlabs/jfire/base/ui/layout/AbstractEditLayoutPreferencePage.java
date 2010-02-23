@@ -6,7 +6,10 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite;
 import org.nightlabs.clientui.ui.layout.IGridLayoutConfig;
@@ -18,14 +21,34 @@ extends AbstractUserConfigModulePreferencePage {
 //	private AbstractEditLayoutUseCase useCase;
 	private GridLayoutConfigComposite configComposite;
 	private IGridLayoutConfig gridLayoutConfig;
+	private boolean useTabFolder;
+	private TabFolder tabFolder;
 	
 	protected AbstractEditLayoutPreferencePage() {
 //		this.useCase = useCase;
 	}
+	
+	protected AbstractEditLayoutPreferencePage(boolean useTabFolder) {
+		this.useTabFolder = useTabFolder;
+	}
 
 	@Override
 	protected void createPreferencePage(Composite parent) {
-		XComposite wrapper = new XComposite(parent, SWT.None, LayoutMode.TIGHT_WRAPPER);
+		if (useTabFolder) {
+			tabFolder = new TabFolder(parent, SWT.BORDER);
+			tabFolder.setLayout(XComposite.getLayout(LayoutMode.TIGHT_WRAPPER));
+			XComposite.setLayoutDataMode(LayoutDataMode.GRID_DATA, tabFolder);
+			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+			tabItem.setText("Search configuration");
+			Composite content = createContent(tabFolder);
+			tabItem.setControl(content);
+		} else {
+			createContent(parent);
+		}
+	}
+	
+	private Composite createContent(Composite parent) {
+		Composite wrapper = new XComposite(parent, SWT.None, LayoutMode.ORDINARY_WRAPPER);
 		String description = getUseCaseDescription();
 		if (description != null) {
 			Label desc = new Label(wrapper, SWT.WRAP);
@@ -43,8 +66,9 @@ extends AbstractUserConfigModulePreferencePage {
 		});
 		
 		createFooterComposite(wrapper, configComposite, this);
+		
+		return wrapper;
 	}
-	
 
 	@Override
 	public void updateConfigModule() {
@@ -55,7 +79,7 @@ extends AbstractUserConfigModulePreferencePage {
 	@Override
 	protected void updatePreferencePage() {
 //		configComposite.setGridLayoutConfig(
-//				new GridLayoutConfig((PropertySetFieldBasedEditLayoutConfigModule2) getConfigModuleController().getConfigModule()));
+//				new GridLayoutConfig((PropertySetEditLayoutConfigModule2) getConfigModuleController().getConfigModule()));
 		gridLayoutConfig = createConfigModuleGridLayoutConfig();
 		configComposite.setGridLayoutConfig(gridLayoutConfig);
 	}
@@ -63,6 +87,14 @@ extends AbstractUserConfigModulePreferencePage {
 	protected abstract IGridLayoutConfig createConfigModuleGridLayoutConfig();
 	
 	protected void createFooterComposite(Composite wrapper, GridLayoutConfigComposite configComposite, AbstractEditLayoutPreferencePage abstractEditLayoutPreferencePage) {}
+	
+	protected TabFolder getTabFolder() {
+		if (useTabFolder) {
+			return tabFolder;
+		} else {
+			throw new IllegalStateException("This method may only be called if the constructor was called with useTabFolder == true.");
+		}
+	}
 	
 	public IGridLayoutConfig getCurrentGridLayoutConfig() {
 		return gridLayoutConfig;

@@ -69,7 +69,7 @@ extends AbstractConfigModulePreferencePage
 	 * </p>
 	 * @return The cfModID part of the ConfigID the ConfigModule should be edited for.
 	 */
-	protected String getConfigModuleID() {
+	public String getConfigModuleID() {
 		return null;
 	}
 	

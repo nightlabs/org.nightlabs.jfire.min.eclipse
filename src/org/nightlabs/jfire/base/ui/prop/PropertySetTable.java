@@ -53,7 +53,8 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  *
  */
-public abstract class PropertySetTable<ProperySetType> extends AbstractTableComposite<ProperySetType> {
+public abstract class PropertySetTable<ProperySetType>
+extends AbstractTableComposite<ProperySetType> {
 
 	private class LabelProvider extends TableLabelProvider {
 		/**
@@ -253,4 +254,6 @@ public abstract class PropertySetTable<ProperySetType> extends AbstractTableComp
 	}
 
 	protected abstract IPropertySetTableConfig getPropertySetTableConfig();
+	
+	
 }

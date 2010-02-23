@@ -221,7 +221,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	}
 	
 	@Override
-	protected String getConfigModuleID() {
+	public String getConfigModuleID() {
 		return editLayoutUseCase.getUseCaseID();
 //		// TODO: This needs to be abstract and subclasses need to define
 //		// alternatively we might find a way add new PreferencePages per code and add one for each usecase on the server

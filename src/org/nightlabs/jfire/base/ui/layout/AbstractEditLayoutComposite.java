@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.clientui.layout.GridLayout;
 import org.nightlabs.clientui.ui.layout.GridLayoutUtil;
-import org.nightlabs.jfire.layout.AbstractEditLayoutEntry;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
 
 @SuppressWarnings("unchecked")
@@ -30,7 +29,7 @@ public abstract class AbstractEditLayoutComposite<E extends EditLayoutEntry> ext
 	protected void createEntries() {
 		for (E entry : editLayoutEntries) {
 			Control entryControl;
-			if (entry.getEntryType().equals(AbstractEditLayoutEntry.ENTRY_TYPE_SEPARATOR)) {
+			if (entry.getEntryType().equals(EditLayoutEntry.ENTRY_TYPE_SEPARATOR)) {
 				entryControl = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
 			} else {
 				entryControl = createEntryControl(entry, this);

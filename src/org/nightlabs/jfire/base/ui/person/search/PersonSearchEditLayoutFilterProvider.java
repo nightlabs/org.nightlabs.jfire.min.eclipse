@@ -26,9 +26,6 @@
 
 package org.nightlabs.jfire.base.ui.person.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -133,7 +130,7 @@ implements EarlySearchFilterProvider
 	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#getPersonSearchFilter()
 	 */
 	public SearchFilter getSearchFilter() {
-		PropSearchFilter filter = new PersonSearchFilter();
+		PropSearchFilter filter = createSearchFilter();
 		
 		for (IStructFieldSearchFilterItemEditor editor : searchFilterProviderComposite.getEditors()) {
 			if (editor.hasSearchConstraint()) {
@@ -144,71 +141,76 @@ implements EarlySearchFilterProvider
 		return filter;
 	}
 	
-	public static class ParsedNameCriteria {
-		public String company;
-		public String name;
-		public String firstName;
-		public long personID = -1;
-		public String completeString;
-	}
+//	public static class ParsedNameCriteria {
+//		public String company;
+//		public String name;
+//		public String firstName;
+//		public long personID = -1;
+//		public String completeString;
+//	}
 	
-	public static Collection<String> parseNameNeedles(String needle) {
-		String[] toks = needle.split("[:;,. ]+"); //$NON-NLS-1$
-		Collection<String> result = new ArrayList<String>(toks.length);
-		for (int i = 0; i < toks.length; i++) {
-			result.add(toks[i]);
-		}
-		return result;
-	}
+//	public static Collection<String> parseNameNeedles(String needle) {
+//		String[] toks = needle.split("[:;,. ]+"); //$NON-NLS-1$
+//		Collection<String> result = new ArrayList<String>(toks.length);
+//		for (int i = 0; i < toks.length; i++) {
+//			result.add(toks[i]);
+//		}
+//		return result;
+//	}
 	
-	public static ParsedNameCriteria parseNameNeedle(String needle) {
-//		String text = searchFilterProviderComposite.getControlName().getTextControl().getText();
-		// sTok will return Delims
-		ParsedNameCriteria result = new ParsedNameCriteria();
-		String[] toks = needle.split("[:;,. ]+"); //$NON-NLS-1$
-		result.completeString = needle;
-		for (int i = 0; i < toks.length; i++) {
-			try {
-				long tmpLong = Long.parseLong(toks[i]);
-				result.personID = tmpLong;
-				result.completeString.replace(toks[i], ""); //$NON-NLS-1$
-			} catch (NumberFormatException e) {}
-		}
-		switch (toks.length) {
-			case 3:
-				result.company = toks[0];
-				result.name = toks[1];
-				result.firstName = toks[2];
-				break;
-			case 2:
-				result.company = ""; //$NON-NLS-1$
-				result.name = toks[0];
-				result.firstName = toks[1];
-				break;
-			case 1:
-				if (needle.indexOf(":") > 0 || needle.indexOf(";") > 0) { //$NON-NLS-1$ //$NON-NLS-2$
-					result.company = toks[0];
-					result.name = ""; //$NON-NLS-1$
-				}
-				else {
-					result.company = ""; //$NON-NLS-1$
-					result.name = toks[0];
-				}
-				result.firstName = ""; //$NON-NLS-1$
-				break;
-			default:
-				if (toks.length != 0) {
-					// TODO: think about this
-					result.company = toks[0];
-					result.name = toks[1];
-					result.firstName = toks[toks.length-1];
-				}
-				break;
-		}
-		return result;
-	}
-	
-	
+//	public static ParsedNameCriteria parseNameNeedle(String needle) {
+////		String text = searchFilterProviderComposite.getControlName().getTextControl().getText();
+//		// sTok will return Delims
+//		ParsedNameCriteria result = new ParsedNameCriteria();
+//		String[] toks = needle.split("[:;,. ]+"); //$NON-NLS-1$
+//		result.completeString = needle;
+//		for (int i = 0; i < toks.length; i++) {
+//			try {
+//				long tmpLong = Long.parseLong(toks[i]);
+//				result.personID = tmpLong;
+//				result.completeString.replace(toks[i], ""); //$NON-NLS-1$
+//			} catch (NumberFormatException e) {}
+//		}
+//		switch (toks.length) {
+//			case 3:
+//				result.company = toks[0];
+//				result.name = toks[1];
+//				result.firstName = toks[2];
+//				break;
+//			case 2:
+//				result.company = ""; //$NON-NLS-1$
+//				result.name = toks[0];
+//				result.firstName = toks[1];
+//				break;
+//			case 1:
+//				if (needle.indexOf(":") > 0 || needle.indexOf(";") > 0) { //$NON-NLS-1$ //$NON-NLS-2$
+//					result.company = toks[0];
+//					result.name = ""; //$NON-NLS-1$
+//				}
+//				else {
+//					result.company = ""; //$NON-NLS-1$
+//					result.name = toks[0];
+//				}
+//				result.firstName = ""; //$NON-NLS-1$
+//				break;
+//			default:
+//				if (toks.length != 0) {
+//					// TODO: think about this
+//					result.company = toks[0];
+//					result.name = toks[1];
+//					result.firstName = toks[toks.length-1];
+//				}
+//				break;
+//		}
+//		return result;
+//	}
+//
+	/**
+	 * Create the search filter to be used for the search. Override this method and return an instance of another class if you
+	 * want to get a different result type of the query.
+	 * 
+	 * @return the newly created search filter.
+	 */
 	protected PropSearchFilter createSearchFilter() {
 		return new PersonSearchFilter();
 	}

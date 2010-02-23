@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.prop.search.config;
+package org.nightlabs.jfire.base.ui.person.search.config;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,8 +14,8 @@ import org.nightlabs.clientui.layout.GridData;
 import org.nightlabs.clientui.layout.GridLayout;
 import org.nightlabs.clientui.ui.layout.IGridDataEntry;
 import org.nightlabs.clientui.ui.layout.IGridLayoutConfig;
+import org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
-import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonSearchConfigModule;
@@ -138,23 +138,25 @@ public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
 	}
 	
 	protected String getGridDataEntryName(StructFieldSearchEditLayoutEntry entry) {
-		if (entry.getEntryType().equals(EditLayoutEntry.ENTRY_TYPE_SEPARATOR)) {
-			return "Separator"; //$NON-NLS-1$
-		}
-		try {
-			loadStructLocalJob.join();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+//		if (entry.getEntryType().equals(EditLayoutEntry.ENTRY_TYPE_SEPARATOR)) {
+//			return "Separator"; //$NON-NLS-1$
+//		}
+//		try {
+//			loadStructLocalJob.join();
+//		} catch (InterruptedException e) {
+//			throw new RuntimeException(e);
+//		}
+//
+//		String name = "";
+//		for (StructField field : entry.getStructFields()) {
+//			name += field.getName().getText() + ", ";
+//		}
+//
+//		name = name.substring(0, name.length()-2) + " [" + entry.getMatchType().getLocalisedName() + "]";
+//
+//		return name;
 		
-		String name = "";
-		for (StructField field : entry.getStructFields()) {
-			name += field.getName().getText() + ", ";
-		}
-		
-		name = name.substring(0, name.length()-2) + " [" + entry.getMatchType().getLocalisedName() + "]";
-		
-		return name;
+		return entry.getName();
 	}
 	
 	@Override

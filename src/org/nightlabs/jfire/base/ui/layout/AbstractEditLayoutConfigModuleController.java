@@ -10,7 +10,7 @@ import org.nightlabs.jfire.base.ui.config.AbstractConfigModuleController;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.layout.AbstractEditLayoutConfigModule;
 import org.nightlabs.jfire.layout.AbstractEditLayoutEntry;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule2;
+import org.nightlabs.jfire.prop.config.PropertySetEditLayoutConfigModule;
 
 /**
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
@@ -24,7 +24,7 @@ public abstract class AbstractEditLayoutConfigModuleController extends
 
 	@Override
 	public Class<? extends ConfigModule> getConfigModuleClass() {
-		return PropertySetFieldBasedEditLayoutConfigModule2.class;
+		return PropertySetEditLayoutConfigModule.class;
 	}
 
 	private static final Set<String> CONFIG_MODULE_FETCH_GROUPS = new HashSet<String>();

@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.datastructure.Pair;
 import org.nightlabs.jdo.ObjectIDUtil;
 import org.nightlabs.jdo.search.MatchType;
+import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
@@ -25,7 +26,7 @@ extends AbstractEPProcessor
 {
 	private static StructFieldSearchFilterEditorRegistry sharedInstance;
 	
-	private static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.structFieldSearchFilterItemEditor"; //$NON-NLS-1$
+	private static final String EXTENSION_POINT_ID = JFireBasePlugin.class.getPackage().getName() + ".structFieldSearchFilterItemEditor"; //$NON-NLS-1$
 	private static final String GENERAL_EXTENSION_POINT_ELEMENT_NAME = "structFieldSearchFilterItemEditor"; //$NON-NLS-1$
 	private static final String SPECIALISED_EXTENSION_POINT_ELEMENT_NAME = "specialisedStructFieldSearchFilterItemEditor"; //$NON-NLS-1$
 	

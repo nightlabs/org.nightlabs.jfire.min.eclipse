@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.prop.search.config;
+package org.nightlabs.jfire.base.ui.person.search.config;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -9,15 +9,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.clientui.ui.layout.GridLayoutConfigComposite;
 import org.nightlabs.clientui.ui.layout.IGridLayoutConfig;
 import org.nightlabs.jfire.base.ui.layout.AbstractEditLayoutPreferencePage;
+import org.nightlabs.jfire.base.ui.person.search.AbstractPersonSearchEditLayoutPreferencePage;
 import org.nightlabs.jfire.base.ui.person.search.PersonSearchUseCaseConstants;
 import org.nightlabs.jfire.layout.AbstractEditLayoutConfigModule;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.prop.search.config.StructFieldSearchEditLayoutEntry;
 
-public class DefaultPersonSearchEditLayoutPreferencePage extends AbstractPersonSearchEditLayoutPreferencePage {
+public class DefaultPersonSearchPreferencePage extends AbstractPersonSearchEditLayoutPreferencePage {
 
 	@Override
-	protected String getConfigModuleID() {
+	public String getConfigModuleID() {
 		return AbstractEditLayoutConfigModule.getCfModID(AbstractEditLayoutConfigModule.CLIENT_TYPE_RCP, PersonSearchUseCaseConstants.USE_CASE_ID_DEFAULT);
 	}
 

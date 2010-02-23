@@ -71,7 +71,7 @@ import org.nightlabs.jfire.layout.AbstractEditLayoutConfigModule;
 import org.nightlabs.jfire.person.PersonSearchConfigModule;
 import org.nightlabs.jfire.prop.PropertyManagerRemote;
 import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule2;
+import org.nightlabs.jfire.prop.config.PropertySetEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.dao.PropertySetDAO;
 import org.nightlabs.jfire.prop.id.PropertySetID;
 import org.nightlabs.jfire.prop.search.PropSearchFilter;
@@ -141,7 +141,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * @param earlySearchText The initial search text (will be used to search right after )
 	 * @param doIDSearchAndUsePropertySetCache Whether to do an ID search with the collected
 	 * 		criteria and afterwards resolve the found objects via the cache.
-	 * @param useCase String that references a use case for which a {@link PropertySetFieldBasedEditLayoutConfigModule2}
+	 * @param useCase String that references a use case for which a {@link PropertySetEditLayoutConfigModule}
 	 * 		with the search configuration data has been registered.
 	 */
 	public PropertySetSearchComposite(
@@ -162,7 +162,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	 * @param parent The parent to use.
 	 * @param style The style to use.
 	 * @param earlySearchText The initial search text (will be used to search right after )
-	 * @param useCase String that references a use case for which a {@link PropertySetFieldBasedEditLayoutConfigModule2}
+	 * @param useCase String that references a use case for which a {@link PropertySetEditLayoutConfigModule}
 	 * 		with the search configuration data has been registered.
 	 */
 	public PropertySetSearchComposite(

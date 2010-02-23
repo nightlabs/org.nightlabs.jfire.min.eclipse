@@ -33,7 +33,6 @@ import java.util.List;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.base.ui.prop.DefaultPropertySetTableConfig;
 import org.nightlabs.jfire.base.ui.prop.IPropertySetTableConfig;
@@ -117,6 +116,6 @@ public class PersonResultTable extends PropertySetTable<Person> {
 				String s2 = ((PropertySet)e2).getDisplayName();
 				return collator.compare(s1, s2);
 			}
-		});				
+		});
 	}
 }

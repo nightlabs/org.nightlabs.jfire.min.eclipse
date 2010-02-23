@@ -27,7 +27,7 @@
     <extension-point id="queryFilterComposite"
         name="QueryFilterComposite" schema="schema/queryFilterComposite.exsd"/>
     <extension-point id="structFieldSearchFilterItemEditor" name="structFieldSearchFilterItemEditor" schema="schema/structFieldSearchFilterItemEditor.exsd"/>
-    <extension-point id="propertySetSearchResultViewer" name="PropertySet Search ResultViewer" schema="schema/propertySetSearchResultViewer.exsd"/>
+    <extension-point id="propertySetViewer" name="PropertySet Viewer" schema="schema/propertySetViewer.exsd"/>
     <!-- Extensions -->
     <!-- 
         Pruduct and application.
@@ -373,13 +373,14 @@
              class="org.nightlabs.jfire.base.ui.preferences.PersonSearchCategoryPreferencePage"
              id="org.nightlabs.jfire.base.ui.preferences.PersonSearchPreferencePage"
              name="Person Search Configuration">
-       </page>
-       <page
-             category="org.nightlabs.jfire.base.ui.preferences.PersonSearchPreferencePage"
-             class="org.nightlabs.jfire.base.ui.prop.search.config.DefaultPersonSearchEditLayoutPreferencePage"
-             id="org.nightlabs.jfire.base.ui.prop.search.config.DefaultPersonSearchEditLayoutPreferencePage"
-             name="Default Search">
-       </page>
+       </page>       
+    </extension>
+    <extension
+          point="org.nightlabs.jfire.base.ui.propertySetViewer">
+       <propertySetViewer
+             identifier="org.nightlabs.jfire.base.ui.person.search.PersonTableViewer"
+             viewerFactory="org.nightlabs.jfire.base.ui.person.search.PersonTableViewerFactory">
+       </propertySetViewer>
     </extension>
     
     <!--
