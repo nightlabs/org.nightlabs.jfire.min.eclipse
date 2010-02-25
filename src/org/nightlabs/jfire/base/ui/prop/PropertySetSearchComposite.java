@@ -130,7 +130,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	private boolean doIDSearchAndUsePropertySetCache = true;
 	private String useCase;
 	private ListenerList loadingStateListeners = new ListenerList();
-	
+
 	private boolean loadingCompleted = false;
 
 	/**
@@ -154,7 +154,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		this.useCase = useCase;
 		init(this);
 	}
-	
+
 	/**
 	 * Create a new {@link PropertySetSearchComposite} with {@link #doIDSearchAndUsePropertySetCache}
 	 * set to <code>true</code>.
@@ -325,7 +325,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		//--------------PersonID and Person's Phone, for example----------------------------------------
 		SearchFilter filter = filterProvider.getSearchFilter();
 		List<ISearchFilterItem> filterItems = filter.getFilterItems();
-		
+
 		// This should already be done and is done by the filter itself. Tobias.
 		// ------------------ START ----------------------------------
 //		@SuppressWarnings("unused")
@@ -340,7 +340,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 //			}
 //		}
 		// ------------------ END ------------------------------------
-		
+
 //		if (isAllStringEmpty) {
 //			// TODO [At least for the ContactsPerspective] (Testing)
 //			//      If search string is empty, then return ALL records. Kai.
@@ -390,7 +390,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	protected Composite getWrapper() {
 		return wrapper;
 	}
-	
+
 	/**
 	 * Add a listener that is triggered when the UI of this {@link PropertySetSearchComposite} has been
 	 * loaded completely. This method may only be called from the UI thread, otherwise an exception is thrown.
@@ -399,9 +399,9 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public void addLoadingStateListener(final ILoadingStateListener listener) {
 		if (Display.getCurrent() == null)
 			throw new IllegalStateException("Thread mismatch. This method can only be called from the UI thread.");
-		
+
 		loadingStateListeners.add(listener);
-		
+
 		if (loadingCompleted) {
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
@@ -411,7 +411,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			});
 		}
 	}
-	
+
 	/**
 	 * Removes the given listener. This method may only be called from the UI thread, otherwise an exception is thrown.
 	 * @param listener The listener to be removed.
@@ -419,7 +419,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public void removeLoadingStateListener(final ILoadingStateListener listener) {
 		if (Display.getCurrent() == null)
 			throw new IllegalStateException("Thread mismatch. This method can only be called from the UI thread.");
-		
+
 		loadingStateListeners.remove(listener);
 	}
 
@@ -447,7 +447,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 		loadingLabel = new Label(getWrapper(), SWT.NONE);
 		loadingLabel.setText("Loading...");
 		final Composite wrapper = getWrapper();
-		
+
 		Job loadCfModJob = new Job("Loading PersonSearchConfigModule") {
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -460,20 +460,20 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 						createSearchComposite(wrapper, personSearchConfigModule);
 					}
 				});
-				
+
 				return Status.OK_STATUS;
 			}
 		};
-		
+
 		loadCfModJob.schedule();
-		
+
 		return getWrapper();
 	}
-	
+
 	protected void createSearchComposite(Composite parent, PersonSearchConfigModule psCfMod) {
 		if (loadingLabel != null)
 			loadingLabel.dispose();
-		
+
 		SashForm sash = new SashForm(parent, SWT.VERTICAL);
 		sash.setLayoutData(new GridData(GridData.FILL_BOTH));
 		topWrapper = new XComposite(sash, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
@@ -513,9 +513,9 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			resultFetcher.searchTriggered(staticTab.getFilterProvider());
 		}
 		sash.setWeights(new int[] {3, 5});
-		
+
 		loadingCompleted = true;
-		
+
 		// Trigger loading state listeners
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
@@ -557,13 +557,14 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	public void setQuickSearchText(String text)
 	{
 		earlySearchText = text;
-//		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
-//			staticTab.setQuickSearchText(earlySearchText);
-//		}
+		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
+			staticTab.setQuickSearchText(earlySearchText);
+		}
 	}
 
 	public String getSearchText()
 	{
+		// TODO should this be re-enabled?
 //		if (staticTab != null && !staticTab.getTabItem().isDisposed()) {
 //			if (staticTab.getFilterProvider() instanceof PersonSearchEditLayoutFilterProvider) {
 //				PersonSearchEditLayoutFilterProvider provider = (PersonSearchEditLayoutFilterProvider) staticTab.getFilterProvider();
@@ -620,7 +621,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	/**
 	 * Get the result Table created with {@link #createResultTable(Composite)}. This method blocks the UI thread as long
 	 * as the contents of this composite are not completely loaded, but continues to run the event loop.
-	 * 
+	 *
 	 * @return The result Table created with {@link #createResultTable(Composite)}.
 	 */
 	public PropertySetTable<PropertySetType> getResultTable() {
@@ -628,14 +629,14 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			if (!Display.getDefault().readAndDispatch())
 				Display.getDefault().sleep();
 		}
-		
+
 		return resultTable;
 	}
 
 	/**
 	 * Get the Button-bar created for this Composite. This method blocks the UI thread as long
 	 * as the contents of this composite are not completely loaded, but continues to run the event loop.
-	 * 
+	 *
 	 * @return The Button-bar created for this Composite.
 	 */
 	public Composite getButtonBar() {
@@ -643,7 +644,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 			if (!Display.getDefault().readAndDispatch())
 				Display.getDefault().sleep();
 		}
-		
+
 		return buttonBar;
 	}
 
@@ -680,7 +681,7 @@ public abstract class PropertySetSearchComposite<PropertySetType> extends XCompo
 	protected String[] getFetchGroups() {
 		return FETCH_GROUPS_FULL_DATA;
 	}
-	
+
 	protected String getUseCase() {
 		return useCase;
 	}
