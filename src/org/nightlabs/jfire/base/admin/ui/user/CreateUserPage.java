@@ -104,7 +104,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 	private void autogenerateNameCheckboxToggled() {
 		name.setEnabled(!autogenerateNameCheckbox.getSelection());
 	}
-	
+
 	private boolean pristine = true;
 
 	private void verifyInput()
@@ -138,7 +138,7 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public boolean isPageComplete() {
 		return !pristine && super.isPageComplete();
@@ -205,5 +205,11 @@ public class CreateUserPage extends DynamicPathWizardPage implements FormularCha
 		verifyInput();
 	}
 
+	@Override
+	public void onNext() {
+		super.onNext();
+		//System.out.println("---> userID:" + userID.getText() + ", password:" + password0);
+
+	}
 
 }
