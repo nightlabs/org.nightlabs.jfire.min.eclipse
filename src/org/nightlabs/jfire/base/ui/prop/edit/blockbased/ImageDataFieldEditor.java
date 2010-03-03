@@ -100,6 +100,8 @@ implements IEntryEditor
 	private static final int maxThumbnailWidth = 200;
 	private static final int maxThumbnailHeight = 200;
 
+	private ImageDataFieldPreviewToolTipDialog imageDataFieldPreviewToolTipDialog;
+
 	public ImageDataFieldEditor(IStruct struct, ImageDataField data) {
 		super(struct, data);
 	}
@@ -174,6 +176,11 @@ implements IEntryEditor
 		gd.heightHint = 0;
 		imageLabel.setLayoutData(gd);
 
+		imageDataFieldPreviewToolTipDialog = new ImageDataFieldPreviewToolTipDialog(shell, this);
+		imageDataFieldPreviewToolTipDialog.getToolTipDialogSupport().register(filenameTextbox);
+		if (imageLabel != null)
+			imageDataFieldPreviewToolTipDialog.getToolTipDialogSupport().register(imageLabel);
+
 		return group;
 	}
 
@@ -186,8 +193,12 @@ implements IEntryEditor
 			int width = id.width;
 			int height = id.height;
 			double factor = 1.0;
-			if (width > maxThumbnailWidth || height > maxThumbnailHeight)
-				factor *= height > width ? 1.0*maxThumbnailHeight/height : 1.0*maxThumbnailHeight/width;
+			if (width > maxThumbnailWidth || height > maxThumbnailHeight) {
+//				factor *= height > width ? 1.0*maxThumbnailHeight/height : 1.0*maxThumbnailWidth/width;
+				double factorX = (double) maxThumbnailWidth / width;
+				double factorY = (double) maxThumbnailHeight / height;
+				factor = Math.min(factorX, factorY);
+			}
 
 			id = id.scaledTo((int) (factor*width), (int) (factor*height));
 			Image image = new Image(imageLabel.getDisplay(), id);
@@ -205,6 +216,8 @@ implements IEntryEditor
 		while (top.getParent() != null)
 			top = top.getParent();
 		top.layout(true, true);
+
+		imageDataFieldPreviewToolTipDialog.getToolTipDialogSupport().setEnabled(imageLabel.getImage() != null);
 	}
 
 	private void showFileDoesNotExistDialog(File file)
@@ -271,7 +284,7 @@ implements IEntryEditor
 	@Override
 	public void doRefresh() {
 		ImageStructField imageStructField = (ImageStructField) getStructField();
-		
+
 		setTitle(imageStructField.getName().getText());
 
 		ImageDataField dataField = getDataField();
@@ -299,11 +312,11 @@ implements IEntryEditor
 			}
 			displayImage(id);
 		}
-		else { //@Marco, why did you remove these 2 lines?
+		else { //@Marco, why did you remove these 2 lines? Probably a merge-mistake during back-/forward-porting. Marco.
 			filenameTextbox.setText("");
 			displayImage(null);
 		}
-		
+
 		sizeLabel.setText(
 				String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldEditor.sizeMaxKBLabel"), //$NON-NLS-1$
 						new Object[] { new Long(imageStructField.getMaxSizeKB()) }));
@@ -469,7 +482,7 @@ implements IEntryEditor
 			if (child != imageLabel)
 				child.setEnabled(enabled);
 		}
-		
+
 		if (!enabled) {
 			group.setToolTipText(tooltip);
 		} else {
