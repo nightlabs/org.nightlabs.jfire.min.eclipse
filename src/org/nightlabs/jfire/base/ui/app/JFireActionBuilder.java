@@ -76,8 +76,14 @@ extends DefaultActionBuilder
 								ActionBarItem.Save,
 								ActionBarItem.SaveAs,
 								ActionBarItem.Preferences
-						})),
-				null);
+						})
+				),
+				new ArrayList<ActionBarItem>(
+						Arrays.asList(new ActionBarItem[] {
+								ActionBarItem.Save
+						})
+				)
+		);
 	}
 
 }
