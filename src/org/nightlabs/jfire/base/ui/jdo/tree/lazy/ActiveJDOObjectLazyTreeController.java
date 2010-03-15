@@ -1302,7 +1302,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	 * their ancestors are different. Thus one needs to check for the correct instance of the TreeNode if one is dealing with
 	 * specific domain application.
 	 */
-	protected List<TreeNode> getTreeNodeList(JDOObjectID jdoObjectID) {
+	public List<TreeNode> getTreeNodeList(JDOObjectID jdoObjectID) {
 		// Needs access to the map to perform filters.
 		//   Filter #1: Ensures the tree-path terminates and stops the cyclic operation (at least with the PersonRelationTree).
 		//   Filter #2: Ensures no child is repeated.
