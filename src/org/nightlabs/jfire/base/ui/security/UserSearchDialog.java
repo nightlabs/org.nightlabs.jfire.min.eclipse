@@ -1,20 +1,26 @@
 package org.nightlabs.jfire.base.ui.security;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.nightlabs.eclipse.ui.dialog.ResizableTrayDialog;
+import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.resource.SharedImages.ImageDimension;
+import org.nightlabs.base.ui.resource.SharedImages.ImageFormat;
+import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
+import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.security.User;
 
@@ -23,12 +29,18 @@ import org.nightlabs.jfire.security.User;
  *
  */
 public class UserSearchDialog
-extends ResizableTrayDialog
+//extends ResizableTrayDialog
+extends ResizableTitleAreaDialog
 {
-	private int flags;
 	/**
-	 * @param parentShell
-	 * @param searchText
+	 * The flags defined in {@link UserSearchComposite}
+	 */
+	private int flags;
+
+	/**
+	 * @param parentShell the {@link Shell} for the dialog
+	 * @param searchText the searchText to search for
+	 * @param flags the flags defined in {@link UserSearchComposite}
 	 */
 	public UserSearchDialog(Shell parentShell, String searchText, int flags) {
 		super(parentShell, Messages.RESOURCE_BUNDLE);
@@ -38,8 +50,8 @@ extends ResizableTrayDialog
 	}
 
 	/**
-	 * @param parentShell
-	 * @param searchText
+	 * @param parentShell the {@link Shell} for the dialog
+	 * @param searchText the searchText to search for
 	 */
 	public UserSearchDialog(Shell parentShell, String searchText) {
 		super(parentShell, Messages.RESOURCE_BUNDLE);
@@ -47,15 +59,15 @@ extends ResizableTrayDialog
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
-	/**
-	 * @param parentShell
-	 * @param searchText
-	 */
-	public UserSearchDialog(IShellProvider parentShell, String searchText) {
-		super(parentShell, null);
-		this.searchText = searchText;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
+//	/**
+//	 * @param parentShell
+//	 * @param searchText
+//	 */
+//	public UserSearchDialog(IShellProvider parentShell, String searchText) {
+//		super(parentShell, null);
+//		this.searchText = searchText;
+//		setShellStyle(getShellStyle() | SWT.RESIZE);
+//	}
 
 	@Override
 	protected void configureShell(Shell newShell) {
@@ -66,6 +78,13 @@ extends ResizableTrayDialog
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{
+		Label titleBarSeparator = new Label(parent, 258);
+        titleBarSeparator.setLayoutData(new GridData(768));
+
+		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchDialog.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchDialog.message"), IMessageProvider.INFORMATION); //$NON-NLS-1$
+		setTitleImage(SharedImages.getSharedImage(JFireBasePlugin.getDefault(), UserSearchDialog.class, "", ImageDimension._75x70, ImageFormat.png)); //$NON-NLS-1$
+
 		if (flags != 0)
 			userSearchComposite = new UserSearchComposite(parent, SWT.NONE, flags);
 		else
@@ -112,8 +131,7 @@ extends ResizableTrayDialog
 			widgetSelected(e);
 		}
 	};
-
-
+	
 	@Override
 	protected void okPressed()
 	{

@@ -142,7 +142,7 @@ extends XComposite
 		Composite wrapper = new XComposite(searchComp, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		Label label = new Label(wrapper, SWT.NONE);
 		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.security.UserSearchComposite.userType")); //$NON-NLS-1$
-		userTypeCombo = new Combo(wrapper, SWT.BORDER);
+		userTypeCombo = new Combo(wrapper, SWT.BORDER | SWT.READ_ONLY);
 		userTypeCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		if (useAllTypes()) {
 			userTypeCombo.setItems(new String[] {"User", "UserGroup", "Organisation"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -176,6 +176,8 @@ extends XComposite
 		userTable.setLinesVisible(true);
 		userTable.setHeaderVisible(true);
 		userTable.addSelectionChangedListener(userTableSelectionListener);
+
+		userIDText.setFocus();
 	}
 
 	protected Text createTextSearchEntry(Composite parent, String labelString)
