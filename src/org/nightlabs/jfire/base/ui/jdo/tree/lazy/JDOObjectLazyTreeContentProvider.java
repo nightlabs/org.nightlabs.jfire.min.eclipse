@@ -9,13 +9,13 @@ import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TreeItem;
 import org.nightlabs.jdo.ObjectID;
 
+@SuppressWarnings("unchecked")
 public class JDOObjectLazyTreeContentProvider
 <JDOObjectID extends ObjectID,
 JDOObject,
-TreeNode extends JDOObjectLazyTreeNode<JDOObjectID, JDOObject, ? extends ActiveJDOObjectLazyTreeController<JDOObjectID, JDOObject, TreeNode>>>
+TreeNode extends JDOObjectLazyTreeNode> // <-- Has to remain abstract for extension in other nodes, trees, and controllers!  <JDOObjectID, JDOObject, ? extends ActiveJDOObjectLazyTreeController<JDOObjectID, JDOObject, TreeNode>>>
 implements ILazyTreeContentProvider
 {
 	private static final Logger logger = Logger.getLogger(JDOObjectLazyTreeContentProvider.class);
