@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.nightlabs.jfire.base.ui.person.edit.blockbased;
 
@@ -31,11 +31,11 @@ import org.nightlabs.util.NLLocale;
 
 /**
  * A {@link BlockBasedEditor} that adds a control to edit a persons locale to the editors header.
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class PersonBlockBasedEditor extends BlockBasedEditor {
-	
+
 	private List<Locale> locales;
 	private XComboComposite<Locale> localeCombo;
 
@@ -95,7 +95,7 @@ public class PersonBlockBasedEditor extends BlockBasedEditor {
 				getPropertyChangeSupport().firePropertyChange(Person.PROP_LOCALE, oldLocale, person.getLocale());
 			}
 		});
-		
+
 		localeCombo.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				// done async, so layout does not care about content...
@@ -110,10 +110,12 @@ public class PersonBlockBasedEditor extends BlockBasedEditor {
 	public void refreshControl() {
 		super.refreshControl();
 		Locale personLocale = ((Person)getPropertySet()).getLocale();
-		localeCombo.selectElement(personLocale);
-		if (localeCombo.getSelectedElement() == null) {
-			localeCombo.addElement(personLocale);
+		if (!localeCombo.isDisposed()) {
 			localeCombo.selectElement(personLocale);
+			if (localeCombo.getSelectedElement() == null) {
+				localeCombo.addElement(personLocale);
+				localeCombo.selectElement(personLocale);
+			}
 		}
 	}
 }
