@@ -1067,8 +1067,9 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 									treeNode.setActiveJDOObjectLazyTreeController(ActiveJDOObjectLazyTreeController.this);
 									treeNode.setParent(parent);
 									treeNode.setJdoObjectID(jdoObjectID);
-									addTreeNode(treeNode);
-									loadedNodes.add(treeNode);
+									
+									addTreeNode(treeNode);     // <-- For the controller's internal map: objectID2TreeNodeList
+									loadedNodes.add(treeNode); // <-- Collated, to be added as children to 'parent' once this loop has run its full course.
 								}
 
 								parent.setChildNodes(loadedNodes);
