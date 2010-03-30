@@ -291,7 +291,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 							nodeList.add(dirtyNode);
 						}
 						break;
-						case NEW: break; // do nothing for new objects
+						case NEW: break; // do nothing for new objects <-- Why?
 					}
 				}
 			}
