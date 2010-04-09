@@ -38,10 +38,11 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 
 	/**
 	 * Create an instance of UserPropertiesSection.
-	 * @param parent The parent for this section
-	 * @param toolkit The toolkit to use
+	 * @param page
+	 * @param parent The parent for this section.
+	 * @param sectionDescriptionText
 	 */
-	public BlockBasedEditorSection(FormPage page, Composite parent, String sectionDescriptionText)
+	public BlockBasedEditorSection(final FormPage page, final Composite parent, final String sectionDescriptionText)
 	{
 		super(parent, page.getEditor().getToolkit(), ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
 		createClient(getSection(), page.getEditor().getToolkit(), sectionDescriptionText);
@@ -49,10 +50,12 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 
 	/**
 	 * Create an instance of UserPropertiesSection.
-	 * @param parent The parent for this section
-	 * @param toolkit The toolkit to use
+	 * @param page
+	 * @param parent The parent for this section.
+	 * @param sectionType
+	 * @param sectionDescriptionText
 	 */
-	public BlockBasedEditorSection(FormPage page, Composite parent, int sectionType, String sectionDescriptionText)
+	public BlockBasedEditorSection(final FormPage page, final Composite parent, final int sectionType, final String sectionDescriptionText)
 	{
 		super(parent, page.getEditor().getToolkit(), sectionType);
 		createClient(getSection(), page.getEditor().getToolkit(), sectionDescriptionText);
@@ -62,7 +65,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	 * @see org.eclipse.ui.forms.AbstractFormPart#commit(boolean)
 	 */
 	@Override
-	public void commit(boolean onSave)
+	public void commit(final boolean onSave)
 	{
 		super.commit(onSave);
 		blockBasedEditor.updatePropertySet();
@@ -79,12 +82,13 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	 * Create the content for this section.
 	 * @param section The section to fill
 	 * @param toolkit The toolkit to use
+	 * @param sectionDescriptionText
 	 */
-	protected void createClient(Section section, FormToolkit toolkit, String sectionDescriptionText)
+	protected void createClient(final Section section, final FormToolkit toolkit, final String sectionDescriptionText)
 	{
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
-		createDescriptionControl(section, toolkit, sectionDescriptionText);
+		setSectionDescriptionText(section, sectionDescriptionText);
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 1);
 
 		blockBasedEditor = createBlockBasedEditor();
@@ -144,7 +148,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		});
 	}
 
-	private void createDescriptionControl(Section section, FormToolkit toolkit, String sectionDescriptionText)
+	private void setSectionDescriptionText(final Section section, final String sectionDescriptionText)
 	{
 		if (sectionDescriptionText == null || "".equals(sectionDescriptionText)) //$NON-NLS-1$
 			return;
@@ -152,7 +156,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 		section.setText(sectionDescriptionText);
 	}
 
-	public void setAdditionalDataChangeListener(PropertyChangeListener listener) {
+	public void setAdditionalDataChangeListener(final PropertyChangeListener listener) {
 		blockBasedEditor.addAdditionalDataChangedListener(listener);
 	}
 }
