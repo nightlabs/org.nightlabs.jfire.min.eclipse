@@ -117,6 +117,8 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultHandler);
 			if (changeListenerProxy != null)
 				groupEditor.addDataBlockEditorChangedListener(changeListenerProxy);
+			if (dataBlockRemovalListener != null)
+				groupEditor.addDataBlockRemovalListener(dataBlockRemovalListener);
 			if (this.blockGroup != null) {
 				refresh(this.blockGroup);
 			}
@@ -142,7 +144,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				groupEditor.updatePropertySet();
 			}
 		}
-		
+
 		/**
 		 * @return The {@link DataBlockGroupEditor} created by this provider.
 		 */
@@ -153,7 +155,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 	/**
 	 * One instance of this class is held per {@link BlockBasedEditor} and will
-	 * be added as {@link DataBlockEditorChangedListener} to eachGroup editor created.
+	 * be added as {@link DataBlockEditorChangedListener} to each Group editor created.
 	 * It will forward all notifications to the listeners that have been added
 	 * to the {@link BlockBasedEditor} by {@link BlockBasedEditor#addChangeListener(DataBlockEditorChangedListener)}.
 	 */
@@ -198,7 +200,32 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		public void removeChangeListener(DataBlockEditorChangedListener changeListener) {
 			this.changeListeners.remove(changeListener);
 		}
+	}
 
+	/**
+	 * One instance of this class is held per {@link BlockBasedEditor} and will be added as {@link IDataBlockRemovalListener} to
+	 * each {@link DataBlockGroupEditor} created. It will forward all notifications to the listeners that have been added to the
+	 * {@link BlockBasedEditor} by {@link BlockBasedEditor#addDataBlockRemovalListener(AbstractDataBlockRemovalListener)}.
+	 */
+	private class DataBlockRemovalListener extends AbstractDataBlockRemovalListener {
+
+		private ListenerList dataBlockRemovalListeners = new ListenerList();
+
+		@Override
+		public void removedDataBlock() {
+			for (final Object listener : dataBlockRemovalListeners.getListeners()) {
+				if (listener instanceof IDataBlockRemovalListener)
+					((IDataBlockRemovalListener) listener).removedDataBlock();
+			}
+		}
+		@Override
+		public void addDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
+			dataBlockRemovalListeners.add(listener);
+		}
+		@Override
+		public void removeDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
+			dataBlockRemovalListeners.remove(listener);
+		}
 	}
 
 	private GroupedContentComposite groupedContentComposite;
@@ -213,6 +240,13 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 */
 	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
 //	private ListenerList displayNameChangedListeners = new ListenerList()	;
+
+	/**
+	 * Will be added to the {@link DataBlockGroupEditor} created by this editor (see {@link BlockBasedEditor.ContentProvider#createGroupContent(Composite)} and
+	 * notifies the listeners of this editor in the case a DataBlock has been removed from the associated DataBlockGroup.
+	 */
+	private IDataBlockRemovalListener dataBlockRemovalListener = new DataBlockRemovalListener();
+
 	/**
 	 * Stores the {@link ContentProvider} with the DataBlock-key as key.
 	 */
@@ -226,7 +260,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 
 	private PropertyChangeSupport propertyChangeSupport;
-	
+
 	/**
 	 * Creates a new {@link BlockBasedEditor}.
 	 * @param showHeaderComposite Indicates whether a header composite should be displayed. In this implementation this will then show a composite to edit the display name settings of the managed property set.
@@ -312,23 +346,39 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void removeChangeListener(final DataBlockEditorChangedListener changeListener) {
 		changeListenerProxy.removeChangeListener(changeListener);
 	}
-	
+
+	/**
+	 * Adds the given {@link IDataBlockRemovalListener} to the list of removal listeners of this Editor.
+	 * @param listener The listener to be added.
+	 */
+	public void addDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
+		dataBlockRemovalListener.addDataBlockRemovalListener(listener);
+	}
+
+	/**
+	 * Removes the given {@link IDataBlockRemovalListener} from the list of removal listeners of this Editor.
+	 * @param listener The listener to be removed.
+	 */
+	public void removeDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
+		dataBlockRemovalListener.removeDataBlockRemovalListener(listener);
+	}
+
 	protected PropertyChangeSupport getPropertyChangeSupport() {
 		return propertyChangeSupport;
 	}
-	
+
 	/**
 	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
 	 * This property change listener will be triggered on a change of the additional data
 	 * of a PropertySet which might be the display name of a PropertySet or each other
 	 * property introduced by a subclass of PropertySet.
-	 * 
+	 *
 	 * @param listener The listener to add.
 	 */
 	public void addAdditionalDataChangedListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
-	
+
 	/**
 	 * Remove the given {@link PropertyChangeListener} from the list of listeners of this Editor.
 	 * @param listener The listener to remove.
@@ -336,7 +386,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void removeAdditionalDataChangedListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
-	
+
 	/**
 	 * Add the given {@link PropertyChangeListener} to the list of listeners of this Editor.
 	 * This property change listener will be triggered on a change of the given property
@@ -348,7 +398,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void addAdditionalDataChangedListener(String property, PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
-	
+
 	/**
 	 * Removes the given {@link PropertyChangeListener} from the list of listeners of this Editor
 	 * that listen to changes of the given property.
@@ -359,7 +409,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void removeAdditionalDataChangedListener(String property, PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
-	
+
 	protected void fireDataBlockEditorChangedEvent(DataBlockEditor dataBlockEditor, DataFieldEditor<? extends DataField> dataFieldEditor) {
 		changeListenerProxy.dataBlockEditorChanged(new DataBlockEditorChangedEvent(dataBlockEditor, dataFieldEditor));
 		if (!refreshing)
@@ -386,7 +436,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		});
 //		autogenerateNameCheckbox.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		autogenerateNameCheckbox.setLayoutData(new GridData());
-		
+
 		displayNameText = new Text(displayNameComp, XComposite.getBorderStyle(displayNameComp));
 		displayNameText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -510,7 +560,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public IValidationResultHandler getValidationResultManager() {
 		return validationResultHandler;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#validate()

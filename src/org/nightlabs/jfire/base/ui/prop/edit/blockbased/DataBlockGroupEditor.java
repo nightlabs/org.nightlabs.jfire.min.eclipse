@@ -52,7 +52,7 @@ import org.nightlabs.jfire.prop.exception.DataBlockUniqueException;
  * It therefore retrieves and uses {@link DataBlockEditor}s from the
  * {@link DataBlockEditorFactoryRegistry} for each {@link DataBlock}
  * in the edited {@link DataBlockGroup}.
- * 
+ *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class DataBlockGroupEditor
@@ -103,7 +103,7 @@ extends XComposite
 		content.layout(true, true);
 	}
 
-	
+
 	protected void createDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
 		if (dataBlockGroup.getDataBlocks().size() == dataBlockEditors.size()) {
 			updateBlockEditors(_struct, wrapperComp);
@@ -111,7 +111,7 @@ extends XComposite
 			reCreateDataBlockEditors(_struct, wrapperComp);
 		}
 	}
-	
+
 	protected void reCreateDataBlockEditors(final IStruct _struct, Composite wrapperComp) {
 		for (Composite comp : blockComposites) {
 			comp.dispose();
@@ -139,7 +139,7 @@ extends XComposite
 			blockEditor.setData(_struct, dataBlock);
 			Control blockEditorControl = blockEditor.createControl(wrapper);
 			blockEditorControl.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-			
+
 			blockEditor.addDataBlockEditorChangedListener(new DataBlockEditorChangedListener() {
 				@Override
 				public void dataBlockEditorChanged(DataBlockEditorChangedEvent dataBlockEditorChangedEvent) {
@@ -160,8 +160,8 @@ extends XComposite
 
 							dataBlockGroup.addDataBlock(_struct.getStructBlock(dataBlockGroup), index);
 							refresh(struct, dataBlockGroup);
-						} catch (DataBlockUniqueException e) {
-							e.printStackTrace();
+						} catch (final DataBlockUniqueException e) {
+							throw new RuntimeException(e);
 						}
 					}
 					public void removeDataBlock(DataBlock block) {
@@ -171,8 +171,9 @@ extends XComposite
 
 							dataBlockGroup.removeDataBlock(block);
 							refresh(struct, dataBlockGroup);
-						} catch (DataBlockRemovalException e) {
-							e.printStackTrace();
+							notifyDataBlockRemovalListeners();
+						} catch (final DataBlockRemovalException e) {
+							throw new RuntimeException(e);
 						}
 					}
 				});
@@ -183,7 +184,7 @@ extends XComposite
 			}
 		}
 	}
-	
+
 	protected void updateBlockEditors(final IStruct _struct, Composite wrapperComp) {
 		List<DataBlock> dataBlocks = dataBlockGroup.getDataBlocks();
 		for (int i = 0; i < dataBlocks.size(); i++) {
@@ -191,14 +192,23 @@ extends XComposite
 			dataBlockEditors.get(i).setData(_struct, dataBlock);
 		}
 	}
-	
+
 	private ListenerList changeListener = new ListenerList();
 	public synchronized void addDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
 		changeListener.add(listener);
 	}
 
 	public synchronized void removeDataBlockEditorChangedListener(DataBlockEditorChangedListener listener) {
-		changeListener.add(listener);
+		changeListener.remove(listener);
+	}
+
+	private ListenerList dataBlockRemovalListenerList = new ListenerList();
+	public synchronized void addDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
+		dataBlockRemovalListenerList.add(listener);
+	}
+
+	public synchronized void removeDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
+		dataBlockRemovalListenerList.remove(listener);
 	}
 
 	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent changedEvent) {
@@ -218,14 +228,19 @@ extends XComposite
 //					break;
 //				}
 //			}
-				
+
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
 			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
 		}
 	}
-	
-	
+
+	private void notifyDataBlockRemovalListeners() {
+		for (final Object listener : dataBlockRemovalListenerList.getListeners()) {
+			((IDataBlockRemovalListener) listener).removedDataBlock();
+		}
+	}
+
 	public void updatePropertySet() {
 		for (DataBlockEditor blockEditor : dataBlockEditors) {
 			blockEditor.updatePropertySet();
