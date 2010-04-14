@@ -253,6 +253,7 @@
                 id="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction"
                 label="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction.label"
                 tooltip="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction.tooltip"
+                enablesFor="+"
                 style="push" toolbarPath="additions"/>
             <action
                 class="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction"
@@ -260,6 +261,7 @@
                 id="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction"
                 label="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction.label"
                 tooltip="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction.tooltip"
+                enablesFor="+"
                 style="push" toolbarPath="additions"/>
         </viewContribution>
     </extension>
