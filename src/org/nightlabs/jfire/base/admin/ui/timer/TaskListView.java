@@ -1,7 +1,10 @@
 package org.nightlabs.jfire.base.admin.ui.timer;
 
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 
 public class TaskListView
@@ -17,6 +20,15 @@ extends LSDViewPart
 		taskListComposite = new TaskListComposite(parent, SWT.NONE);
 		taskListComposite.setSelectionZone(ID_VIEW);
 		taskListComposite.loadTasks();
+		
+		
+		// Allow for context-menus to directly perform activate/deactivate actions on selected Tasks from the table.
+		taskListComposite.addContextMenuContribution(this, new TimerTaskActivateControlAction(), "Activate task(s)", SharedImages.getSharedImageDescriptor(BaseAdminPlugin.getDefault(), TimerTaskActivateControlAction.class));
+		taskListComposite.addContextMenuContribution(this, new TimerTaskDeactivateControlAction(), "Deactivate task(s)", SharedImages.getSharedImageDescriptor(BaseAdminPlugin.getDefault(), TimerTaskDeactivateControlAction.class));
+		
+		// Use the prioriy-ordered menu framework to integrate the registered menus.
+		IDoubleClickListener doubleClickListener = taskListComposite.integratePriorityOrderedContextMenu(taskListComposite, null, taskListComposite.getTableViewer().getControl());
+		taskListComposite.addDoubleClickListener(doubleClickListener);
 	}
 	
 	@Override
@@ -24,4 +36,5 @@ extends LSDViewPart
 	{
 		// TODO Auto-generated method stub
 	}
+	
 }

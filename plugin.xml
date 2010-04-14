@@ -244,6 +244,24 @@
                 label="%org.nightlabs.jfire.base.admin.ui.asyncinvoke.RetryViewAction.label"
                 style="push" toolbarPath="additions"/>
         </viewContribution>
+
+		<viewContribution
+            id="org.nightlabs.jfire.base.admin.ui.timer.TaskListView" targetID="org.nightlabs.jfire.base.admin.ui.timer.TaskListView">
+            <action
+                class="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction"
+                icon="icons/timer/TimerTaskActivateControlAction.16x16.png"
+                id="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction"
+                label="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction.label"
+                tooltip="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskActivateControlAction.tooltip"
+                style="push" toolbarPath="additions"/>
+            <action
+                class="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction"
+                icon="icons/timer/TimerTaskDeactivateControlAction.16x16.png"
+                id="org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction"
+                label="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction.label"
+                tooltip="%org.nightlabs.jfire.base.admin.ui.timer.TimerTaskDeactivateControlAction.tooltip"
+                style="push" toolbarPath="additions"/>
+        </viewContribution>
     </extension>
     <!--   <extension
          point="org.eclipse.ui.preferencePages">

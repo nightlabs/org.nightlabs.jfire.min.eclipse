@@ -78,12 +78,44 @@ implements ISelectionProvider // needed for updating ViewActions
 
 	private NotificationListener changeListener = new NotificationAdapterCallerThread() {
 		public void notify(org.nightlabs.notification.NotificationEvent notificationEvent) {
-			DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
-			TaskID taskID = (TaskID) dirtyObjectID.getObjectID();
-			if (taskID != null && taskID.equals(getTaskID())) {
-				// cause a reload from server
-				setTaskID(taskID);
+//			DirtyObjectID dirtyObjectID = (DirtyObjectID) notificationEvent.getFirstSubject();
+//			TaskID taskID = (TaskID) dirtyObjectID.getObjectID();
+//			
+//			if (taskID != null && taskID.equals(getTaskID())) {
+//				// cause a reload from server
+//				setTaskID(taskID);
+//			}
+			
+			// It seems that we are not properly processing what we receive here.
+			// There seems to be more than one TaskID in the dirtyObjects received, and that among them, one will
+			// match getTaskID().
+			Set<?> subjects = notificationEvent.getSubjects();
+			TaskID currentTaskID = getTaskID();
+			if (subjects != null && !subjects.isEmpty() && currentTaskID != null) {
+				// Search for the correct TaskID to process. Ignore all others.
+				for (Object object : subjects)
+					if (object instanceof DirtyObjectID) {
+						TaskID taskID = (TaskID) ((DirtyObjectID) object).getObjectID();
+						if (taskID.equals(currentTaskID)) {
+							setTaskID(taskID);
+							break;
+						}
+					}
 			}
+			
+//			if (taskID != null) {
+//				System.err.println("::: Received @TaskDetailComposite's changeListener: taskID = " + taskID.taskID);
+//				System.err.println(":::                                        --> getTaskID() = " + getTaskID().taskID);
+//				
+//				System.err.println(":::                                             --> size() = " + notificationEvent.getSubjects().size());
+//				for (Object object : subjects) {
+//					System.err.println("::: ---- >> object.class: " + object.getClass().getName());
+//					if (object instanceof DirtyObjectID) {
+//						TaskID tID = (TaskID) ((DirtyObjectID) object).getObjectID();
+//						System.err.println("::: ---- ---- >> tID: " + tID.taskID);
+//					}
+//				}
+//			}
 		}
 	};
 
