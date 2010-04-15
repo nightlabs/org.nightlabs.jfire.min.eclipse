@@ -4,6 +4,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.selection.SelectionProviderProxy;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
 
@@ -13,6 +14,13 @@ extends LSDViewPart
 	public static final String ID_VIEW = TaskListView.class.getName();
 
 	private TaskListComposite taskListComposite;
+	private SelectionProviderProxy selectionProviderProxy = new SelectionProviderProxy();
+	
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		getSite().setSelectionProvider(selectionProviderProxy);
+	}
 
 	@Override
 	public void createPartContents(Composite parent)
@@ -29,6 +37,9 @@ extends LSDViewPart
 		// Use the prioriy-ordered menu framework to integrate the registered menus.
 		IDoubleClickListener doubleClickListener = taskListComposite.integratePriorityOrderedContextMenu(taskListComposite, null, taskListComposite.getTableViewer().getControl());
 		taskListComposite.addDoubleClickListener(doubleClickListener);
+		
+		// And finally...
+		selectionProviderProxy.addRealSelectionProvider(taskListComposite);
 	}
 	
 	@Override

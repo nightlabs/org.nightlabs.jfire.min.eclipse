@@ -2,10 +2,17 @@ package org.nightlabs.jfire.base.admin.ui.timer;
 
 import java.util.List;
 
+import javax.jdo.JDOHelper;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewPart;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jfire.timer.Task;
+import org.nightlabs.jfire.timer.id.TaskID;
+import org.nightlabs.progress.ProgressMonitor;
 
 /**
  * Activates the list of selected Timer-{@link Task}s, from the selected entries in the {@link TaskListComposite}.
@@ -24,16 +31,29 @@ public class TimerTaskActivateControlAction extends TimerTaskControlAction {
 		if (selectedTasks == null || selectedTasks.isEmpty())
 			return;
 		
-		// We shall assume that at this point, the Tasks has already been loaded and are valid.
-		for (Task selectedTask : selectedTasks) {
-			if (!selectedTask.isEnabled()) {
-				selectedTask.setEnabled(true);
-				
-				// Now we save it.
-				// This should then inform whichever listeners that are interested that something about the Task has changed.
-				saveTimerTask(selectedTask);
+		// Update only those necessary ones.
+		Job meJob = new Job("Updating Task...") {
+			@Override
+			protected IStatus run(ProgressMonitor monitor) throws Exception {
+				for (Task selectedTask : selectedTasks) {
+					if (!selectedTask.isEnabled()) {
+						selectedTask = getTask((TaskID) JDOHelper.getObjectId(selectedTask), monitor);
+						selectedTask.setEnabled(true);
+						
+						// Now we save it.
+						// This should then inform whichever listeners that are interested that something about the Task has changed.
+						saveTimerTask(selectedTask, monitor);
+					}
+				}
+
+				monitor.worked(1);
+				return Status.OK_STATUS;
 			}
-		}
+		};
+		
+		meJob.setUser(true);
+		meJob.setPriority(Job.SHORT);
+		meJob.schedule();		
 	}
 
 	@Override
