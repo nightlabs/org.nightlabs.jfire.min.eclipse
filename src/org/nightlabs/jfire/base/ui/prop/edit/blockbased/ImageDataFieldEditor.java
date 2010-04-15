@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.InflaterOutputStream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.util.ImageUtil;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.AbstractDataFieldEditor;
@@ -293,20 +295,40 @@ implements IEntryEditor
 			ImageData id = null;
 			ByteArrayInputStream inPlain = new ByteArrayInputStream(dataField.getContent());
 			InputStream in;
+			InflaterOutputStream ios = null;
 			if(dataField.getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_PLAIN))
 				in = inPlain;
-			else if(dataField.getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_DEFLATE))
+			else if(dataField.getContentEncoding().equals(IContentDataField.CONTENT_ENCODING_DEFLATE)) {
 				in = new InflaterInputStream(inPlain);
-			else
+//				ByteArrayOutputStream out = new ByteArrayOutputStream(dataField.getContent().length);
+//				ios = new InflaterOutputStream(out);
+//				try {
+//					ios.write(dataField.getContent());
+//				} catch (IOException e) {
+//					throw new RuntimeException("Could not decode image data", e);
+//				}
+//				in = new ByteArrayInputStream(out.toByteArray());
+			} else
 				throw new RuntimeException("Unsupported content encoding: "+dataField.getContentEncoding()); //$NON-NLS-1$
 			try {
-				// TODO: try loading image with Java Image API if loading with SWT fails as in org.nightlabs.eclipse.ui.fckeditor.file.image.ImageUtil - marc
-				id = new ImageData(in);
+				// try loading image with Java Image API if loading with SWT fails as in org.nightlabs.eclipse.ui.fckeditor.file.image.ImageUtil - marc
+//				id = new ImageData(in);
+				try {
+					id = ImageUtil.loadImage(in);
+				} catch (final IOException e) {
+					throw new RuntimeException(e);
+				}
 			} finally {
 				if (in != null)
 					try {
 						in.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
+						LOGGER.error(e);
+					}
+				if (ios != null)
+					try {
+						ios.close();
+					} catch (final IOException e) {
 						LOGGER.error(e);
 					}
 			}
