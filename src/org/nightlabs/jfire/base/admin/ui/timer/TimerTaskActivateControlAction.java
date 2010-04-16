@@ -35,19 +35,25 @@ public class TimerTaskActivateControlAction extends TimerTaskControlAction {
 		Job meJob = new Job("Updating Task...") {
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
-				for (Task selectedTask : selectedTasks) {
-					if (!selectedTask.isEnabled()) {
-						selectedTask = getTask((TaskID) JDOHelper.getObjectId(selectedTask), monitor);
-						selectedTask.setEnabled(true);
-						
-						// Now we save it.
-						// This should then inform whichever listeners that are interested that something about the Task has changed.
-						saveTimerTask(selectedTask, monitor);
+				monitor.beginTask("Activating Task(s)...", 100);
+				try {
+					for (Task selectedTask : selectedTasks) {
+						if (!selectedTask.isEnabled()) {
+							selectedTask = getTask((TaskID) JDOHelper.getObjectId(selectedTask), monitor);
+							selectedTask.setEnabled(true);
+							
+							// Now we save it.
+							// This should then inform whichever listeners that are interested that something about the Task has changed.
+							saveTimerTask(selectedTask, monitor);
+						}
 					}
+					
+					monitor.worked(1);
+					return Status.OK_STATUS;
+					
+				} finally {
+					monitor.done();
 				}
-
-				monitor.worked(1);
-				return Status.OK_STATUS;
 			}
 		};
 		

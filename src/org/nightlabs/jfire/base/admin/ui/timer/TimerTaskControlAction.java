@@ -21,7 +21,7 @@ public abstract class TimerTaskControlAction implements IViewActionDelegate {
 	private String[] fetchGroupTimerTasks = TaskDetailComposite.FETCH_GROUPS_TASK; // Default.
 	
 	/**
-	 * Spawns a job to save the given {@link Task}.
+	 * Saves the given {@link Task}.
 	 */
 	protected void saveTimerTask(final Task _task, ProgressMonitor monitor) {
 		TaskDAO.sharedInstance().storeTask(
@@ -40,8 +40,13 @@ public abstract class TimerTaskControlAction implements IViewActionDelegate {
 		this.fetchGroupTimerTasks = fetchGroupTimerTasks;
 	}
 	
+	/**
+	 * Retrieves the {@link Task} given its {@link TaskID}.
+	 */
 	protected Task getTask(TaskID taskID, ProgressMonitor monitor) {
-		return TaskDAO.sharedInstance().getTask(taskID, fetchGroupTimerTasks, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+		Task task = TaskDAO.sharedInstance().getTask(taskID, fetchGroupTimerTasks, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+		monitor.worked(1);
+		return task;
 	}
 	
 	/**
