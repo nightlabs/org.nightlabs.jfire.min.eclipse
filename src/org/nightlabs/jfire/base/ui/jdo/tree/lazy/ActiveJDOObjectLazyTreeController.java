@@ -841,24 +841,12 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 									return Status.CANCEL_STATUS;
 								}
 
-								for (Map.Entry<JDOObjectID, Long> me : parentOID2childCount.entrySet()) {
-									JDOObjectID parentJDOID = me.getKey();
-									if (parentJDOID == null)
-										throw new IllegalStateException("retrieveChildCount(...) returned a null key (parent-OID) in its result map even though no null element (parent-OID) was passed to it! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
-
-									Long childCount = me.getValue();
-									if (childCount == null)
-										throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
-
-									List<TreeNode> pnl = parentObjectID2ParentTreeNodeList.get(parentJDOID);
-									if (pnl == null)
-										throw new IllegalStateException("Cannot find any TreeNode for parentJDOID: " + parentJDOID); //$NON-NLS-1$
-
-									for (TreeNode parentTreeNode : pnl) {
-										parentTreeNode.setChildNodeCount(childCount.longValue());
-										parentsToRefresh.add(parentTreeNode);
-									}
-								}
+								// Since 2010.04.16. @Kai.
+								// Newer implementations of the more evolutionised LazyTrees (e.g. the TuckedPersonRelationTree and the CompactedTuckedPersonRelationTree) require
+								// several additional checking mechanism before filling in the childCount values into all TreeNodes answering to the same JDOObjectID.
+								// Another possible alternative is to override the TreeNode's method of setChildNodeCount(), but that would defeat the whole purpose of having
+								// this Controller doing the jobs at once.
+								parentsToRefresh.addAll(fillUpNodeCounts(parentOID2childCount, parentObjectID2ParentTreeNodeList, new SubProgressMonitor(monitor, 50)));
 
 							} // synchronized (mutex) {
 						}
@@ -882,7 +870,41 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		}
 		return -1;
 	}
+	
+	/**
+	 * Given the number of counted children of the nodes represented by the JDOObjectIDs, we fetch all the TreeNodes corresponding to
+	 * each JDOObjectID and set their childNodeCount appropriately.
+	 * As a matter of convenience, the parameter parentObjectID2ParentTreeNodeList contains ALL the nodes that needs to be updated, mapped
+	 * to the ObjectID of those that were put through to be counted.
+	 * @return the Set of parent TreeNodes to be refreshed.
+	 */
+	protected Set<TreeNode> fillUpNodeCounts(Map<JDOObjectID, Long> parentObjectID2NodeCount, Map<JDOObjectID, List<TreeNode>> parentObjectID2ParentTreeNodeList, ProgressMonitor monitor) {
+		Set<TreeNode> parentsToRefresh = new HashSet<TreeNode>();
+		for (Map.Entry<JDOObjectID, Long> me : parentObjectID2NodeCount.entrySet()) {
+			JDOObjectID parentJDOID = me.getKey();
+			if (parentJDOID == null)
+				throw new IllegalStateException("retrieveChildCount(...) returned a null key (parent-OID) in its result map even though no null element (parent-OID) was passed to it! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
 
+			Long childCount = me.getValue();
+			if (childCount == null)
+				throw new IllegalStateException("retrieveChildCount(...) returned a null value (count) in its result map! Check your implementation in class " + ActiveJDOObjectLazyTreeController.this.getClass().getName() + "!!!"); //$NON-NLS-1$ //$NON-NLS-2$
+
+			List<TreeNode> pnl = parentObjectID2ParentTreeNodeList.get(parentJDOID);
+			if (pnl == null)
+				throw new IllegalStateException("Cannot find any TreeNode for parentJDOID: " + parentJDOID); //$NON-NLS-1$
+
+			for (TreeNode parentTreeNode : pnl) {
+				parentTreeNode.setChildNodeCount(childCount.longValue());
+				parentsToRefresh.add(parentTreeNode);
+			}
+		}
+		
+		monitor.worked(1);
+		return parentsToRefresh;
+	}
+	
+	
+	
 	private Job jobChildCountRetrieval = null;
 	private Set<TreeNode> treeNodesWaitingForChildCountRetrieval = new HashSet<TreeNode>();
 
