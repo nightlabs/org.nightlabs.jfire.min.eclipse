@@ -5,8 +5,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
 import org.nightlabs.base.ui.validation.InputValidator;
+import org.nightlabs.eclipse.extension.AbstractEPProcessor;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 
 /**

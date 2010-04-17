@@ -7,9 +7,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
-import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
-import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
 import org.nightlabs.datastructure.Pair;
+import org.nightlabs.eclipse.extension.AbstractEPProcessor;
+import org.nightlabs.eclipse.extension.EPProcessorException;
 import org.nightlabs.jdo.ObjectIDUtil;
 import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;

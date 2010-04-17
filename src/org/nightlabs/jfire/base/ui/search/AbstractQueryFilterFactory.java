@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Status;
-import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
+import org.nightlabs.eclipse.extension.AbstractEPProcessor;
 import org.nightlabs.jdo.query.AbstractSearchQuery;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.overview.search.QueryFilterFactory;

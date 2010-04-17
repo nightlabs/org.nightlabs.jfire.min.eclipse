@@ -33,8 +33,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.nightlabs.base.ui.extensionpoint.AbstractEPProcessor;
-import org.nightlabs.base.ui.extensionpoint.EPProcessorException;
+import org.nightlabs.eclipse.extension.AbstractEPProcessor;
+import org.nightlabs.eclipse.extension.EPProcessorException;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
