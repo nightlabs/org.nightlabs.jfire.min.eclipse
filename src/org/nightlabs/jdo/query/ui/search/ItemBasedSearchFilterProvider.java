@@ -29,7 +29,9 @@ package org.nightlabs.jdo.query.ui.search;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Default implementation of a item-based SearchFilterProvider.
+ * Nearly complete implementation of an item-based SearchFilterProvider using the a
+ * {@link SearchFilterItemListMutator}. All subclasses have to do to use this Provider is to create
+ * the SearchFilter-instance in {@link #createSearchFilter()}.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -40,20 +42,21 @@ public abstract class ItemBasedSearchFilterProvider extends
 		super(listMutator);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Uses {@link ItemBasedSearchFilterProviderComposite}.
+	 * </p>
+	 */
 	@Override
-	public AbstractItemBasedSearchFilterProviderComposite createProviderComposite(
+	protected AbstractItemBasedSearchFilterProviderComposite createProviderComposite(
 			Composite parent,
-			int style,
-			SearchFilterProvider searchFilterProvider,
-			SearchFilterItemListMutator listMutator,
-			SearchResultFetcher resultFetcher
+			int style
 		) {
 		return new ItemBasedSearchFilterProviderComposite(
 				parent,
 				style,
-				searchFilterProvider,
-				listMutator,
-				resultFetcher
+				this
 			);
 	}
 

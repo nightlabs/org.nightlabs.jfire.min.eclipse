@@ -39,10 +39,14 @@ import org.nightlabs.jdo.query.ui.resource.Messages;
 import org.nightlabs.jdo.search.SearchFilter;
 
 /**
- * A Composite for manipulating a list of SearchFieldItems ({@link org.nightlabs.jdo.query.ui.search.SearchFilterItemList})
- * and choosing their conjunction. <br/>
- * This Composite will accept a {@link org.nightlabs.jdo.query.ui.search.SearchResultFetcher} to
- * actually perform a search.
+ * A Composite for manipulating a list of SearchFieldItems ( {@link SearchFilterItemList}) and
+ * choosing their conjunction. <br/>
+ * This Composite will use the {@link SearchFilterItemListMutator} and {@link SearchResultFetcher}
+ * set to the SearchFilterProvider it was instantiated for.
+ * <p>
+ * A subclass of this Composite has to be created in order to work with an
+ * {@link AbstractItemBasedSearchFilterProvider} .
+ * </p>
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -56,9 +60,7 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 	private Button buttonMore;
 	private Button buttonSearch;
 	
-	private SearchFilterItemListMutator listMutator;
-	private SearchResultFetcher resultFetcher;
-	private SearchFilterProvider searchFilterProvider;
+	private AbstractItemBasedSearchFilterProvider searchFilterProvider;
 
 	/**
 	 * Creates a new ItemBasedSearchFilterProviderComposite,
@@ -70,20 +72,14 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 	 * @param parent The widgets parent.
 	 * @param style	The widgets style.
 	 * @param searchFilterProvider The SearchFilterProvider that is the owner of this Composite.
-	 * @param listMutator A mutator for the SearchFilterItemList.
-	 * @param resultFetcher A fetcher to actually perform the search.
 	 * @param login parameter to the fetchers searchTriggered method.
 	 */
 	public AbstractItemBasedSearchFilterProviderComposite(
 		Composite parent,
 		int style,
-		SearchFilterProvider searchFilterProvider,
-		SearchFilterItemListMutator listMutator,
-		SearchResultFetcher resultFetcher
+		AbstractItemBasedSearchFilterProvider searchFilterProvider
 	) {
 		super(parent, style);
-		this.listMutator = listMutator;
-		this.resultFetcher = resultFetcher;
 		this.searchFilterProvider = searchFilterProvider;
 		
 		this.setLayout(new GridLayout());
@@ -161,15 +157,19 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 	 */
 	public void widgetSelected(SelectionEvent evt) {
 		if (evt.getSource().equals(buttonMore)) {
-			if (listMutator != null)
-				listMutator.addItemEditor(itemList);
+			if (searchFilterProvider.getListMutator() != null)
+				searchFilterProvider.getListMutator().addItemEditor(itemList);
 		}
 		if (evt.getSource().equals(buttonSearch)) {
-			if (listMutator != null)
-				resultFetcher.searchTriggered(searchFilterProvider);
+			if (searchFilterProvider.getResultFetcher() != null)
+				searchFilterProvider.getResultFetcher().searchTriggered(searchFilterProvider);
 		}
 	}
 	
+	/**
+	 * Clears the {@link SearchFilterItemList} used by this Composite.
+	 * This manipulates the UI not a list in memory.
+	 */
 	public void clearItemList() {
 		itemList.clear();
 	}
@@ -180,16 +180,38 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 	public void widgetDefaultSelected(SelectionEvent arg0) {
 	}
 
-	public abstract SearchFilterItemList createSearchFilterItemList(Composite parent, int style);
-	
+	/**
+	 * Create the {@link SearchFilterItemList} this Composite should use.
+	 * 
+	 * @param parent The parent to add the SearchFitlerItemList to.
+	 * @param style The style for the SearchFilterItemList.
+	 * @return A new {@link SearchFilterItemList} as child of the given parent.
+	 */
+	protected abstract SearchFilterItemList createSearchFilterItemList(Composite parent, int style);
+
+	/**
+	 * @return The {@link SearchFilterItemList} used by this Compoiste. This is the UI displaying
+	 *         the different search-filter-items.
+	 */
 	public SearchFilterItemList getItemList() {
 		return itemList;
 	}
 
+	/**
+	 * Create the initially shown, default items.
+	 * <p>
+	 * This implementation will create one new item and leave it empty with a random match-type. 
+	 * </p>
+	 */
 	protected void createDefaultItems() {
-		listMutator.addItemEditor(itemList);
+		if (searchFilterProvider.getListMutator() != null)
+			searchFilterProvider.getListMutator().addItemEditor(itemList);
 	}
-	
+
+	/**
+	 * @return The conjunction the user has choosen to be applied to a SearchFilter created based on
+	 *         this Composite.
+	 */
 	public int getConjuction() {
 		if (radioMatchAll.getSelection())
 			return SearchFilter.CONJUNCTION_AND;

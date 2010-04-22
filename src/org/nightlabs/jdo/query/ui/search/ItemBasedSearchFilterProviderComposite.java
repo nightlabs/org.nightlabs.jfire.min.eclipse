@@ -37,25 +37,22 @@ public class ItemBasedSearchFilterProviderComposite extends
 		AbstractItemBasedSearchFilterProviderComposite {
 
 	/**
-	 * @param parent
-	 * @param style
-	 * @param searchFilterProvider
-	 * @param listMutator
-	 * @param resultFetcher
-	 * @param login
+	 * Create a new {@link ItemBasedSearchFilterProviderComposite}.
+	 * 
+	 * @param parent The parent Composite to create the new Composite for.
+	 * @param style The style for the new Composite.
+	 * @param searchFilterProvider The item-based search-filter-provider the composite should use.
 	 */
 	public ItemBasedSearchFilterProviderComposite(Composite parent, int style,
-			SearchFilterProvider searchFilterProvider,
-			SearchFilterItemListMutator listMutator,
-			SearchResultFetcher resultFetcher) {
-		super(parent, style, searchFilterProvider, listMutator, resultFetcher);
+			AbstractItemBasedSearchFilterProvider searchFilterProvider) {
+		super(parent, style, searchFilterProvider);
 	}
 
 	/**
 	 * @see org.nightlabs.jdo.query.ui.search.AbstractItemBasedSearchFilterProviderComposite#createSearchFilterItemList(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
-	public SearchFilterItemList createSearchFilterItemList(Composite parent,
+	protected SearchFilterItemList createSearchFilterItemList(Composite parent,
 			int style) {
 		return new SearchFilterItemList(parent, style);
 	}

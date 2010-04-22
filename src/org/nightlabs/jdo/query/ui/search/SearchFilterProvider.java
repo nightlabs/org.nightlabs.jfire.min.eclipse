@@ -30,8 +30,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jdo.search.SearchFilter;
 
 /**
- * Common interface to handle different scenarios of
- * searching entities with the SearchFilter framework.
+ * Common interface to handle different scenarios of building {@link SearchFilter}s. Implementations
+ * of this interface are used to present the user filter-fields that will be used to create a
+ * {@link SearchFilter}.
+ * <p>
+ * Optionally one can set a {@link SearchResultFetcher} so the filter-ui can trigger a search
+ * directly.
+ * <p>
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -41,21 +46,43 @@ public interface SearchFilterProvider {
 	 * Should create and return a GUI-representation of this
 	 * SearchFilterProvider as Composite.
 	 * 
-	 * @param parent
-	 * @return
+	 * @param parent The parent Composite to create the filter-provider-ui for.
+	 * @return A <b>new</b> Composite that is the parent of all created filter-provider-ui. 
 	 */
 	public Composite createComposite(Composite parent);
 	
 	/**
 	 * Should return the Composite created in {@link #createComposite(Composite)}.
-	 * @return
+	 * @return The Composite created in {@link #createComposite(Composite)}.
 	 */
 	public Composite getComposite();
-	
+
 	/**
 	 * Return the {@link SearchFilter} build up by this SearchFilterProvider.
+	 * <p>
+	 * Note, that usually this method requires to be called on the UI thread as it reads the current
+	 * values from the ui to be able to build the filter-items
+	 * </p>
 	 * 
-	 * @return
+	 * @return the {@link SearchFilter} build up by this SearchFilterProvider.
 	 */
 	public SearchFilter getSearchFilter();
+
+	/**
+	 * Set the {@link SearchResultFetcher} this filter-provider should use when a search should be
+	 * triggered with the filter created by this provider.
+	 * <p>
+	 * Note, that if this instance of {@link SearchFilterProvider} was already asked to create its
+	 * UI, this method has to ensure that this UI uses the given resultFetcher after this method call.
+	 * </p>
+	 * 
+	 * @param resultFetcher The {@link SearchResultFetcher} to set.
+	 */
+	void setResultFetcher(SearchResultFetcher resultFetcher);
+
+	/**
+	 * @return The {@link SearchResultFetcher} this filter-provider currently uses when a search is
+	 *         triggered, or <code>null</code> if none is set.
+	 */
+	SearchResultFetcher getResultFetcher();
 }

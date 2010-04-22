@@ -28,24 +28,14 @@ package org.nightlabs.jdo.query.ui.search;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.nightlabs.j2ee.InitialContextProvider;
 import org.nightlabs.jdo.search.SearchFilter;
 
 /**
- * SearchFilterProvider providing a changable list of SearchFilterItems
- * for the search. The class has to be instatiated with a {@link org.nightlabs.jdo.query.ui.search.SearchFilterItemListMutator}
- * in order to change the item list.
- * <br/>
- * Optionally one can set a {@link org.nightlabs.jdo.query.ui.search.SearchResultFetcher} to
- * perform a search when the search button is hit. A SearchResultFetcher has to come
- * along with an InitialContextProvider to allow fetchers access to a j2ee server.
- * <br/>
- * Make sure to make the call to {@link #setSearchResultFetcher(SearchResultFetcher, InitialContextProvider)}
- * before you obtain this providers Composite as a SubComposite needs this
- * values.
- * <br/>
- * Suclasses have to override {@link #createSearchFilter()}, so they have full control of
- * what type of SearchFilter is instatiated.
+ * SearchFilterProvider providing a changeable list of SearchFilterItems for the search. The class
+ * has to be instantiated with a {@link SearchFilterItemListMutator} in order to change the item
+ * list. <br/>
+ * Subclasses have to override {@link #createSearchFilter()}, so they have full control of what type
+ * of SearchFilter is instantiated.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -63,63 +53,83 @@ public abstract class AbstractItemBasedSearchFilterProvider implements SearchFil
 	 * 	return new MyInheritorOfSearchFilter();
 	 * </pre>
 	 * 
-	 * @return
+	 * @return A new intance of the {@link SearchFilter} this object provides.
 	 */
 	protected abstract SearchFilter createSearchFilter();
 
 	/**
-	 * Creates new FilterProvider with listMutator used as callback
-	 * for modifying the item list.<br/>
-	 * Callback for the search button can be set with {@link #setSearchResultFetcher(SearchResultFetcher, InitialContextProvider)}
+	 * Creates new FilterProvider with listMutator used as callback for modifying the item list.<br/>
+	 * Callback for the search button can be set with {@link #setResultFetcher(SearchResultFetcher)}
 	 * 
-	 * @param listMutator
+	 * @param listMutator Object to utilize in order to modify the filter-item list.
 	 */
 	public AbstractItemBasedSearchFilterProvider(SearchFilterItemListMutator listMutator) {
 		this.listMutator = listMutator;
 	}
 
-	public void setSearchResultFetcher(SearchResultFetcher resultFetcher) {
-		this.resultFetcher = resultFetcher;
-	}
-	
+	/**
+	 * Set the {@link SearchFilterItemListMutator} used by this provider.
+	 * 
+	 * @param listMutator Object to utilize in order to modify the filter-item list.
+	 */
 	public void setListMutator(SearchFilterItemListMutator listMutator) {
 		this.listMutator = listMutator;
 	}
 	
-	public abstract AbstractItemBasedSearchFilterProviderComposite createProviderComposite(
-			Composite parent,
-			int style,
-			SearchFilterProvider searchFilterProvider,
-			SearchFilterItemListMutator listMutator,
-			SearchResultFetcher resultFetcher
-		);
-	
 	/**
-	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#getComposite(org.eclipse.swt.widgets.Composite)
+	 * @return The {@link SearchFilterItemListMutator} currently used by this provider.
 	 */
+	public SearchFilterItemListMutator getListMutator() {
+		return listMutator;
+	}
+
+	/**
+	 * Create the Composite of this provider. In this method the complete ui for this
+	 * filter-provider should be created as a subclass of
+	 * {@link AbstractItemBasedSearchFilterProviderComposite}.
+	 * 
+	 * @param parent The parent to add the new Composite to.
+	 * @param style The style to use for the Composite.
+	 * @return A new implementation of {@link AbstractItemBasedSearchFilterProviderComposite}.
+	 */
+	protected abstract AbstractItemBasedSearchFilterProviderComposite createProviderComposite(
+			Composite parent,
+			int style
+		);
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Uses {@link #createProviderComposite(Composite, int)} to create the Composite, remembers the
+	 * result to implement {@link #getComposite()}.
+	 * </p>
+	 */
+	@Override
 	public Composite createComposite(Composite parent) {
 		providerComposite = createProviderComposite(
 			parent,
-			SWT.NONE,
-			this,
-			listMutator,
-			resultFetcher
+			SWT.NONE
 		);
 		return providerComposite;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Composite getComposite() {
 		return providerComposite;
 	}
 
 	/**
-	 * Calls createSearchFilter, clears the obtained filter
-	 * and adds all item from the SearchFilterItemList.<br/>
-	 * When overrided super() should be called, then SearchFilterItems
-	 * can be added or removed to the returned filter.
+	 * Calls createSearchFilter, clears the obtained filter and adds all items from the
+	 * SearchFilterItemList.<br/>
+	 * When overridden, super() should be called, then SearchFilterItems can be added or removed to
+	 * the returned filter.
 	 * 
 	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterProvider#getSearchFilter()
 	 */
+	@Override
 	public SearchFilter getSearchFilter() {
 		SearchFilter filter = createSearchFilter();
 		filter.clear();
@@ -128,4 +138,22 @@ public abstract class AbstractItemBasedSearchFilterProvider implements SearchFil
 		return filter;
 	}
 
+	/**
+	 * Set the {@link SearchResultFetcher} this provider should use to trigger searches with the
+	 * filter this provider creates.
+	 * 
+	 * @param resultFetcher The resultFetcher to set.
+	 */
+	@Override
+	public void setResultFetcher(SearchResultFetcher resultFetcher) {
+		this.resultFetcher = resultFetcher;
+	}
+	
+	/**
+	 * @return the {@link SearchResultFetcher} currently set for this provider.
+	 */
+	@Override
+	public SearchResultFetcher getResultFetcher() {
+		return resultFetcher;
+	}
 }

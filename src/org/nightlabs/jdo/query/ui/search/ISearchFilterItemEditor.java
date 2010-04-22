@@ -21,7 +21,7 @@ public interface ISearchFilterItemEditor
 	 * for the search filter item returned in {@link #getSearchFilterItem()}.
 	 * 
 	 * @param parent The parent of the composite to be created.
-	 * @param showTitle TODO
+	 * @param showTitle Whether this editor should show a title-text.
 	 * @return the UI control of this editor.
 	 */
 	public Control createControl(Composite parent, boolean showTitle);
@@ -33,12 +33,13 @@ public interface ISearchFilterItemEditor
 	 * @return the {@link ISearchFilterItem} containing the information of this editor.
 	 */
 	public ISearchFilterItem getSearchFilterItem();
-	
+
 	/**
 	 * Returns an {@link EnumSet} containing all {@link MatchType}s that are supported by the
 	 * {@link ISearchFilterItem} returned in {@link #getSearchFilterItem()}.
 	 * 
-	 * @return
+	 * @return All {@link MatchType}s that are supported by the {@link ISearchFilterItem} returned
+	 *         in {@link #getSearchFilterItem()}
 	 */
 	public EnumSet<MatchType> getSupportedMatchTypes();
 }
