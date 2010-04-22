@@ -49,19 +49,18 @@ import org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor;
 import org.nightlabs.jdo.search.ISearchFilterItem;
 import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.base.ui.resource.Messages;
-import org.nightlabs.jfire.organisation.Organisation;
-import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;
-import org.nightlabs.jfire.prop.dao.StructDAO;
-import org.nightlabs.jfire.prop.id.StructID;
+import org.nightlabs.jfire.prop.dao.StructLocalDAO;
+import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * Concrete SearchFilterItemEditor that represents a
- * criteria for the search of persons.
- *
+ * Concrete SearchFilterItemEditor that is capable of building one {@link ISearchFilterItem}. It
+ * therefore maintains a list of {@link PropertySetStructFieldSearchItemEditorHelper}s and presents
+ * a user a combo will all available. The selected editor-helper is used to build the filter-item.
+ * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
 public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor implements SelectionListener{
@@ -73,7 +72,18 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	private XComposite wrapper;
 	private List<PropertySetStructFieldSearchItemEditorHelper> searchFieldList;
 	private Combo comboSearchField;
+	private StructLocalID structLocalID;
 
+	/**
+	 * Create a new {@link PropertySetSearchFilterItemEditor}.
+	 * 
+	 * @param structLocalID The id of the StructLocal to get the list of StructFields from that the
+	 *            user will be able to search in.
+	 */
+	public PropertySetSearchFilterItemEditor(StructLocalID structLocalID) {
+		this.structLocalID = structLocalID;
+	}
+	
 	/**
 	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterItemEditor#getControl(org.eclipse.swt.widgets.Composite, int)
 	 */
@@ -131,17 +141,19 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	}
 
 	/**
-	 * Builds a list of PropertySetSearchFilterItemEditorHelper
-	 * that are used to build the contents of the search field combo
-	 * and the right part of the editor.
-	 *
-	 * @return
+	 * Builds a list of {@link PropertySetSearchFilterItemEditorHelper}s that are used to build the
+	 * contents of the search field combo and the right part of the editor. The
+	 * {@link StructLocalID} this editor was constructed with is used to get a StructLocal, better
+	 * all StructFields, the user can search in.
+	 * 
+	 * @return The list of {@link PropertySetSearchFilterItemEditorHelper} for all StructFields in
+	 *         the StructLocal where an field-editor can be created using the
+	 *         {@link StructFieldSearchFilterEditorRegistry}.
 	 */
+	@SuppressWarnings("unchecked")
 	protected List<PropertySetStructFieldSearchItemEditorHelper> buildSearchFieldList(ProgressMonitor monitor) {
 		List<PropertySetStructFieldSearchItemEditorHelper> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorHelper>();
-		// We query the Struct instead of the StructLocal, and search for common features
-		// TODO I think this is OK right now, but there should be a possibility to search for structfields defined in StructLocals
-		IStruct struct = StructDAO.sharedInstance().getStruct(StructID.create(Organisation.DEV_ORGANISATION_ID, Person.class, Person.STRUCT_SCOPE), monitor);
+		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(structLocalID, monitor);
 		for (StructBlock structBlock : struct.getStructBlocks()) {
 			for (StructField<?> structField : structBlock.getStructFields()) {
 				if (StructFieldSearchFilterEditorRegistry.sharedInstance().hasEditor((Class<? extends StructField<?>>) structField.getClass()))

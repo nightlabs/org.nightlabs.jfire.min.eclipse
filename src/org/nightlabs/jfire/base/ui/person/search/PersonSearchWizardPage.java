@@ -3,10 +3,12 @@
  */
 package org.nightlabs.jfire.base.ui.person.search;
 
-import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
+import javax.jdo.FetchPlan;
+import javax.jdo.JDOHelper;
+
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -28,6 +30,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.wizard.WizardHop;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
+import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
@@ -36,42 +39,59 @@ import org.nightlabs.jfire.prop.DisplayNamePart;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
+import org.nightlabs.jfire.prop.dao.PropertySetDAO;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
+import org.nightlabs.jfire.prop.id.PropertySetID;
 import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
+ * Wizard-page for doing {@link Person}-searches. It will use a {@link PersonSearchComposite} and
+ * additionally provides the possibility to enable the creation of a new or the editing of the
+ * selected Person inside an own WizardHop.
+ * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- *
+ * 
  */
 public class PersonSearchWizardPage extends WizardHopPage
 {
-	private static final Logger logger = Logger.getLogger(PersonSearchWizardPage.class);
-
-	private PersonEditorWizardHop newPersonEditorWizardHop;
-	private PersonEditorWizardHop editorWizardHop;
+	
+	/** The search-composite for this entry page */
 	private PersonSearchComposite searchComposite;
 	private String quickSearchText;
+
+	/** Set in constructor, defines if createNewButton is created */
+	private boolean allowNewPersonCreation;
+	/** Triggers {@link #newPersonPressed()} */
+	private Button createNewButton;
+	/** Initialized when *new person* is pressed, won't be nulled afterwards */
+	private PersonEditorWizardHop newPersonEditorWizardHop;
+	/** Set when the createNewButton */
+	private Person newPerson;
 	/**
 	 * This is set to true when newPerson is pressed and re-set when the page is shown.
 	 */
 	private boolean editingNewPerson = false;
-	private Person newPerson;
-	private Button searchButton;
-	private Button createNewButton;
+	
+	/** Set in constructor, defines if editButton is created */
+	private boolean allowEditPerson;
+	/** Triggers {@link #editPersonPressed()} */
 	private Button editButton;
-	private boolean allowNewLegalEntityCreation;
-	private boolean allowEditLegalEntity;
+	/** Initialized when *edit person* is pressed, won't be nulled afterwards */
+	private PersonEditorWizardHop editorWizardHop;
+	
+	
+	private Button searchButton;
 
 	public PersonSearchWizardPage(String quickSearchText) {
 		this(quickSearchText, true, false);
 	}
 
-	public PersonSearchWizardPage(String quickSearchText, boolean allowNewLegalEntityCreation, boolean allowEditLegalEntity) {
+	public PersonSearchWizardPage(String quickSearchText, boolean allowNewPersonCreation, boolean allowEditPerson) {
 		this(
 			quickSearchText,
-			allowNewLegalEntityCreation,
-			allowEditLegalEntity,
+			allowNewPersonCreation,
+			allowEditPerson,
 			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.title"), //$NON-NLS-1$
 			Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonSearchWizardPage.description") //$NON-NLS-1$
 		);
@@ -79,14 +99,17 @@ public class PersonSearchWizardPage extends WizardHopPage
 
 	/**
 	 * Creates a PersonSearchWizardPage.
-	 *
-	 * @param quickSearchText the quickSearchText (will be displayed in the name-surname-company field)
-	 * @param allowNewLegalEntityCreation determines if the create new person button will be displayed, for creating a new person
-	 * @param allowEditLegalEntity determines if the edit person button will be displayed, for editing a selected person
-	 * @param title the title of the wizard page
-	 * @param description the description of the wizard page
+	 * 
+	 * @param quickSearchText the quickSearchText (will be displayed in the default-entry configured
+	 *            for the search)
+	 * @param allowNewPersonCreation determines if the create new person button will be displayed,
+	 *            for creating a new person.
+	 * @param allowEditPerson determines if the edit person button will be displayed, for editing a
+	 *            selected person.
+	 * @param title the title of the wizard page.
+	 * @param description the description of the wizard page.
 	 */
-	public PersonSearchWizardPage(String quickSearchText, boolean allowNewLegalEntityCreation, boolean allowEditLegalEntity, String title,
+	public PersonSearchWizardPage(String quickSearchText, boolean allowNewPersonCreation, boolean allowEditPerson, String title,
 			String description)
 	{
 		super(PersonSearchWizardPage.class.getName(), title);
@@ -94,8 +117,8 @@ public class PersonSearchWizardPage extends WizardHopPage
 			quickSearchText = ""; //$NON-NLS-1$
 
 		this.quickSearchText = quickSearchText;
-		this.allowNewLegalEntityCreation = allowNewLegalEntityCreation;
-		this.allowEditLegalEntity = allowEditLegalEntity;
+		this.allowNewPersonCreation = allowNewPersonCreation;
+		this.allowEditPerson = allowEditPerson;
 		setDescription(description);
 		new WizardHop(this);
 	}
@@ -176,7 +199,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 		XComposite.configureLayout(LayoutMode.LEFT_RIGHT_WRAPPER, gl);
 		gl.numColumns = 2;
 
-		if (allowNewLegalEntityCreation) {
+		if (allowNewPersonCreation) {
 			gl.numColumns++;
 			createNewButton = new Button(buttonBar, SWT.PUSH);
 			createNewButton.setText(getCreateNewButtonText());
@@ -189,7 +212,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 			});
 		}
 
-		if (allowEditLegalEntity) {
+		if (allowEditPerson) {
 			gl.numColumns++;
 			editButton = new Button(buttonBar, SWT.PUSH);
 			editButton.setText(getEditButtonText());
@@ -206,13 +229,14 @@ public class PersonSearchWizardPage extends WizardHopPage
 		new XComposite(buttonBar, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
 
 		searchButton = searchComposite.createSearchButton(buttonBar);
-		searchComposite.getResultTable().addSelectionChangedListener(new ISelectionChangedListener() {
+		searchComposite.getResultViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				personSelectionChanged();
 			}
 		});
-		searchComposite.getResultTable().addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
+		searchComposite.getResultViewer().addOpenListener(new IOpenListener() {
+			@Override
+			public void open(OpenEvent arg0) {
 				personDoubleClicked();
 			}
 		});
@@ -221,6 +245,9 @@ public class PersonSearchWizardPage extends WizardHopPage
 
 	private boolean switchingToNewPerson = false;
 
+	/**
+	 * Adds a new WizardHop for editing a new Person and switches to its first page.
+	 */
 	protected void newPersonPressed()
 	{
 		// TODO Think about how we can get the search data that was entered by the user to fill the
@@ -286,12 +313,20 @@ public class PersonSearchWizardPage extends WizardHopPage
 		}
 	}
 
+	/**
+	 * Adds a new WizardHop for editing a the selected Person and switches to its first page.
+	 */
 	protected void editPersonPressed()
 	{
 		// we have to create a new one, because initialise(...) doesn't overwrite the data
 		editorWizardHop = new PersonEditorWizardHop();
-		Person selectedPerson = searchComposite.getResultTable().getFirstSelectedElement();
-
+		Person selectedPerson = (Person) searchComposite.getResultViewer().getFirstSelectedElement();
+		
+		// The person might be detached wrongly (trimmed or in another way), so we have to re-obtain
+		// it with the correct fetch-groups.
+		selectedPerson = (Person) PropertySetDAO.sharedInstance().getPropertySet((PropertySetID) JDOHelper.getObjectId(selectedPerson),
+				new String[] {FetchPlan.DEFAULT, PropertySet.FETCH_GROUP_FULL_DATA}, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new NullProgressMonitor());
+		
 		StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
 				selectedPerson.getStructLocalObjectID(),
 				new NullProgressMonitor()
@@ -319,8 +354,8 @@ public class PersonSearchWizardPage extends WizardHopPage
 	protected void onPersonSelectionChanged()
 	{
 		if (editButton != null && !editButton.isDisposed())
-			editButton.setEnabled(searchComposite.getResultTable().getSelectionCount() == 1 &&
-					searchComposite.getResultTable().getFirstSelectedElement() instanceof Person);
+			editButton.setEnabled(searchComposite.getResultViewer().getSelectedElements().size() == 1 &&
+					searchComposite.getResultViewer().getFirstSelectedElement() instanceof Person);
 
 		if (controlIsChildOfOrEquals(searchComposite.getTopWrapper(), searchComposite.getDisplay().getFocusControl()))
 			makeSearchButtonDefault();
@@ -342,26 +377,29 @@ public class PersonSearchWizardPage extends WizardHopPage
 	@Override
 	public boolean isPageComplete() {
 		return searchComposite != null &&
-			((searchComposite.getResultTable().getFirstSelectedElement() != null &&
-			  searchComposite.getResultTable().getFirstSelectedElement() instanceof Person) ||
+			((searchComposite.getResultViewer().getFirstSelectedElement() != null &&
+			  searchComposite.getResultViewer().getFirstSelectedElement() instanceof Person) ||
 			  !getWizardHop().getHopPages().isEmpty());
 	}
 
 	/**
-	 * @return Either the Person selected in the table in the first page
-	 * or the newly created Person.
+	 * @return Either the Person selected in the table in the first page, or the edited or newly
+	 *         created person.
 	 */
 	public Person getSelectedPerson() {
 		if (getWizard().getContainer().getCurrentPage() == this) {
 			if (switchingToNewPerson && newPerson != null)
 				return newPerson;
 			else
-				return searchComposite.getResultTable().getFirstSelectedElement();
+				return (Person) searchComposite.getResultViewer().getFirstSelectedElement();
 		} else {
 			if (newPerson != null && editingNewPerson)
 				return newPerson;
-			else
-				return searchComposite.getResultTable().getFirstSelectedElement();
+			else {
+				// Has to be the edited person here, because the search-page is not the current one
+				// and we are not editing a new person.
+				return editorWizardHop.getPerson();
+			}
 		}
 	}
 

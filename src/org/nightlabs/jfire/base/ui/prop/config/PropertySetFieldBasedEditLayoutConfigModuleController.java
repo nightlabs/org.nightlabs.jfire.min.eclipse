@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.nightlabs.jfire.base.ui.config.AbstractConfigModuleController;
-import org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry;
@@ -23,10 +22,15 @@ public class PropertySetFieldBasedEditLayoutConfigModuleController extends
 	 * @param preferencePage
 	 */
 	public PropertySetFieldBasedEditLayoutConfigModuleController(
-			AbstractConfigModulePreferencePage preferencePage) {
+			PropertySetFieldBasedEditLayoutPreferencePage preferencePage) {
 		super(preferencePage);
 	}
 
+	@Override
+	public String getConfigModuleID() {
+		return ((PropertySetFieldBasedEditLayoutPreferencePage) getPreferencePage()).getUseCaseID();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.config.IConfigModuleController#getConfigModuleClass()
 	 */

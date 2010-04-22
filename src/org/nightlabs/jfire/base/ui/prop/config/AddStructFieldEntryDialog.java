@@ -25,7 +25,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry2;
+import org.nightlabs.jfire.prop.config.PropertySetEditLayoutEntry;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 
 /**
@@ -148,7 +148,7 @@ public class AddStructFieldEntryDialog extends ResizableTitleAreaDialog {
 	}
 
 	protected void structFieldReferenceSelected() {
-		entryType = PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
+		entryType = PropertySetEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
 		structTree.setEnabled(true);
 		updateOKButtonEnabled();
 	}

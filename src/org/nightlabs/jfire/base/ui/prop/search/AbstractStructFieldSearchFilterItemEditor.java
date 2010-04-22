@@ -63,7 +63,7 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 		// No MatchType specified in constructor, thus create combo to select it
 		if (matchType == null) {
 			XComposite editWrapper = new XComposite(wrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
-			matchTypeCombo = new ComboComposite<MatchType>(editWrapper, SWT.NONE);
+			matchTypeCombo = new ComboComposite<MatchType>(editWrapper, SWT.READ_ONLY);
 			matchTypeCombo.setInput(getSupportedMatchTypes());
 			matchTypeCombo.selectElement(getDefaultMatchType());
 			

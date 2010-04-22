@@ -219,16 +219,13 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 	public void setStructLocalID(StructLocalID structLocalID) {
 		this.structLocalID = structLocalID;
 	}
-	
-	@Override
-	public String getConfigModuleID() {
+
+	/**
+	 * @return the use-case-id for the config-module, this will be used to build up the
+	 *         ConfigModuleID for the config-module created.
+	 */
+	public String getUseCaseID() {
 		return editLayoutUseCase.getUseCaseID();
-//		// TODO: This needs to be abstract and subclasses need to define
-//		// alternatively we might find a way add new PreferencePages per code and add one for each usecase on the server
-//		return PropertySetFieldBasedEditConstants.USE_CASE_ID_EDIT_PERSON;
-////		if (structLocalID == null)
-////			throw new IllegalStateException("The StructLocal for this " + PropertySetFieldBasedEditLayoutPreferencePage.class.getSimpleName() + " was not set, can not create a cfModID");
-////		return PropertySetFieldBasedEditLayoutConfigModule.getStructLocalCfModID(structLocalID);
 	}
 	
 	/* (non-Javadoc)

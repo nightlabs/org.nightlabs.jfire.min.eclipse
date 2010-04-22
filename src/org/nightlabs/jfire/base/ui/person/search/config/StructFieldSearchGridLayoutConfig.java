@@ -18,30 +18,36 @@ import org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEn
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.person.PersonSearchConfigModule;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry2;
+import org.nightlabs.jfire.prop.config.PropertySetEditLayoutEntry;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.StructLocalID;
+import org.nightlabs.jfire.prop.search.config.PropertySetSearchEditLayoutConfigModule;
 import org.nightlabs.jfire.prop.search.config.StructFieldSearchEditLayoutEntry;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
- * {@link IGridLayoutConfig} operating on a {@link PersonSearchConfigModule}.
+ * {@link IGridLayoutConfig} operating on a {@link PropertySetSearchEditLayoutConfigModule}. It
+ * delegates to the {@link GridLayout} of the config-module and creates
+ * {@link StructFieldSearchEditLayoutEntry}s using the config-modules method
+ * {@link PropertySetSearchEditLayoutConfigModule#createEditLayoutEntry(String)}.
+ * 
+ * @author Tobias Langner
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
+public class StructFieldSearchGridLayoutConfig implements IGridLayoutConfig {
 	
-	private PersonSearchConfigModule cfMod;
+	private PropertySetSearchEditLayoutConfigModule cfMod;
 
 	private List<IGridDataEntry> entries;
-	private Map<IGridDataEntry,StructFieldSearchEditLayoutEntry> entriesMap;
+	private Map<IGridDataEntry, StructFieldSearchEditLayoutEntry> entriesMap;
 	private Map<StructFieldSearchEditLayoutEntry, IGridDataEntry> createdEntriesMap;
 	
 	private Job loadStructLocalJob;
 	private StructLocal structLocal;
 	
-	public PersonSearchGridLayoutConfig(PersonSearchConfigModule cfMod) {
+	public StructFieldSearchGridLayoutConfig(PropertySetSearchEditLayoutConfigModule cfMod) {
 		this.cfMod = cfMod;
 		
 		loadStructLocalJob = new Job("Loading StructLocal") {
@@ -57,6 +63,7 @@ public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public IGridDataEntry addGridDataEntry() {
 		try {
 			loadStructLocalJob.join();
@@ -66,9 +73,9 @@ public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
 
 		Map<StructField, String> ignoreFields = new HashMap<StructField, String>();
 		for (IGridDataEntry gdEntry : getGridDataEntries()) {
-			StructFieldSearchEditLayoutEntry entry = entriesMap.get(gdEntry);
-			if (entry != null && ( PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_STRUCT_FIELD_REFERENCE.equals(entry.getEntryType())
-				                     || PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_MULTI_STRUCT_FIELD_REFERENCE.equals(entry.getEntryType()) ))
+			PropertySetEditLayoutEntry entry = entriesMap.get(gdEntry);
+			if (entry != null && ( PropertySetEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE.equals(entry.getEntryType())
+				                     || PropertySetEditLayoutEntry.ENTRY_TYPE_MULTI_STRUCT_FIELD_REFERENCE.equals(entry.getEntryType()) ))
 			{
 				for (StructField field : entry.getStructFields()) {
 					ignoreFields.put(field, "This field cannot be added because it has already been assigned.");
@@ -76,18 +83,12 @@ public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
 			}
 		}
 		
-//		for (StructField<?> structField : structLocal.getStructFields()) {
-//			if (!StructFieldSearchFilterEditorRegistry.sharedInstance().hasEditor(structField.getClass())) {
-//				ignoreFields.put(structField, "Fields of this type cannot be added because no editor is available.");
-//			}
-//		}
-
-//		AddStructFieldEntryDialog dlg = new AddStructFieldEntryDialog(RCPUtil.getActiveShell(), null, ignoreIDs, structLocal);
 		AddStructFieldSearchItemEntryDialog dlg = new AddStructFieldSearchItemEntryDialog(RCPUtil.getActiveShell(), null, ignoreFields, structLocal);
 		if (dlg.open() != Window.OK) {
 			return null;
 		}
 		StructFieldSearchEditLayoutEntry layoutEntry = getConfigModule().createEditLayoutEntry(dlg.getEntryType());
+		
 		layoutEntry.setGridData(new GridData(IDGenerator.nextID(GridData.class)));
 		layoutEntry.setStructFields(dlg.getStructFields());
 		layoutEntry.setMatchType(dlg.getMatchType());
@@ -136,27 +137,22 @@ public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
 
 		return gdEntry;
 	}
-	
+
+	/**
+	 * Called to determine the display-name of an entry. This implementation delegates to the method
+	 * {@link StructFieldSearchEditLayoutEntry#getName()}. Additionally the entry, that is set as
+	 * quick-search entry will be marked with a [*].
+	 * 
+	 * Sub-classes may override this method to change this behaviour.
+	 * 
+	 * @param entry The entry to get the name for.
+	 * @return A display-name for the given entry.
+	 */
 	protected String getGridDataEntryName(StructFieldSearchEditLayoutEntry entry) {
-//		if (entry.getEntryType().equals(EditLayoutEntry.ENTRY_TYPE_SEPARATOR)) {
-//			return "Separator"; //$NON-NLS-1$
-//		}
-//		try {
-//			loadStructLocalJob.join();
-//		} catch (InterruptedException e) {
-//			throw new RuntimeException(e);
-//		}
-//
-//		String name = "";
-//		for (StructField field : entry.getStructFields()) {
-//			name += field.getName().getText() + ", ";
-//		}
-//
-//		name = name.substring(0, name.length()-2) + " [" + entry.getMatchType().getLocalisedName() + "]";
-//
-//		return name;
-		
-		return entry.getName();
+		String entryName = entry.getName();
+		if (entry.equals(getConfigModule().getQuickSearchEntry()))
+			entryName += " [*]";
+		return entryName;
 	}
 	
 	@Override
@@ -201,7 +197,7 @@ public class PersonSearchGridLayoutConfig implements IGridLayoutConfig {
 		entries = null;
 	}
 	
-	public PersonSearchConfigModule getConfigModule() {
+	public PropertySetSearchEditLayoutConfigModule getConfigModule() {
 		return cfMod;
 	}
 	

@@ -1,37 +1,43 @@
 package org.nightlabs.jfire.base.ui.person.search;
 
-
-import java.util.Collection;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewer;
-import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.view.PersonTableViewerConfiguration;
+import org.nightlabs.jfire.base.ui.prop.IPropertySetTableConfig;
+import org.nightlabs.jfire.base.ui.prop.PropertySetTable;
+import org.nightlabs.jfire.base.ui.prop.search.PropertySetTableViewer;
+import org.nightlabs.jfire.person.Person;
 
-public class PersonTableViewer implements IPropertySetViewer<PersonTableViewerConfiguration> {
-	
-	private PersonResultTable personResultTable;
+/**
+ * Concrete {@link PropertySetTableViewer} for {@link Person}s (it uses {@link PersonResultTable}).
+ * 
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
+ */
+public class PersonTableViewer extends PropertySetTableViewer<Person> {
 
+	/**
+	 * Create a new {@link PersonTableViewer}.
+	 */
+	public PersonTableViewer() {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Creates a {@link PersonResultTable}.
+	 * </p>
+	 */
 	@Override
-	public Control createControl(Composite parent) {
-		personResultTable = new PersonResultTable(parent, SWT.NONE);
+	protected PropertySetTable<Person, Person> createPropertySetTable(Composite parent) {
+		if (getConfiguration() == null) {
+			throw new IllegalStateException("The configuration for this PropertySetViewer was not set!");
+		}
+		PersonResultTable personResultTable = new PersonResultTable(parent, SWT.NONE) {
+			@Override
+			protected IPropertySetTableConfig getPropertySetTableConfig() {
+				return PersonTableViewerConfigurationHelper.createPropertySetTableConfig(getConfiguration());
+			}
+		};
 		return personResultTable;
 	}
 
-	@Override
-	public void setPropertySets(Collection<PropertySet> propertySets) {
-		personResultTable.setInput(propertySets);
-	}
-	
-	@Override
-	public void setConfiguration(PersonTableViewerConfiguration config) {
-		// TODO Set the configuration of the person result table
-	}
-
-	@Override
-	public void loadDefaultConfiguration() {
-		// TODO load a default configuration
-	}
 }

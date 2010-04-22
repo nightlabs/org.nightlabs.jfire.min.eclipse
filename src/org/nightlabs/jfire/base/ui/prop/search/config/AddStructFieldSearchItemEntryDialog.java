@@ -36,7 +36,7 @@ import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;
-import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutEntry2;
+import org.nightlabs.jfire.prop.config.PropertySetEditLayoutEntry;
 
 /**
  * Dialog used internally to add a new StructField or Separator entry to a {@link PropertySetFieldBasedEditLayoutConfigModuleController}.
@@ -270,7 +270,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 	}
 
 	protected void structFieldReferenceSelected() {
-		entryType = PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
+		entryType = PropertySetEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE;
 		stackLayout.topControl = singleSelectionStructTreeComposite;
 		stackLayoutComposite.layout();
 		singleSelectionStructTreeComposite.setEnabled(true);
@@ -279,7 +279,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 	}
 	
 	protected void combinedStructFieldReferenceSelected() {
-		entryType = PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_MULTI_STRUCT_FIELD_REFERENCE;
+		entryType = PropertySetEditLayoutEntry.ENTRY_TYPE_MULTI_STRUCT_FIELD_REFERENCE;
 		stackLayout.topControl = multiSelectionStructTreeComposite;
 		stackLayoutComposite.layout();
 		multiSelectionStructTreeComposite.setEnabled(true);
@@ -326,9 +326,9 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 	protected void updateErrorMessage() {
 		String errorMessage = null;
 		
-		if (entryType.equals(PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_STRUCT_FIELD_REFERENCE)) {
+		if (entryType.equals(PropertySetEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE)) {
 			errorMessage = singleSelectionErrorMessage;
-		} else if (entryType.equals(PropertySetFieldBasedEditLayoutEntry2.ENTRY_TYPE_MULTI_STRUCT_FIELD_REFERENCE)) {
+		} else if (entryType.equals(PropertySetEditLayoutEntry.ENTRY_TYPE_MULTI_STRUCT_FIELD_REFERENCE)) {
 			errorMessage = multiSelectionErrorMessage;
 		}
 		

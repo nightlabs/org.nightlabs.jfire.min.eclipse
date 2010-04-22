@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.search;
 
 import org.nightlabs.jdo.query.ui.search.SearchFilterItemList;
 import org.nightlabs.jdo.query.ui.search.SearchFilterItemListMutator;
+import org.nightlabs.jfire.prop.id.StructLocalID;
 
 /**
  * Small class to change PersonSearchFilterItemLists.
@@ -37,18 +38,24 @@ import org.nightlabs.jdo.query.ui.search.SearchFilterItemListMutator;
 public class PropertySetSearchFilterItemListMutator implements
 		SearchFilterItemListMutator {
 
+	private StructLocalID structLocalID;
+
 	/**
+	 * Create a new {@link PropertySetSearchFilterItemListMutator}.
 	 * 
+	 * @param structLocalID The id of the StructLocal to get the list of StructFields from that the
+	 *            user will be able to search in.
 	 */
-	public PropertySetSearchFilterItemListMutator() {
+	public PropertySetSearchFilterItemListMutator(StructLocalID structLocalID) {
 		super();
+		this.structLocalID = structLocalID;
 	}
 
 	/**
 	 * @see org.nightlabs.jdo.query.ui.search.SearchFilterItemListMutator#addItemEditor(org.nightlabs.jdo.query.ui.search.SearchFilterItemList)
 	 */
 	public void addItemEditor(SearchFilterItemList list) {
-		list.addItemEditor(new PropertySetSearchFilterItemEditor());
+		list.addItemEditor(new PropertySetSearchFilterItemEditor(structLocalID));
 	}
 
 }

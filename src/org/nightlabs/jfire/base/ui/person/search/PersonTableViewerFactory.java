@@ -8,24 +8,30 @@ import java.util.LinkedList;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewer;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewerFactory;
+import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
-import org.nightlabs.jfire.prop.PropertySet;
-import org.nightlabs.jfire.prop.view.PersonTableViewerConfiguration;
+import org.nightlabs.jfire.person.PersonSearchFilter;
+import org.nightlabs.jfire.prop.id.PropertySetID;
+import org.nightlabs.jfire.prop.search.PropSearchFilter;
+import org.nightlabs.jfire.prop.view.PropertySetTableViewerConfiguration;
+import org.nightlabs.jfire.prop.view.PropertySetViewerConfiguration;
+import org.nightlabs.jfire.security.SecurityReflector;
 
-public class PersonTableViewerFactory implements IPropertySetViewerFactory<PersonTableViewerConfiguration> {
+public class PersonTableViewerFactory implements IPropertySetViewerFactory<PropertySetID, Person, PropertySetTableViewerConfiguration> {
 	
-	private static final Collection<Class<? extends PropertySet>> SUPPORTED_CLASSES;
-	private PersonTableViewerConfigurationComposite personTableViewerConfigurationComposite;
+	private static final Collection<Class<? extends PropSearchFilter>> SUPPORTED_FILTER_CLASSES;
+	private PropertySetTableViewerConfigurationComposite personTableViewerConfigurationComposite;
 	
 	static {
-		SUPPORTED_CLASSES = new LinkedList<Class<? extends PropertySet>>();
-		SUPPORTED_CLASSES.add(Person.class);
+		SUPPORTED_FILTER_CLASSES = new LinkedList<Class<? extends PropSearchFilter>>();
+		SUPPORTED_FILTER_CLASSES.add(PersonSearchFilter.class);
 	}
 
 	@Override
-	public IPropertySetViewer<PersonTableViewerConfiguration> createViewer() {
+	public IPropertySetViewer<PropertySetID, Person, PropertySetTableViewerConfiguration> createViewer() {
 		return new PersonTableViewer();
 	}
 
@@ -40,8 +46,8 @@ public class PersonTableViewerFactory implements IPropertySetViewerFactory<Perso
 	}
 	
 	@Override
-	public Collection<Class<? extends PropertySet>> getSupportedCandidateClasses() {
-		return SUPPORTED_CLASSES;
+	public Collection<Class<? extends PropSearchFilter>> getSupportedFilterClasses() {
+		return SUPPORTED_FILTER_CLASSES;
 	}
 
 	@Override
@@ -50,14 +56,20 @@ public class PersonTableViewerFactory implements IPropertySetViewerFactory<Perso
 	}
 
 	@Override
-	public Control createViewerConfigurationControl(Composite parent, PersonTableViewerConfiguration configuration) {
-		personTableViewerConfigurationComposite = new PersonTableViewerConfigurationComposite(parent);
+	public Control createViewerConfigurationControl(Composite parent, PropertySetTableViewerConfiguration configuration) {
+		personTableViewerConfigurationComposite = new PropertySetTableViewerConfigurationComposite(parent);
 		personTableViewerConfigurationComposite.setViewerConfiguration(configuration);
 		return personTableViewerConfigurationComposite;
 	}
 
 	@Override
-	public PersonTableViewerConfiguration getViewerConfiguration() {
+	public PropertySetTableViewerConfiguration getViewerConfiguration() {
 		return personTableViewerConfigurationComposite.getViewerConfiguration();
+	}
+
+	@Override
+	public PropertySetViewerConfiguration createViewerConfiguration() {
+		return new PropertySetTableViewerConfiguration(SecurityReflector.getUserDescriptor().getOrganisationID(), IDGenerator
+				.nextID(PropertySetViewerConfiguration.class));
 	}
 }

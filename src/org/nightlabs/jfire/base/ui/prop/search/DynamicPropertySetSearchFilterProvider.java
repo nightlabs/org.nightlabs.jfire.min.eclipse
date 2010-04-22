@@ -52,7 +52,7 @@ public abstract class DynamicPropertySetSearchFilterProvider extends
 	 */
 	public DynamicPropertySetSearchFilterProvider(SearchFilterItemListMutator listMutator, SearchResultFetcher resultFetcher) {
 		super(listMutator);
-		setSearchResultFetcher(resultFetcher);
+		setResultFetcher(resultFetcher);
 	}
 	
 	/**
@@ -63,5 +63,5 @@ public abstract class DynamicPropertySetSearchFilterProvider extends
 	 */
 	@Override
 	protected abstract SearchFilter createSearchFilter();
-
+	
 }

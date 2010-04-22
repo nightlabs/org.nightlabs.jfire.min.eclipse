@@ -18,8 +18,16 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 
 /**
+ * Registry that processes the
+ * <code>org.nightlabs.jfire.base.ui.structFieldSearchFilterItemEditor</code> extension-point and
+ * registers {@link IStructFieldSearchFilterItemEditorFactory}s. The registry however serves
+ * {@link IStructFieldSearchFilterItemEditor}s created by the registered factories, see the methods
+ * {@link #createSearchFilterItemEditor(Set, MatchType)} and
+ * {@link #createSearchFilterItemEditor(StructField, MatchType)}.
+ * 
  * 
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
 public class StructFieldSearchFilterEditorRegistry
 extends AbstractEPProcessor
@@ -56,6 +64,7 @@ extends AbstractEPProcessor
 		return EXTENSION_POINT_ID;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception {
 		try {
@@ -99,16 +108,35 @@ extends AbstractEPProcessor
 		}
 	}
 	
+	/**
+	 * @return The factories registered as 'structFieldSearchFilterItemEditor', i.e. the general ones.
+	 */
 	protected Map<Class<? extends StructField<?>>, Pair<IStructFieldSearchFilterItemEditorFactory, Integer>> getGeneralStructFieldSearchItemEditors() {
 		checkProcessing();
 		return generalStructFieldSearchItemEditors;
 	}
 	
+	/**
+	 * @return The factories registered as 'specialisedStructFieldSearchFilterItemEditor' and are therefore registered to a special {@link StructFieldID}.
+	 */
 	protected Map<StructFieldID, Pair<IStructFieldSearchFilterItemEditorFactory, Integer>> getSpecialisedStructFieldSearchItemEditors() {
 		checkProcessing();
 		return specialisedStructFieldSearchItemEditors;
 	}
-	
+
+	/**
+	 * Searches and creates an appropriate {@link IStructFieldSearchFilterItemEditor} for searches
+	 * of the given structField. This method first searches editors registered as
+	 * <code>specialisedStructFieldSearchFilterItemEditor</code>s for the exact
+	 * {@link StructFieldID} of the given structField. If no specialized editor can be found a
+	 * search in the general registrations based on the type of structField is started.
+	 * 
+	 * @param <T> The type of data-field of the struct-field.
+	 * @param structField The {@link StructField} to search an search-editor for.
+	 * @param matchType The match-type to create the editor for.
+	 * @return A newly created {@link IStructFieldSearchFilterItemEditor} for the given
+	 *         {@link StructField}, or <code>null</code> if no appropriate factory could be found.
+	 */
 	public <T extends DataField> IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(StructField<T> structField, MatchType matchType) {
 		StructFieldID structFieldID = structField.getStructFieldIDObj();
 		
@@ -120,12 +148,42 @@ extends AbstractEPProcessor
 				return factory.createEditorInstance(Collections.singleton(structField), matchType);
 			}
 		}
-		return createSearchFilterItemEditor(Collections.singleton(structField), matchType);
+		return createSearchFilterItemEditor(Collections.singleton(structField), matchType, false);
+	}
+
+	/**
+	 * Searches and creates <b>one</b> appropriate {@link IStructFieldSearchFilterItemEditor} that
+	 * applies for a combined search for the types of all given {@link StructField}s. If only one
+	 * StructField is given also the <code>specialisedStructFieldSearchFilterItemEditor</code>
+	 * registrations are searched, otherwise only the general ones.
+	 * 
+	 * @param <T> The type of data-field of the struct-field.
+	 * @param structFields The {@link StructField}s to search an search-editor for.
+	 * @param matchType The match-type to create the editor for.
+	 * @return A newly created {@link IStructFieldSearchFilterItemEditor} for the given
+	 *         {@link StructField}, or <code>null</code> if no appropriate factory could be found.
+	 */
+	public <T extends DataField> IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(Set<StructField<T>> structFields,
+			MatchType matchType) {
+		return createSearchFilterItemEditor(structFields, matchType, true);
 	}
 	
-	public <T extends DataField> IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(Set<StructField<T>> structFields, MatchType matchType) {
+	/**
+	 * Used internally and does the work for {@link #createSearchFilterItemEditor(Set, MatchType)}.
+	 * The switch doSpcialisedSearch is to avoid a stack-overflows when this is called from the specialised
+	 * search in {@link #createSearchFilterItemEditor(StructField, MatchType)}.
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T extends DataField> IStructFieldSearchFilterItemEditor createSearchFilterItemEditor(Set<StructField<T>> structFields,
+			MatchType matchType, boolean doSpecialisedSearch) {
+		
 		if (structFields.isEmpty())
 			throw new IllegalArgumentException("Parameter structFields must contain at least one element.");
+		
+		if (doSpecialisedSearch && structFields.size() == 1) {
+			// if there was only one field passed we can also do the specialised search
+			return createSearchFilterItemEditor(structFields.iterator().next(), matchType);
+		}
 		
 		Class<? extends StructField<?>> structFieldClass = (Class<? extends StructField<?>>) structFields.iterator().next().getClass();
 		
@@ -143,7 +201,14 @@ extends AbstractEPProcessor
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Checks if this registry has a registration that matches the given type of StructField.
+	 * 
+	 * @param structFieldClass The type of StructField to check.
+	 * @return <code>true</code> if there is a regisration matching the given type,
+	 *         <code>false</code> otherwise.
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean hasEditor(Class<? extends StructField> structFieldClass) {
 		return getGeneralStructFieldSearchItemEditors().get(structFieldClass) != null;
