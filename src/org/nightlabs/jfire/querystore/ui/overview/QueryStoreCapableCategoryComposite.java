@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jdo.FetchPlan;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -443,7 +445,7 @@ class FilteredQueryStoreComposite
 			if (part == null)
 				return;
 
-			if (! (part instanceof OverviewEntryEditor))
+			if (!(part instanceof OverviewEntryEditor))
 			{
 				logger.warn("The activated part of the Entry being clicked on is not an " + //$NON-NLS-1$
 						"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -460,9 +462,12 @@ class FilteredQueryStoreComposite
 
 			// clone the QueryCollection and its entries in order to prohib the corruption of the
 			// cached QueryStore.
-			QueryCollection storedQueries = new QueryCollection(store.getResultClassName());
-			for (AbstractSearchQuery query : store.getQueryCollection()) {
-				storedQueries.add(Util.cloneSerializable(query));
+			final QueryCollection storedQueries = new QueryCollection(store.getResultClassName());
+			final QueryCollection<?> queries = store.getQueryCollection();
+			if (queries != null) {
+				for (final AbstractSearchQuery query : queries) {
+					storedQueries.add(Util.cloneSerializable(query));
+				}
 			}
 			searchEntryViewer.getQueryProvider().loadQueries(storedQueries);
 			searchEntryViewer.search(); //Added by Chairat to fix the issue https://www.jfire.org/modules/bugs/view.php?id=1128
@@ -567,6 +572,17 @@ class EditQueryStoreAction
 {
 	private BaseQueryStoreActiveTableComposite queryTable;
 
+	private static final Logger logger = Logger.getLogger(EditQueryStoreAction.class);
+
+	private static final String[] FETCH_GROUPS_EDIT_QUERY_STORE = new String[] {
+		FetchPlan.DEFAULT,
+		BaseQueryStore.FETCH_GROUP_AUTHORITY,
+		BaseQueryStore.FETCH_GROUP_DESCRIPTION,
+		BaseQueryStore.FETCH_GROUP_NAME,
+		BaseQueryStore.FETCH_GROUP_OWNER,
+		BaseQueryStore.FETCH_GROUP_SERIALISED_QUERIES
+	};
+
 	public EditQueryStoreAction()
 	{
 		setId(EditQueryStoreAction.class.getName());
@@ -585,21 +601,16 @@ class EditQueryStoreAction
 		QueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
-
-		QueryStoreEditDialog dialog = new QueryStoreEditDialog(queryTable.getShell(), store);
-
+		final QueryStoreEditDialog dialog = new QueryStoreEditDialog(queryTable.getShell(), store);
 		if (dialog.open() != Window.OK)
 			return;
-
-		Collection<QueryStore> input = (Collection<QueryStore>) queryTable.getTableViewer().getInput();
-
+		final Collection<QueryStore> input = (Collection<QueryStore>) queryTable.getTableViewer().getInput();
 		input.remove(store);
 
-		store = QueryStoreDAO.sharedInstance().storeQueryStore(store,
-			BaseQueryStoreActiveTableComposite.FETCH_GROUP_BASE_QUERY_STORE,
-			NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, true, new NullProgressMonitor()
+		store.getQueryCollection();	// Get query collection again as otherwise transient query collection field could be null and as a consequence serialisation would fail with a NPE in org.nightlabs.jfire.querystore.ui.overview.FilteredQueryStoreComposite.doubleClickListener and org.nightlabs.jfire.querystore.ui.overview.LoadQueryStoreAction.run() (see also org.nightlabs.jfire.query.store.BaseQueryStore.serialiseCollection()).
+		store = QueryStoreDAO.sharedInstance().storeQueryStore(store, FETCH_GROUPS_EDIT_QUERY_STORE, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
+				true, new NullProgressMonitor()
 		);
-
 		input.add(store);
 		queryTable.setInput(input);
 	}
@@ -632,22 +643,10 @@ class DeleteQueryStoreAction
 	{
 		if (queryTable == null || queryTable.isDisposed())
 			return;
-
-		QueryStore store = queryTable.getFirstSelectedElement();
+		final QueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
-
-		boolean removed = QueryStoreDAO.sharedInstance().removeQueryStore(
-			store, new NullProgressMonitor());
-
-		if (removed)
-		{
-			Collection<BaseQueryStore> input =
-				(Collection<BaseQueryStore>) queryTable.getTableViewer().getInput();
-
-			input.remove(store);
-			queryTable.setInput(input);
-		}
+		QueryStoreDAO.sharedInstance().removeQueryStore(store, new NullProgressMonitor());
 	}
 
 	/**
@@ -694,7 +693,7 @@ class LoadQueryStoreAction
 		if (part == null)
 			return;
 
-		if (! (part instanceof OverviewEntryEditor))
+		if (!(part instanceof OverviewEntryEditor))
 		{
 			logger.warn("The activated part of the Entry being clicked on is not an " + //$NON-NLS-1$
 					"OverviewEntryEditor, but instead: " + part.getClass().getName()+ " !"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -710,11 +709,14 @@ class LoadQueryStoreAction
 		// clone the QueryCollection and its entries in order to prohib the corruption of the
 		// cached QueryStore.
 		QueryCollection storedQueries = new QueryCollection(store.getResultClassName());
-		for (AbstractSearchQuery query : store.getQueryCollection()) {
-			AbstractSearchQuery copy = Util.cloneSerializable(query);
-			storedQueries.add(copy);
+		final QueryCollection<?> queries = store.getQueryCollection();
+		if (queries != null) {
+			for (final AbstractSearchQuery query : queries) {
+				storedQueries.add(Util.cloneSerializable(query));
+			}
 		}
 		searchEntryViewer.getQueryProvider().loadQueries(storedQueries);
+		searchEntryViewer.search();
 	}
 
 	/**
