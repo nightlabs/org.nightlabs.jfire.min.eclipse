@@ -114,4 +114,9 @@ implements ActiveStateManager
 	public Button getActiveButton() {
 		return activeButton;
 	}
+
+	@Override
+	public void setSelection(final boolean active) {
+		// not to be implemented here
+	}
 }

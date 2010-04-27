@@ -125,7 +125,7 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 		button.setSelection(active);
 		getSectionButtonActiveStateManager().setActive(active);
 	}
-	
+
 	private Set<Button> buttonSet = null;
 	public Set<Button> getActiveButtons() {
 		return buttonSet;
@@ -145,9 +145,23 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	 * @param active
 	 * 					Whether the state of some UI element changed to <code>active</code>.
 	 */
-	protected void setSearchSectionActive(boolean active)
+	protected void setSearchSectionActive(final boolean active)
 	{
 		getSectionButtonActiveStateManager().setActive(active);
+	}
+
+	/**
+	 * Sets the selection state of {@link #sectionButtonActiveStateManager} to the value of the given parameter.
+	 * @param active The selection state to be set.
+	 */
+	protected void setSearchSectionActiveBySelection(final boolean active)
+	{
+		getSectionButtonActiveStateManager().setSelection(active);
+	}
+
+	protected boolean isSearchSectionActive()
+	{
+		return getSectionButtonActiveStateManager().isActive();
 	}
 
 	protected void resetSearchSectionActiveState()
@@ -231,8 +245,8 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 			{ // there is a new Query -> the changedFieldList is not null!
 				changedFields = event.getChangedFields();
 			}
-
-			updateUI(event, changedFields);
+			if (event != null)
+				updateUI(event, changedFields);
 		}
 	};
 

@@ -14,7 +14,7 @@ public class DefaultActiveStateManager
 	/**
 	 * The logger used in this class.
 	 */
-	static final private Logger logger = Logger.getLogger(DefaultActiveStateManager.class);
+	private static final Logger LOGGER = Logger.getLogger(DefaultActiveStateManager.class);
 
 	/**
 	 * The count of parts that can be active and if more than one element is active ->
@@ -33,25 +33,26 @@ public class DefaultActiveStateManager
 	}
 
 	@Override
-	public void setActive(boolean active)
+	public void setActive(final boolean active)
 	{
 		if (active)
-		{
 			activePartsCounter++;
-		}
 		else
-		{
 			activePartsCounter--;
-		}
 
 		if (activePartsCounter < 0)
 		{
-			logger.trace("There might be an incorrect usage of this ActiveStateManager, since " + //$NON-NLS-1$
+			if (LOGGER.isTraceEnabled())
+				LOGGER.trace("There might be an incorrect usage of this ActiveStateManager, since " + //$NON-NLS-1$
 					"setActive(false) is called at least one time too ofter (counter is getting negative)!", //$NON-NLS-1$
 					new Exception());
-
 			activePartsCounter = 0;
 		}
+	}
+
+	@Override
+	public void setSelection(final boolean active) {
+		// not to be implemented here
 	}
 
 }

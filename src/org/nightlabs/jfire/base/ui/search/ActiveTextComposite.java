@@ -89,4 +89,9 @@ implements ActiveStateManager
 	public void setText(String text) {
 		this.text.setText(text);
 	}
+
+	@Override
+	public void setSelection(final boolean active) {
+		// not to be implemented here
+	}
 }
