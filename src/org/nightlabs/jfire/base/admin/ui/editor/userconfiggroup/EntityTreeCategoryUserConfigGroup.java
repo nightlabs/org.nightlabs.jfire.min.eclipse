@@ -52,9 +52,9 @@ extends ActiveJDOEntityTreeCategory<ConfigID, ConfigGroup> {
 
 	public static final String[] FETCH_GROUPS_USER_CONFIG_GROUPS = {
 		FetchPlan.DEFAULT, ConfigGroup.FETCH_GROUP_THIS_CONFIG_GROUP
-		};
+	};
 
-	public static Comparator<ConfigGroup> configGroupComparator = new Comparator<ConfigGroup>()
+	public static final Comparator<ConfigGroup> configGroupComparator = new Comparator<ConfigGroup>()
 	{
 		public int compare(ConfigGroup o1, ConfigGroup o2)
 		{
