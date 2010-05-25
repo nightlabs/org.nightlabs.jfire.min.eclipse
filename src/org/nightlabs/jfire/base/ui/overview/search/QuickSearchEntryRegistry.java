@@ -21,13 +21,13 @@ extends AbstractEPProcessor
 	private static final Logger logger = Logger.getLogger(QuickSearchEntryRegistry.class);
 	public static final String EXTENSION_POINT_ID = "org.nightlabs.jfire.base.ui.quickSearchEntry"; //$NON-NLS-1$
 	
-	public static String ELEMENT_QUICK_SEARCH_ENTRY_FACTORY = "quickSearchEntryFactory"; //$NON-NLS-1$
-	public static String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
-	public static String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
-	public static String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
-	public static String ATTRIBUTE_IMAGE = "image"; //$NON-NLS-1$
-	public static String ATTRIBUTE_DEFAULT = "default"; //$NON-NLS-1$
-	public static String ATTRIBUTE_DECORATOR_IMAGE = "decoratorImage"; //$NON-NLS-1$
+	public static final String ELEMENT_QUICK_SEARCH_ENTRY_FACTORY = "quickSearchEntryFactory"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_IMAGE = "image"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_DEFAULT = "default"; //$NON-NLS-1$
+	public static final String ATTRIBUTE_DECORATOR_IMAGE = "decoratorImage"; //$NON-NLS-1$
 	
 	private static QuickSearchEntryRegistry sharedInstance;
 	public static QuickSearchEntryRegistry sharedInstance() {
