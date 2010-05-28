@@ -2,7 +2,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 
 import org.nightlabs.jfire.prop.StructField;
 
-public interface StructFieldEditor<F extends StructField> extends StructPartEditor<F>
+public interface StructFieldEditor<F extends StructField<?>> extends StructPartEditor<F>
 {
 	/**
 	 * In this method, editors should validate their input and returning a boolean indicating the result of the validation.

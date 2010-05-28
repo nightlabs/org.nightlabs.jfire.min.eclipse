@@ -15,15 +15,13 @@ import org.nightlabs.jfire.prop.StructField;
 
 public class StructTree {
 	private StructTreeComposite structTreeComposite;
-	private StructEditor structEditor;
 	
 	private Map<StructBlock, StructBlockNode> blockNodeMap;
-	private Map<StructField, StructFieldNode> fieldNodeMap;
+	private Map<StructField<?>, StructFieldNode> fieldNodeMap;
 	
-	public StructTree(StructEditor structEditor) {
-		this.structEditor = structEditor;
+	public StructTree() {
 		blockNodeMap = new HashMap<StructBlock, StructBlockNode>();
-		fieldNodeMap = new HashMap<StructField, StructFieldNode>();
+		fieldNodeMap = new HashMap<StructField<?>, StructFieldNode>();
 	}
 	
 	public Composite createComposite(Composite parent, int style, LanguageChooser languageChooser) {
@@ -71,7 +69,7 @@ public class StructTree {
 		blockNodeMap.put(newBlock, node);
 	}
 
-	public void addStructField(StructBlockNode blockNode, StructField newField) {
+	public void addStructField(StructBlockNode blockNode, StructField<?> newField) {
 		StructFieldNode node = structTreeComposite.addStructField(blockNode, newField);
 		fieldNodeMap.put(newField, node);
 	}
@@ -80,7 +78,7 @@ public class StructTree {
 		structTreeComposite.setSelection(blockNodeMap.get(block));
 	}
 	
-	public void select(StructField field) {
+	public void select(StructField<?> field) {
 		structTreeComposite.setSelection(new StructFieldNode(field, null));
 	}
 	
@@ -112,7 +110,7 @@ public class StructTree {
 		structTreeComposite.getTreeViewer().refresh(blockNodeMap.get(block));
 	}
 	
-	public void refreshElement(StructField field) {
+	public void refreshElement(StructField<?> field) {
 		structTreeComposite.getTreeViewer().refresh(fieldNodeMap.get(field));
 	}
 

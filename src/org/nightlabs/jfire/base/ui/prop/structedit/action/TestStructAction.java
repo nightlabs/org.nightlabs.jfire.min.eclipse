@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.prop.structedit.action;
 
 import org.nightlabs.base.ui.action.SelectionAction;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 import org.nightlabs.jfire.base.idgenerator.IDGeneratorClient;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditor;
@@ -53,7 +54,7 @@ public class TestStructAction extends SelectionAction
 		propertySet.inflate(struct);
 		TestPropertySetWizard wizard = new TestPropertySetWizard(propertySet, null);
 		wizard.setWindowTitle(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.TestStructAction.wizard.title")); //$NON-NLS-1$
-		DynamicPathWizardDialog dlg = new DynamicPathWizardDialog(wizard);
+		DynamicPathWizardDialog dlg = new DynamicPathWizardDialog(RCPUtil.getActiveShell(), wizard);
 		dlg.open();
 	}
 }

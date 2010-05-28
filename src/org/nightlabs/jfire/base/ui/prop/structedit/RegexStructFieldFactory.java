@@ -7,7 +7,7 @@ import org.nightlabs.jfire.prop.structfield.RegexStructField;
 
 public class RegexStructFieldFactory extends AbstractStructFieldFactory {
 
-	public StructField createStructField(StructBlock block, WizardPage wizardPage) {
+	public StructField<?> createStructField(StructBlock block, WizardPage wizardPage) {
 		return new RegexStructField(block);
 	}
 }

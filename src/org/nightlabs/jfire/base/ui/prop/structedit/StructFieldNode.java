@@ -10,7 +10,7 @@ import org.nightlabs.util.Util;
 
 public class StructFieldNode extends TreeNode //implements Comparable<StructFieldNode>
 {
-	private StructField field;
+	private StructField<?> field;
 	private StructBlockNode parentBlock;
 
 	/**
@@ -20,7 +20,7 @@ public class StructFieldNode extends TreeNode //implements Comparable<StructFiel
 	 * @param parentBlock The parentBlock node.
 	 * @param deletable Wether the node can be deleted or not.
 	 */
-	public StructFieldNode(StructField field, StructBlockNode parent)
+	public StructFieldNode(StructField<?> field, StructBlockNode parent)
 	{
 		if (field == null)
 			throw new IllegalArgumentException("field must not be null!"); //$NON-NLS-1$

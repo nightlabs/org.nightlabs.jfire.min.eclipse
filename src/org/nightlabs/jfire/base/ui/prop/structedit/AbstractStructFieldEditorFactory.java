@@ -8,37 +8,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
 public abstract class AbstractStructFieldEditorFactory implements StructFieldEditorFactory {
-//	protected String editorClass = null;
 	protected String structFieldClass = null;
-
-//	/**
-//	 * Key: String structFieldClass
-//	 * Value: Instance of {@link StructFieldEditor}
-//	 */
-//	protected static Map<String, StructFieldEditor> editors;
-//
-//	public AbstractStructFieldEditorFactory() {
-//		editors = new HashMap<String, StructFieldEditor>();
-//	}
-//
-//	public StructFieldEditor getStructFieldEditorSingleton(String structFieldClass) {
-//		StructFieldEditor editor;
-//		editor = editors.get(structFieldClass);
-//
-//		if (editor == null) {
-//			try {
-//				editor = (StructFieldEditor) Class.forName(getStructFieldEditorClass()).newInstance();
-//			} catch (Throwable t) {
-//				IllegalStateException ill = new IllegalStateException("Error instantiating " + getStructFieldEditorClass()); //$NON-NLS-1$
-//				ill.initCause(t);
-//				throw ill;
-//			}
-//
-//			editors.put(structFieldClass, editor);
-//		}
-//
-//		return editor;
-//	}
 
 	public String getStructFieldClass() {
 		return structFieldClass;
@@ -48,10 +18,9 @@ public abstract class AbstractStructFieldEditorFactory implements StructFieldEdi
 		structFieldClass = theClass;
 	}
 
-//	public void setStructFieldEditorClass(String theClass) {
-//		editorClass = theClass;
-//	}
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
+	 */
 	@Override
 	public void setInitializationData(IConfigurationElement element, String propertyName, Object data) throws CoreException
 	{

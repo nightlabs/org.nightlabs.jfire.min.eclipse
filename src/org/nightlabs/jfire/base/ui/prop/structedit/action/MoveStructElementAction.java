@@ -40,9 +40,9 @@ public class MoveStructElementAction
 		this.editor = editor;
 		this.orderMoveDirection = orderMoveDirection;
 
-		setText(orderMoveDirection == orderMoveDirection.up ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.text_up") : Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.text_down"));  //$NON-NLS-1$ //$NON-NLS-2$
-		setImageDescriptor( orderMoveDirection == orderMoveDirection.up ? SharedImages.UP_16x16 : SharedImages.DOWN_16x16 );
-		setToolTipText( orderMoveDirection == orderMoveDirection.up ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.toolTipText_up") :  //$NON-NLS-1$
+		setText(orderMoveDirection == OrderMoveDirection.up ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.text_up") : Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.text_down"));  //$NON-NLS-1$ //$NON-NLS-2$
+		setImageDescriptor( orderMoveDirection == OrderMoveDirection.up ? SharedImages.UP_16x16 : SharedImages.DOWN_16x16 );
+		setToolTipText( orderMoveDirection == OrderMoveDirection.up ? Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.toolTipText_up") :  //$NON-NLS-1$
 												 Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.action.MoveStructElementAction.toolTipText_down")); //$NON-NLS-1$
 	}
 

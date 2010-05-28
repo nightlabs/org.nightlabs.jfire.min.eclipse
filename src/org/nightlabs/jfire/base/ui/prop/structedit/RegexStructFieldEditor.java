@@ -18,7 +18,7 @@ public class RegexStructFieldEditor extends AbstractStructFieldEditor<RegexStruc
 		}
 
 		@Override
-		public StructFieldEditor createStructFieldEditor() {
+		public StructFieldEditor<?> createStructFieldEditor() {
 			return new RegexStructFieldEditor();
 		}
 	}

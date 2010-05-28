@@ -75,7 +75,7 @@ public class StructTreeComposite extends AbstractTreeComposite<TreeNode> impleme
 		return blockNode;
 	}
 
-	public StructFieldNode addStructField(StructBlockNode parentNode, StructField field) {
+	public StructFieldNode addStructField(StructBlockNode parentNode, StructField<?> field) {
 		StructFieldNode fieldNode = new StructFieldNode(field, parentNode);
 		parentNode.addField(fieldNode);
 		refresh();

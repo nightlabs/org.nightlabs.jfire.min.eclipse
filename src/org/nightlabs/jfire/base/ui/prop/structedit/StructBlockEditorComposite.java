@@ -207,7 +207,7 @@ public class StructBlockEditorComposite extends XComposite
 		@Override
 		public void run() {
 			IDataBlockValidator validator = (IDataBlockValidator) getSelectedObjects().get(0);
-			if (validator instanceof IScriptValidator) {
+			if (validator instanceof IScriptValidator<?, ?>) {
 				ScriptDataBlockValidator scriptValidator = (ScriptDataBlockValidator) validator;
 				ScriptValidatorDialog dialog = new ScriptValidatorDialog(getShell(), null, scriptValidator,
 						new StructBlockScriptValidatorHandler(block));

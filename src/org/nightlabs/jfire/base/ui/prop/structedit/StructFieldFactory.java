@@ -28,7 +28,7 @@ public interface StructFieldFactory extends IExecutableExtension
 	 * 				the struct field.
 	 * @return The {@link StructField} that has just been created.
 	 */
-	public StructField createStructField(StructBlock block, WizardPage wizardPage);
+	public StructField<?> createStructField(StructBlock block, WizardPage wizardPage);
 
 	String getStructFieldClass();
 }

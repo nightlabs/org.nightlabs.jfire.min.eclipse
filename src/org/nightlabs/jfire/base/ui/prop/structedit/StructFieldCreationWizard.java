@@ -29,10 +29,6 @@ public class StructFieldCreationWizard extends DynamicPathWizard {
 			fieldCreationWizardPages = new HashMap<StructFieldMetaData, DynamicPathWizardPage>();
 		}
 
-		public StructFieldMetaData getSelectedFieldMetaData() {
-			return fieldList.getSelectedElement();
-		}
-
 		@Override
 		public Control createPageContents(Composite parent) {
 			Composite comp = new Composite(parent, SWT.NONE);

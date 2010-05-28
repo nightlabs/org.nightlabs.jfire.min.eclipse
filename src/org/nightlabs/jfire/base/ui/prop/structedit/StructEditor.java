@@ -14,6 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.language.LanguageChooser;
 import org.nightlabs.base.ui.util.RCPUtil;
@@ -72,7 +73,7 @@ public class StructEditor {
 	 */
 	public StructEditorComposite createComposite(Composite parent, int style) {
 		if (structEditorComposite == null) {
-			structTree = new StructTree(this);
+			structTree = new StructTree();
 			structEditorComposite = new StructEditorComposite(parent, style, this, structTree);
 			languageChooser = structEditorComposite.getLanguageChooser();
 
@@ -174,7 +175,6 @@ public class StructEditor {
 	public void setStruct(IStruct struct) {
 		currentStruct = Util.cloneSerializable(struct);
 		structEditorComposite.setStruct(currentStruct);
-//		structTree.setInput(currentStruct);
 	}
 
 	/**
@@ -191,7 +191,6 @@ public class StructEditor {
 	public void setStruct(IStruct struct, boolean doCloneSerializable) {
 		currentStruct = doCloneSerializable ? Util.cloneSerializable(struct) : struct;
 		structEditorComposite.setStruct(currentStruct);
-//		structTree.setInput(currentStruct);
 	}
 
 	/**
@@ -228,39 +227,6 @@ public class StructEditor {
 
 		return true;
 	}
-
-//	Removed changeListener as the editor is now embedded in an editor page with an active controller
-//	private NotificationListener changeListener = new NotificationAdapterJob() {
-//
-//		public void notify(NotificationEvent notificationEvent) {
-//			for (DirtyObjectID dirtyObjectID : (Set<? extends DirtyObjectID>)notificationEvent.getSubjects()) {
-//				final StructLocalID currentStructID = (StructLocalID) (currentStruct == null ? null : JDOHelper.getObjectId(currentStruct));
-//				if (dirtyObjectID.getObjectID().equals(currentStructID)) {
-//					final IStruct struct = fetchStructure(currentStructID, getProgressMonitorWrapper());
-////				 TODO: Same problem as with ConfigModules: we cannot check whether the content of two IStructs are identical or not.<
-////					if (currentStruct.equals(struct))
-////						return;
-//
-//					Display.getDefault().asyncExec(new Runnable() {
-//						public void run() {
-//							setStruct(struct);
-//						}
-//					});
-//
-//				}
-//			}
-//		}
-//
-//	};
-
-//	private PropertyManagerRemote getPropertyManager() {
-//		try {
-//			return JFireEjb3Factory.getRemoteBean(PropertyManagerRemote.class, Login.getLogin().getInitialContextProperties());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			throw new RuntimeException(e);
-//		}
-//	}
 
 	private org.nightlabs.jfire.prop.ModifyListener partEditorModifyListener = new org.nightlabs.jfire.prop.ModifyListener() {
 		@Override
@@ -325,7 +291,8 @@ public class StructEditor {
 
 	public void addStructField(StructBlock structBlock) {
 		StructFieldCreationWizard wiz = new StructFieldCreationWizard();
-		DynamicPathWizardDialog dialog = new DynamicPathWizardDialog(wiz);
+		Shell shell = structEditorComposite != null ? structEditorComposite.getShell() : RCPUtil.getActiveShell();
+		DynamicPathWizardDialog dialog = new DynamicPathWizardDialog(shell, wiz);
 
 		int retVal = dialog.open();
 		if (retVal == Window.CANCEL)
@@ -337,7 +304,7 @@ public class StructEditor {
 
 	private void addStructField(StructBlock toBlock, StructFieldMetaData newFieldMetaData, DynamicPathWizardPage detailsPage) {
 		StructFieldFactory fieldFactory = newFieldMetaData.getFieldFactory();
-		StructField newField;
+		StructField<?> newField;
 		try {
 			newField = fieldFactory.createStructField(toBlock, detailsPage);
 			newField.getName().setText(languageChooser.getLanguage().getLanguageID(), Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditor.newStructField.name")); //$NON-NLS-1$

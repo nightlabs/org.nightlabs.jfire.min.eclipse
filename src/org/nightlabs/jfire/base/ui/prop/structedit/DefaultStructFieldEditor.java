@@ -3,15 +3,11 @@ package org.nightlabs.jfire.base.ui.prop.structedit;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.prop.StructField;
 
-public class DefaultStructFieldEditor extends AbstractStructFieldEditor<StructField> {
+public class DefaultStructFieldEditor extends AbstractStructFieldEditor<StructField<?>> {
 
 	public static class DefaultStructFieldEditorFactory extends AbstractStructFieldEditorFactory {
-//		public String getStructFieldEditorClass() {
-//			return DefaultStructFieldEditor.class.getName();
-//		}
-
 		@Override
-		public StructFieldEditor createStructFieldEditor() {
+		public StructFieldEditor<?> createStructFieldEditor() {
 			return new DefaultStructFieldEditor();
 		}
 	}
@@ -22,6 +18,6 @@ public class DefaultStructFieldEditor extends AbstractStructFieldEditor<StructFi
 	}
 
 	@Override
-	protected void setSpecialData(StructField field) {
+	protected void setSpecialData(StructField<?> field) {
 	}
 }

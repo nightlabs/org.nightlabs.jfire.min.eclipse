@@ -6,7 +6,7 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.structfield.TextStructField;
 
 public class TextStructFieldFactory extends AbstractStructFieldFactory {
-	public StructField createStructField(StructBlock block, WizardPage wizardPage) {
+	public StructField<?> createStructField(StructBlock block, WizardPage wizardPage) {
 		return new TextStructField(block);
 	}
 }

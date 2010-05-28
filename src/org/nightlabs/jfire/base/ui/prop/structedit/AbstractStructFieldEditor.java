@@ -48,6 +48,7 @@ import org.nightlabs.jfire.prop.validation.ScriptDataBlockValidator;
 import org.nightlabs.jfire.prop.validation.ScriptDataFieldValidator;
 import org.nightlabs.jfire.prop.validation.ValidationResultType;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractStructFieldEditor<F extends StructField>
 extends AbstractStructPartEditor<F>
 implements StructFieldEditor<F>
@@ -62,7 +63,6 @@ implements StructFieldEditor<F>
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			ScriptDataFieldValidator<?, ?> newValidator = new ScriptDataFieldValidator(
@@ -94,7 +94,6 @@ implements StructFieldEditor<F>
 			setImageDescriptor(SharedImages.ADD_16x16);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			ExpressionValidatorDialog dialog = new ExpressionValidatorDialog(getShell(), null, null,

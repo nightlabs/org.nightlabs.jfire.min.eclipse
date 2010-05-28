@@ -7,7 +7,7 @@ public class NumberStructFieldEditor extends AbstractStructFieldEditor<NumberStr
 	public static class NumberStructFieldEditorFactory extends AbstractStructFieldEditorFactory {
 
 		@Override
-		public StructFieldEditor createStructFieldEditor() {
+		public StructFieldEditor<?> createStructFieldEditor() {
 			return new NumberStructFieldEditor();
 		}
 //		public String getStructFieldEditorClass() {
