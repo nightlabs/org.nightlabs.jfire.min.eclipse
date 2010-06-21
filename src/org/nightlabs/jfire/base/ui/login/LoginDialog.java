@@ -114,6 +114,8 @@ public class LoginDialog extends TitleAreaDialog
 	private GridData detailsAreaGridData = null;
 
 	private XComboComposite<LoginConfiguration> recentLoginConfigs;
+	
+	private boolean hasApplicationParams;
 
 	private boolean contentCreated = false;
 
@@ -171,26 +173,24 @@ public class LoginDialog extends TitleAreaDialog
 		}
 	}
 
-//	/**
-//	 * @deprecated What is this constructor used for?
-//	 */
-//	@Deprecated
-//	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule)
-//	{
-//		this(parent);
-//		loginResult.reset();
-//		this.loginResult = loginResult;
-//		this.runtimeLoginModule = loginModule;
-////		setLoginResult(loginResult);
-////		setLoginModule(loginModule);
-//	}
-
-	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule, LoginData loginData)
+	/**
+	 * Creates a new {@link LoginDialog}
+	 * 
+	 * @param parent The parent shell.
+	 * @param loginResult This instance is manipulated by the dialog an can be checked by callers.
+	 * @param loginModule The ConfigModule where login coordinates are stored.
+	 * @param loginData The current login-data (might be set by application parameters)
+	 * @param hasApplicationParams Whether the login-data was changed (values overwritten) by
+	 *            parameters passed to the application
+	 */
+	public LoginDialog(Shell parent, Login.AsyncLoginResult loginResult, LoginConfigModule loginModule, LoginData loginData,
+			boolean hasApplicationParams)
 	{
 		this(parent);
 		this.loginResult = loginResult;
 		this.runtimeLoginModule = loginModule;
 		this.loginData = loginData;
+		this.hasApplicationParams = hasApplicationParams;
 	}
 
 	/* (non-Javadoc)
@@ -261,12 +261,7 @@ public class LoginDialog extends TitleAreaDialog
 		internallyModifying_suppressModifyEvents = true;
 		try {
 			LoginData newLoginData = loginConfiguration.getLoginData();
-			textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID()); //$NON-NLS-1$
-			textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID()); //$NON-NLS-1$
-			textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL()); //$NON-NLS-1$
-			textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory()); //$NON-NLS-1$
-			textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID()); //$NON-NLS-1$
-			textPassword.setText(""); //$NON-NLS-1$
+			updateUIWithLoginData(newLoginData);
 			if (runtimeLoginModule.getLatestLoginConfiguration() != loginConfiguration) {
 				textIdentityName.setText(loginConfiguration.getName() == null ? "" : loginConfiguration.getName()); //$NON-NLS-1$
 				deleteButton.setEnabled(true);
@@ -278,6 +273,15 @@ public class LoginDialog extends TitleAreaDialog
 		} finally {
 			internallyModifying_suppressModifyEvents = false;
 		}
+	}
+
+	private void updateUIWithLoginData(LoginData newLoginData) {
+		textUserID.setText(newLoginData.getUserID() == null ? "" : newLoginData.getUserID()); //$NON-NLS-1$
+		textOrganisationID.setText(newLoginData.getOrganisationID() == null ? "" : newLoginData.getOrganisationID()); //$NON-NLS-1$
+		textServerURL.setText(newLoginData.getProviderURL() == null ? "" : newLoginData.getProviderURL()); //$NON-NLS-1$
+		textInitialContextFactory.setText(newLoginData.getInitialContextFactory() == null ? "" : newLoginData.getInitialContextFactory()); //$NON-NLS-1$
+		textWorkstationID.setText(newLoginData.getWorkstationID() == null ? "" : newLoginData.getWorkstationID()); //$NON-NLS-1$
+		textPassword.setText(""); //$NON-NLS-1$
 	}
 
 	protected Control createDetailsArea(Composite parent)
@@ -430,20 +434,28 @@ public class LoginDialog extends TitleAreaDialog
 		LinkedList<LoginConfiguration> loginConfigurations = new LinkedList<LoginConfiguration>(runtimeLoginModule.getSavedLoginConfigurations());
 		LoginConfiguration latestLoginConfiguration = runtimeLoginModule.getLatestLoginConfiguration();
 
-		if (latestLoginConfiguration != null)
-			loginConfigurations.addFirst(latestLoginConfiguration);
-
-		recentLoginConfigs.setInput(loginConfigurations);
-
 		if (latestLoginConfiguration != null) {
-			recentLoginConfigs.setSelection(latestLoginConfiguration);
-			updateUIWithLoginConfiguration(latestLoginConfiguration);
+			loginConfigurations.addFirst(latestLoginConfiguration);
+		}
+		
+		recentLoginConfigs.setInput(loginConfigurations);
+		
+		if (hasApplicationParams) {
+			updateUIWithLoginData(loginData);
+			recentLoginConfigs.setSelection(-1);
+			deleteButton.setEnabled(false);
+			checkUserInput(true);
 		} else {
-			LoginConfiguration loginConfiguration = new LoginConfiguration();
-			// LoginConfiguration.getLoginData() locks => we need to assign the config-module in order to make locking possible
-			loginConfiguration.setLoginConfigModule(runtimeLoginModule);
-			loginConfiguration.getLoginData().setDefaultValues();
-			updateUIWithLoginConfiguration(loginConfiguration);
+			if (latestLoginConfiguration != null) {
+				recentLoginConfigs.setSelection(latestLoginConfiguration);
+				updateUIWithLoginConfiguration(latestLoginConfiguration);
+			} else {
+				LoginConfiguration loginConfiguration = new LoginConfiguration();
+				// LoginConfiguration.getLoginData() locks => we need to assign the config-module in order to make locking possible
+				loginConfiguration.setLoginConfigModule(runtimeLoginModule);
+				loginConfiguration.getLoginData().setDefaultValues();
+				updateUIWithLoginConfiguration(loginConfiguration);
+			}
 		}
 	}
 
