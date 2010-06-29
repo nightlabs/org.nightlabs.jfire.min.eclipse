@@ -20,9 +20,7 @@ public class AuthorityListSection extends MessageSectionPart
 
 	public AuthorityListSection(IFormPage page, Composite parent) {
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityListSection.title.authorities")); //$NON-NLS-1$
-
 		createDescriptionControl(getSection(), page.getEditor().getToolkit());
-
 		authorityTable = new AuthorityTable(getContainer());
 	}
 
@@ -37,4 +35,7 @@ public class AuthorityListSection extends MessageSectionPart
 		section.setDescriptionControl(text);
 	}
 
+	public AuthorityTable getAuthorityTable() {
+		return authorityTable;
+	}
 }
