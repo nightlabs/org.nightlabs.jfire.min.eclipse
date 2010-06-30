@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.nightlabs.base.ui.action.SelectionAction;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
@@ -61,6 +62,7 @@ import org.nightlabs.jfire.querystore.ui.BaseQueryStoreActiveTableComposite;
 import org.nightlabs.jfire.querystore.ui.QueryStoreEditDialog;
 import org.nightlabs.jfire.querystore.ui.resource.Messages;
 import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.jfire.security.User;
 import org.nightlabs.progress.NullProgressMonitor;
 import org.nightlabs.util.Util;
 import org.osgi.service.prefs.BackingStoreException;
@@ -568,10 +570,15 @@ class FilteredQueryStoreComposite
 }
 
 class EditQueryStoreAction
-	extends Action
+extends SelectionAction
 {
 	private BaseQueryStoreActiveTableComposite queryTable;
-
+	private ISelectionChangedListener selectionListener = new ISelectionChangedListener() {
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			setEnabled(calculateEnabled());
+		}
+	};
 	private static final Logger logger = Logger.getLogger(EditQueryStoreAction.class);
 
 	private static final String[] FETCH_GROUPS_EDIT_QUERY_STORE = new String[] {
@@ -597,7 +604,6 @@ class EditQueryStoreAction
 	{
 		if (queryTable == null || queryTable.isDisposed())
 			return;
-
 		QueryStore store = queryTable.getFirstSelectedElement();
 		if (store == null)
 			return;
@@ -609,7 +615,7 @@ class EditQueryStoreAction
 
 		store.getQueryCollection();	// Get query collection again as otherwise transient query collection field could be null and as a consequence serialisation would fail with a NPE in org.nightlabs.jfire.querystore.ui.overview.FilteredQueryStoreComposite.doubleClickListener and org.nightlabs.jfire.querystore.ui.overview.LoadQueryStoreAction.run() (see also org.nightlabs.jfire.query.store.BaseQueryStore.serialiseCollection()).
 		store = QueryStoreDAO.sharedInstance().storeQueryStore(store, FETCH_GROUPS_EDIT_QUERY_STORE, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT,
-				true, new NullProgressMonitor()
+			true, new NullProgressMonitor()
 		);
 		input.add(store);
 		queryTable.setInput(input);
@@ -621,13 +627,43 @@ class EditQueryStoreAction
 	public void setQueryTable(BaseQueryStoreActiveTableComposite queryTable)
 	{
 		this.queryTable = queryTable;
+		queryTable.addSelectionChangedListener(selectionListener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
+	 */
+	@Override
+	public boolean calculateEnabled()
+	{
+		final QueryStore store = queryTable.getFirstSelectedElement();
+		if (store == null || User.USER_ID_SYSTEM.equals(store.getOwnerID().userID))
+			return false;
+
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateVisible()
+	 */
+	@Override
+	public boolean calculateVisible() {
+		return true;
 	}
 }
 
 class DeleteQueryStoreAction
-	extends Action
+//	extends Action
+extends SelectionAction
 {
 	private BaseQueryStoreActiveTableComposite queryTable;
+
+	private ISelectionChangedListener selectionListener = new ISelectionChangedListener() {
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			setEnabled(calculateEnabled());
+		}
+	};
 
 	public DeleteQueryStoreAction()
 	{
@@ -637,7 +673,6 @@ class DeleteQueryStoreAction
 		setText(Messages.getString("org.nightlabs.jfire.querystore.ui.overview.QueryStoreCapableCategoryComposite.deleteQueryStoreActionText")); //$NON-NLS-1$
 	}
 
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void run()
 	{
@@ -655,6 +690,28 @@ class DeleteQueryStoreAction
 	public void setQueryTable(BaseQueryStoreActiveTableComposite queryTable)
 	{
 		this.queryTable = queryTable;
+		queryTable.addSelectionChangedListener(selectionListener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateEnabled()
+	 */
+	@Override
+	public boolean calculateEnabled()
+	{
+		final QueryStore store = queryTable.getFirstSelectedElement();
+		if (store == null || User.USER_ID_SYSTEM.equals(store.getOwnerID().userID))
+			return false;
+
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.nightlabs.base.ui.action.IUpdateActionOrContributionItem#calculateVisible()
+	 */
+	@Override
+	public boolean calculateVisible() {
+		return true;
 	}
 }
 

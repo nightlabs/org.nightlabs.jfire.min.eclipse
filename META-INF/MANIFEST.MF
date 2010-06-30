@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: QuerystorePlugin
+Bundle-Name: Querystore UI Plugin
 Bundle-SymbolicName: org.nightlabs.jfire.querystore.ui
-Bundle-Version: 1.0.2.qualifier
+Bundle-Version: 1.0.3.qualifier
 Bundle-Activator: org.nightlabs.jfire.querystore.ui.QuerystorePlugin
 Bundle-Vendor: NightLabs
 Require-Bundle: org.eclipse.ui,
