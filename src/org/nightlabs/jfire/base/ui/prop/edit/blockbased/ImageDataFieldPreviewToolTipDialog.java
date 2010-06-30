@@ -127,42 +127,38 @@ public class ImageDataFieldPreviewToolTipDialog extends Dialog
 		if (imageLabel.getImage() != null)
 			imageLabel.getImage().dispose();
 
-//		GridData imageLabelGD = ((GridData)imageLabel.getLayoutData());
+		GridData imageLabelGD = ((GridData)imageLabel.getLayoutData());
 		if(id != null) {
 			int width = id.width;
 			int height = id.height;
 			double factor = 1.0;
-			int maxWidth = page.getClientArea().width;
-			int maxHeight = page.getClientArea().height;
+			double factorX = 1.0;
+			double factorY = 1.0;
+			int maxWidth = getShell().getClientArea().width;
+			int maxHeight = getShell().getClientArea().height;
 			if (width > maxWidth || height > maxHeight) {
-//				factor *= height > width ? 1.0*imageLabel.getBounds().height/height : 1.0*imageLabel.getBounds().width/width;
-				double factorX = (double) maxWidth / width;
-				double factorY = (double) maxHeight / height;
+				factorX = (double) maxWidth / (double) width;
+				factorY = (double) maxHeight / (double) height;
 				factor = Math.min(factorX, factorY);
-
-				if (logger.isDebugEnabled())
-					logger.debug("displayImage: width=" + width + " height=" + height + " maxWidth=" + maxWidth + " maxHeight=" + maxHeight + " factorX=" + factorX + " factorY=" + factorY + " factor=" + factor);
 			}
 
-			id = id.scaledTo((int) (factor*width), (int) (factor*height));
+			if (logger.isDebugEnabled())
+				logger.debug("displayImage: width=" + width + " height=" + height + " maxWidth=" + maxWidth + " maxHeight=" + maxHeight + " factorX=" + factorX + " factorY=" + factorY + " factor=" + factor);
+
+			int scaleWidth = (int) (factor * width);
+			int scaleHeight = (int) (factor * height);
+			id = id.scaledTo(scaleWidth, scaleHeight);
 			Image image = new Image(imageLabel.getDisplay(), id);
 			imageLabel.setImage(image);
-			getShell().setSize(
-					id.width + (getShell().getSize().x - maxWidth),
-					id.height + (getShell().getSize().y - maxHeight)
-			);
-//			imageLabelGD.heightHint = SWT.DEFAULT;
-//			imageLabelGD.widthHint = SWT.DEFAULT;
+			imageLabelGD.heightHint = SWT.DEFAULT;
+			imageLabelGD.widthHint = SWT.DEFAULT;
 		} else {
 			imageLabel.setImage(null);
-//			imageLabelGD.heightHint = 0;
-//			imageLabelGD.widthHint = 0;
+			imageLabelGD.heightHint = 0;
+			imageLabelGD.widthHint = 0;
 		}
 
-		// re-layout the top level container
-		Composite top = imageLabel.getParent();
-		while (top.getParent() != null)
-			top = top.getParent();
-		top.layout(true, true);
+//		getShell().layout(true, true);
+		getShell().pack(true);
 	}
 }

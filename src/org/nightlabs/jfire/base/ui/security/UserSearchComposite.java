@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -176,6 +177,7 @@ extends XComposite
 		userTable.setLinesVisible(true);
 		userTable.setHeaderVisible(true);
 		userTable.addSelectionChangedListener(userTableSelectionListener);
+		userTable.getTableViewer().setSorter(new ViewerSorter());
 
 		userIDText.setFocus();
 	}
@@ -226,21 +228,27 @@ extends XComposite
 					JFireSecurityManagerRemote um = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, Login.getLogin().getInitialContextProperties());
 					final QueryCollection<UserQuery> queries =
 						new QueryCollection<UserQuery>(User.class);
-					Display.getDefault().syncExec(new Runnable(){
-						public void run() {
-							queries.add(getUserQuery());
-						}
-					});
-					Set<UserID> userIDs = um.getUserIDs(queries);
-					if (userIDs != null && !userIDs.isEmpty()) {
-						String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
-						final List<User> users = UserDAO.sharedInstance().getUsers(userIDs, USER_FETCH_GROUPS,
-								NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
-						Display.getDefault().asyncExec(new Runnable() {
+					Display display = getDisplay();
+					if (!display.isDisposed()) {
+						// TODO creating user query should not be done on the UI thread
+						display.syncExec(new Runnable(){
 							public void run() {
-								userTable.setInput(users);
+								queries.add(getUserQuery());
 							}
 						});
+						Set<UserID> userIDs = um.getUserIDs(queries);
+						if (userIDs != null && !userIDs.isEmpty()) {
+							String[] USER_FETCH_GROUPS = new String[] {FetchPlan.DEFAULT};
+							final List<User> users = UserDAO.sharedInstance().getUsers(userIDs, USER_FETCH_GROUPS,
+									NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+							if (!display.isDisposed()) {
+								display.asyncExec(new Runnable() {
+									public void run() {
+										userTable.setInput(users);
+									}
+								});
+							}
+						}
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);

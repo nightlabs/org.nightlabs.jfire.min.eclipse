@@ -71,9 +71,6 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		LanguageCf langCf = languageChooser.getLanguage();
-		if (langCf == null) {
-			return;
-		}
 		String languageID = langCf.getLanguageID();
 		super.okPressed();
 		if (LanguageManager.sharedInstance().getCurrentLanguageID().equals(languageID))
@@ -104,7 +101,9 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 				String launcherBaseName = launcher;
 				if(launcherBaseName.toLowerCase().endsWith(".exe")) //$NON-NLS-1$
 					launcherBaseName = launcherBaseName.substring(0, launcherBaseName.length()-".exe".length()); //$NON-NLS-1$
-				String ini = launcher+".ini"; //$NON-NLS-1$
+				// needed to use launcherBaseName instead of launcher. Daniel 2010-06-09
+//				String ini = launcher+".ini"; //$NON-NLS-1$
+				String ini = launcherBaseName+".ini"; //$NON-NLS-1$
 				File iniFile = new File(ini);
 				if(!iniFile.canWrite())
 					throw new IOException("Cannot write to ini file: "+iniFile.getAbsolutePath()); //$NON-NLS-1$
