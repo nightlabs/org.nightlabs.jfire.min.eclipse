@@ -64,6 +64,9 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 			}
 			input.add(element);
 		}
+		public void clearInput() {
+			input = null;
+		}
 	}
 
 	private ActiveJDOObjectController<JDOObjectID, JDOObject> controller;
@@ -203,6 +206,17 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 		getActiveJDOObjectController().getJDOObjects();
 	}
 
+	/**
+	 * Will cause this table to first clear its cache and displayed objects and
+	 * reload using the {@link ActiveJDOObjectController}.
+	 */
+	public void reload() {
+		getContentProvider().clearInput();
+		getActiveJDOObjectController().clearCache();
+		load();
+	}
+	
+
 	protected void fireSetInputEvent() {
 		if (checkedElements != null) {
 			setCheckedElements(checkedElements);
@@ -303,4 +317,5 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 
 		super.setSelection(selection);
 	}
+	
 }
