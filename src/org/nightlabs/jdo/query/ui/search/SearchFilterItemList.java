@@ -71,7 +71,7 @@ public class SearchFilterItemList
 		
 		listWrapper.setLayoutData(listWrapperLData);
 		setExpandHorizontal(true);
-    setExpandVertical(true);
+		setExpandVertical(true);
 		setContent(listWrapper);
 		setMinSize(listWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		this.layout();

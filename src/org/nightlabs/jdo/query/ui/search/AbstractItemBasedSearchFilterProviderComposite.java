@@ -114,8 +114,10 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 		radioMatchAny.setSelection(true);
 
 		buttonsComposite = new Composite(controlsComposite, SWT.NONE);
+		boolean addSearchButton = searchFilterProvider.getResultFetcher() != null;
+		
 		GridLayout buttonsCompositeLayout = new GridLayout();
-		buttonsCompositeLayout.numColumns = 2;
+		buttonsCompositeLayout.numColumns = addSearchButton ? 2 : 1;
 		GridData buttonsCompositeLData = new GridData();
 		buttonsCompositeLData.grabExcessHorizontalSpace = true;
 		buttonsCompositeLData.horizontalAlignment = GridData.FILL;
@@ -130,13 +132,15 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 		buttonMore.setLayoutData(buttonMoreLData);
 		buttonMore.addSelectionListener(this);
 
-		buttonSearch = new Button(buttonsComposite, SWT.PUSH | SWT.CENTER);
-		buttonSearch.setText(Messages.getString("search.AbstractItemBasedSearchFilterProviderComposite.buttonSearch.text")); //$NON-NLS-1$
-		GridData buttonSearchLData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-//		buttonSearchLData.widthHint = 58;
-//		buttonSearchLData.heightHint = 32;
-		buttonSearch.setLayoutData(buttonSearchLData);
-		buttonSearch.addSelectionListener(this);
+		if (addSearchButton) {
+			buttonSearch = new Button(buttonsComposite, SWT.PUSH | SWT.CENTER);
+			buttonSearch.setText(Messages.getString("search.AbstractItemBasedSearchFilterProviderComposite.buttonSearch.text")); //$NON-NLS-1$
+			GridData buttonSearchLData = new GridData(GridData.HORIZONTAL_ALIGN_END);
+			//		buttonSearchLData.widthHint = 58;
+			//		buttonSearchLData.heightHint = 32;
+			buttonSearch.setLayoutData(buttonSearchLData);
+			buttonSearch.addSelectionListener(this);
+		}
 
 		// item list
 		itemList = createSearchFilterItemList(this, SWT.NONE);
@@ -206,6 +210,14 @@ public abstract class AbstractItemBasedSearchFilterProviderComposite extends Com
 	protected void createDefaultItems() {
 		if (searchFilterProvider.getListMutator() != null)
 			searchFilterProvider.getListMutator().addItemEditor(itemList);
+	}
+	
+	/**
+	 * Re-initialize the Filter list and create the initial default items.
+	 */
+	public void reInitialise() {
+		clearItemList();
+		createDefaultItems();
 	}
 
 	/**
