@@ -279,6 +279,14 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 	protected abstract void updateUI(QueryEvent event, List<FieldChangeCarrier> changedFields);
 
 	/**
+	 * This method is executed before a search is performed and gives the
+	 * composite the possibility to configure its query.
+	 */
+	public void beforeSearch() {
+		
+	}
+
+	/**
 	 * @return the Query needed by this query filter and hence all JDOQueryComposites as well.
 	 */
 	public Q getQuery()

@@ -123,6 +123,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		if (toolkit != null)
 			toolkit.adapt(sashform);
 
+		//Adapts the sashform to fit into the parent (removes the gray area)
+		if (toolkit != null)
+			toolkit.adapt(sashform);
+
 		scrollableSearchWrapper = new ScrolledComposite(sashform, SWT.V_SCROLL);
 		scrollableSearchWrapper.setExpandHorizontal(true);
 		scrollableSearchWrapper.setExpandVertical(true);
@@ -460,7 +464,14 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 				final Job thisJob = this;
 				if (currentSearchJob != thisJob)
 					return Status.CANCEL_STATUS;
-
+				
+				for (Section advancedSearchSection : advancedSearchSections) {
+					Control client = advancedSearchSection.getClient();
+					if (client instanceof AbstractQueryFilterComposite) {
+						((AbstractQueryFilterComposite<?>) client).beforeSearch();
+					}
+				}
+				
 				final Collection<R> result = doSearch(c, monitor);
 				if (currentSearchJob != thisJob)
 					return Status.CANCEL_STATUS;

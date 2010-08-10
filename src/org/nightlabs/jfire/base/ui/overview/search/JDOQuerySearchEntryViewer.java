@@ -8,9 +8,7 @@ import org.nightlabs.jfire.base.ui.search.AbstractQueryFilterComposite;
 
 /**
  * Base Implementation of a {@link SearchEntryViewer} which is designed
- * to work with an implementation of {@link AbstractQueryFilterComposite} as
- * Composite returned by {@link #createSearchComposite(org.eclipse.swt.widgets.Composite)}
- * and an implementation of {@link AbstractTableComposite} as Composite returned
+ * to work with an implementation of {@link AbstractTableComposite} as Composite returned
  * by {@link #createResultComposite(org.eclipse.swt.widgets.Composite)}
  * 
  * 
