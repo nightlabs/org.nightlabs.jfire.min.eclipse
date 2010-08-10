@@ -60,6 +60,10 @@ import org.nightlabs.progress.ProgressMonitor;
  * Concrete SearchFilterItemEditor that is capable of building one {@link ISearchFilterItem}. It
  * therefore maintains a list of {@link PropertySetStructFieldSearchItemEditorHelper}s and presents
  * a user a combo will all available. The selected editor-helper is used to build the filter-item.
+ * <p>
+ * The structure to search in is defined by the StructLocal you
+ * set for this editor {@link #setStructLocalID(StructLocalID)}.
+ * </p>
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -82,6 +86,12 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	 */
 	public PropertySetSearchFilterItemEditor(StructLocalID structLocalID) {
 		this.structLocalID = structLocalID;
+	}
+	
+	/**
+	 * Create a new {@link PropertySetSearchFilterItemEditor}.
+	 */ 
+	public PropertySetSearchFilterItemEditor() {
 	}
 	
 	/**
@@ -153,7 +163,10 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	@SuppressWarnings("unchecked")
 	protected List<PropertySetStructFieldSearchItemEditorHelper> buildSearchFieldList(ProgressMonitor monitor) {
 		List<PropertySetStructFieldSearchItemEditorHelper> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorHelper>();
-		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(structLocalID, monitor);
+		if (getStructLocalID() == null) {
+			throw new IllegalStateException("This PropertySetSearchFilterItemEditor does not have a StructLocalID set it therefore does not know about its structure. Please set the StructLocalID first.");
+		}
+		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(getStructLocalID(), monitor);
 		for (StructBlock structBlock : struct.getStructBlocks()) {
 			for (StructField<?> structField : structBlock.getStructFields()) {
 				if (StructFieldSearchFilterEditorRegistry.sharedInstance().hasEditor((Class<? extends StructField<?>>) structField.getClass()))
@@ -237,5 +250,13 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	public EnumSet<MatchType> getSupportedMatchTypes() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setStructLocalID(StructLocalID structLocalID) {
+		this.structLocalID = structLocalID;
+	}
+	
+	public StructLocalID getStructLocalID() {
+		return structLocalID;
 	}
 }

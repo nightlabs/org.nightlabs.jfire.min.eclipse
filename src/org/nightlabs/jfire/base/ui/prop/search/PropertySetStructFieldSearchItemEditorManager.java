@@ -77,10 +77,10 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 			
 //		PropertySetSearchFilterItemEditorHelperRegistry registry = PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance();
 		StructFieldSearchFilterEditorRegistry registry = StructFieldSearchFilterEditorRegistry.sharedInstance();
-		if (personStructField == null)
+		if (getStructField() == null)
 			throw new IllegalStateException("Member personStructField is null. init(personStructField) might not have been called."); //$NON-NLS-1$
 		
-		final IStructFieldSearchFilterItemEditor filterItemEditor = registry.createSearchFilterItemEditor(this.personStructField, null);
+		final IStructFieldSearchFilterItemEditor filterItemEditor = registry.createSearchFilterItemEditor(getStructField(), null);
 		helper = new PropertySetStructFieldSearchItemEditorHelper() {
 			@Override
 			public ISearchFilterItem getSearchFilterItem() {
@@ -98,7 +98,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 		};
 		
 		if (helper instanceof PropertySetStructFieldSearchItemEditorHelper)
-			((PropertySetStructFieldSearchItemEditorHelper)helper).init(this.personStructField);
+			((PropertySetStructFieldSearchItemEditorHelper)helper).init(getStructField());
 		helperControl = helper.getControl(parent);
 		return helperControl;
 	}

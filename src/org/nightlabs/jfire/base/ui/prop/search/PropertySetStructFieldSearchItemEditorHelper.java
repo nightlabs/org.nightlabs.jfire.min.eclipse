@@ -38,7 +38,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 		PropertySetSearchFilterItemEditorHelper {
 
 	
-	protected StructField personStructField;
+	private StructField structField;
 	
 	
 	protected PropertySetStructFieldSearchItemEditorHelper() {
@@ -49,7 +49,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	 * Constructs a new StructFieldSearchItemEditorHelper
 	 * and calls {@link #init(AbstractPersonStructField)}.
 	 * 
-	 * @param personStructField
+	 * @param structField
 	 */
 	public PropertySetStructFieldSearchItemEditorHelper(StructField _personStructField) {
 		super();
@@ -58,7 +58,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	
 	
 	public void init(StructField personStructField) {
-		this.personStructField = personStructField;
+		this.structField = personStructField;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 			ill.initCause(t);
 			throw ill;
 		}
-		result.init(this.personStructField);
+		result.init(this.structField);
 		return result;
 	}
 
@@ -91,8 +91,10 @@ public abstract class PropertySetStructFieldSearchItemEditorHelper implements
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#getDisplayName()
 	 */
 	public String getDisplayName() {
-		return personStructField.getName().getText();
-//		return personStructField.getStructBlockID()+": "+personStructField.getStructFieldKey(); //$NON-NLS-1$
+		return structField.getName().getText();
 	}
 
+	protected StructField getStructField() {
+		return structField;
+	}
 }
