@@ -56,7 +56,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 
 	private PropertySet propSet;
 	private Map<StructBlockID, DataBlockGroup> dataBlockGroups = new HashMap<StructBlockID, DataBlockGroup>();
-	private Map<StructBlockID, DataBlockGroupEditor> dataBlockGroupEditors = new HashMap<StructBlockID, DataBlockGroupEditor>();
+	private Map<StructBlockID, IDataBlockGroupEditor> dataBlockGroupEditors = new HashMap<StructBlockID, IDataBlockGroupEditor>();
 	private StructBlockID[] structBlockIDs;
 	private int dataBlockEditorColumnHint = 2;
 	private IValidationResultHandler validationResultHandler;
@@ -153,8 +153,11 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		dataBlockGroupEditors.clear();
 		for (int i = 0; i < structBlockIDs.length; i++) {
 			DataBlockGroup dataBlockGroup = dataBlockGroups.get(structBlockIDs[i]);
-			DataBlockGroupEditor editor = new DataBlockGroupEditor(propSet.getStructure(), dataBlockGroup, wrapperComp, validationResultHandler);
+			IDataBlockGroupEditor editor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(propSet.getStructure(), dataBlockGroup);
+			editor.createControl(wrapperComp);
+			editor.setValidationResultHandler(validationResultHandler);
 			editor.addDataBlockEditorChangedListener(listenerProxy);
+			editor.addDataBlockGroupEditorChangedListener(groupChangeListenerProxy);
 			editor.refresh(propSet.getStructure(), dataBlockGroup);
 			dataBlockGroupEditors.put(
 					structBlockIDs[i],
@@ -181,7 +184,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	 *
 	 * @return
 	 */
-	public DataBlockGroupEditor getDataBlockGroupEditor(StructBlockID structBlockID) {
+	public IDataBlockGroupEditor getDataBlockGroupEditor(StructBlockID structBlockID) {
 		return dataBlockGroupEditors.get(structBlockID);
 	}
 
@@ -218,13 +221,13 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	 * Set all values to the propertySet.
 	 */
 	public void updatePropertySet() {
-		for (DataBlockGroupEditor editor : dataBlockGroupEditors.values()) {
+		for (IDataBlockGroupEditor editor : dataBlockGroupEditors.values()) {
 			editor.updatePropertySet();
 		}
 	}
 
 	public void refresh(PropertySet propertySet) {
-		for (Map.Entry<StructBlockID, DataBlockGroupEditor> entry : dataBlockGroupEditors.entrySet()) {
+		for (Map.Entry<StructBlockID, IDataBlockGroupEditor> entry : dataBlockGroupEditors.entrySet()) {
 			try {
 				DataBlockGroup blockGroup = propertySet.getDataBlockGroup(entry.getKey());
 				dataBlockGroups.put(entry.getKey(), blockGroup);
@@ -294,6 +297,29 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 	public void removeChangeListener(DataBlockEditorChangedListener listener) {
 		listenerList.remove(listener);
 	}
+	
+	private IDataBlockGroupEditorChangedListener groupChangeListenerProxy = new IDataBlockGroupEditorChangedListener() {
+		@Override
+		public void dataBlockGroupEditorChanged(DataBlockGroupEditorChangedEvent dataBlockEditorGroupChangedEvent) {
+			notifyGroupChangeListeners(dataBlockEditorGroupChangedEvent);
+		}
+	};
+	
+	private ListenerList groupChangeListener = new ListenerList();
+	
+	protected synchronized void notifyGroupChangeListeners(DataBlockGroupEditorChangedEvent event) {
+		for (Object obj :  groupChangeListener.getListeners())
+			((IDataBlockGroupEditorChangedListener) obj).dataBlockGroupEditorChanged(event);
+	}
+	
+	public void addGroupChangeListener(IDataBlockGroupEditorChangedListener listener) {
+		groupChangeListener.add(listener);
+	}
+
+	public void removeGroupChangeListener(IDataBlockGroupEditorChangedListener listener) {
+		groupChangeListener.remove(listener);
+	}
+	
 	
 	@Override
 	public boolean isPageComplete() {

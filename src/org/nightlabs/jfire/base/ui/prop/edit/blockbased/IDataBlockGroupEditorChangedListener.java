@@ -26,51 +26,22 @@
 
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.jfire.prop.DataBlock;
-import org.nightlabs.jfire.prop.IStruct;
-import org.nightlabs.jfire.prop.id.StructBlockID;
 
 /**
- * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * Listener notified of changes in a {@link IDataBlockGroupEditor}. It will be
+ * triggered when a block is added or removed from the group as well as when the
+ * block order changes.
+ * 
+ * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class GenericDataBlockEditor extends AbstractDataBlockEditor {
-	
+public interface IDataBlockGroupEditorChangedListener {
 	/**
-	 * Factory that creates {@link GenericDataBlockEditor}s.
+	 * Called when a {@link DataFieldGroupEditor} is changed.
+	 * 
+	 * @param dataBlockEditorGroupChangedEvent
+	 *            Contains references to the changed {@link IDataBlockGroupEditor} 
+	 *            as well as to the changed{@link DataBlock}s.
 	 */
-	public static class Factory implements DataBlockEditorFactory {
-
-		@Override
-		public DataBlockEditor createDataBlockEditor(IStruct struct,
-				DataBlock dataBlock) {
-			return new GenericDataBlockEditor(struct, dataBlock);
-		}
-
-		@Override
-		public StructBlockID getProviderStructBlockID() {
-			// Nothing to do, this is a factory that is not registered by extension
-			return null;
-		}
-
-		@Override
-		public void setInitializationData(IConfigurationElement arg0, String arg1, Object arg2) throws CoreException {
-			// Nothing to do, this is a factory that is not registered by extension
-		}
-		
-	}
-
-	public GenericDataBlockEditor(IStruct struct, DataBlock dataBlock) {
-		super();
-	}
-	
-	@Override
-	protected IDataBlockEditorComposite createEditorComposite(Composite parent) {
-		return new GenericDataBlockEditorComposite(this, parent, SWT.NONE, 1);
-	}
-
+	public void dataBlockGroupEditorChanged(DataBlockGroupEditorChangedEvent dataBlockEditorGroupChangedEvent);
 }

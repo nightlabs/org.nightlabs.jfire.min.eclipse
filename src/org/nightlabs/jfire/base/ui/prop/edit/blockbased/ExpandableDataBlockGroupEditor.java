@@ -50,7 +50,7 @@ extends ExpandableComposite
 	}
 
 	
-	private DataBlockGroupEditor blockGroupEditor;
+	private IDataBlockGroupEditor blockGroupEditor;
 //	/**
 //	 * The class whose properties are to be edited.
 //	 */
@@ -68,8 +68,11 @@ extends ExpandableComposite
 			IValidationResultHandler validationResultHandler
 	) {
 		super(parent, SWT.NONE);
-		blockGroupEditor = new DataBlockGroupEditor(struct, blockGroup, this, validationResultHandler);
-
+		blockGroupEditor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(struct, blockGroup); 
+		Composite editorControl = blockGroupEditor.createControl(this);
+		blockGroupEditor.setValidationResultHandler(validationResultHandler);
+		blockGroupEditor.refresh(struct, blockGroup);
+		
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.verticalSpacing = 0;
 		thisLayout.horizontalSpacing= 0;
@@ -78,8 +81,7 @@ extends ExpandableComposite
 		//		TableWrapData thisLayoutData = new TableWrapData();
 		GridData thisLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		setLayoutData(thisLayoutData);
-
-		setClient(blockGroupEditor);
+		setClient(editorControl);
 		// TODO: genauer abchecken, was hier läuft :-)
 //		StructProvider provider = (StructProvider)PropStructProviderRegistry.sharedInstance().getPropStructProvider(linkClass);
 
@@ -111,6 +113,13 @@ extends ExpandableComposite
 		blockGroupEditor.removeDataBlockEditorChangedListener(listener);
 	}
 
+	public synchronized void addPropDataBlockGroupEditorChangedListener(IDataBlockGroupEditorChangedListener listener) {
+		blockGroupEditor.addDataBlockGroupEditorChangedListener(listener);
+	}
+	public synchronized void removePropDataBlockGroupEditorChangedListener(IDataBlockGroupEditorChangedListener listener) {
+		blockGroupEditor.removeDataBlockGroupEditorChangedListener(listener);
+	}
+	
 	public void refresh(DataBlockGroup blockGroup) {
 	}
 

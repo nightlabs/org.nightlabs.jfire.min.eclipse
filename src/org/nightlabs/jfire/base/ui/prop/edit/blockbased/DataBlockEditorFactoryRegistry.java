@@ -55,6 +55,8 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 	 * value: DataBlockEditorFactory provider
 	 */
 	private Map<StructBlockID, DataBlockEditorFactory> providerRegistry = new HashMap<StructBlockID, DataBlockEditorFactory>();
+	
+	private DataBlockEditorFactory defaultDataBlockEditorFactory = new GenericDataBlockEditor.Factory();
 
 	public void addPropDataBlockEditorProvider(DataBlockEditorFactory provider)
 	{
@@ -71,7 +73,12 @@ public class DataBlockEditorFactoryRegistry extends AbstractEPProcessor {
 		if (provider != null)
 			return provider.createDataBlockEditor(struct, dataBlock);
 		else
-			return new GenericDataBlockEditor(struct, dataBlock);
+			return defaultDataBlockEditorFactory.createDataBlockEditor(struct, dataBlock);
+	}
+	
+	public void setDefaultDataBlockEditorFactory(DataBlockEditorFactory defaultDataBlockEditorFactory) {
+		
+		this.defaultDataBlockEditorFactory = defaultDataBlockEditorFactory;
 	}
 	
 	private static DataBlockEditorFactoryRegistry sharedInstance;

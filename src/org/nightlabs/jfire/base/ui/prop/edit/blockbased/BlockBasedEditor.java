@@ -95,7 +95,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 * as content.
 	 */
 	private class ContentProvider implements GroupedContentProvider {
-		private DataBlockGroupEditor groupEditor;
+		private IDataBlockGroupEditor groupEditor;
 		private DataBlockGroup blockGroup;
 		private IStruct struct;
 
@@ -114,15 +114,17 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 		@Override
 		public Composite createGroupContent(Composite parent) {
-			groupEditor = new DataBlockGroupEditor(struct, blockGroup, parent, validationResultHandler);
-			if (changeListenerProxy != null)
+			groupEditor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(struct, blockGroup); 
+			Composite editorComp = groupEditor.createControl(parent);
+			groupEditor.setValidationResultHandler(validationResultHandler);
+			if (changeListenerProxy != null) {
 				groupEditor.addDataBlockEditorChangedListener(changeListenerProxy);
-			if (dataBlockRemovalListener != null)
-				groupEditor.addDataBlockRemovalListener(dataBlockRemovalListener);
+				groupEditor.addDataBlockGroupEditorChangedListener(changeListenerProxy);
+			}
 			if (this.blockGroup != null) {
 				refresh(this.blockGroup);
 			}
-			return groupEditor;
+			return editorComp;
 		}
 		/**
 		 * Called to refresh the underlying {@link DataBlockGroupEditor}.
@@ -148,19 +150,20 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		/**
 		 * @return The {@link DataBlockGroupEditor} created by this provider.
 		 */
-		public DataBlockGroupEditor getGroupEditor() {
+		public IDataBlockGroupEditor getGroupEditor() {
 			return groupEditor;
 		}
 	}
 
 	/**
 	 * One instance of this class is held per {@link BlockBasedEditor} and will
-	 * be added as {@link DataBlockEditorChangedListener} to each Group editor created.
+	 * be added as {@link DataBlockEditorChangedListener} and {@link IDataBlockGroupEditorChangedListener} to eachGroup editor created.
 	 * It will forward all notifications to the listeners that have been added
 	 * to the {@link BlockBasedEditor} by {@link BlockBasedEditor#addChangeListener(DataBlockEditorChangedListener)}.
 	 */
-	protected class ChangeListenerProxy implements DataBlockEditorChangedListener {
+	protected class ChangeListenerProxy implements DataBlockEditorChangedListener, IDataBlockGroupEditorChangedListener {
 		private ListenerList changeListeners = new ListenerList();
+		private ListenerList groupChangeListeners = new ListenerList();
 
 		public void dataBlockEditorChanged(DataBlockEditorChangedEvent changedEvent) {
 			if (!refreshing) {
@@ -193,6 +196,16 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 				}
 			}
 		}
+		
+		@Override
+		public void dataBlockGroupEditorChanged(DataBlockGroupEditorChangedEvent dataBlockEditorGroupChangedEvent) {
+			if (!refreshing) {
+				Object[] listeners = groupChangeListeners.getListeners();
+				for (Object listener : listeners) {
+					((IDataBlockGroupEditorChangedListener) listener).dataBlockGroupEditorChanged(dataBlockEditorGroupChangedEvent);
+				}
+			}
+		}
 
 		public void addChangeListener(DataBlockEditorChangedListener changeListener) {
 			this.changeListeners.add(changeListener);
@@ -200,31 +213,11 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		public void removeChangeListener(DataBlockEditorChangedListener changeListener) {
 			this.changeListeners.remove(changeListener);
 		}
-	}
-
-	/**
-	 * One instance of this class is held per {@link BlockBasedEditor} and will be added as {@link IDataBlockRemovalListener} to
-	 * each {@link DataBlockGroupEditor} created. It will forward all notifications to the listeners that have been added to the
-	 * {@link BlockBasedEditor} by {@link BlockBasedEditor#addDataBlockRemovalListener(AbstractDataBlockRemovalListener)}.
-	 */
-	private class DataBlockRemovalListener extends AbstractDataBlockRemovalListener {
-
-		private ListenerList dataBlockRemovalListeners = new ListenerList();
-
-		@Override
-		public void removedDataBlock() {
-			for (final Object listener : dataBlockRemovalListeners.getListeners()) {
-				if (listener instanceof IDataBlockRemovalListener)
-					((IDataBlockRemovalListener) listener).removedDataBlock();
-			}
+		public void addGroupChangeListener(IDataBlockGroupEditorChangedListener changeListener) {
+			this.groupChangeListeners.add(changeListener);
 		}
-		@Override
-		public void addDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
-			dataBlockRemovalListeners.add(listener);
-		}
-		@Override
-		public void removeDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
-			dataBlockRemovalListeners.remove(listener);
+		public void removeGroupChangeListener(IDataBlockGroupEditorChangedListener changeListener) {
+			this.groupChangeListeners.remove(changeListener);
 		}
 	}
 
@@ -240,12 +233,6 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 */
 	private ChangeListenerProxy changeListenerProxy = new ChangeListenerProxy();
 //	private ListenerList displayNameChangedListeners = new ListenerList()	;
-
-	/**
-	 * Will be added to the {@link DataBlockGroupEditor} created by this editor (see {@link BlockBasedEditor.ContentProvider#createGroupContent(Composite)} and
-	 * notifies the listeners of this editor in the case a DataBlock has been removed from the associated DataBlockGroup.
-	 */
-	private IDataBlockRemovalListener dataBlockRemovalListener = new DataBlockRemovalListener();
 
 	/**
 	 * Stores the {@link ContentProvider} with the DataBlock-key as key.
@@ -346,23 +333,23 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	public void removeChangeListener(final DataBlockEditorChangedListener changeListener) {
 		changeListenerProxy.removeChangeListener(changeListener);
 	}
-
+	
 	/**
-	 * Adds the given {@link IDataBlockRemovalListener} to the list of removal listeners of this Editor.
-	 * @param listener The listener to be added.
+	 * Add the given {@link IDataBlockGroupEditorChangedListener} to be notified of changes in a DataBlockGroup.
+	 * @param changeListener The listener to add.
 	 */
-	public void addDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
-		dataBlockRemovalListener.addDataBlockRemovalListener(listener);
+	public void addBlockGroupChangeListener(IDataBlockGroupEditorChangedListener changeListener) {
+		changeListenerProxy.addGroupChangeListener(changeListener);
 	}
-
+	
 	/**
-	 * Removes the given {@link IDataBlockRemovalListener} from the list of removal listeners of this Editor.
-	 * @param listener The listener to be removed.
+	 * Remove the given {@link IDataBlockGroupEditorChangedListener}.
+	 * @param changeListener The listener to remove
 	 */
-	public void removeDataBlockRemovalListener(final IDataBlockRemovalListener listener) {
-		dataBlockRemovalListener.removeDataBlockRemovalListener(listener);
+	public void removeBlockGroupChangeListener(IDataBlockGroupEditorChangedListener changeListener) {
+		changeListenerProxy.removeGroupChangeListener(changeListener);
 	}
-
+	
 	protected PropertyChangeSupport getPropertyChangeSupport() {
 		return propertyChangeSupport;
 	}

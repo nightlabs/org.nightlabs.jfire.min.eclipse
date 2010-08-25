@@ -129,6 +129,12 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 				markDirty();
 			}
 		});
+		blockBasedEditor.addBlockGroupChangeListener(new IDataBlockGroupEditorChangedListener() {
+			@Override
+			public void dataBlockGroupEditorChanged(DataBlockGroupEditorChangedEvent dataBlockEditorGroupChangedEvent) {
+				markDirty();
+			}
+		});
 		blockBasedEditor.addAdditionalDataChangedListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {

@@ -117,6 +117,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 			blockBasedEditor.setValidationResultHandler(validationResultHandler);
 			propEditors.add(blockBasedEditor);
 			blockBasedEditor.addChangeListener(listenerProxy);
+			blockBasedEditor.addBlockGroupChangeListener(groupChangeListenerProxy);
 		}
 	}
 	
@@ -171,6 +172,29 @@ public class FullDataBlockCoverageComposite extends Composite {
 	public void removeChangeListener(DataBlockEditorChangedListener listener) {
 		listenerList.remove(listener);
 	}
+	
+	private IDataBlockGroupEditorChangedListener groupChangeListenerProxy = new IDataBlockGroupEditorChangedListener() {
+		@Override
+		public void dataBlockGroupEditorChanged(DataBlockGroupEditorChangedEvent dataBlockEditorGroupChangedEvent) {
+			notifyGroupChangeListeners(dataBlockEditorGroupChangedEvent);
+		}
+	};
+	
+	private ListenerList groupChangeListener = new ListenerList();
+	
+	protected synchronized void notifyGroupChangeListeners(DataBlockGroupEditorChangedEvent event) {
+		for (Object obj :  groupChangeListener.getListeners())
+			((IDataBlockGroupEditorChangedListener) obj).dataBlockGroupEditorChanged(event);
+	}
+	
+	public void addGroupChangeListener(IDataBlockGroupEditorChangedListener listener) {
+		groupChangeListener.add(listener);
+	}
+
+	public void removeGroupChangeListener(IDataBlockGroupEditorChangedListener listener) {
+		groupChangeListener.remove(listener);
+	}
+	
 	
 	public void validate() {
 		for (PropertySetEditor propEditor : propEditors) {
