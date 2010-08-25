@@ -170,6 +170,11 @@ public class PersonPreferencesController extends EntityEditorPageController
 			monitor.worked(1);
 			logger.info("Saving user "+userID.userID+" person "+user.getPerson()); //$NON-NLS-1$ //$NON-NLS-2$
 			User oldUser = user;
+			
+			// Need to deflate before storeUser is called, this deflates, too
+			// but clonesSerializable before which destroys all transient fields
+			// (also dataBlockGroups)
+			user.getPerson().deflate();
 			user = UserDAO.sharedInstance().storeUser(
 					user, (String)null, true, FETCH_GROUPS,
 					NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new SubProgressMonitor(monitor, 5)
