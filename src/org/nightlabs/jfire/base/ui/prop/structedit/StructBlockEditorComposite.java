@@ -13,6 +13,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.action.SelectionAction;
@@ -245,6 +246,8 @@ public class StructBlockEditorComposite extends XComposite
 	private DataBlockValidatorTable validatorTable;
 	private ListenerList listeners;
 	private ToolBarSectionPart sectionPart;
+	private Spinner displayColumnCount;
+	
 
 	public StructBlockEditorComposite(Composite parent, int style, LanguageChooser languageChooser) {
 		super(parent, style, LayoutMode.TOP_BOTTOM_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
@@ -259,6 +262,28 @@ public class StructBlockEditorComposite extends XComposite
 		uniqueButton.setLayoutData((new GridData()));
 		uniqueButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.unique.text")); //$NON-NLS-1$
 
+		new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		XComposite dccWrapper = new XComposite(this, SWT.NONE, LayoutDataMode.GRID_DATA_HORIZONTAL);
+		dccWrapper.getGridLayout().numColumns = 2;
+		dccWrapper.getGridLayout().makeColumnsEqualWidth = false;
+		displayColumnCount = new Spinner(dccWrapper, getBorderStyle());
+		Label displayColumnCountLabel = new Label(dccWrapper, SWT.WRAP);
+		displayColumnCountLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.displayColumnCountLabel.text")); //$NON-NLS-1$
+		displayColumnCountLabel.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.displayColumnCountLabel.toolTipText")); //$NON-NLS-1$
+		displayColumnCountLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		displayColumnCount.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				if (!updating) {
+					block.setDisplayFieldColumnCount(displayColumnCount.getSelection());
+					markDirty();
+				}
+			}
+		});
+		
+		
 		sectionPart = new ToolBarSectionPart(new FormToolkit(getDisplay()), this, Section.TITLE_BAR,
 				Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.section.validators.title")); //$NON-NLS-1$
 		validatorTable = new DataBlockValidatorTable(sectionPart.getSection(), SWT.NONE, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE);
@@ -298,13 +323,21 @@ public class StructBlockEditorComposite extends XComposite
 		});
 	}
 
+	private boolean updating = false;
+	
 	public void setStructBlock(StructBlock psb) {
-		block = psb;
-		blockNameEditor.setI18nText(psb.getName(), EditMode.DIRECT);
-		uniqueButton.setSelection(block.isUnique());
-		validatorTable.setInput(block.getDataBlockValidators());
-		this.setVisible(true);
-		sectionPart.updateToolBarManager();
+		updating = true;
+		try {
+			block = psb;
+			blockNameEditor.setI18nText(psb.getName(), EditMode.DIRECT);
+			uniqueButton.setSelection(block.isUnique());
+			validatorTable.setInput(block.getDataBlockValidators());
+			this.setVisible(true);
+			displayColumnCount.setSelection(block.getDisplayFieldColumnCount());
+			sectionPart.updateToolBarManager();
+		} finally {
+			updating = false;
+		}
 	}
 
 	public I18nTextEditor getBlockNameEditor() {

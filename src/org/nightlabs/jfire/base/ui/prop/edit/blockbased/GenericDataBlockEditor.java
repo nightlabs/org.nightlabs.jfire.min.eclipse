@@ -70,7 +70,8 @@ public class GenericDataBlockEditor extends AbstractDataBlockEditor {
 	
 	@Override
 	protected IDataBlockEditorComposite createEditorComposite(Composite parent) {
-		return new GenericDataBlockEditorComposite(this, parent, SWT.NONE, 1);
+		return new GenericDataBlockEditorComposite(this, parent, SWT.NONE,
+				getDataBlock().getStructBlock().getDisplayFieldColumnCount());
 	}
 
 }
