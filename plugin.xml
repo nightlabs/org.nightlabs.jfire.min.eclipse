@@ -541,6 +541,26 @@
              editorID="org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UserSecurityGroupEditor"
              perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
        </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.userconfiggroup.UserConfigGroupEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.prop.StructLocalEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
+       <registry
+             editorID="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
+             perspectiveID="org.nightlabs.jfire.base.admin.ui.BaseAdminPerspective">
+       </registry>
     </extension>
     <extension
           point="org.eclipse.ui.preferencePages">
