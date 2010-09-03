@@ -32,7 +32,9 @@ import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 
 /**
- * Default {@link IDataBlockGroupEditor} uses {@link DataBlockGroupEditorComposite}.
+ * Default {@link IDataBlockGroupEditor} uses a
+ * {@link DataBlockGroupEditorComposite} to which it delegates all methods to
+ * implement the interface.
  * 
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
  */
@@ -53,16 +55,31 @@ public class DataBlockGroupEditor implements IDataBlockGroupEditor
 	private DataBlockGroupEditorComposite editorComposite;
 
 	@Override
-	public Composite createControl(Composite parent) {
+	public final Composite createControl(Composite parent) {
 		editorComposite = createDataBlockGroupEditorComposite(parent);
 		return editorComposite;
 	}
 
-	private DataBlockGroupEditorComposite createDataBlockGroupEditorComposite(
+	/**
+	 * Creates the {@link DataBlockGroupEditorComposite} this editor delegates all methods to.
+	 * <p>
+	 * Override this method to create a custom subclass of {@link DataBlockGroupEditorComposite} here.
+	 * </p>
+	 * @param parent The parent to create the Composite for.
+	 * @return A new {@link DataBlockGroupEditorComposite}.
+	 */
+	protected DataBlockGroupEditorComposite createDataBlockGroupEditorComposite(
 			Composite parent) {
 		return new DataBlockGroupEditorComposite(parent, this);
 	}
 
+	/**
+	 * @return The {@link DataBlockGroupEditorComposite} created in {@link #createDataBlockGroupEditorComposite(Composite)}.
+	 */
+	protected DataBlockGroupEditorComposite getEditorComposite() {
+		return editorComposite;
+	}
+	
 	@Override
 	public DataBlockGroup getDataBlockGroup() {
 		checkComposite();
