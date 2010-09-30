@@ -62,8 +62,8 @@ import org.nightlabs.eclipse.extension.AbstractEPProcessor;
 import org.nightlabs.eclipse.ui.dialog.ChangePasswordDialog;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
-import org.nightlabs.jfire.base.jdo.cache.Cache;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
+import org.nightlabs.jfire.base.jdo.JDOManagerProvider;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate;
@@ -296,7 +296,8 @@ extends AbstractEPProcessor
 			changeLoginStateAndNotifyListeners(LoginState.ABOUT_TO_LOG_OUT);
 
 			try {
-				Cache.sharedInstance().close(); // cache has threads running => should be shutdown first
+				JDOManagerProvider jdoManagerProvider = GlobalJDOManagerProvider.sharedInstance();
+				jdoManagerProvider.getCache().close(); // cache has threads running => should be shutdown first
 				// remove class loader delegate
 				JFireRCDLDelegate.sharedInstance().unregister(DelegatingClassLoaderOSGI.getSharedInstance());
 				// logout
@@ -1078,25 +1079,27 @@ extends AbstractEPProcessor
 				//				if (currLoginState == LoginState.OFFLINE)
 				//					lastWorkOfflineDecisionTime = System.currentTimeMillis();
 
+				JDOManagerProvider jdoManagerProvider = GlobalJDOManagerProvider.sharedInstance();
+
 				// We should be logged in now, open the cache if not already open
 				if (newLoginState == LoginState.LOGGED_IN) {
 					try {
-						Cache.sharedInstance().open(getSessionID()); // the cache is opened implicitely now by default, but it is closed *after* a logout.
+						jdoManagerProvider.getCache().open(getSessionID()); // the cache is opened implicitely now by default, but it is closed *after* a logout.
 					} catch (Throwable t) {
 						Login.logger.debug("Cache could not be opened!", t); //$NON-NLS-1$
 					}
 				}
 
 				if (LoginState.LOGGED_IN == newLoginState && objectID2PCClassNotificationInterceptor == null) {
-					objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor();
+					objectID2PCClassNotificationInterceptor = new org.nightlabs.jfire.base.jdo.JDOObjectID2PCClassNotificationInterceptor(jdoManagerProvider);
 					SelectionManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
-					JDOLifecycleManager.sharedInstance().addInterceptor(objectID2PCClassNotificationInterceptor);
+					jdoManagerProvider.getLifecycleManager().addInterceptor(objectID2PCClassNotificationInterceptor);
 				}
 
 				//				if (LoginState.LOGGED_IN != newLoginState && objectID2PCClassNotificationInterceptor != null) {
 				if (LoginState.LOGGED_OUT == newLoginState && objectID2PCClassNotificationInterceptor != null) {
 					SelectionManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
-					JDOLifecycleManager.sharedInstance().removeInterceptor(objectID2PCClassNotificationInterceptor);
+					jdoManagerProvider.getLifecycleManager().removeInterceptor(objectID2PCClassNotificationInterceptor);
 					objectID2PCClassNotificationInterceptor = null;
 				}
 
