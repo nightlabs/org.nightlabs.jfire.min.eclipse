@@ -17,10 +17,12 @@ import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
+import org.nightlabs.jfire.security.AbstractSecurityReflector;
 import org.nightlabs.jfire.security.AuthorizedObjectRefLifecycleListenerFilter;
+import org.nightlabs.jfire.security.ISecurityReflector;
 import org.nightlabs.jfire.security.JFireSecurityManagerRemote;
 import org.nightlabs.jfire.security.NoUserException;
-import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.jfire.security.UserDescriptor;
 import org.nightlabs.jfire.security.id.AuthorityID;
 import org.nightlabs.jfire.security.id.RoleID;
 import org.nightlabs.jfire.security.id.UserLocalID;
@@ -29,13 +31,14 @@ import org.nightlabs.jfire.security.id.UserLocalID;
  * @author Marco Schulze - marco at nightlabs dot de
  */
 public class SecurityReflectorRCP
-extends SecurityReflector
+extends AbstractSecurityReflector
+implements ISecurityReflector
 {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(SecurityReflectorRCP.class);
 
 	@Override
-	public UserDescriptor _getUserDescriptor() throws NoUserException {
+	public UserDescriptor getUserDescriptor() throws NoUserException {
 		if (logger.isDebugEnabled())
 			logger.debug("_getUserDescriptor: enter"); //$NON-NLS-1$
 
@@ -49,7 +52,7 @@ extends SecurityReflector
 	}
 
 	@Override
-	protected InitialContext _createInitialContext() throws NoUserException {
+	public InitialContext createInitialContext() throws NoUserException {
 		try {
 			return Login.getLogin().createInitialContext();
 		} catch (Exception e) {
@@ -58,7 +61,7 @@ extends SecurityReflector
 	}
 
 	@Override
-	protected Properties _getInitialContextProperties() throws NoUserException {
+	public Properties getInitialContextProperties() throws NoUserException {
 		try {
 			return Login.getLogin().getInitialContextProperties();
 		} catch (Exception e) {
@@ -69,14 +72,14 @@ extends SecurityReflector
 	private Map<AuthorityID, Set<RoleID>> cache_authorityID2roleIDSet = new HashMap<AuthorityID, Set<RoleID>>();
 
 	@Override
-	protected synchronized Set<RoleID> _getRoleIDs(AuthorityID authorityID) throws NoUserException
+	public synchronized Set<RoleID> getRoleIDs(AuthorityID authorityID) throws NoUserException
 	{
 		Set<RoleID> result = cache_authorityID2roleIDSet.get(authorityID);
 		if (result != null)
 			return result;
 
 		try {
-			JFireSecurityManagerRemote jfireSecurityManager = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, _getInitialContextProperties());
+			JFireSecurityManagerRemote jfireSecurityManager = JFireEjb3Factory.getRemoteBean(JFireSecurityManagerRemote.class, getInitialContextProperties());
 			result = jfireSecurityManager.getRoleIDs(authorityID);
 		} catch (NoUserException e) {
 			throw e;
@@ -100,7 +103,7 @@ extends SecurityReflector
 		private IJDOLifecycleListenerFilter filter;
 
 		public AuthorizedObjectRefLifecycleListener() {
-			UserDescriptor userDescriptor = _getUserDescriptor();
+			UserDescriptor userDescriptor = getUserDescriptor();
 			filter = new AuthorizedObjectRefLifecycleListenerFilter(
 					UserLocalID.create(userDescriptor.getOrganisationID(), userDescriptor.getUserID(), userDescriptor.getOrganisationID()),
 					JDOLifecycleState.DIRTY, JDOLifecycleState.DELETED
