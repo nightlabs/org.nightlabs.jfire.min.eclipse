@@ -14,13 +14,14 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.structfield.DateStructField;
 import org.nightlabs.l10n.DateFormatter;
+import org.nightlabs.l10n.IDateFormatter;
 
 class DateStructFieldEditComposite extends XComposite {
 	private DateStructField dateField;
-	private XComboComposite<String> dateFormatCombo;
-	private Label exampleLabel;
-	private XComposite comp;
-	private DateStructFieldEditor dateStructFieldEditor;
+	private final XComboComposite<String> dateFormatCombo;
+	private final Label exampleLabel;
+	private final XComposite comp;
+	private final DateStructFieldEditor dateStructFieldEditor;
 
 	private void updateExampleLabelText() {
 		exampleLabel.setText(
@@ -30,7 +31,7 @@ class DateStructFieldEditComposite extends XComposite {
 		exampleLabel.getParent().layout();
 	}
 
-	public DateStructFieldEditComposite(Composite parent, int style, DateStructFieldEditor _dateStructFieldEditor) {
+	public DateStructFieldEditComposite(final Composite parent, final int style, final DateStructFieldEditor _dateStructFieldEditor) {
 		super(parent, style | SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 
 		this.dateStructFieldEditor = _dateStructFieldEditor;
@@ -41,22 +42,22 @@ class DateStructFieldEditComposite extends XComposite {
 		exampleLabel = new Label(comp, SWT.NONE);
 		updateExampleLabelText();
 
-		dateFormatCombo.setInput( Arrays.asList(DateFormatter.FLAG_NAMES) );
+		dateFormatCombo.setInput( Arrays.asList(IDateFormatter.FLAG_NAMES) );
 
 		dateFormatCombo.addSelectionListener(new SelectionListener() {
-			private void selectionChanged(SelectionEvent event) {
-				int selectionIndex = dateFormatCombo.getSelectionIndex();
-				dateField.setDateTimeEditFlags(DateFormatter.FLAGS[selectionIndex]);
+			private void selectionChanged(final SelectionEvent event) {
+				final int selectionIndex = dateFormatCombo.getSelectionIndex();
+				dateField.setDateTimeEditFlags(IDateFormatter.FLAGS[selectionIndex]);
 				dateStructFieldEditor.setChanged();
 
 				updateExampleLabelText();
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 				selectionChanged(e);
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				selectionChanged(e);
 			}
 		});
@@ -67,9 +68,9 @@ class DateStructFieldEditComposite extends XComposite {
 	 * 
 	 * @param field The {@link DateStructField} to be displayed. Can be null.
 	 */
-	public void setField(DateStructField field) {
-//		if (field == null) // this is bad practice, imho. Either throw an exception or set it and support it. I'll support it now ;-) Marco.
-//			return;
+	public void setField(final DateStructField field) {
+		//		if (field == null) // this is bad practice, imho. Either throw an exception or set it and support it. I'll support it now ;-) Marco.
+		//			return;
 
 		dateField = field;
 
@@ -77,7 +78,7 @@ class DateStructFieldEditComposite extends XComposite {
 			dateFormatCombo.setSelection(-1);
 		else {
 			int index = 0;
-			while (index < DateFormatter.FLAGS.length && DateFormatter.FLAGS[index] != dateField.getDateTimeEditFlags()) {
+			while (index < IDateFormatter.FLAGS.length && IDateFormatter.FLAGS[index] != dateField.getDateTimeEditFlags()) {
 				index++;
 			}
 			dateFormatCombo.setSelection(index);
