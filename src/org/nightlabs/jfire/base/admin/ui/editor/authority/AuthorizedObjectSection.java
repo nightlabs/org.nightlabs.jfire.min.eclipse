@@ -18,8 +18,15 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.IFormPage;
@@ -49,6 +56,29 @@ implements ISelectionProvider
 				setAuthorityPageControllerHelper(null);
 			}
 		});
+		
+		authorizedObjectTable.getTable().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.character == ' ') { 
+					final List<AuthorizedObject> selectedObjects = getSelectedAuthorizedObjects();
+					Display.getCurrent().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							for (AuthorizedObject selectedObject : selectedObjects) {
+								for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+									if (me.getKey().equals(selectedObject)) {
+										me.setValue(!me.getValue());
+									}
+								}
+							}
+							authorizedObjectTable.refresh();
+							markDirty();
+						}
+					});
+				}
+			}
+		});
 
 		authorizedObjectTable.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -56,6 +86,35 @@ implements ISelectionProvider
 				selectedAuthorizedObjects = null;
 				selection = null;
 				fireSelectionChangedEvent();
+			}
+		});
+		
+		Composite buttonComposite = new Composite(getContainer(), SWT.NONE);
+		buttonComposite.setLayout(new RowLayout());
+		
+		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
+		selectAllButton.setText("Select All");
+		selectAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+					me.setValue(true);
+				}
+				authorizedObjectTable.refresh();
+				markDirty();
+			}
+		});
+		
+		Button clearAllButton = new Button(buttonComposite, SWT.PUSH);
+		clearAllButton.setText("Clear");
+		clearAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+					me.setValue(false);
+				}
+				authorizedObjectTable.refresh();
+				markDirty();
 			}
 		});
 	}
