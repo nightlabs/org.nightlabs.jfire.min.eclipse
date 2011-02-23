@@ -52,6 +52,10 @@ public class RoleGroupSecurityPreferencesModel extends BaseModel
 		modelChanged();
 	}
 
+	public boolean contains(RoleGroup roleGroup) {
+		return roleGroupsAssignedDirectly.contains(roleGroup);
+	}
+	
 	public void addRoleGroup(RoleGroup roleGroup) {
 		this.roleGroupsAssignedDirectly.add(roleGroup);
 		modelChanged();

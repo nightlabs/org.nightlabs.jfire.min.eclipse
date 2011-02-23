@@ -2,11 +2,15 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -25,6 +29,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 
 /**
@@ -75,6 +80,33 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
 
 		userSecurityGroupTableViewer = new UserSecurityGroupTableViewer(createUserSecurityGroupsTable(toolkit, container), UserUtil.getSectionDirtyStateManager(this));
+		userSecurityGroupTableViewer.getTable().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.character == ' ') { 
+					UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
+					IStructuredSelection sel = (IStructuredSelection)userSecurityGroupTableViewer.getSelection();
+					if (sel.size() > 1) {
+						for (Iterator<UserSecurityGroup> iterator = sel.iterator(); iterator.hasNext();) {
+							UserSecurityGroup userSecurityGroup = (UserSecurityGroup)iterator.next();
+							model.addElement(userSecurityGroup);
+						}
+					}
+					else {
+						UserSecurityGroup userSecurityGroup = (UserSecurityGroup)sel.getFirstElement();
+						if (model.contains(userSecurityGroup)) {
+							model.removeElement(userSecurityGroup);
+						}
+						else {
+							model.addElement(userSecurityGroup);
+						}
+					}
+					
+					userSecurityGroupTableViewer.refresh();
+					markDirty();
+				}
+			}
+		});
 		
 		checkSelectedAction = new CheckSelectedAction();
 		uncheckSelectedAction = new UncheckSelectedAction();
@@ -97,7 +129,7 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 		Menu menu = menuManager.createContextMenu(userSecurityGroupTableViewer.getTable());
 		userSecurityGroupTableViewer.getTable().setMenu(menu);	
 	}
-
+	
 	public void setModel(final UserSecurityPreferencesModel model) {
 		this.model = model;
 		Display.getDefault().asyncExec(new Runnable() {

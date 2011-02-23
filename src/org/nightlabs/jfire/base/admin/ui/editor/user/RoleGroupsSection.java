@@ -32,6 +32,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -124,6 +126,33 @@ public class RoleGroupsSection extends ToolBarSectionPart
 		toolkit.paintBordersFor(fTable);
 		roleGroupTableViewer = new RoleGroupTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this), showAssignmentSourceColum, showCheckBoxes);
 		roleGroupTableViewer.setComparator(roleGroupComparator);
+		fTable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.character == ' ') { 
+					RoleGroupSecurityPreferencesModel model = roleGroupTableViewer.getModel();
+					IStructuredSelection sel = (IStructuredSelection)roleGroupTableViewer.getSelection();
+					if (sel.size() > 1) {
+						for (Iterator<RoleGroup> iterator = sel.iterator(); iterator.hasNext();) {
+							RoleGroup roleGroup = (RoleGroup)iterator.next();
+							model.addRoleGroup(roleGroup);
+						}
+					}
+					else {
+						RoleGroup roleGroup = (RoleGroup)sel.getFirstElement();
+						if (model.contains(roleGroup)) {
+							model.removeRoleGroup(roleGroup);
+						}
+						else {
+							model.addRoleGroup(roleGroup);
+						}
+					}
+					
+					roleGroupTableViewer.refresh();
+					markDirty();
+				}
+			}
+		});
 		
 //		excludedRoleGroupsViewer = new TableViewer(createRoleGroupsTable(toolkit, container));
 //		excludedRoleGroupsViewer.setContentProvider(new RoleGroupsContentProvider());
