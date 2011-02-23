@@ -13,6 +13,7 @@ import javax.jdo.JDOHelper;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -25,6 +26,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -103,6 +105,15 @@ implements ISelectionProvider
 		getToolBarManager().add(uncheckAllAction);
 		
 		updateToolBarManager();
+		
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(checkSelectedAction);
+		menuManager.add(uncheckSelectedAction);
+		menuManager.add(checkAllAction);
+		menuManager.add(uncheckAllAction);
+		
+		Menu menu = menuManager.createContextMenu(authorizedObjectTable.getTable());
+		authorizedObjectTable.getTable().setMenu(menu);	
 	}
 
 	private List<Map.Entry<AuthorizedObject, Boolean>> authorizedObjects = new ArrayList<Map.Entry<AuthorizedObject,Boolean>>();

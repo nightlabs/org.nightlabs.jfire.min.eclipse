@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -85,6 +87,15 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 		getToolBarManager().add(uncheckAllAction);
 		
 		updateToolBarManager();
+		
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(checkSelectedAction);
+		menuManager.add(uncheckSelectedAction);
+		menuManager.add(checkAllAction);
+		menuManager.add(uncheckAllAction);
+		
+		Menu menu = menuManager.createContextMenu(userSecurityGroupTableViewer.getTable());
+		userSecurityGroupTableViewer.getTable().setMenu(menu);	
 	}
 
 	public void setModel(final UserSecurityPreferencesModel model) {
