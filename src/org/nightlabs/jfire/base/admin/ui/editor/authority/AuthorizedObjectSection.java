@@ -12,28 +12,26 @@ import java.util.Map.Entry;
 import javax.jdo.JDOHelper;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
+import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
+import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.id.AuthorizedObjectID;
@@ -44,6 +42,11 @@ implements ISelectionProvider
 {
 	private AuthorizedObjectTableViewer authorizedObjectTable;
 
+	private CheckSelectedAction checkSelectedAction;
+	private UncheckSelectedAction uncheckSelectedAction;
+	private CheckAllAction checkAllAction;
+	private UncheckAllAction uncheckAllAction;
+	
 	public AuthorizedObjectSection(IFormPage page, Composite parent) {
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.authority.AuthorizedObjectSection.title.authorizedObjects")); //$NON-NLS-1$
 
@@ -88,35 +91,18 @@ implements ISelectionProvider
 				fireSelectionChangedEvent();
 			}
 		});
+
+		checkSelectedAction = new CheckSelectedAction();
+		uncheckSelectedAction = new UncheckSelectedAction();
+		checkAllAction = new CheckAllAction();
+		uncheckAllAction = new UncheckAllAction();
+
+		getToolBarManager().add(checkSelectedAction);
+		getToolBarManager().add(uncheckSelectedAction);
+		getToolBarManager().add(checkAllAction);
+		getToolBarManager().add(uncheckAllAction);
 		
-		Composite buttonComposite = new Composite(getContainer(), SWT.NONE);
-		buttonComposite.setLayout(new RowLayout());
-		
-		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
-		selectAllButton.setText("Select All");
-		selectAllButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
-					me.setValue(true);
-				}
-				authorizedObjectTable.refresh();
-				markDirty();
-			}
-		});
-		
-		Button clearAllButton = new Button(buttonComposite, SWT.PUSH);
-		clearAllButton.setText("Clear");
-		clearAllButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
-					me.setValue(false);
-				}
-				authorizedObjectTable.refresh();
-				markDirty();
-			}
-		});
+		updateToolBarManager();
 	}
 
 	private List<Map.Entry<AuthorizedObject, Boolean>> authorizedObjects = new ArrayList<Map.Entry<AuthorizedObject,Boolean>>();
@@ -275,5 +261,139 @@ implements ISelectionProvider
 		}
 
 		authorizedObjectTable.setSelection(new StructuredSelection(elementsToBeSelected));
+	}
+	
+	public class CheckSelectedAction extends Action {
+		public CheckSelectedAction() {
+			super();
+			setId(CheckSelectedAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					AuthorizedObjectSection.class,
+					"CheckSelected")); //$NON-NLS-1$
+			setToolTipText("Check Selected");
+			setText("Check Selected");
+		}
+
+		@Override
+		public void run() {
+			final List<AuthorizedObject> selectedObjects = getSelectedAuthorizedObjects();
+			Display.getCurrent().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					for (AuthorizedObject selectedObject : selectedObjects) {
+						for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+							if (me.getKey().equals(selectedObject)) {
+								me.setValue(true);
+							}
+						}
+					}
+					authorizedObjectTable.refresh();
+					markDirty();
+				}
+			});
+		}
+	}
+	
+	public class UncheckSelectedAction extends Action {
+		public UncheckSelectedAction() {
+			super();
+			setId(UncheckSelectedAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					AuthorizedObjectSection.class,
+					"UncheckSelected")); //$NON-NLS-1$
+			setToolTipText("Uncheck Selected");
+			setText("Uncheck Selected");
+		}
+
+		@Override
+		public void run() {
+			final List<AuthorizedObject> selectedObjects = getSelectedAuthorizedObjects();
+			Display.getCurrent().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					for (AuthorizedObject selectedObject : selectedObjects) {
+						for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+							if (me.getKey().equals(selectedObject)) {
+								me.setValue(false);
+							}
+						}
+					}
+					authorizedObjectTable.refresh();
+					markDirty();
+				}
+			});
+		}
+	}
+	
+	public class CheckAllAction extends Action {
+		public CheckAllAction() {
+			super();
+			setId(CheckAllAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					AuthorizedObjectSection.class,
+					"CheckAll")); //$NON-NLS-1$
+			setToolTipText("Check All");
+			setText("Check All");
+		}
+
+		@Override
+		public void run() {
+			for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+				me.setValue(true);
+			}
+			authorizedObjectTable.refresh();
+			markDirty();
+		}
+	}
+	
+	public class UncheckAllAction extends Action {
+		public UncheckAllAction() {
+			super();
+			setId(UncheckAllAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					AuthorizedObjectSection.class,
+					"UncheckAll")); //$NON-NLS-1$
+			setToolTipText("Uncheck All");
+			setText("Uncheck All");
+		}
+
+		@Override
+		public void run() {
+			for (Map.Entry<AuthorizedObject, Boolean> me : authorizedObjects) {
+				me.setValue(false);
+			}
+			authorizedObjectTable.refresh();
+			markDirty();
+		}
+	}
+	
+	private void createContextMenu() {
+//		// Relegate the menu-items to the menu-manager.
+//		menuMgr = authorizedObjectTable.getgetMenuManager();
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager m) {
+//				menuMgr.add(editIssueAction);
+//				menuMgr.add(deleteIssueAction);
+//				menuMgr.add(resolveAllAction);
+//				menuMgr.add(closeAllAction);
+//				menuMgr.add(assignAllAction);
+//				menuMgr.add(setPropertyAction);
+//			}
+//		});
+//
+//		// Create the menu and attach it to the IssueTable.
+//		Menu menu = menuMgr.createContextMenu(issueResultTable);
+//		issueResultTable.setMenu(menu); // <-- Hmm... this seems enough? Do we need to do this: 'getSite().registerContextMenu(menuMgr, issueTable);'
+//
+//		// Define the behaviour of the menu items wrt the selections, or lack thereof, in the IssueTable.
+//		issueResultTable.addSelectionChangedListener(new ISelectionChangedListener(){
+//			@Override
+//			public void selectionChanged(SelectionChangedEvent event) { handleContextMenuItems(); }
+//		});
 	}
 }

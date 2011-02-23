@@ -1,5 +1,10 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -12,17 +17,20 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.composite.XComposite;
-import org.nightlabs.base.ui.editor.RestorableSectionPart;
+import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
+import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.security.UserSecurityGroup;
 
 /**
  * The section containing the user groups controls for the {@link PersonPreferencesPage}.
  *
  * @author Tobias Langner <!-- tobias[dot]langner[at]nightlabs[dot]de -->
  */
-public class UserSecurityGroupsSection extends RestorableSectionPart {
+public class UserSecurityGroupsSection extends ToolBarSectionPart {
 
 	/**
 	 * The editor model.
@@ -31,6 +39,11 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 
 	UserSecurityGroupTableViewer userSecurityGroupTableViewer;
 
+	private CheckSelectedAction checkSelectedAction;
+	private UncheckSelectedAction uncheckSelectedAction;
+	private CheckAllAction checkAllAction;
+	private UncheckAllAction uncheckAllAction;
+	
 	/**
 	 * Create an instance of UserSecurityGroupsSection.
 	 * @param parent The parent for this section
@@ -38,7 +51,7 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 	 */
 	public UserSecurityGroupsSection(FormPage page, Composite parent)
 	{
-		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.sectionTitle")); //$NON-NLS-1$);
 		createClient(getSection(), page.getEditor().getToolkit());
 	}
 
@@ -51,7 +64,6 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 	 */
 	protected void createClient(Section section, FormToolkit toolkit)
 	{
-		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -61,6 +73,18 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
 
 		userSecurityGroupTableViewer = new UserSecurityGroupTableViewer(createUserSecurityGroupsTable(toolkit, container), UserUtil.getSectionDirtyStateManager(this));
+		
+		checkSelectedAction = new CheckSelectedAction();
+		uncheckSelectedAction = new UncheckSelectedAction();
+		checkAllAction = new CheckAllAction();
+		uncheckAllAction = new UncheckAllAction();
+
+		getToolBarManager().add(checkSelectedAction);
+		getToolBarManager().add(uncheckSelectedAction);
+		getToolBarManager().add(checkAllAction);
+		getToolBarManager().add(uncheckAllAction);
+		
+		updateToolBarManager();
 	}
 
 	public void setModel(final UserSecurityPreferencesModel model) {
@@ -109,5 +133,103 @@ public class UserSecurityGroupsSection extends RestorableSectionPart {
 		toolkit.paintBordersFor(fTable);
 		//createContextMenu(fTable);
 		return fTable;
+	}
+	
+	public class CheckSelectedAction extends Action {
+		public CheckSelectedAction() {
+			super();
+			setId(CheckSelectedAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					UserSecurityGroupsSection.class,
+					"CheckSelected")); //$NON-NLS-1$
+			setToolTipText("Check Selected");
+			setText("Check Selected");
+		}
+
+		@Override
+		public void run() {
+			UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
+			IStructuredSelection sel = (IStructuredSelection)userSecurityGroupTableViewer.getSelection();
+			for (Iterator<UserSecurityGroup> iterator = sel.iterator(); iterator.hasNext();) {
+				UserSecurityGroup userSecurityGroup = (UserSecurityGroup)iterator.next();
+				model.addElement(userSecurityGroup);
+				userSecurityGroupTableViewer.refresh();
+				markDirty();
+			}
+		}
+	}
+	
+	public class UncheckSelectedAction extends Action {
+		public UncheckSelectedAction() {
+			super();
+			setId(UncheckSelectedAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					UserSecurityGroupsSection.class,
+					"UncheckSelected")); //$NON-NLS-1$
+			setToolTipText("Uncheck Selected");
+			setText("Uncheck Selected");
+		}
+
+		@Override
+		public void run() {
+			UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
+			IStructuredSelection sel = (IStructuredSelection)userSecurityGroupTableViewer.getSelection();
+			for (Iterator<UserSecurityGroup> iterator = sel.iterator(); iterator.hasNext();) {
+				UserSecurityGroup userSecurityGroup = (UserSecurityGroup)iterator.next();
+				model.removeElement(userSecurityGroup);
+				userSecurityGroupTableViewer.refresh();
+				markDirty();
+			}
+		}
+	}
+	
+	public class CheckAllAction extends Action {
+		public CheckAllAction() {
+			super();
+			setId(CheckAllAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					UserSecurityGroupsSection.class,
+					"CheckAll")); //$NON-NLS-1$
+			setToolTipText("Check All");
+			setText("Check All");
+		}
+
+		@Override
+		public void run() {
+			UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
+			Collection<UserSecurityGroup> userSecurityGroups = model.getAvailableUserSecurityGroups();
+			for (UserSecurityGroup userSecurityGroup : userSecurityGroups) {
+				model.addElement(userSecurityGroup);
+			}
+			userSecurityGroupTableViewer.refresh();
+			markDirty();
+		}
+	}
+	
+	public class UncheckAllAction extends Action {
+		public UncheckAllAction() {
+			super();
+			setId(UncheckAllAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					UserSecurityGroupsSection.class,
+					"UncheckAll")); //$NON-NLS-1$
+			setToolTipText("Uncheck All");
+			setText("Uncheck All");
+		}
+
+		@Override
+		public void run() {
+			UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
+			Collection<UserSecurityGroup> userSecurityGroups = model.getUserSecurityGroups();
+			for (UserSecurityGroup userSecurityGroup : userSecurityGroups) {
+				model.removeElement(userSecurityGroup);
+			}
+			userSecurityGroupTableViewer.refresh();
+			markDirty();
+		}
 	}
 }

@@ -23,6 +23,11 @@
  ******************************************************************************/
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -36,8 +41,10 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.nightlabs.base.ui.editor.RestorableSectionPart;
+import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
+import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.security.RoleGroup;
 
@@ -47,7 +54,7 @@ import org.nightlabs.jfire.security.RoleGroup;
  * @version $Revision$ - $Date$
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class RoleGroupsSection extends RestorableSectionPart
+public class RoleGroupsSection extends ToolBarSectionPart
 {
 	/**
 	 * The editor model.
@@ -66,6 +73,11 @@ public class RoleGroupsSection extends RestorableSectionPart
 	
 	RoleGroupTableViewer roleGroupTableViewer;
 
+	private CheckSelectedAction checkSelectedAction;
+	private UncheckSelectedAction uncheckSelectedAction;
+	private CheckAllAction checkAllAction;
+	private UncheckAllAction uncheckAllAction;
+	
 	/**
 	 * Create an instance of RoleGroupsSection.
 	 * @param parent The parent for this section
@@ -78,7 +90,7 @@ public class RoleGroupsSection extends RestorableSectionPart
 
 	public RoleGroupsSection(FormPage page, Composite parent, boolean showTotalAvailColumn, boolean showCheckBoxes)
 	{
-		super(parent, page.getEditor().getToolkit(), ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
+		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.sectionTitle")); //$NON-NLS-1$
 		createClient(getSection(), page.getEditor().getToolkit(), showTotalAvailColumn, showCheckBoxes);
 	}
 
@@ -89,7 +101,6 @@ public class RoleGroupsSection extends RestorableSectionPart
 	 */
 	protected void createClient(Section section, FormToolkit toolkit, boolean showAssignmentSourceColum, boolean showCheckBoxes)
 	{
-		section.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.sectionTitle")); //$NON-NLS-1$
 		section.setExpanded(true);
 		section.setLayout(new GridLayout());
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -123,6 +134,18 @@ public class RoleGroupsSection extends RestorableSectionPart
 //		includedRoleGroupsViewer.setContentProvider(new RoleGroupsContentProvider());
 //		includedRoleGroupsViewer.setLabelProvider(new RoleGroupsLabelProvider());
 //		includedRoleGroupsViewer.setComparator(roleGroupComparator);
+		
+		checkSelectedAction = new CheckSelectedAction();
+		uncheckSelectedAction = new UncheckSelectedAction();
+		checkAllAction = new CheckAllAction();
+		uncheckAllAction = new UncheckAllAction();
+
+		getToolBarManager().add(checkSelectedAction);
+		getToolBarManager().add(uncheckSelectedAction);
+		getToolBarManager().add(checkAllAction);
+		getToolBarManager().add(uncheckAllAction);
+		
+		updateToolBarManager();
 	}
 
 	private void createDescriptionControl(Section section, FormToolkit toolkit, boolean showAssignmentSourceColum, boolean showCheckBoxes)
@@ -232,4 +255,101 @@ public class RoleGroupsSection extends RestorableSectionPart
 //		toolkit.paintBordersFor(container);
 //	}
 
+	public class CheckSelectedAction extends Action {
+		public CheckSelectedAction() {
+			super();
+			setId(CheckSelectedAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					RoleGroupsSection.class,
+					"CheckSelected")); //$NON-NLS-1$
+			setToolTipText("Check Selected");
+			setText("Check Selected");
+		}
+
+		@Override
+		public void run() {
+			RoleGroupSecurityPreferencesModel model = roleGroupTableViewer.getModel();
+			IStructuredSelection sel = (IStructuredSelection)roleGroupTableViewer.getSelection();
+			for (Iterator<RoleGroup> iterator = sel.iterator(); iterator.hasNext();) {
+				RoleGroup roleGroup = (RoleGroup)iterator.next();
+				model.addRoleGroup(roleGroup);
+				roleGroupTableViewer.refresh();
+				markDirty();
+			}
+		}
+	}
+	
+	public class UncheckSelectedAction extends Action {
+		public UncheckSelectedAction() {
+			super();
+			setId(UncheckSelectedAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					RoleGroupsSection.class,
+					"UncheckSelected")); //$NON-NLS-1$
+			setToolTipText("Uncheck Selected");
+			setText("Uncheck Selected");
+		}
+
+		@Override
+		public void run() {
+			RoleGroupSecurityPreferencesModel model = roleGroupTableViewer.getModel();
+			IStructuredSelection sel = (IStructuredSelection)roleGroupTableViewer.getSelection();
+			for (Iterator<RoleGroup> iterator = sel.iterator(); iterator.hasNext();) {
+				RoleGroup roleGroup = (RoleGroup)iterator.next();
+				model.removeRoleGroup(roleGroup);
+				roleGroupTableViewer.refresh();
+				markDirty();
+			}
+		}
+	}
+	
+	public class CheckAllAction extends Action {
+		public CheckAllAction() {
+			super();
+			setId(CheckAllAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					RoleGroupsSection.class,
+					"CheckAll")); //$NON-NLS-1$
+			setToolTipText("Check All");
+			setText("Check All");
+		}
+
+		@Override
+		public void run() {
+			RoleGroupSecurityPreferencesModel model = roleGroupTableViewer.getModel();
+			Collection<RoleGroup> roleGroups = model.getAllRoleGroupsInAuthority();
+			for (RoleGroup roleGroup : roleGroups) {
+				model.addRoleGroup(roleGroup);
+			}
+			roleGroupTableViewer.refresh();
+			markDirty();
+		}
+	}
+	
+	public class UncheckAllAction extends Action {
+		public UncheckAllAction() {
+			super();
+			setId(UncheckAllAction.class.getName());
+			setImageDescriptor(SharedImages.getSharedImageDescriptor(
+					BaseAdminPlugin.getDefault(),
+					RoleGroupsSection.class,
+					"UncheckAll")); //$NON-NLS-1$
+			setToolTipText("Uncheck All");
+			setText("Uncheck All");
+		}
+
+		@Override
+		public void run() {
+			RoleGroupSecurityPreferencesModel model = roleGroupTableViewer.getModel();
+			Collection<RoleGroup> roleGroups = model.getAllRoleGroupsInAuthority();
+			for (RoleGroup roleGroup : roleGroups) {
+				model.removeRoleGroup(roleGroup);
+			}
+			roleGroupTableViewer.refresh();
+			markDirty();
+		}
+	}
 }

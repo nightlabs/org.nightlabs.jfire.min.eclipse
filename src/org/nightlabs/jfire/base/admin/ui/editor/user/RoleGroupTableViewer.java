@@ -368,6 +368,10 @@ public class RoleGroupTableViewer extends TableViewer
 		}
 	};
 
+	public RoleGroupSecurityPreferencesModel getModel() {
+		return model;
+	}
+	
 	public void setModel(RoleGroupSecurityPreferencesModel model) {
 		this.model = model;
 
