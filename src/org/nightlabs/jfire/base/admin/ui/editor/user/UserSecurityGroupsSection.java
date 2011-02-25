@@ -2,8 +2,6 @@ package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -29,7 +27,6 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.security.AuthorizedObject;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 
 /**
@@ -197,9 +194,9 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 			for (Iterator<UserSecurityGroup> iterator = sel.iterator(); iterator.hasNext();) {
 				UserSecurityGroup userSecurityGroup = (UserSecurityGroup)iterator.next();
 				model.addElement(userSecurityGroup);
-				userSecurityGroupTableViewer.refresh();
-				markDirty();
 			}
+			userSecurityGroupTableViewer.refresh();
+			markDirty();
 		}
 	}
 	
@@ -222,9 +219,9 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 			for (Iterator<UserSecurityGroup> iterator = sel.iterator(); iterator.hasNext();) {
 				UserSecurityGroup userSecurityGroup = (UserSecurityGroup)iterator.next();
 				model.removeElement(userSecurityGroup);
-				userSecurityGroupTableViewer.refresh();
-				markDirty();
 			}
+			userSecurityGroupTableViewer.refresh();
+			markDirty();
 		}
 	}
 	
