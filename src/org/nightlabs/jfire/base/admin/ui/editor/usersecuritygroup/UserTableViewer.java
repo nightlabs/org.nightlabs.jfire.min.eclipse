@@ -107,6 +107,10 @@ public class UserTableViewer extends TableViewer
 		setLabelProvider(new UserLabelProvider(this));
 	}
 
+	public GroupSecurityPreferencesModel getModel() {
+		return model;
+	}
+	
 	public void setModel(GroupSecurityPreferencesModel model) {
 		this.model = model;
 		setInput(model.getAvailableUsers());
