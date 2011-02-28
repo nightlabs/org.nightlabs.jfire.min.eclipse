@@ -229,7 +229,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesController.job.reloadingRoleGroups")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
-				Collection<UserSecurityGroupID> userSecurityGroupIDs = NLJDOHelper.getObjectIDSet(userModel.getUserSecurityGroups());
+				Collection<UserSecurityGroupID> userSecurityGroupIDs = NLJDOHelper.getObjectIDSet(new HashSet<UserSecurityGroup>(userModel.getUserSecurityGroups()));
 				Set<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserSecurityGroups(
 						userSecurityGroupIDs,
 						getAuthorityID(),

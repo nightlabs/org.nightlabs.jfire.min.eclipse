@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -240,7 +241,7 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 		@Override
 		public void run() {
 			UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
-			Collection<UserSecurityGroup> userSecurityGroups = model.getAvailableUserSecurityGroups();
+			Collection<UserSecurityGroup> userSecurityGroups = new ArrayList<UserSecurityGroup>(model.getAvailableUserSecurityGroups());
 			for (UserSecurityGroup userSecurityGroup : userSecurityGroups) {
 				model.addElement(userSecurityGroup);
 			}
@@ -264,7 +265,7 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 		@Override
 		public void run() {
 			UserSecurityPreferencesModel model = userSecurityGroupTableViewer.getModel();
-			Collection<UserSecurityGroup> userSecurityGroups = model.getUserSecurityGroups();
+			Collection<UserSecurityGroup> userSecurityGroups = new ArrayList<UserSecurityGroup>(model.getUserSecurityGroups());
 			for (UserSecurityGroup userSecurityGroup : userSecurityGroups) {
 				model.removeElement(userSecurityGroup);
 			}
