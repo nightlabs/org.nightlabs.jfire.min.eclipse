@@ -370,6 +370,9 @@ extends AbstractTreeComposite<JDOObject>
 		 * with the original parameters.
 		 */
 		public void handleLoad(final List<TreeNode> children) {
+			if (getJDOObjectTreeController() == null)
+				return;
+			
 			getJDOObjectTreeController().removeJDOTreeNodesChangedListener(this);	//FIXME: I've just got a java.lang.NullPointerException at this line when loading the tree elements. , Chairat
 			if (expandLevel + 1 <= totalLevel) {
 				logger.debug(Util.addLeadingChars(element.toString(), element.toString().length() + expandLevel + 1, ' '));
