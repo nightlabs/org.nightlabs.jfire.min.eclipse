@@ -27,8 +27,10 @@
 package org.nightlabs.jfire.base.admin.ui.organisation.create;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 
 
 /**
@@ -37,18 +39,30 @@ import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public class CreateOrganisationAction
-extends LSDWorkbenchWindowActionDelegate
-{
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-   */
-  @Override
+implements IViewActionDelegate {
+
+	public static final String ID = CreateOrganisationAction.class.getName();
+
+	private IViewPart viewPart;
+	@Override
+	public void init(IViewPart viewPart) {
+		this.viewPart = viewPart;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
+	@Override
 	public void run(IAction action)
-  {
-  	try {
-      new WizardDialog(getWindow().getShell(), new CreateOrganisationWizard()).open();
-  	} catch(Exception e) {
-  		throw new RuntimeException(e);
-  	}
-  }
+	{
+		try {
+			new WizardDialog(viewPart.getSite().getShell(), new CreateOrganisationWizard()).open();
+		} catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void selectionChanged(IAction arg0, ISelection arg1) {
+	}
 }

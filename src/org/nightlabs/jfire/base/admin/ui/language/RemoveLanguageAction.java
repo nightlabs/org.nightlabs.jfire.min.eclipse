@@ -27,29 +27,37 @@
 package org.nightlabs.jfire.base.admin.ui.language;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * Action opening wizard dialog for {@link RemoveLanguageWizard}.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
+ * @author Fitas Amine - fitas[at]nightlabs[dot]de
  */
-public class RemoveLanguageAction extends LSDWorkbenchWindowActionDelegate {
-
-	/**
-	 * {@inheritDoc}
-	 */
+public class RemoveLanguageAction implements IViewActionDelegate{ 
+	
+	private IViewPart viewPart;
 	@Override
+	public void init(IViewPart viewPart) {
+		this.viewPart = viewPart;
+	}
+	
 	public void run(IAction arg0) {
 		try {
 			Login.getLogin(false).setForceLogin(true);
 			Login.getLogin();
 			final RemoveLanguageWizard wiz = new RemoveLanguageWizard();
-			final WizardDialog wizardDialog = new WizardDialog(getWindow().getShell(), wiz);
+			final WizardDialog wizardDialog = new WizardDialog(viewPart.getSite().getShell(), wiz);
 			wizardDialog.open();
 		} catch (final Exception e) {
-//			throw new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
+
+	@Override
+	public void selectionChanged(IAction arg0, ISelection arg1) {}
 }

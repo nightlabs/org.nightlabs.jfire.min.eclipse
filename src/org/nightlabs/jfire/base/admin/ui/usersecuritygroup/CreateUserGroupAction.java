@@ -27,9 +27,11 @@
 package org.nightlabs.jfire.base.admin.ui.usersecuritygroup;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * An action that opens a {@link CreateUserGroupWizard}.
@@ -37,9 +39,15 @@ import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate
  * @author Niklas Schiffler <nick@nightlabs.de>
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
-public class CreateUserGroupAction
-extends LSDWorkbenchWindowActionDelegate
+public class CreateUserGroupAction implements IViewActionDelegate
 {
+	private IViewPart viewPart;
+	
+	@Override
+	public void init(IViewPart viewPart) {
+		this.viewPart = viewPart;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
@@ -48,7 +56,7 @@ extends LSDWorkbenchWindowActionDelegate
 	{
 		try {
 			CreateUserGroupWizard wiz = new CreateUserGroupWizard();
-			DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getWindow().getShell(), wiz);
+			DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(viewPart.getSite().getShell(), wiz);
 			if (wzd.open() == Window.OK) {
 //				RCPUtil.openEditor(new UserSecurityGroupEditorInput(wiz.getCreatedUserSecurityGroupID()), UserSecurityGroupEditor.EDITOR_ID);
 			}
@@ -56,4 +64,7 @@ extends LSDWorkbenchWindowActionDelegate
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Override
+	public void selectionChanged(IAction arg0, ISelection arg1){}
 }
