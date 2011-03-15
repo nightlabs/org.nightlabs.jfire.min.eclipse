@@ -39,15 +39,37 @@
         </application>
     </extension>
     <extension id="product" point="org.eclipse.core.runtime.products">
-        <product application="org.nightlabs.jfire.base.ui.app" name="%app.name">
-            <property name="appName" value="%app.name"/>
-            <property name="windowImages" value="icons/JFire-Logo.16x16.png"/>
-            <property name="aboutText" value="%aboutText"/>
-            <property name="aboutImage" value="icons/JFire-Flame.80x160.jpg"/>
+        <product
+              application="org.nightlabs.jfire.base.ui.app"
+              name="%app.name">
+            <property
+                  name="appName"
+                  value="%app.name"/>
             <property name="preferenceCustomization" value="plugin_customization.ini"/>
-            <property name="startupForegroundColor" value="000000"/>
-            <property name="startupMessageRect" value="7,238,400,20"/>
-            <property name="startupProgressRect" value="0,258,400,15"/>
+            <property
+                  name="aboutImage"
+                  value="icons/JFire-Flame.80x160.jpg">
+            </property>
+            <property
+                  name="aboutText"
+                  value="%aboutText">
+            </property>
+            <property
+                  name="windowImages"
+                  value="icons/JFire-Logo.16x16.png,icons/JFire-Logo.32x32.png">
+            </property>
+            <property
+                  name="startupForegroundColor"
+                  value="000000">
+            </property>
+            <property
+                  name="startupMessageRect"
+                  value="7,238,400,20">
+            </property>
+            <property
+                  name="startupProgressRect"
+                  value="0,258,400,15">
+            </property>
         </product>
     </extension>
     <!-- Perspectives and Views
