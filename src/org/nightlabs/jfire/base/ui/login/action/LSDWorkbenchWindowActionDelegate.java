@@ -34,6 +34,9 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.nightlabs.jfire.base.ui.login.Login;
@@ -45,13 +48,16 @@ import org.nightlabs.jfire.base.ui.login.LoginStateListener;
  * actions contributed into the workbench window menu or tool bar.
  *
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>
+ * @author Fitas Amine - fitas[at]nightlabs[dot]de
  */
 public abstract class LSDWorkbenchWindowActionDelegate
-implements IWorkbenchWindowActionDelegate, LoginStateListener
+implements IWorkbenchWindowActionDelegate, IViewActionDelegate, LoginStateListener
 {
+	
 	// private static final Logger logger = Logger.getLogger(LSDWorkbenchWindowActionDelegate.class);
 	private IWorkbenchWindow window;
-
+	private IViewPart viewPart;
+	
 	/**
 	 * Default implementation of dispose removes this instance
 	 * as LoginStateListener, so make sure to always call super.dispose().
@@ -73,6 +79,11 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 		return window;
 	}
 
+	@Override
+	public void init(IViewPart viewPart) {
+		this.viewPart = viewPart;
+	}
+	
 	/**
 	 * Default implementation of init remembers the
 	 * passed IWorkbenchWindow and makes it accessible
@@ -150,4 +161,16 @@ implements IWorkbenchWindowActionDelegate, LoginStateListener
 		event.getAction().setEnabled(Login.isLoggedIn());
 	}
 
+	
+	/**
+	 * Returns the Shell 
+	 * @return Shell
+	 */
+	protected Shell getShell()
+	{
+		if (viewPart == null)
+			return getWindow().getShell();
+		else
+			return viewPart.getSite().getShell();
+	}
 }
