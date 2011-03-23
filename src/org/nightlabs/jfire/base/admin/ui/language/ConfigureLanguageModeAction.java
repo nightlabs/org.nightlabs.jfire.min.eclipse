@@ -29,38 +29,27 @@ package org.nightlabs.jfire.base.admin.ui.language;
 import javax.security.auth.login.LoginException;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
 import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * Action opening wizard dialog for {@link ConfigureLanguageModeWizard}.
  * @author Frederik Loeser - frederik[at]nightlabs[dot]de
  */
-public class ConfigureLanguageModeAction implements IViewActionDelegate {
-
-	private IViewPart viewPart;
-	@Override
-	public void init(IViewPart viewPart) {
-		this.viewPart = viewPart;
-	}
-	/**
-	 * {@inheritDoc}
-	 */
+public class ConfigureLanguageModeAction 
+extends LSDWorkbenchWindowActionDelegate 
+{
 	@Override
 	public void run(IAction action) {
 		try {
 			Login.getLogin(false).setForceLogin(true);
 			Login.getLogin();
 			final ConfigureLanguageModeWizard wiz = new ConfigureLanguageModeWizard();
-			final WizardDialog wizardDialog = new WizardDialog(viewPart.getSite().getShell(), wiz);
+			final WizardDialog wizardDialog = new WizardDialog(getShell(), wiz);
 			wizardDialog.open();
 		} catch (LoginException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	@Override
-	public void selectionChanged(IAction arg0, ISelection arg1) {}
 }

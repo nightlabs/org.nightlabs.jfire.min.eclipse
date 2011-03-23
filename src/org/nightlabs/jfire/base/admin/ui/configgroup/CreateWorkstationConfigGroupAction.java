@@ -27,15 +27,13 @@
 package org.nightlabs.jfire.base.admin.ui.configgroup;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
 import org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditor;
 import org.nightlabs.jfire.base.admin.ui.editor.workstationgroup.WorkstationGroupEditorInput;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;
 
 /**
@@ -45,14 +43,8 @@ import org.nightlabs.jfire.config.WorkstationConfigSetup;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  */
 public class CreateWorkstationConfigGroupAction
-implements IViewActionDelegate
+extends  LSDWorkbenchWindowActionDelegate 
 {
-	private IViewPart viewPart;
-	@Override
-	public void init(IViewPart viewPart) {
-		this.viewPart = viewPart;
-	}
-	
 	@Override
 	public void run(IAction action)
 	{
@@ -61,7 +53,7 @@ implements IViewActionDelegate
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.wizardTitle"), //$NON-NLS-1$
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.pageTitle")); //$NON-NLS-1$
 		
-		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(viewPart.getSite().getShell(), wiz);
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getShell(), wiz);
 		if (wzd.open() == Window.OK) {
 			try {
 				RCPUtil.openEditor(new WorkstationGroupEditorInput(wiz.getCreatedConfigID()), WorkstationGroupEditor.EDITOR_ID);
@@ -69,9 +61,5 @@ implements IViewActionDelegate
 				throw new RuntimeException(e);
 			}
 		}
-	}
-
-	@Override
-	public void selectionChanged(IAction arg0, ISelection arg1) {	
 	}
 }

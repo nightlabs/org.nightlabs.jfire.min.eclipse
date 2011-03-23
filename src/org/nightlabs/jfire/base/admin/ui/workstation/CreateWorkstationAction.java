@@ -27,11 +27,9 @@
 package org.nightlabs.jfire.base.admin.ui.workstation;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
+import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * Action to create a new Workstation using a {@link CreateWorkstationWizard}.
@@ -41,14 +39,8 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
  * @author Fitas Amine - fitas[at]nightlabs[dot]de
  */
 public class CreateWorkstationAction
-implements IViewActionDelegate {
-
-	private IViewPart viewPart;
-	@Override
-	public void init(IViewPart viewPart) {
-		this.viewPart = viewPart;
-	}
-	
+extends LSDWorkbenchWindowActionDelegate
+{
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
@@ -57,7 +49,7 @@ implements IViewActionDelegate {
 	{
 		CreateWorkstationWizard wiz = new CreateWorkstationWizard();
 //		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(wiz);
-		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(viewPart.getSite().getShell(), wiz);
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getShell(), wiz);
 		if (wzd.open() == Window.OK) {
 //			try {
 //				Editor2PerspectiveRegistry.sharedInstance().openEditor(
@@ -67,7 +59,4 @@ implements IViewActionDelegate {
 //			}
 		}
 	}
-
-	@Override
-	public void selectionChanged(IAction arg0, ISelection arg1) {}
 }
