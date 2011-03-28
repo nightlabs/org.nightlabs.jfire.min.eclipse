@@ -360,12 +360,14 @@ public class RoleGroupsSection extends ToolBarSectionPart
 		@Override
 		public void run() {
 			RoleGroupSecurityPreferencesModel model = roleGroupTableViewer.getModel();
-			Collection<RoleGroup> roleGroups = model.getAllRoleGroupsInAuthority();
-			for (RoleGroup roleGroup : roleGroups) {
-				model.addRoleGroup(roleGroup);
+			if(model != null)
+			{
+				Collection<RoleGroup> roleGroups = model.getAllRoleGroupsInAuthority();
+				for (RoleGroup roleGroup : roleGroups) 
+					model.addRoleGroup(roleGroup);
+				roleGroupTableViewer.refresh();
+				markDirty();
 			}
-			roleGroupTableViewer.refresh();
-			markDirty();
 		}
 	}
 	
