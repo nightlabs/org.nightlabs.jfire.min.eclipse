@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jdo.JDOHelper;
+import javax.jdo.spi.PersistenceCapable;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -473,12 +474,16 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 			}
 			else {
 				Object oid = JDOHelper.getObjectId(oldControllerObject);
-				if (oid == null)
-					throw new IllegalStateException("storeEntity(...) returned null, but the controllerObject seems not to be a JDO object! JDOHelper.getObjectId(oldControllerObject) returned null for " + oldControllerObject); //$NON-NLS-1$
-
-				Cache.sharedInstance().removeByObjectID(oid, false);
+				if (oid == null) {
+					if (!isNewObject(oldControllerObject)) {
+						throw new IllegalStateException("storeEntity(...) returned null, but the controllerObject seems not to be a JDO object!, controllerObject = " + oldControllerObject); //$NON-NLS-1$	
+					}	
+				}
+				if (oid != null) {
+					Cache.sharedInstance().removeByObjectID(oid, false);	
+				}
 				newControllerObject = retrieveEntity(new SubProgressMonitor(monitor, 50));
-				if (newControllerObject == oldControllerObject)
+				if (newControllerObject == oldControllerObject && oid != null)
 					throw new IllegalStateException("Cache eviction obviously failed! newControllerObject == oldControllerObject (same instance!)"); //$NON-NLS-1$
 
 				setControllerObject(Util.cloneSerializable(newControllerObject));
@@ -776,5 +781,18 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 */
 	protected void setControllerObject(EntityType controllerObject) {
 		this.controllerObject = controllerObject;
+	}
+	
+	/**
+	 * Checks if the given controller object has been created on the client side.
+	 * Default implementation just checks ifs the controllerObject is an instance of
+	 * {@link PersistenceCapable}. Subclasses may override.
+	 *  
+	 * @param controllerObject the controller object to check if it is a new instance which 
+	 * has not been persisted yet but was created on the client side
+	 * @return true if the given controllerObject is new or false if not
+	 */
+	protected boolean isNewObject(EntityType controllerObject) {
+		return controllerObject instanceof PersistenceCapable;
 	}
 }
