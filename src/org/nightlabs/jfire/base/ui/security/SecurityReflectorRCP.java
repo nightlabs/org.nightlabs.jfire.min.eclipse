@@ -10,9 +10,9 @@ import javax.naming.InitialContext;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
+import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
 import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
@@ -49,6 +49,20 @@ implements ISecurityReflector
 			throw new NoUserException(e);
 		}
 		return new UserDescriptor(l.getOrganisationID(), l.getUserID(), l.getWorkstationID(), l.getSessionID());
+	}
+
+	@Override
+	public Object getCredential() throws NoUserException {
+		Login login = null;
+		try {
+			login = Login.getLogin();
+		} catch (Exception e) {
+			throw new NoUserException(e);
+		}
+		if (login == null){
+			throw new NoUserException("Login is null, so it seems that no user is logged in!");
+		}
+		return login.getPassword();
 	}
 
 	@Override
@@ -126,7 +140,7 @@ implements ISecurityReflector
 	protected synchronized void unregisterAuthorizedObjectRefLifecycleListener()
 	{
 		if (authorizedObjectRefLifecycleListener != null) {
-			JDOLifecycleManager.sharedInstance().removeLifecycleListener(authorizedObjectRefLifecycleListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeLifecycleListener(authorizedObjectRefLifecycleListener);
 			authorizedObjectRefLifecycleListener = null;
 			cache_authorityID2roleIDSet.clear();
 		}
@@ -137,7 +151,7 @@ implements ISecurityReflector
 		unregisterAuthorizedObjectRefLifecycleListener();
 
 		authorizedObjectRefLifecycleListener = new AuthorizedObjectRefLifecycleListener();
-		JDOLifecycleManager.sharedInstance().addLifecycleListener(authorizedObjectRefLifecycleListener);
+		GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().addLifecycleListener(authorizedObjectRefLifecycleListener);
 		cache_authorityID2roleIDSet.clear();
 	}
 }
