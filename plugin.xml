@@ -3,7 +3,7 @@
 <plugin>
     <extension id="app" name="%app.name" point="org.eclipse.core.runtime.applications">
         <application>
-            <run class="org.nightlabs.jfire.base.ui.app.JFireApplication"/>
+            <run class="org.nightlabs.jfire.base.ui.app.rcp.JFireRCPApplication"/>
         </application>
     </extension>
     <extension id="product" point="org.eclipse.core.runtime.products">
