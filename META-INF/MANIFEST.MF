@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui
+Bundle-SymbolicName: org.nightlabs.jfire.base.login.rcp.ui;singleton:=true
+Bundle-ClassPath: .
+Bundle-Version: 1.0.0.qualifier
+Bundle-Localization: plugin
+Bundle-Activator: org.nightlabs.jfire.base.login.rcp.ui.JFireRCPLoginPlugin
+Require-Bundle: org.nightlabs.jfire.compatibility;bundle-version="1.0.0",
+ org.nightlabs.progress;bundle-version="1.0.1",
+ org.nightlabs.util;bundle-version="1.0.3",
+ org.nightlabs.base.ui;bundle-version="1.2.16",
+ org.nightlabs.config;bundle-version="1.0.2",
+ org.nightlabs.jfire.base.login.ui;bundle-version="1.0.0",
+ org.nightlabs.jfire.base.j2ee;bundle-version="1.0.5",
+ org.nightlabs.jfire.classloader.remote;bundle-version="1.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.nightlabs.jfire.base.login.rcp.ui,
+ org.nightlabs.jfire.base.login.rcp.ui.action
+Bundle-ActivationPolicy: lazy
+
