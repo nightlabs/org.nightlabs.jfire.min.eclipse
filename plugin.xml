@@ -25,8 +25,11 @@
                 menubarPath="loginMenu/loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
         </actionSet>
    </extension>
-	<extension point="org.eclipse.ui.startup">
-     <startup class="org.nightlabs.jfire.base.login.rcp.ui.JFireRCPLoginPlugin"/>
-   </extension>
+ <extension
+       point="org.nightlabs.jfire.base.login.ui.loginHandler">
+    <loginHandler
+          class="org.nightlabs.jfire.base.login.rcp.ui.JFireRCPLoginHandler">
+    </loginHandler>
+ </extension>
 
 </plugin>
