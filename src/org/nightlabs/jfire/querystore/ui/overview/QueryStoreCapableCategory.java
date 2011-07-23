@@ -3,6 +3,7 @@ package org.nightlabs.jfire.querystore.ui.overview;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.jfire.base.ui.overview.CategoryFactory;
 import org.nightlabs.jfire.base.ui.overview.DefaultCategory;
 
@@ -31,7 +32,7 @@ public class QueryStoreCapableCategory
 	@Override
 	public Composite createComposite(Composite composite)
 	{
-		categoryComposite = new QueryStoreCapableCategoryComposite(composite, SWT.NONE, this);
+		categoryComposite = new QueryStoreCapableCategoryComposite(composite, SWT.NONE, this, LayoutDataMode.NONE);
 		return categoryComposite;
 	}
 

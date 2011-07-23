@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.compatibility.CompatibleDialogConstants;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.query.store.BaseQueryStore;
 import org.nightlabs.jfire.query.store.QueryStore;
@@ -118,9 +119,9 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 	protected void createButtonsForButtonBar(Composite parent)
 	{
 		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
-		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,	false);
+		okButton = createButton(parent, IDialogConstants.OK_ID, CompatibleDialogConstants.get().OK_LABEL,	false);
 		okButton.setEnabled(false);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID, CompatibleDialogConstants.get().CANCEL_LABEL, true);
 	}
 
 	@Override
