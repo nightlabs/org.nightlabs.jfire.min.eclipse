@@ -8,12 +8,13 @@ Bundle-ClassPath: .,
  lib/jboss-ejb3x.jar
 Bundle-Activator: org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.nightlabs.config,
+Require-Bundle: org.nightlabs.config,
  org.nightlabs.base,
- org.nightlabs.jfire.classloader.remote;visibility:=reexport,
  org.apache.log4j,
- org.eclipse.update.configurator
+ org.nightlabs.jfire.compatibility;bundle-version="1.0.0",
+ org.nightlabs.singleton;bundle-version="1.0.0",
+ slf4j.api,
+ org.nightlabs.jfire.classloader.remote;bundle-version="1.1.0";resolution:=optional
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.nightlabs.config, org.nightlabs.base
@@ -325,3 +326,4 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.jnp.server,
  org.nightlabs.jfire.base.j2ee,
  org.omg.stub.javax.ejb
+

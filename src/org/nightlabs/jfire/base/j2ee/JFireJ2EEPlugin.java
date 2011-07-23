@@ -52,8 +52,8 @@ import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.update.configurator.ConfiguratorUtils;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate;
+import org.nightlabs.jfire.compatibility.CompatibilityUpdate;
 import org.nightlabs.util.IOUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -108,7 +108,7 @@ implements BundleActivator
 		plugin = null;
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 //BEGIN: Must be exactly the same as in org.nightlabs.jfire.base.j2ee.osgi.RemoteClassLoadingHook
 	private String hash(String s)
 	{
@@ -409,10 +409,35 @@ implements BundleActivator
 		return pluginLocation.toExternalForm().contains("org.nightlabs.jfire.base.j2ee");
 	}
 
+
+	private URL[] getPluginPaths() 
+	{
+		return CompatibilityUpdate.getPlatformPluginPaths();
+		
+//		URL[] entries = FileLocator.findEntries(getBundle(), new Path(""));
+//		URL[] urls = new URL[entries.length];
+//		for (int i=0; i<entries.length; i++) {
+//			try {
+//				urls[i] = FileLocator.resolve(entries[i]);
+//			} catch (IOException e) {
+//				throw new RuntimeException(e);
+//			}
+//		}
+//		return urls;
+		
+//		return ConfiguratorUtils.getCurrentPlatformConfiguration().getPluginPath();
+	}
+	
 	private Collection<File> getJ2eePluginLocations()
 	{
 		Set<File> result = new HashSet<File>();
-		URL[] pluginPath = ConfiguratorUtils.getCurrentPlatformConfiguration().getPluginPath();
+		URL[] pluginPath = getPluginPaths();
+		if (logger.isDebugEnabled()) {
+			logger.debug("getPluginPath() returned the following entries:");
+			for (URL url : pluginPath) {
+				logger.debug(url);	
+			}
+		}
 		for (URL pluginURL : pluginPath) {
 			if (!isJ2eePlugin(pluginURL))
 				continue;
