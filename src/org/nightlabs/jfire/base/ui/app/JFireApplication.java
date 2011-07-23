@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -65,19 +66,27 @@ extends AbstractApplication
 	 */
 	protected static final Logger logger = Logger.getLogger(JFireApplication.class);
 
-	private static ISingletonProvider<LinkedList<JFireApplicationListener>> applicationListener = SingletonProviderFactory.createProviderForFactory(new ISingletonFactory<LinkedList<JFireApplicationListener>>() {
-		@Override
-		public LinkedList<JFireApplicationListener> makeInstance() {
-			return new LinkedList<JFireApplicationListener>();
+	private static ISingletonProvider<LinkedList<JFireApplicationListener>> _applicationListener;
+
+	private static synchronized ISingletonProvider<LinkedList<JFireApplicationListener>> getApplicationListener()
+	{
+		if (_applicationListener == null) {
+			_applicationListener = SingletonProviderFactory.createProviderForFactory(new ISingletonFactory<LinkedList<JFireApplicationListener>>() {
+				@Override
+				public LinkedList<JFireApplicationListener> makeInstance() {
+					return new LinkedList<JFireApplicationListener>();
+				}
+			});
 		}
-	});
+		return _applicationListener;
+	}
 
 	public static void addApplicationListener(JFireApplicationListener listener) {
-		applicationListener.getInstance().add(listener);
+		getApplicationListener().getInstance().add(listener);
 	}
 
 	public static void removeApplicationListener(JFireApplicationListener listener) {
-		applicationListener.getInstance().remove(listener);
+		getApplicationListener().getInstance().remove(listener);
 	}
 
 	public static final int APPLICATION_EVENTTYPE_STARTED = 1;
@@ -85,8 +94,8 @@ extends AbstractApplication
 	private ServiceReference loginHandler;
 
 	void notifyApplicationListeners(int applicationEventType) {
-		for (Iterator<?> iter = applicationListener.getInstance().iterator(); iter.hasNext();) {
-			JFireApplicationListener listener = (JFireApplicationListener) iter.next();
+		for (Iterator<JFireApplicationListener> iter = new ArrayList<JFireApplicationListener>(getApplicationListener().getInstance()).iterator(); iter.hasNext();) {
+			JFireApplicationListener listener = iter.next();
 			switch (applicationEventType) {
 				case APPLICATION_EVENTTYPE_STARTED:
 					listener.applicationStarted();
