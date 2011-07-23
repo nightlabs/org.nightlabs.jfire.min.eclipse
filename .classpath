@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/org.nightlabs.clientui.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.nightlabs.jdo.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.nightlabs.query.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.nightlabs.query.jdo.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.nightlabs.jfire.base.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JFireServerManager.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JFireBaseBean.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JFireBaseClientLib.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JFireBaseDAO.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JFireBasePublicBean.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
