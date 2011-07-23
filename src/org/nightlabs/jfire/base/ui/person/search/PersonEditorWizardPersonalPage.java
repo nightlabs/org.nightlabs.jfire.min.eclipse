@@ -28,10 +28,10 @@ package org.nightlabs.jfire.base.ui.person.search;
 
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.person.edit.fieldbased.PersonFieldBasedEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditorCfModLayoutConfig;
 import org.nightlabs.jfire.base.ui.prop.edit.fieldbased.FieldBasedEditorCfModLayoutConfigWizardPage;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Alexander Bieber <alex[AT]nightlabs[DOT]de>

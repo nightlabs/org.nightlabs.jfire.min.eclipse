@@ -26,8 +26,13 @@
 
 package org.nightlabs.jfire.base.ui.app;
 
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.StatusLineManager;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.application.ActionBarAdvisor;
@@ -37,8 +42,8 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.nightlabs.base.ui.editor.Editor2PerspectiveRegistry;
 import org.nightlabs.base.ui.part.PartVisibilityTracker;
 import org.nightlabs.base.ui.util.RCPUtil;
+import org.nightlabs.jfire.base.login.ui.LoginStateStatusLineContribution;
 import org.nightlabs.jfire.base.ui.language.LocaleStatusLineContribution;
-import org.nightlabs.jfire.base.ui.login.LoginStateStatusLineContribution;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 public class JFireWorkbenchWindowAdvisor
@@ -56,6 +61,7 @@ extends WorkbenchWindowAdvisor
 		configurer.setShowMenuBar(true);
 		configurer.setShowCoolBar(true);
 		configurer.setShowProgressIndicator(true);
+		configurer.setInitialSize(getScreenSize());
 	}
 
 	/**
@@ -124,5 +130,16 @@ extends WorkbenchWindowAdvisor
 	private static boolean workbenchCreated = false;
 	public static boolean isWorkbenchCreated() {
 		return workbenchCreated;
+	}
+	
+	protected Point getScreenSize() {
+		Dimension screenSize = null;
+		try {
+			screenSize = Toolkit.getDefaultToolkit().getScreenSize();	
+		} catch (HeadlessException e) {
+			// In case this is running in a headless environment we set a default size
+			screenSize = new Dimension(1024, 768);
+		}
+		return new Point(screenSize.width, screenSize.height);
 	}
 }

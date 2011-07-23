@@ -31,13 +31,14 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.expression.IExpression;
 import org.nightlabs.jfire.base.ui.JFireBasePlugin;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.validation.DataFieldValidatorTable;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorDialog;
 import org.nightlabs.jfire.base.ui.prop.validation.ScriptValidatorDialog;
 import org.nightlabs.jfire.base.ui.prop.validation.StructFieldExpressionValidatorHandler;
 import org.nightlabs.jfire.base.ui.prop.validation.StructFieldScriptValidatorHandler;
 import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
-import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.compatibility.CompatibleSWT;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.validation.ExpressionDataFieldValidator;
 import org.nightlabs.jfire.prop.validation.IDataFieldExpression;
@@ -429,7 +430,7 @@ class ErrorComposite extends XComposite {
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				if (errorImage != null)
-					errorImage.dispose();
+					CompatibleSWT.dispose(errorImage);
 			}
 		});
 	}

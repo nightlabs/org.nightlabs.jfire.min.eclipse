@@ -32,9 +32,9 @@ import org.nightlabs.base.ui.form.AbstractBaseFormPage;
 import org.nightlabs.base.ui.message.IErrorMessageDisplayer;
 import org.nightlabs.base.ui.message.MessageType;
 import org.nightlabs.base.ui.part.ControllablePart;
-import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
-import org.nightlabs.jfire.base.ui.login.part.LSDPartController;
+import org.nightlabs.jfire.base.login.ui.Login;
+import org.nightlabs.jfire.base.login.ui.part.ICloseOnLogoutEditorPart;
+import org.nightlabs.jfire.base.login.ui.part.LSDPartController;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**

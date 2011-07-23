@@ -52,14 +52,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.nightlabs.base.ui.composite.AsyncInitComposite;
+import org.nightlabs.base.ui.composite.AsyncInitListener;
+import org.nightlabs.base.ui.composite.AsyncInitListenerList;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jdo.query.ui.search.SearchFilterProvider;
 import org.nightlabs.jdo.query.ui.search.SearchResultFetcher;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.base.ui.config.ConfigUtil;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.prop.ILoadingStateListener;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewer;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewerFactory;
@@ -125,7 +128,7 @@ import org.nightlabs.util.Util;
  *            can be {@link PropertySet} itself or a subclass as well as as objects that are in an
  *            other way linked to a property set.
  */
-public abstract class PropertySetSearchComposite<InputType, ElementType> extends XComposite {
+public abstract class PropertySetSearchComposite<InputType, ElementType> extends XComposite implements AsyncInitComposite {
 
 	/**
 	 * LOG4J logger used by this class
@@ -443,6 +446,7 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 		loadingLabel = new Label(getWrapper(), SWT.NONE);
 		loadingLabel.setText("Loading...");
 		final Composite wrapper = getWrapper();
+		final Display display = wrapper.getDisplay();
 
 		Job loadCfModJob = new Job("Loading PersonSearchConfigModule") {
 			@Override
@@ -452,10 +456,14 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 						AbstractEditLayoutConfigModule.FETCH_GROUP_GRID_LAYOUT, PropertySetSearchEditLayoutConfigModule.FETCH_GROUP_RESULT_VIEWER_CONFIGURATIONS };
 				final PropertySetSearchEditLayoutConfigModule personSearchConfigModule = ConfigUtil.getUserCfMod(configModuleClass,
 						cfModID, fetchGroups, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
-				Display.getDefault().asyncExec(new Runnable() {
+				display.asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						createSearchComposite(wrapper, personSearchConfigModule);
+						if (!wrapper.isDisposed()) {
+							createSearchComposite(wrapper, personSearchConfigModule);
+
+							initListeners.fireAsyncInitEvent(false);
+						}
 					}
 				});
 
@@ -466,6 +474,20 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 		loadCfModJob.schedule();
 
 		return getWrapper();
+	}
+	
+	private AsyncInitListenerList initListeners = new AsyncInitListenerList(this);
+	
+	@Override
+	public void addAsyncInitListener(AsyncInitListener listener)
+	{
+		initListeners.add(listener);
+	}
+	
+	@Override
+	public void removeAsyncInitListener(AsyncInitListener listener)
+	{
+		initListeners.remove(listener);
 	}
 
 	/**
@@ -637,8 +659,10 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 	 */
 	public Composite getButtonBar() {
 		while (!isDisposed() && !loadingCompleted) {
-			if (!Display.getDefault().readAndDispatch())
-				Display.getDefault().sleep();
+//			if (!Display.getDefault().readAndDispatch())
+//				Display.getDefault().sleep();
+			if (!getDisplay().readAndDispatch())
+				getDisplay().sleep();
 		}
 
 		return buttonBar;

@@ -7,18 +7,18 @@ import javax.jdo.JDOHelper;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.nightlabs.base.ui.context.UIContext;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.part.PartAdapter;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
+import org.nightlabs.jfire.base.login.ui.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.notification.NotificationEvent;
@@ -153,7 +153,7 @@ implements ICloseOnLogoutEditorPart
 					final String title = getEditorTitleFromEntity(entity);
 					final String tooltip = getEditorTooltipFromEntity(entity);
 					if (title != null || tooltip != null) {
-						Display.getDefault().asyncExec(new Runnable() {
+						UIContext.getDisplay().asyncExec(new Runnable() {
 							public void run() {
 								if (loadTitleJob != thisJob)
 									return;

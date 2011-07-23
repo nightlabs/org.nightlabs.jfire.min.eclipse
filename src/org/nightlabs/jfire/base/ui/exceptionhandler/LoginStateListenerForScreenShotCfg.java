@@ -4,8 +4,8 @@ import org.nightlabs.base.ui.exceptionhandler.errorreport.ErrorReportSenderCfMod
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.config.Config;
 import org.nightlabs.jfire.base.RoleConstants;
-import org.nightlabs.jfire.base.ui.login.LoginStateChangeEvent;
-import org.nightlabs.jfire.base.ui.login.LoginStateListener;
+import org.nightlabs.jfire.base.login.ui.LoginStateChangeEvent;
+import org.nightlabs.jfire.base.login.ui.LoginStateListener;
 import org.nightlabs.jfire.security.SecurityReflector;
 
 /**

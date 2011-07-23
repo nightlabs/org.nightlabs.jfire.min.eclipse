@@ -1,12 +1,12 @@
 package org.nightlabs.jfire.base.ui.overview;
 
-import org.eclipse.nebula.widgets.pshelf.PShelf;
-import org.eclipse.nebula.widgets.pshelf.PShelfItem;
-import org.eclipse.nebula.widgets.pshelf.RedmondShelfRenderer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
+import org.nightlabs.base.ui.composite.ExclusiveExpandBar;
 import org.nightlabs.base.ui.composite.XComposite;
 
 /**
@@ -47,12 +47,12 @@ extends XComposite
 	 * @param style The style of the shelfs wrapping {@link XComposite}
 	 */
 	public OverviewShelf(Composite parent, int style) {
-		super(parent, style);
+		super(parent, style, LayoutDataMode.NONE);
 		createComposite(this);
 	}
 
-	private PShelf shelf;
-//	private ExpandBar expandbar;
+	//private ExpandBar shelf;
+	private ExpandBar expandbar;
 //
 //	/**
 //	 * Creates the contents of this shelf.
@@ -63,27 +63,33 @@ extends XComposite
 //	 * </p>
 //	 * @param parent The parent (like <code>this</code>).
 //	 */
-//	protected void createComposite(Composite parent)
-//	{
-//		parent.setLayout(new FillLayout());
-//		expandbar = new ExpandBar(parent, SWT.V_SCROLL);
-//		expandbar.setLayoutData(new GridData(GridData.FILL_BOTH));
-//
-//		for (final Category category: getOverviewRegistry().createCategories(getScope()))
-//		{
-//			final ExpandItem categoryItem = new ExpandItem(expandbar, SWT.NONE);
-//			categoryItem.setData(category);
-//			categoryItem.setText(category.getCategoryFactory().getName());
-//			categoryItem.setImage(category.getCategoryFactory().getImage());
+	protected void createComposite(Composite parent)
+	{
+		parent.setLayout(new FillLayout());
+		expandbar = new ExpandBar(parent, SWT.V_SCROLL);
+		ExclusiveExpandBar.enableFor(expandbar);
+		boolean firstItem = true;
+		for (final Category category: getOverviewRegistry().createCategories(getScope()))
+		{
+			final ExpandItem categoryItem = new ExpandItem(expandbar, SWT.NONE);
+			categoryItem.setData(category);
+			categoryItem.setText(category.getCategoryFactory().getName());
+			categoryItem.setImage(category.getCategoryFactory().getImage());
 //			categoryItem.setHeight(300);
-//			Composite itemControl = new XComposite(shelf, SWT.BORDER);
-//			itemControl.setLayout(new FillLayout());
-//			categoryItem.setControl(itemControl);
-//			category.createComposite((Composite)categoryItem.getControl());
-//			categoryItem.setExpanded(true);
-//		}
-//		shelf.layout(true, true);
-//	}
+			Composite itemControl = new XComposite(expandbar, SWT.BORDER);
+			itemControl.setLayout(new FillLayout());
+			itemControl.setLayoutData(null);
+			categoryItem.setControl(itemControl);
+			Composite createdComposite = category.createComposite((Composite)categoryItem.getControl());
+			if (createdComposite.getLayoutData() != null) {
+				createdComposite.setLayoutData(null);
+			}
+			if (firstItem) {
+				categoryItem.setExpanded(true);
+				firstItem = false;
+			}
+		}
+	}
 
 	/**
 	 * Creates the contents of this shelf.
@@ -94,6 +100,7 @@ extends XComposite
 	 * </p>
 	 * @param parent The parent (like <code>this</code>).
 	 */
+	/*
 	protected void createComposite(Composite parent)
 	{
 		parent.setLayout(new FillLayout());
@@ -111,7 +118,7 @@ extends XComposite
 			categoryItem.getBody().setLayout(new FillLayout());
 			category.createComposite(categoryItem.getBody());
 		}
-	}
+	}*/
 
 	/**
 	 * Callback method to define the {@link OverviewRegistry} that should be used

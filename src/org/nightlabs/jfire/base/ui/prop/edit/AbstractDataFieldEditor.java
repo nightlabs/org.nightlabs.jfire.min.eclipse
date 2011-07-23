@@ -28,8 +28,8 @@ package org.nightlabs.jfire.base.ui.prop.edit;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.events.ModifyEvent;
-import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.ModifyListener;

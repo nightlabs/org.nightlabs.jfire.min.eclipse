@@ -25,6 +25,7 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.tree.AbstractTreeComposite;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jdo.search.MatchType;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog;
 import org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutConfigModuleController;
 import org.nightlabs.jfire.base.ui.prop.search.IStructFieldSearchFilterItemEditor;
@@ -32,7 +33,6 @@ import org.nightlabs.jfire.base.ui.prop.search.StructFieldSearchFilterEditorRegi
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructTreeComposite;
 import org.nightlabs.jfire.base.ui.prop.structedit.TreeNode;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.StructLocal;

@@ -29,7 +29,7 @@ package org.nightlabs.jfire.base.ui.config;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbench;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.config.UserConfigSetup;
 import org.nightlabs.jfire.security.id.UserID;
 

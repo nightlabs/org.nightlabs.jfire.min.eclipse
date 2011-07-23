@@ -3,7 +3,7 @@ package org.nightlabs.jfire.base.ui.overview;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
+import org.nightlabs.jfire.base.login.ui.part.LSDViewPart;
 
 /**
  * Abstract base {@link ViewPart} that will display an {@link OverviewShelf}

@@ -2,7 +2,7 @@ package org.nightlabs.jfire.base.ui.jdo.cache;
 
 import org.eclipse.jface.action.IAction;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
+import org.nightlabs.jfire.base.login.ui.action.LSDWorkbenchWindowActionDelegate;
 
 public class RefreshAllAction
 extends LSDWorkbenchWindowActionDelegate

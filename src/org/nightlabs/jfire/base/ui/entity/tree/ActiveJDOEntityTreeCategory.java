@@ -12,8 +12,8 @@ import org.nightlabs.base.ui.entity.tree.EntityTreeCategory;
 import org.nightlabs.base.ui.entity.tree.IEntityTreeCategoryContentConsumer;
 import org.nightlabs.base.ui.tree.TreeContentProvider;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
-import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.progress.ProgressMonitor;
 

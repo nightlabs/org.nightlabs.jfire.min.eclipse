@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.internal.preferences.WorkbenchPreferenceExpressionNode;
+import org.eclipse.ui.model.IComparableContribution;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.eclipse.preferences.ui.OverviewPage;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -29,19 +31,24 @@ import org.nightlabs.progress.ProgressMonitor;
  * 
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] -->
  */
-public class PropertySetFieldBasedEditLayoutPreferenceRootNode implements IPreferenceNode {
+public class PropertySetFieldBasedEditLayoutPreferenceRootNode extends WorkbenchPreferenceExpressionNode implements IPreferenceNode, IComparableContribution {
 
 	private List<IPreferenceNode> subNodes = new ArrayList<IPreferenceNode>();
 	private IPreferenceNode[] subNodesArr;
 	private OverviewPage page;
 	private Job loadUseCasesJob;
+	private String id;
 	
 	/**
 	 * Create a new {@link PropertySetFieldBasedEditLayoutPreferenceRootNode}.
 	 * The constructor will start a job that loads all
 	 * {@link PropertySetFieldBasedEditLayoutUseCase}s and adds a child-node for each one found.
 	 */
-	public PropertySetFieldBasedEditLayoutPreferenceRootNode() {
+	public PropertySetFieldBasedEditLayoutPreferenceRootNode(String id) {
+		super(id);
+		
+		this.id = id;
+		
 		loadUseCasesJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferenceRootNode.job.loadPropertySetEditUseCases")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -135,5 +142,20 @@ public class PropertySetFieldBasedEditLayoutPreferenceRootNode implements IPrefe
 	@Override
 	public boolean remove(IPreferenceNode node) {
 		return subNodes.remove(node);
+	}
+
+	@Override
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
+
+	@Override
+	public String getLabel() {
+		return id;
+	}
+
+	@Override
+	public int getPriority() {
+		return 0;
 	}
 }

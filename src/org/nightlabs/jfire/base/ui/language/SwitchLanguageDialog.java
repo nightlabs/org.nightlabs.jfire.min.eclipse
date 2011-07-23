@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.CompatibleWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
@@ -78,7 +79,7 @@ public class SwitchLanguageDialog extends ResizableTitleAreaDialog {
 		switchLanguage(languageID);
 		boolean doRestart = MessageDialog.openQuestion(getShell(), Messages.getString("org.nightlabs.jfire.base.ui.language.SwitchLanguageDialog.restartQuestionTitle"), Messages.getString("org.nightlabs.jfire.base.ui.language.SwitchLanguageDialog.restartQuestionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
 		if(doRestart)
-			PlatformUI.getWorkbench().restart();
+			CompatibleWorkbench.restart();
 	}
 
 	private void switchLanguage(String languageID)

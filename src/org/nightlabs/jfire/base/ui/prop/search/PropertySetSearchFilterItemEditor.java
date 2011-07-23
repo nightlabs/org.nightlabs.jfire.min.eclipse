@@ -131,7 +131,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 						throw new RuntimeException(t);
 					}
 				}
-				Display.getDefault().asyncExec(new Runnable() {
+				comboSearchField.getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						if (comboSearchField.isDisposed())
 							return;

@@ -3,8 +3,8 @@ package org.nightlabs.jfire.base.ui.overview.search;
 import org.eclipse.ui.IWorkbenchPart;
 import org.nightlabs.base.ui.action.WorkbenchPartAction;
 import org.nightlabs.base.ui.resource.SharedImages;
-import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.overview.OverviewEntryEditor;
 
 /**
  * @author Daniel.Mazurek [at] NightLabs [dot] de

@@ -2,29 +2,26 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JFire Base Plug-in
 Bundle-SymbolicName: org.nightlabs.jfire.base.ui;singleton:=true
-Bundle-Version: 1.1.24.qualifier
+Bundle-Version: 1.1.20.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.nightlabs.jfire.base.ui.JFireBasePlugin
 Bundle-Vendor: NightLabs.org
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.ui.forms,
- org.nightlabs.config,
+Require-Bundle: org.nightlabs.config,
  org.nightlabs.base,
  org.nightlabs.base.ui;visibility:=reexport,
  org.nightlabs.jdo.query.ui;visibility:=reexport,
- org.eclipse.update.configurator,
- org.eclipse.update.core,
  org.eclipse.core.runtime,
- org.nightlabs.jfire.base.j2ee;visibility:=reexport,
- org.nightlabs.jfire.base.intro.ui,
- org.eclipse.nebula.widgets.pshelf;visibility:=reexport,
  org.nightlabs.eclipse.ui.dialog;visibility:=reexport,
  org.nightlabs.clientui.ui,
  javax.jdo;bundle-version="2.3.0";resolution:=optional;visibility:=reexport,
  org.nightlabs.unifiedjndi.jboss.client;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
- slf4j.api;visibility:=reexport
-Eclipse-RegisterBuddy: org.nightlabs.config, org.nightlabs.base, org.nightlabs.jfire.base.j2ee
+ slf4j.api;visibility:=reexport,
+ org.nightlabs.jfire.compatibility;bundle-version="1.0.0",
+ org.nightlabs.jfire.base.j2ee;bundle-version="1.0.0";visibility:=reexport,
+ org.nightlabs.jfire.base.login.ui;bundle-version="1.0.0";visibility:=reexport,
+ org.nightlabs.singleton;bundle-version="1.0.0"
+Eclipse-RegisterBuddy: org.nightlabs.config, org.nightlabs.base, org.nightlabs.jfire.clientlib, org.nightlabs.jfire.base.login.ui
 Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui,
@@ -41,9 +38,6 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.jdo.tree.lazy,
  org.nightlabs.jfire.base.ui.language,
  org.nightlabs.jfire.base.ui.layout,
- org.nightlabs.jfire.base.ui.login,
- org.nightlabs.jfire.base.ui.login.action,
- org.nightlabs.jfire.base.ui.login.part,
  org.nightlabs.jfire.base.ui.organisation,
  org.nightlabs.jfire.base.ui.overview,
  org.nightlabs.jfire.base.ui.overview.action,
@@ -68,6 +62,5 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.search,
  org.nightlabs.jfire.base.ui.security,
  org.nightlabs.jfire.base.ui.timer,
- org.nightlabs.jfire.base.ui.update,
  org.nightlabs.jfire.base.ui.workstation
 Import-Package: org.nightlabs.jfire.base.ui.prop.edit.blockbased

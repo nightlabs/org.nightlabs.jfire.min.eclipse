@@ -48,9 +48,9 @@ import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.composite.FadeableComposite;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jfire.base.JFireBaseEAR;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.editlock.EditLockCallback;
 import org.nightlabs.jfire.base.ui.editlock.EditLockMan;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.progress.ProgressMonitor;
@@ -167,7 +167,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 		Job job = new Job(Messages.getString("org.nightlabs.jfire.base.ui.config.ConfigPreferencesEditComposite2.updateingJob")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) {
-				Display.getDefault().asyncExec(new Runnable() {
+				getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						updatePreferencesGUI();
 					}
@@ -209,7 +209,7 @@ implements ConfigPreferenceChangedListener, IStoreChangedConfigModule
 						(EditLockCallback)null, new SubProgressMonitor(monitor, 1)
 				);
 
-				Display.getDefault().asyncExec(new Runnable() {
+				getDisplay().asyncExec(new Runnable() {
 					public void run()
 					{
 						if (isDisposed())

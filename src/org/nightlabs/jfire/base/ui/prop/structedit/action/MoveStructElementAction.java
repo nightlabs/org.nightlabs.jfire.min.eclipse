@@ -8,12 +8,12 @@ import java.util.Set;
 
 import org.nightlabs.base.ui.action.SelectionListenerAction;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructBlockNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditor;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructureChangedListener;
 import org.nightlabs.jfire.base.ui.prop.structedit.TreeNode;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructField;

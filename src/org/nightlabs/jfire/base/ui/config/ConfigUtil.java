@@ -26,7 +26,7 @@
 
 package org.nightlabs.jfire.base.ui.config;
 
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.config.ConfigModule;
 import org.nightlabs.jfire.config.UserConfigSetup;
 import org.nightlabs.jfire.config.WorkstationConfigSetup;

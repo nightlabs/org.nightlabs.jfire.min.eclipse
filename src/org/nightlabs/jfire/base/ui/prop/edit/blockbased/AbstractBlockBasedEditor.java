@@ -29,8 +29,8 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.PropertySet;

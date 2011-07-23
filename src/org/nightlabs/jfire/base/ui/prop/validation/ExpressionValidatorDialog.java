@@ -13,8 +13,8 @@ import org.nightlabs.base.ui.message.MessageType;
 import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.jfire.base.expression.IExpression;
-import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.base.ui.resource.Messages;
+import org.nightlabs.jfire.base.ui.prop.validation.ExpressionValidatorComposite.Mode;
 import org.nightlabs.jfire.prop.IStruct;
 import org.nightlabs.jfire.prop.validation.ValidationResultType;
 

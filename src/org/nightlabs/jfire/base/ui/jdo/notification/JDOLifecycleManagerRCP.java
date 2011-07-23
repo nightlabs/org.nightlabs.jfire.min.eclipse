@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
+import org.nightlabs.base.ui.context.UIContext;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationListenerJob;
 import org.nightlabs.base.ui.notification.NotificationListenerSWTThreadAsync;
@@ -90,7 +91,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 			job.schedule(l.getDelay());
 		}
 		else if (NotificationListenerSWTThreadAsync.class.getName().equals(notificationMode)) {
-			Display.getDefault().asyncExec(new Runnable() {
+			UIContext.getDisplay().asyncExec(new Runnable() {
 				public void run()
 				{
 					listener.notify(event);
@@ -98,7 +99,7 @@ public class JDOLifecycleManagerRCP extends JDOLifecycleManager {
 			});
 		}
 		else if (NotificationListenerSWTThreadSync.class.getName().equals(notificationMode)) {
-			Display.getDefault().syncExec(new Runnable() {
+			UIContext.getDisplay().syncExec(new Runnable() {
 				public void run()
 				{
 					listener.notify(event);

@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
+import org.nightlabs.base.ui.context.UIContext;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
@@ -365,7 +366,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 					createJDOObjectList();
 				} // synchronized (jdoObjectID2jdoObjectMutex) {
 
-				Display.getDefault().asyncExec(new Runnable()
+				UIContext.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
 					{

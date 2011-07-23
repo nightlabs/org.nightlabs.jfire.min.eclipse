@@ -64,9 +64,9 @@ import org.nightlabs.jfire.base.JFireBaseEAR;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.base.ui.editlock.EditLockHandle;
 import org.nightlabs.jfire.base.ui.editlock.EditLockMan;
-import org.nightlabs.jfire.base.ui.login.Login;
 import org.nightlabs.jfire.base.ui.preferences.LSDPreferencePage;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.config.ConfigGroup;
@@ -80,6 +80,7 @@ import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
+import org.nightlabs.util.Utils;
 
 /**
  * An abstract PreferencePage for ConfigModules.
@@ -421,7 +422,7 @@ extends LSDPreferencePage
 					}
 				}
 
-				Display.getDefault().syncExec(new Runnable() {
+				body.getDisplay().syncExec(new Runnable() {
 					public void run() {
 						setUpGui();
 						updateConfigHeader();

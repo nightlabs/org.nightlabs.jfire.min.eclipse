@@ -5,11 +5,11 @@ package org.nightlabs.jfire.base.ui.prop.structedit.action;
 
 import org.nightlabs.base.ui.action.SelectionAction;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructBlockNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructEditor;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.TreeNode;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 
 /**
  * @author Marius Heinzmann [marius<at>NightLabs<dot>de]

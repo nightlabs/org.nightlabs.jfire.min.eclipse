@@ -33,53 +33,8 @@
         Pruduct and application.
         Main entry to the workbench and branding.
    -->
-    <extension id="app" name="%app.name" point="org.eclipse.core.runtime.applications">
-        <application>
-            <run class="org.nightlabs.jfire.base.ui.app.JFireApplication"/>
-        </application>
-    </extension>
-    <extension id="product" point="org.eclipse.core.runtime.products">
-        <product
-              application="org.nightlabs.jfire.base.ui.app"
-              name="%app.name">
-            <property
-                  name="appName"
-                  value="%app.name"/>
-            <property name="preferenceCustomization" value="plugin_customization.ini"/>
-            <property
-                  name="aboutImage"
-                  value="icons/JFire-Flame.80x160.jpg">
-            </property>
-            <property
-                  name="aboutText"
-                  value="%aboutText">
-            </property>
-            <property
-                  name="windowImages"
-                  value="icons/JFire-Logo.16x16.png,icons/JFire-Logo.32x32.png">
-            </property>
-            <property
-                  name="startupForegroundColor"
-                  value="000000">
-            </property>
-            <property
-                  name="startupMessageRect"
-                  value="7,238,400,20">
-            </property>
-            <property
-                  name="startupProgressRect"
-                  value="0,258,400,15">
-            </property>
-        </product>
-    </extension>
     <!-- Perspectives and Views
    -->
-    <extension point="org.eclipse.ui.perspectives">
-        <perspective
-            class="org.nightlabs.jfire.base.ui.JFireWelcomePerspective"
-            fixed="false" icon="icons/JFire-Icon.16x16.png"
-            id="org.nightlabs.jfire.base.ui.JFireWelcomePerspective" name="%org.nightlabs.jfire.base.ui.JFireWelcomePerspective.name"/>
-    </extension>
     <!-- Actions 
    -->
     <extension point="org.eclipse.ui.actionSets">
@@ -87,25 +42,15 @@
             label="%org.nightlabs.jfire.base.ui.login.actions.label" visible="true">
             <menu id="loginMenu" label="%loginMenu.label">
                 <separator name="loginGroup"/>
+                <separator name="changePasswordGroup"/>
             </menu>
-            <action
-                class="org.nightlabs.jfire.base.ui.login.action.LoginAction"
-                icon="icons/login/action/LoginAction-Login.24x24.png"
-                id="org.nightlabs.jfire.base.ui.login.action.LoginAction#toolbar"
-                label="%org.nightlabs.jfire.base.ui.login.action.LoginAction.label"
-                toolbarPath="loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
+
             <action
                 class="org.nightlabs.jfire.base.ui.password.ChangePasswordAction"
                 icon="icons/password/ChangePasswortAction.16x16.gif"
                 id="org.nightlabs.jfire.base.ui.password.ChangePasswortAction"
                 label="%org.nightlabs.jfire.base.ui.password.ChangePasswortAction.label"
-                menubarPath="loginMenu/loginGroup" tooltip="%org.nightlabs.jfire.base.ui.password.ChangePasswortAction.tooltip"/>
-            <action
-                class="org.nightlabs.jfire.base.ui.login.action.LoginAction"
-                icon="icons/login/action/LoginAction-Login.16x16.png"
-                id="org.nightlabs.jfire.base.ui.login.action.LoginAction#menu"
-                label="%org.nightlabs.jfire.base.ui.login.action.LoginAction.label"
-                menubarPath="loginMenu/loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
+                menubarPath="loginMenu/changePasswordGroup" tooltip="%org.nightlabs.jfire.base.ui.password.ChangePasswortAction.tooltip"/>
         </actionSet>
         <actionSet id="org.nightlabs.jfire.base.ui.jdo.cache.actions"
             label="%org.nightlabs.jfire.base.ui.jdo.cache.actions.label" visible="true">
@@ -202,7 +147,7 @@
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.I18nTextDataFieldEditor$Factory"/>
     </extension>
     <extension point="org.nightlabs.base.ui.login">
-        <login class="org.nightlabs.jfire.base.ui.login.LoginDelegate"/>
+        <login class="org.nightlabs.jfire.base.login.ui.LoginDelegate"/>
     </extension>
     
     <extension point="org.nightlabs.base.ui.removeExtension">
@@ -342,16 +287,21 @@
             name="Connection refused. Handler showing a user friendly message when the connection is refused" targetType="java.net.ConnectException"/>
     </extension>
     <extension point="org.nightlabs.jfire.base.ui.loginstatelistener">
-        <loginStateListener class="org.nightlabs.jfire.base.ui.login.part.LoginStateListenerForCloseOnLogoutEditorParts"/>
+        <loginStateListener class="org.nightlabs.jfire.base.login.ui.part.LoginStateListenerForCloseOnLogoutEditorParts"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.exceptionhandler.LoginStateListenerForScreenShotCfg"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.security.SecurityReflectorRCPLoginStateListener"/>
         <loginStateListener class="org.nightlabs.jfire.base.ui.editlock.EditLockManLoginStateListener"/>
-        <loginStateListener class="org.nightlabs.jfire.base.ui.login.TimeCheckLoginStateListener"/>
+        <loginStateListener class="org.nightlabs.jfire.base.login.ui.TimeCheckLoginStateListener"/>
         <loginStateListener
               class="org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferenceLoginStateListener">
         </loginStateListener>
         <loginStateListener
-              class="org.nightlabs.jfire.base.ui.login.ClearRCLCacheListener">
+              class="org.nightlabs.jfire.base.ui.SharedInstanceLoginStateListener"
+              priority="10">
+        </loginStateListener>
+        <loginStateListener
+              class="org.nightlabs.jfire.base.login.ui.JDOObjectID2PCClassNotificationInterceptorLoginStateListener"
+              priority="50">
         </loginStateListener>
     </extension>
 <!-- Added here because of removeExtension of views registered in org.eclipse.ui.ide (e.g. ProblemView) also removed ProgressView -->
@@ -403,6 +353,14 @@
              identifier="org.nightlabs.jfire.base.ui.person.search.PersonTableViewer"
              viewerFactory="org.nightlabs.jfire.base.ui.person.search.PersonTableViewerFactory">
        </propertySetViewer>
+    </extension>
+    <extension
+          point="org.eclipse.ui.perspectives">
+       <perspective
+             class="org.nightlabs.jfire.base.ui.JFireWelcomePerspective"
+             id="org.nightlabs.jfire.base.ui.JFireWelcomePerspective"
+             name="Welcome">
+       </perspective>
     </extension>
     
     <!--
