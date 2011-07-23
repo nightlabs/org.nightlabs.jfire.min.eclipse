@@ -28,6 +28,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.compatibility.CompatibleSWT;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.util.NLLocale;
 public class RoleGroupTableViewer extends TableViewer
@@ -156,7 +157,7 @@ public class RoleGroupTableViewer extends TableViewer
 			}
 		});
 
-		getTable().addMouseTrackListener(new MouseTrackListener() {
+		CompatibleSWT.addMouseTrackListener(getTable(), new MouseTrackListener() {
 			@Override
 			public void mouseEnter(MouseEvent event) {
 //				if (logger.isDebugEnabled())
@@ -178,7 +179,9 @@ public class RoleGroupTableViewer extends TableViewer
 			}
 		});
 
-		getTable().addMouseMoveListener(new MouseMoveListener() {
+		
+		
+		CompatibleSWT.addMouseMoveListener(getTable(), new MouseMoveListener() {
 			@Override
 			public void mouseMove(MouseEvent event) {
 				if (logger.isDebugEnabled())
@@ -368,10 +371,6 @@ public class RoleGroupTableViewer extends TableViewer
 		}
 	};
 
-	public RoleGroupSecurityPreferencesModel getModel() {
-		return model;
-	}
-	
 	public void setModel(RoleGroupSecurityPreferencesModel model) {
 		this.model = model;
 
@@ -379,5 +378,9 @@ public class RoleGroupTableViewer extends TableViewer
 			setInput(Collections.emptySet());
 		else
 			setInput(model.getAllRoleGroupsInAuthority());
+	}
+
+	public RoleGroupSecurityPreferencesModel getModel() {
+		return model;
 	}
 }

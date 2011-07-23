@@ -220,29 +220,17 @@ implements ISelectionProvider // needed for updating ViewActions
 
 	protected void updateUI()
 	{
-//		labelDirty.setText("");
-		checkBoxEnabled.setSelection(false);
-		timePatternSetComposite.setTimePatternSet(null);
+		if (!isDisposed()) {
+			checkBoxEnabled.setSelection(false);
+			timePatternSetComposite.setTimePatternSet(null);
 
-		if (task != null) {
-//			boolean dirty = false;
-//			if (JDOHelper.isDirty(task) || JDOHelper.isDirty(task.getTimePatternSet()))
-//				dirty = true;
-//
-//			for (Iterator it = task.getTimePatternSet().getTimePatterns().iterator(); it.hasNext(); )
-//			{
-//				TimePattern timePattern = (TimePattern) it.next();
-//				if (JDOHelper.isDirty(task))
-//					dirty = true;
-//			}
-//
-//			labelDirty.setText(dirty ? "dirty" : "clean");
+			if (task != null) {
+				checkBoxEnabled.setSelection(taskEnabled);
+				timePatternSetComposite.setTimePatternSet(task.getTimePatternSet());
+			}
 
-			checkBoxEnabled.setSelection(taskEnabled);
-			timePatternSetComposite.setTimePatternSet(task.getTimePatternSet());
+			setEnabled(task != null);			
 		}
-
-		setEnabled(task != null);
 	}
 
 	public void createTimePattern()

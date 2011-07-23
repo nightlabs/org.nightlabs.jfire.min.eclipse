@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.admin.ui.organisation.create;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
+import org.nightlabs.jfire.base.login.ui.action.LSDWorkbenchWindowActionDelegate;
 
 
 /**

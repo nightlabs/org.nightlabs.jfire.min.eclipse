@@ -4,7 +4,7 @@
 package org.nightlabs.jfire.base.admin.ui.editor.localorganisation;
 
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
-import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
+import org.nightlabs.jfire.base.login.ui.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.organisation.Organisation;
 
 /**

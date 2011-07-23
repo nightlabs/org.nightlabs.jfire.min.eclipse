@@ -42,6 +42,7 @@ import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreference
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.security.RoleGroup;
 
 /**
@@ -96,7 +97,8 @@ public class RoleGroupsSection extends RestorableSectionPart
 //		section.setExpanded(true);
 		
 		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION);
-		toolkit.paintBordersFor(fTable);
+		CompatibleFormToolkit.paintBordersFor(toolkit, fTable);
+		
 		roleGroupTableViewer = new RoleGroupTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this), false, false);
 		roleGroupTableViewer.setComparator(roleGroupComparator);
 	}

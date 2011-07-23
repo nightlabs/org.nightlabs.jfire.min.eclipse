@@ -133,12 +133,12 @@ public class UserSecurityGroupTableViewer extends TableViewer {
 		setLabelProvider(new UserSecurityGroupsLabelProvider(this));
 	}
 
-	public UserSecurityPreferencesModel getModel() {
-		return model;
-	}
-	
 	public void setModel(UserSecurityPreferencesModel model) {
 		this.model = model;
 		setInput(model.getAvailableUserSecurityGroups());
+	}
+
+	public UserSecurityPreferencesModel getModel() {
+		return model;
 	}
 }

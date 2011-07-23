@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.admin.ui.organisation.registration;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 
 /**

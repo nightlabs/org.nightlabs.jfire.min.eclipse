@@ -33,10 +33,8 @@ import java.util.Map;
 
 import javax.jdo.FetchPlan;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -55,6 +53,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.table.AbstractInvertableTableSorter;
 import org.nightlabs.base.ui.table.TableLabelProvider;
@@ -63,7 +62,7 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 import org.nightlabs.jfire.organisation.dao.OrganisationDAO;
@@ -75,6 +74,7 @@ import org.nightlabs.jfire.servermanager.config.J2eeServerTypeRegistryConfigModu
 import org.nightlabs.jfire.servermanager.config.ServerCf;
 import org.nightlabs.jfire.servermanager.config.J2eeServerTypeRegistryConfigModule.J2eeRemoteServer;
 import org.nightlabs.progress.NullProgressMonitor;
+import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
 
 /**
@@ -220,7 +220,7 @@ public class RegisterOrganisationPage extends DynamicPathWizardPage
 
 		new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.organisation.registration.RegisterOrganisationPage.loadOrganisationsJob.name")) { //$NON-NLS-1$
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			protected IStatus run(ProgressMonitor monitor)
 			{
 				try {
 					ServerManagerRemote serverManager = JFireEjb3Factory.getRemoteBean(ServerManagerRemote.class, Login.getLogin().getInitialContextProperties());

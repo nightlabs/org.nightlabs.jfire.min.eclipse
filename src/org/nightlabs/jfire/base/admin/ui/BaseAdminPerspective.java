@@ -58,9 +58,10 @@ public class BaseAdminPerspective implements IPerspectiveFactory
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.25f,	IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
 		left.addView(SysAdminEntityTreeView.ID_VIEW);
 
-		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
-		bottom.addView(PendingOrganisationRegistrationsView.ID_VIEW);
-		bottom.addView(AsyncInvokeProblemView.ID_VIEW);
+		// Commented because more irritating to user at first then useful
+//		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
+//		bottom.addView(PendingOrganisationRegistrationsView.ID_VIEW);
+//		bottom.addView(AsyncInvokeProblemView.ID_VIEW);
 		
 		layout.addShowViewShortcut(SysAdminEntityTreeView.ID_VIEW);
 		layout.addShowViewShortcut(PendingOrganisationRegistrationsView.ID_VIEW);

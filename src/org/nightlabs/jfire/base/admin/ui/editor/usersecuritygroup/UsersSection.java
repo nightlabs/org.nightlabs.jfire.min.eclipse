@@ -47,6 +47,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.security.User;
 
 /**
@@ -61,15 +62,11 @@ public class UsersSection extends ToolBarSectionPart
 {
 	UserTableViewer userTableViewer;
 
-//	/**
-//	 * The model for the usergroup
-//	 */
-//	private GroupSecurityPreferencesModel model;
-
 	private CheckSelectedAction checkSelectedAction;
 	private UncheckSelectedAction uncheckSelectedAction;
 	private CheckAllAction checkAllAction;
 	private UncheckAllAction uncheckAllAction;
+	private Display display;
 	
 	/**
 	 * Create an instance of RoleGroupsSection.
@@ -79,6 +76,7 @@ public class UsersSection extends ToolBarSectionPart
 	public UsersSection(FormPage page, Composite parent)
 	{
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.usersecuritygroup.UsersSection.sectionTitle")); //$NON-NLS-1$
+		display = parent.getDisplay();
 		createClient(getSection(), page.getEditor().getToolkit());
 	}
 
@@ -98,7 +96,7 @@ public class UsersSection extends ToolBarSectionPart
 		Composite container = EntityEditorUtil.createCompositeClient(toolkit, section, 3);
 
 		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);
-		toolkit.paintBordersFor(fTable);
+		CompatibleFormToolkit.paintBordersFor(toolkit, fTable);
 		userTableViewer = new UserTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this));
 		
 		checkSelectedAction = new CheckSelectedAction();
@@ -141,8 +139,7 @@ public class UsersSection extends ToolBarSectionPart
 	}
 
 	public void setModel(final GroupSecurityPreferencesModel model) {
-//		this.model = model;
-		Display.getDefault().asyncExec(new Runnable() {
+		display.asyncExec(new Runnable() {
 			public void run() {
 				userTableViewer.setModel(model);
 			}

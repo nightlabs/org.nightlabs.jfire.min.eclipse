@@ -24,7 +24,6 @@
 package org.nightlabs.jfire.base.admin.ui.editor.user;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
@@ -89,7 +88,7 @@ public class PersonPreferencesPage extends EntityEditorPageWithProgress
 
 	@Override
 	protected void handleControllerObjectModified(EntityEditorPageControllerModifyEvent modifyEvent) {
-		Display.getDefault().asyncExec(new Runnable() {
+		getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				PersonPreferencesController controller = (PersonPreferencesController)getPageController();
 				User user = controller.getUser();

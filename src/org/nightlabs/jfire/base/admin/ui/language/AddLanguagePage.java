@@ -57,6 +57,7 @@ import org.nightlabs.i18n.I18nUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
+import org.nightlabs.jfire.compatibility.CompatibleSWT;
 
 /**
  * Wizard page for adding new languages to client and server. After a certain language has been
@@ -109,7 +110,8 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 		combo = new XCombo(f, SWT.READ_ONLY, 2);
 		combo.setVisibleItemCount(8);
 		mouseWheelListener = new MouseWheelListenerImpl();
-		combo.addMouseWheelListener(mouseWheelListener);
+		CompatibleSWT.addMouseWheelListener(combo, mouseWheelListener);
+		
 		for (ComboContributionDescriptor ccDesc : comboContributionDescriptors) {
 			combo.add(ccDesc.getImgLanguage(), ccDesc.getDisplayName(), ccDesc.getImgCountry(), ccDesc.getPos());
 		}
@@ -252,7 +254,7 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	private class MouseWheelListenerImpl implements MouseWheelListener {
 		@Override
 		public void mouseScrolled(MouseEvent arg0) {
-			final int count = arg0.count;
+			final int count = CompatibleSWT.getMouseEventCount(arg0);
 			final int direction = count > 0 ? -1 : 1;
 			final int newSelection_ = combo.getSelectionIndex() + direction;
 			final int newSelection;
@@ -372,7 +374,7 @@ public class AddLanguagePage extends DynamicPathWizardPage implements FormularCh
 	@Override
 	public void dispose() {
 		if (combo != null && mouseWheelListener != null) {
-			combo.removeMouseWheelListener(mouseWheelListener);
+			CompatibleSWT.removeMouseWheelListener(combo, mouseWheelListener);
 		}
 	}
 

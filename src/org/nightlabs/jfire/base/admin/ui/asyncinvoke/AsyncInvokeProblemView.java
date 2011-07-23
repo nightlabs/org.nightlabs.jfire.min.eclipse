@@ -3,7 +3,7 @@ package org.nightlabs.jfire.base.admin.ui.asyncinvoke;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.selection.SelectionProviderProxy;
-import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
+import org.nightlabs.jfire.base.login.ui.part.LSDViewPart;
 
 public class AsyncInvokeProblemView
 		extends LSDViewPart

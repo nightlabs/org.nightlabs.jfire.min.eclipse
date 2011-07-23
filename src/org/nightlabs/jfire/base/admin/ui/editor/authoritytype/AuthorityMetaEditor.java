@@ -4,8 +4,8 @@ import javax.jdo.FetchPlan;
 
 import org.nightlabs.base.ui.editor.JDOObjectEditorInput;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.login.ui.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditor;
-import org.nightlabs.jfire.base.ui.login.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.AuthorityMeta;
 import org.nightlabs.jfire.security.dao.AuthorityDAO;

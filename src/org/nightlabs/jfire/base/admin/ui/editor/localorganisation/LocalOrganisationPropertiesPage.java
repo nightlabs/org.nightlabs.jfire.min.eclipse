@@ -24,7 +24,6 @@
 package org.nightlabs.jfire.base.admin.ui.editor.localorganisation;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.FormText;
@@ -116,7 +115,7 @@ public class LocalOrganisationPropertiesPage extends EntityEditorPageWithProgres
 	 */
 	private void setControllerObject() {
 		final LocalOrganisationPropertiesController controller = (LocalOrganisationPropertiesController) getPageController();
-		Display.getDefault().asyncExec(new Runnable() {
+		getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				if (organisationPropertiesSection != null && !organisationPropertiesSection.getSection().isDisposed())
 				organisationPropertiesSection.setPropertySet(controller.getControllerObject().getPerson());

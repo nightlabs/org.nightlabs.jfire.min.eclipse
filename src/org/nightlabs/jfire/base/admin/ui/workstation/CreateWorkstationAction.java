@@ -29,7 +29,7 @@ package org.nightlabs.jfire.base.admin.ui.workstation;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardDialog;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
+import org.nightlabs.jfire.base.login.ui.action.LSDWorkbenchWindowActionDelegate;
 
 /**
  * Action to create a new Workstation using a {@link CreateWorkstationWizard}.

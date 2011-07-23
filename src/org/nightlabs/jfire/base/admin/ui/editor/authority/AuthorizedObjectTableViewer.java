@@ -89,7 +89,7 @@ public class AuthorizedObjectTableViewer extends TableViewer
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 100;
 		getTable().setLayoutData(gd);
-		
+
 		TableViewerColumn col1 = new TableViewerColumn(this, SWT.CENTER);
 		col1.getColumn().setResizable(false);
 		col1.getColumn().setText(""); //$NON-NLS-1$
@@ -115,6 +115,5 @@ public class AuthorizedObjectTableViewer extends TableViewer
 
 		setContentProvider(new ArrayContentProvider());
 		setLabelProvider(new AuthorizedObjectLabelProvider(this));
-		
 	}
 }

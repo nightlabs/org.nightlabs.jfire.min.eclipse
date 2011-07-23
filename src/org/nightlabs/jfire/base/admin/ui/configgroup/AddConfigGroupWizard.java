@@ -40,7 +40,7 @@ import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.base.ui.wizard.IDynamicPathWizardPage;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.config.ConfigManagerRemote;
 import org.nightlabs.jfire.config.UserConfigSetup;
 

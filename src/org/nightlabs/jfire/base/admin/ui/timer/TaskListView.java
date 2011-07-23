@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.selection.SelectionProviderProxy;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
-import org.nightlabs.jfire.base.ui.login.part.LSDViewPart;
+import org.nightlabs.jfire.base.login.ui.part.LSDViewPart;
 
 public class TaskListView
 extends LSDViewPart

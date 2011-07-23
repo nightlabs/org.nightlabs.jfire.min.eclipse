@@ -28,7 +28,7 @@ package org.nightlabs.jfire.base.admin.ui.configgroup;
 
 import org.nightlabs.base.ui.wizard.DynamicPathWizard;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.config.ConfigManagerRemote;
 import org.nightlabs.jfire.config.id.ConfigID;
 import org.nightlabs.jfire.security.SecurityReflector;

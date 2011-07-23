@@ -28,8 +28,8 @@ package org.nightlabs.jfire.base.admin.ui.organisation.registration;
 
 import org.eclipse.jface.action.IAction;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
-import org.nightlabs.jfire.base.ui.login.Login;
-import org.nightlabs.jfire.base.ui.login.action.LSDWorkbenchWindowActionDelegate;
+import org.nightlabs.jfire.base.login.ui.Login;
+import org.nightlabs.jfire.base.login.ui.action.LSDWorkbenchWindowActionDelegate;
 import org.nightlabs.jfire.organisation.OrganisationManagerRemote;
 
 

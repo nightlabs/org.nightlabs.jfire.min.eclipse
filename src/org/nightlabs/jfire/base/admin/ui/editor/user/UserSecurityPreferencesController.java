@@ -44,7 +44,7 @@ import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeEvent;
 import org.nightlabs.jfire.base.admin.ui.editor.ModelChangeListener;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.security.Authority;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.jfire.security.RoleGroupSetCarrier;
@@ -229,7 +229,7 @@ public class UserSecurityPreferencesController extends EntityEditorPageControlle
 		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityPreferencesController.job.reloadingRoleGroups")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
-				Collection<UserSecurityGroupID> userSecurityGroupIDs = NLJDOHelper.getObjectIDSet(new HashSet<UserSecurityGroup>(userModel.getUserSecurityGroups()));
+				Collection<UserSecurityGroupID> userSecurityGroupIDs = NLJDOHelper.getObjectIDSet(userModel.getUserSecurityGroups());
 				Set<RoleGroup> roleGroups = RoleGroupDAO.sharedInstance().getRoleGroupsForUserSecurityGroups(
 						userSecurityGroupIDs,
 						getAuthorityID(),

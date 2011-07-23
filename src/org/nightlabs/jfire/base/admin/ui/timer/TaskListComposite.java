@@ -10,10 +10,8 @@ import java.util.Set;
 import javax.jdo.FetchPlan;
 import javax.security.auth.login.LoginException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -28,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.notification.NotificationListenerJob;
@@ -41,13 +40,14 @@ import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.notification.ChangeEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.login.Login;
+import org.nightlabs.jfire.base.login.ui.Login;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.timer.Task;
 import org.nightlabs.jfire.timer.dao.TaskDAO;
 import org.nightlabs.jfire.timer.id.TaskID;
 import org.nightlabs.l10n.DateFormatter;
 import org.nightlabs.notification.NotificationEvent;
+import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.NLLocale;
 
 public class TaskListComposite
@@ -440,12 +440,12 @@ public class TaskListComposite
 		new Job(Messages.getString("org.nightlabs.jfire.base.admin.ui.timer.TaskListComposite.loadTasks.job.taskName")) //$NON-NLS-1$
 		{
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			protected IStatus run(ProgressMonitor monitor)
 			{
 //				List<Task> _tasks = TaskProvider.sharedInstance().getTasks(
 //						FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT);
 
-				List<Task> _tasks = TaskDAO.sharedInstance().getTasks(FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, new ProgressMonitorWrapper(monitor));
+				List<Task> _tasks = TaskDAO.sharedInstance().getTasks(FETCH_GROUPS_TASKS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 
 				// TODO sort
 

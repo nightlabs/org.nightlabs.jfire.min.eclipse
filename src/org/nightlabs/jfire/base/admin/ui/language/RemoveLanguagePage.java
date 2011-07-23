@@ -57,6 +57,7 @@ import org.nightlabs.i18n.I18nUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
+import org.nightlabs.jfire.compatibility.CompatibleSWT;
 import org.nightlabs.language.LanguageCf;
 
 /**
@@ -117,7 +118,7 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 		combo = new XCombo(f, SWT.READ_ONLY);
 		combo.setVisibleItemCount(8);
 		mouseWheelListener = new MouseWheelListenerImpl();
-		combo.addMouseWheelListener(mouseWheelListener);
+		CompatibleSWT.addMouseWheelListener(combo, mouseWheelListener);
 
 		while (it.hasNext()) {
 			final LanguageCf languageCf = it.next();
@@ -192,7 +193,7 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 	private class MouseWheelListenerImpl implements MouseWheelListener {
 		@Override
 		public void mouseScrolled(MouseEvent arg0) {
-			final int count = arg0.count;
+			final int count = CompatibleSWT.getMouseEventCount(arg0);
 			final int direction = count > 0 ? -1 : 1;
 			final int newSelection_ = combo.getSelectionIndex() + direction;
 			final int newSelection;
@@ -213,7 +214,7 @@ public class RemoveLanguagePage extends DynamicPathWizardPage implements Formula
 	@Override
 	public void dispose() {
 		if (combo != null && mouseWheelListener != null) {
-			combo.removeMouseWheelListener(mouseWheelListener);
+			CompatibleSWT.removeMouseWheelListener(combo, mouseWheelListener);
 		}
 	}
 

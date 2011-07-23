@@ -50,6 +50,7 @@ import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.security.RoleGroup;
 
 /**
@@ -81,6 +82,7 @@ public class RoleGroupsSection extends ToolBarSectionPart
 	private UncheckSelectedAction uncheckSelectedAction;
 	private CheckAllAction checkAllAction;
 	private UncheckAllAction uncheckAllAction;
+	private Display display;
 	
 	/**
 	 * Create an instance of RoleGroupsSection.
@@ -95,6 +97,7 @@ public class RoleGroupsSection extends ToolBarSectionPart
 	public RoleGroupsSection(FormPage page, Composite parent, boolean showTotalAvailColumn, boolean showCheckBoxes)
 	{
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupsSection.sectionTitle")); //$NON-NLS-1$
+		display = parent.getDisplay();
 		createClient(getSection(), page.getEditor().getToolkit(), showTotalAvailColumn, showCheckBoxes);
 	}
 
@@ -123,7 +126,7 @@ public class RoleGroupsSection extends ToolBarSectionPart
 		section.setExpanded(true);
 		
 		Table fTable = toolkit.createTable(container, SWT.MULTI | SWT.FULL_SELECTION);
-		toolkit.paintBordersFor(fTable);
+		CompatibleFormToolkit.paintBordersFor(toolkit, fTable);
 		roleGroupTableViewer = new RoleGroupTableViewer(fTable, UserUtil.getSectionDirtyStateManager(this), showAssignmentSourceColum, showCheckBoxes);
 		roleGroupTableViewer.setComparator(roleGroupComparator);
 		fTable.addKeyListener(new KeyAdapter() {
@@ -212,12 +215,12 @@ public class RoleGroupsSection extends ToolBarSectionPart
 		section.setDescriptionControl(text);
 	}
 	
-	public void setModel(final RoleGroupSecurityPreferencesModel model) {
-		this.model = model;
-		Display.getDefault().asyncExec(new Runnable() {
+	public void setModel(final RoleGroupSecurityPreferencesModel _model) {
+		display.asyncExec(new Runnable() {
 			public void run() {
+				model = _model;
 				if (roleGroupTableViewer != null && !roleGroupTableViewer.getTable().isDisposed())
-					roleGroupTableViewer.setModel(model);
+					roleGroupTableViewer.setModel(_model);
 //				if (excludedRoleGroupsViewer == null)
 //					return;
 //

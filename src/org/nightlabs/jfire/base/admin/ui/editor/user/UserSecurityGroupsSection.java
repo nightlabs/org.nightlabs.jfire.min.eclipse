@@ -28,6 +28,7 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
+import org.nightlabs.jfire.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 
 /**
@@ -48,6 +49,7 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 	private UncheckSelectedAction uncheckSelectedAction;
 	private CheckAllAction checkAllAction;
 	private UncheckAllAction uncheckAllAction;
+	private Display display;
 	
 	/**
 	 * Create an instance of UserSecurityGroupsSection.
@@ -57,6 +59,7 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 	public UserSecurityGroupsSection(FormPage page, Composite parent)
 	{
 		super(page, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.UserSecurityGroupsSection.sectionTitle")); //$NON-NLS-1$);
+		display = parent.getDisplay();
 		createClient(getSection(), page.getEditor().getToolkit());
 	}
 
@@ -128,12 +131,12 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 		userSecurityGroupTableViewer.getTable().setMenu(menu);	
 	}
 	
-	public void setModel(final UserSecurityPreferencesModel model) {
-		this.model = model;
-		Display.getDefault().asyncExec(new Runnable() {
+	public void setModel(final UserSecurityPreferencesModel _model) {
+		display.asyncExec(new Runnable() {
 			public void run() {
+				model = _model;
 				if (userSecurityGroupTableViewer != null && !userSecurityGroupTableViewer.getTable().isDisposed())
-					userSecurityGroupTableViewer.setModel(model);
+					userSecurityGroupTableViewer.setModel(_model);
 			}
 		});
 	}
@@ -171,7 +174,7 @@ public class UserSecurityGroupsSection extends ToolBarSectionPart {
 //		fTable.setLayout(tlayout);
 		fTable.setLayout(new WeightedTableLayout(new int[] {-1, 30, 70}, new int[] {20, -1, -1}));
 		fTable.setHeaderVisible(true);
-		toolkit.paintBordersFor(fTable);
+		CompatibleFormToolkit.paintBordersFor(toolkit, fTable);
 		//createContextMenu(fTable);
 		return fTable;
 	}
