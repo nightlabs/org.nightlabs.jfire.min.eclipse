@@ -20,42 +20,43 @@
 	<dependencies>
 		<dependency>
 			<groupId>javax.jdo</groupId>
-			<artifactId>jdo2-api</artifactId>
+			<artifactId>jdo-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
-			<scope>provided</scope>
 		</dependency>
+		<!-- FIXME -->
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.nebula</groupId>
 			<artifactId>org.eclipse.nebula.widgets.pshelf</artifactId>
-			<scope>provided</scope>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui.forms</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.update</groupId>
 			<artifactId>org.eclipse.update.configurator</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.update</groupId>
 			<artifactId>org.eclipse.update.core</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.base</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.jdo</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -64,7 +65,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.nightlabs.eclipse</groupId>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.clientui.ui</artifactId>
 			<scope>provided</scope>
 		</dependency>
@@ -74,12 +75,27 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.singleton</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.query</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.nightlabs.eclipse</groupId>
 			<artifactId>org.nightlabs.eclipse.ui.dialog</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.eclipse.preference.ui</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.jdo.query.ui</artifactId>
 			<scope>provided</scope>
 		</dependency>
@@ -135,8 +151,15 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
+			<!-- TODO following may be removed when upper is removed (defined in parent) -->
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+					<include>plugin*.properties</include>
+					<include>schema/**/*</include>
+				</includes>
+			</resource>
 		</resources>
-
-
 	</build>
 </project>
