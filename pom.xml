@@ -2,31 +2,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
-	<!-- @generated - Auto generated POM. Remove this marker after review. -->
-	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.nightlabs.eclipse</groupId>
+	<groupId>org.nightlabs.jfire.eclipse</groupId>
 	<artifactId>org.nightlabs.clientui.ui</artifactId>
 	<version>1.2.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>${project.artifactId}</name>
 
 	<parent>
-		<groupId>org.nightlabs.eclipse</groupId>
-		<artifactId>org.nightlabs.eclipse.parent</artifactId>
+		<groupId>org.nightlabs.jfire.eclipse</groupId>
+		<artifactId>org.nightlabs.jfire.eclipse.parent</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.jdo</groupId>
+			<artifactId>jdo-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.XXX</groupId>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs.eclipse</groupId>
@@ -65,8 +70,15 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
+			<!-- TODO following may be removed when upper is removed (defined in parent) -->
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+					<include>plugin*.properties</include>
+					<include>schema/**/*</include>
+				</includes>
+			</resource>
 		</resources>
-
-
 	</build>
 </project>
