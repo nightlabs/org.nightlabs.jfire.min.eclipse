@@ -10,6 +10,6 @@ Bundle-Localization: plugin
 Export-Package: org.nightlabs.jdo.query.ui;uses:="org.eclipse.ui.plugin,org.osgi.framework",
  org.nightlabs.jdo.query.ui.search
 Require-Bundle: org.nightlabs.base.ui,
- org.nightlabs.jfire.compatibility;bundle-version="1.0.0",
+ org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
  org.nightlabs.jfire.base.j2ee;bundle-version="1.0.0"
 Eclipse-LazyStart: true
