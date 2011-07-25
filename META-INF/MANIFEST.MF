@@ -11,7 +11,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.nightlabs.config,
  org.nightlabs.base,
  org.apache.log4j,
- org.nightlabs.jfire.compatibility;bundle-version="1.0.0",
+ org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
  org.nightlabs.singleton;bundle-version="1.0.0",
  slf4j.api,
  org.nightlabs.jfire.classloader.remote;bundle-version="1.1.0";resolution:=optional

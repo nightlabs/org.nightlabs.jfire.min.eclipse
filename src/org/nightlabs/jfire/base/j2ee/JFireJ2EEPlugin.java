@@ -52,8 +52,8 @@ import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
+import org.nightlabs.eclipse.compatibility.CompatibilityUpdate;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate;
-import org.nightlabs.jfire.compatibility.CompatibilityUpdate;
 import org.nightlabs.util.IOUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
