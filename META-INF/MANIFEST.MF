@@ -7,7 +7,7 @@ Bundle-Activator: org.nightlabs.jfire.base.ui.app.rcp.JFireRCPAppPlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.nightlabs.singleton,
  org.nightlabs.jfire.base.ui,
- org.nightlabs.jfire.compatibility;bundle-version="1.0.0"
+ org.nightlabs.eclipse.compatibility;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.nightlabs.jfire.base.ui.app.rcp
