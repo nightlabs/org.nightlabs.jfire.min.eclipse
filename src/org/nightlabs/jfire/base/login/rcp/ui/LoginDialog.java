@@ -66,6 +66,7 @@ import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.resource.SharedImages.ImageDimension;
 import org.nightlabs.config.Config;
 import org.nightlabs.config.ConfigException;
+import org.nightlabs.eclipse.compatibility.CompatibleDialogConstants;
 import org.nightlabs.j2ee.LoginData;
 import org.nightlabs.jfire.base.login.rcp.ui.resource.Messages;
 import org.nightlabs.jfire.base.login.ui.Login;
@@ -73,7 +74,6 @@ import org.nightlabs.jfire.base.login.ui.LoginConfigModule;
 import org.nightlabs.jfire.base.login.ui.LoginConfiguration;
 import org.nightlabs.jfire.base.login.ui.LoginStateChangeEvent;
 import org.nightlabs.jfire.base.login.ui.LoginStateListener;
-import org.nightlabs.jfire.compatibility.CompatibleDialogConstants;
 import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.util.Util;
 
