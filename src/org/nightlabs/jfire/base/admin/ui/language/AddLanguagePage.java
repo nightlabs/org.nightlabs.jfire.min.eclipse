@@ -53,11 +53,11 @@ import org.nightlabs.base.ui.composite.FormularChangedEvent;
 import org.nightlabs.base.ui.custom.XCombo;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
+import org.nightlabs.eclipse.compatibility.CompatibleSWT;
 import org.nightlabs.i18n.I18nUtil;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
 import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
-import org.nightlabs.jfire.compatibility.CompatibleSWT;
 
 /**
  * Wizard page for adding new languages to client and server. After a certain language has been

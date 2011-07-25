@@ -26,9 +26,9 @@ import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.notification.IDirtyStateManager;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.table.EmulatedNativeCheckBoxTableLabelProvider;
+import org.nightlabs.eclipse.compatibility.CompatibleSWT;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.compatibility.CompatibleSWT;
 import org.nightlabs.jfire.security.RoleGroup;
 import org.nightlabs.util.NLLocale;
 public class RoleGroupTableViewer extends TableViewer

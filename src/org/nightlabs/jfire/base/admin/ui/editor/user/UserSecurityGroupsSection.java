@@ -26,9 +26,9 @@ import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.eclipse.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.security.UserSecurityGroup;
 
 /**

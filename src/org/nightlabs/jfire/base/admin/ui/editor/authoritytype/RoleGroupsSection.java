@@ -38,11 +38,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
+import org.nightlabs.eclipse.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupSecurityPreferencesModel;
 import org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer;
 import org.nightlabs.jfire.base.admin.ui.editor.user.UserUtil;
 import org.nightlabs.jfire.base.admin.ui.resource.Messages;
-import org.nightlabs.jfire.compatibility.CompatibleFormToolkit;
 import org.nightlabs.jfire.security.RoleGroup;
 
 /**
