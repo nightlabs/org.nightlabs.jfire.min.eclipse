@@ -14,7 +14,7 @@ Require-Bundle: org.nightlabs.config;bundle-version="1.0.2",
  org.nightlabs.progress;bundle-version="1.0.1",
  org.nightlabs.base;bundle-version="1.1.0",
  org.nightlabs.base.ui;bundle-version="1.2.16",
- org.nightlabs.jfire.compatibility;bundle-version="1.0.0",
+ org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
  org.nightlabs.jfire.base.j2ee;bundle-version="1.0.5"
 Bundle-Activator: org.nightlabs.jfire.base.login.ui.JFireLoginPlugin
 Bundle-ActivationPolicy: lazy

@@ -18,8 +18,8 @@ import org.nightlabs.base.ui.action.AbstractContributionItem;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.login.LoginState;
 import org.nightlabs.base.ui.resource.SharedImages;
+import org.nightlabs.eclipse.compatibility.CompatibleSWT;
 import org.nightlabs.jfire.base.login.ui.resource.Messages;
-import org.nightlabs.jfire.compatibility.CompatibleSWT;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
