@@ -5,7 +5,7 @@ import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.IStruct;
 
-import com.sun.xml.internal.ws.api.PropertySet;
+import org.nightlabs.jfire.prop.PropertySet;
 
 /**
  * Interface for graphical Editors of a {@link DataBlockGroup}.
