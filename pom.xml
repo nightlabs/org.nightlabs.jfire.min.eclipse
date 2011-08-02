@@ -96,11 +96,6 @@
 	<!-- ### org.nightlabs.eclipse :: END ### -->
 
 		<dependency>
-			<groupId>org.nightlabs.eclipse</groupId>
-			<artifactId>org.nightlabs.base.ui</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.clientui.ui</artifactId>
 			<scope>provided</scope>
@@ -118,11 +113,6 @@
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.query</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.eclipse</groupId>
-			<artifactId>org.nightlabs.eclipse.extension</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

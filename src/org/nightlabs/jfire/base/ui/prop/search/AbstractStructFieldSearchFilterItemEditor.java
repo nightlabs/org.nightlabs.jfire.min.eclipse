@@ -17,7 +17,7 @@ import org.nightlabs.jdo.search.MatchType;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructFieldID;
 
-public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends StructField<?>> implements IStructFieldSearchFilterItemEditor {
+public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends StructField> implements IStructFieldSearchFilterItemEditor {
 
 	private Collection<SF> structFields;
 	private MatchType matchType;
