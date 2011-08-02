@@ -47,6 +47,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.progress</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.singleton</artifactId>
 			<scope>provided</scope>
 		</dependency>
