@@ -103,12 +103,12 @@
 			<artifactId>org.nightlabs.singleton</artifactId>
 			<scope>provided</scope>
 		</dependency>
+-->
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.util</artifactId>
 			<scope>provided</scope>
 		</dependency>
--->
 	<!-- ### org.nightlabs :: END ### -->
 
 	<!-- ### org.nightlabs.eclipse :: BEGIN ### -->
