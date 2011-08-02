@@ -16,6 +16,13 @@
 	</parent>
 
 	<dependencies>
+		<!-- TODO LOG4J dependency here should be removed once code was migrated to SLF4J!!! -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>javax.jdo</groupId>
 			<artifactId>jdo-api</artifactId>
@@ -25,6 +32,7 @@
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui</artifactId>
@@ -37,9 +45,12 @@
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui.forms</artifactId>
 		</dependency>
+-->
+		
+		<!-- ### org.nightlabs :: BEGIN ### -->
 		<dependency>
-			<groupId>org.nightlabs.eclipse</groupId>
-			<artifactId>org.nightlabs.eclipse.ui.dialog</artifactId>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.base</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -47,6 +58,57 @@
 			<artifactId>org.nightlabs.jdo</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.query</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.query.jdo</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.progress</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.util</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- ### org.nightlabs :: END ### -->
+	
+		<!-- ### org.nightlabs.eclipse :: BEGIN ### -->
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>${org.nightlabs.eclipse.compatibility.artifactId}</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.base.ui</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.eclipse.preference.ui</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.eclipse.ui.dialog</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.eclipse.extension</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	<!-- ### org.nightlabs.eclipse :: END ### -->
+	
+	<!-- ### org.nightlabs.jfire :: BEGIN ### -->
 		<dependency>
 			<groupId>org.nightlabs.jfire</groupId>
 			<artifactId>org.nightlabs.jfire.base</artifactId>
@@ -68,25 +130,24 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.nightlabs.jfire.eclipse</groupId>
-			<artifactId>org.nightlabs.jfire.base.ui</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.nightlabs.jfire</groupId>
 			<artifactId>org.nightlabs.jfire.servermanager</artifactId>
 			<scope>provided</scope>
 		</dependency>
+	<!-- ### org.nightlabs.jfire :: END ### -->
+	
+	<!-- ### org.nightlabs.jfire.eclipse :: BEGIN ### -->
 		<dependency>
-			<groupId>org.nightlabs</groupId>
-			<artifactId>org.nightlabs.query</artifactId>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
+			<artifactId>org.nightlabs.jfire.base.login.ui</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.nightlabs</groupId>
-			<artifactId>org.nightlabs.query.jdo</artifactId>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
+			<artifactId>org.nightlabs.jfire.base.ui</artifactId>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
+	<!-- ### org.nightlabs.jfire.eclipse :: END ### -->
 	</dependencies>
 
 	<build>
