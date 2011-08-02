@@ -21,34 +21,15 @@
 			<artifactId>jdo-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-		</dependency>
-		<!-- FIXME -->
+
+		<!-- FIXME
 		<dependency>
 			<groupId>org.eclipse.nebula</groupId>
 			<artifactId>org.eclipse.nebula.widgets.pshelf</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>org.eclipse.ui</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>org.eclipse.ui.forms</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.update</groupId>
-			<artifactId>org.eclipse.update.configurator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.update</groupId>
-			<artifactId>org.eclipse.update.core</artifactId>
-		</dependency>
--->
+		-->
+
 	<!-- ### org.nightlabs :: BEGIN ### -->
 		<dependency>
 			<groupId>org.nightlabs</groupId>
