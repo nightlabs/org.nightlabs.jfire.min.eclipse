@@ -46,13 +46,11 @@
 			<artifactId>org.nightlabs.base</artifactId>
 			<scope>provided</scope>
 		</dependency>
-<!--
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.concurrent</artifactId>
 			<scope>provided</scope>
 		</dependency>
--->
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.config</artifactId>
@@ -64,12 +62,17 @@
 			<artifactId>org.nightlabs.singleton</artifactId>
 			<scope>provided</scope>
 		</dependency>
+-->
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.progress</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.util</artifactId>
 			<scope>provided</scope>
 		</dependency>
--->
 	<!-- ### org.nightlabs :: END ### -->
 
 	<!-- ### org.nightlabs.eclipse :: BEGIN ### -->
@@ -116,6 +119,11 @@
 		<dependency>
 			<groupId>org.nightlabs.jfire</groupId>
 			<artifactId>org.nightlabs.jfire.classloader.remote</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.jfire</groupId>
+			<artifactId>org.nightlabs.jfire.classloader.remote.backend</artifactId>
 			<scope>provided</scope>
 		</dependency>
 	<!-- ### org.nightlabs.jfire :: END ### -->
