@@ -7,8 +7,7 @@ Bundle-ClassPath: .
 Bundle-Activator: org.nightlabs.jfire.base.ui.JFireBasePlugin
 Bundle-Vendor: NightLabs.org
 Bundle-Localization: plugin
-Require-Bundle: org.nightlabs.config,
- org.nightlabs.base,
+Require-Bundle: org.nightlabs.base,
  org.nightlabs.base.ui;visibility:=reexport,
  org.nightlabs.jdo.query.ui;visibility:=reexport,
  org.eclipse.core.runtime,
@@ -21,6 +20,7 @@ Require-Bundle: org.nightlabs.config,
  org.nightlabs.jfire.base.j2ee;bundle-version="1.0.0";visibility:=reexport,
  org.nightlabs.jfire.base.login.ui;bundle-version="1.0.0";visibility:=reexport,
  org.nightlabs.singleton;bundle-version="1.0.0"
+Import-Package: org.apache.log4j, org.nightlabs.config, org.nightlabs.progress, org.nightlabs.util, org.nightlabs.i18n, org.nightlabs.jfire.base.ui.prop.edit.blockbased
 Eclipse-RegisterBuddy: org.nightlabs.config, org.nightlabs.base, org.nightlabs.jfire.clientlib, org.nightlabs.jfire.base.login.ui
 Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.base.login,
@@ -63,4 +63,3 @@ Export-Package: org.nightlabs.jfire.base.login,
  org.nightlabs.jfire.base.ui.security,
  org.nightlabs.jfire.base.ui.timer,
  org.nightlabs.jfire.base.ui.workstation
-Import-Package: org.nightlabs.jfire.base.ui.prop.edit.blockbased

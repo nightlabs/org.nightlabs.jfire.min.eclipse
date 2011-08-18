@@ -5,17 +5,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nightlabs.jfire.eclipse</groupId>
 	<artifactId>org.nightlabs.jfire.base.ui</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 
 	<parent>
 		<groupId>org.nightlabs.jfire.eclipse</groupId>
-		<artifactId>org.nightlabs.jfire.eclipse.parent</artifactId>
+		<artifactId>org.nightlabs.jfire.eclipse.parent.legacy</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
-		<relativePath>../org.nightlabs.jfire.eclipse.parent/pom.xml</relativePath>
+		<relativePath>../org.nightlabs.jfire.eclipse.parent.legacy/pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>javax.jdo</groupId>
 			<artifactId>jdo-api</artifactId>
@@ -183,10 +188,8 @@
 			<scope>provided</scope>
 		</dependency>		
 	</dependencies>
-
+	
 	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>bin</outputDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
@@ -194,15 +197,34 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
-			<!-- TODO following may be removed when upper is removed (defined in parent) -->
 			<resource>
 				<directory>.</directory>
 				<includes>
 					<include>plugin.xml</include>
 					<include>plugin*.properties</include>
+					<include>LICENSE.txt</include>
 					<include>schema/**/*</include>
+					<include>icons/**/*</include>
+					<include>splash.bmp</include>
 				</includes>
 			</resource>
 		</resources>
+		<!-- FIXME Fix package-situation to be able to use Import-Pakcage (maven-bundle-plugin)  
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<excludeDependencies>*;scope=compile|provided|runtime</excludeDependencies>
+					<instructions>
+						<Eclipse-LazyStart>true</Eclipse-LazyStart>
+						<Bundle-Activator>org.nightlabs.jfire.base.ui.JFireBasePlugin</Bundle-Activator>
+						<Export-Package>org.nightlabs.jfire.base.login,!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${project.version}"</Export-Package>
+					</instructions>
+					
+				</configuration>
+			</plugin>
+		</plugins>		
+	-->
 	</build>
 </project>
