@@ -3,7 +3,8 @@
  */
 package org.nightlabs.clientui.ui.layout;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to create SWT GridLayout and GridData from NightLabsClientUI objects.
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
  */
 public class GridLayoutUtil {
 
-	private static final Logger logger = Logger.getLogger(GridLayoutUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(GridLayoutUtil.class);
 
 	/**
 	 * Creates a new SWT GridLayout with the properties from the given NightLabsClientUI GridLayout.
