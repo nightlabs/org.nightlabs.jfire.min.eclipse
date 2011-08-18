@@ -9,12 +9,10 @@ Bundle-ClassPath: .
 Export-Package: org.nightlabs.jfire.base.login.ui,
  org.nightlabs.jfire.base.login.ui.action,
  org.nightlabs.jfire.base.login.ui.part
-Require-Bundle: org.nightlabs.config;bundle-version="1.0.2",
- org.apache.log4j;bundle-version="1.2.14",
- org.nightlabs.progress;bundle-version="1.0.1",
- org.nightlabs.base;bundle-version="1.1.0",
- org.nightlabs.base.ui;bundle-version="1.2.16",
- org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
- org.nightlabs.jfire.base.j2ee;bundle-version="1.0.5"
+Require-Bundle: org.nightlabs.base,
+ org.nightlabs.base.ui,
+ org.nightlabs.eclipse.compatibility,
+ org.nightlabs.jfire.base.j2ee
+Import-Package: org.apache.log4j, org.nightlabs.config, org.nightlabs.concurrent, org.nightlabs.progress, org.nightlabs.util, org.nightlabs.i18n
 Bundle-Activator: org.nightlabs.jfire.base.login.ui.JFireLoginPlugin
 Bundle-ActivationPolicy: lazy
