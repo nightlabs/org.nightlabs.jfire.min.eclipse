@@ -80,24 +80,6 @@
 			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.jfire.base.intro.ui</artifactId>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.nightlabs.jfire.eclipse</groupId>
-			<artifactId>org.nightlabs.jfire.base.j2ee.osgi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire.eclipse</groupId>
-			<artifactId>org.nightlabs.jfire.base.j2ee</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.classloader.remote.backend</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.classloader.remote</artifactId>
-		</dependency>
-		 -->
 		 <!-- We use the j2ee plugin for the jboss/j2ee packages -->
 		<dependency>
 			<groupId>org.nightlabs.jfire.eclipse</groupId>
@@ -169,57 +151,6 @@
 			<artifactId>org.nightlabs.query.jdo</artifactId>
 		</dependency>
 		
-
-		<!-- #### Server bundles -->
-		<!-- 
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.base.clientlib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.base</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.base.dao</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.base.bean</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.base.clientlib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs</groupId>
-			<artifactId>org.nightlabs.clientui</artifactId>
-			<version>${project.version}</version>			
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.query.store</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs</groupId>
-			<artifactId>org.nightlabs.query</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs</groupId>
-			<artifactId>org.nightlabs.query.jdo</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs</groupId>
-			<artifactId>org.nightlabs.jdo</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire</groupId>
-			<artifactId>org.nightlabs.jfire.servermanager</artifactId>
-		</dependency>
-		 -->
-		
-
 		<!-- #### LIBS -->
  		<dependency>
 			<groupId>log4j</groupId>
@@ -243,118 +174,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
-		
-		<!-- 
-		<dependency>
-			<groupId>javax.jdo</groupId>
-			<artifactId>jdo-api</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xerces</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.servicemix.bundles</groupId>
-		    <artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
-   		</dependency>
-		<dependency>
-		    <groupId>org.apache.servicemix.bundles</groupId>
-		    <artifactId>org.apache.servicemix.bundles.xmlpull</artifactId>
-   		</dependency>
-		<dependency>
-		    <groupId>org.apache.servicemix.bundles</groupId>
-		    <artifactId>org.apache.servicemix.bundles.bcel</artifactId>
-		    <version>5.2_4</version>
-		    <scope>provided</scope>
-   		</dependency>
-   		
-		
-
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xalan</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-javamail_1.4_spec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-activation_1.1_spec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-jms_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-j2ee-connector_1.6_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		 -->
- 		<!-- FIXME add to dependency-management -->
-		<!-- 
-		<dependency>
-		    <groupId>org.apache.geronimo.specs</groupId>
-		    <artifactId>geronimo-jta_1.1_spec</artifactId>
-		    <version>1.1.1</version>
-		    <scope>provided</scope>
-		</dependency>
-		 -->		
-		<!-- FIXME add to dependency-management -->
-		<!-- 
-		<dependency>
-		    <groupId>org.apache.geronimo.specs</groupId>
-		    <artifactId>geronimo-annotation_1.1_spec</artifactId>
-		    <version>1.0.1</version>
-		</dependency>
- -->
- <!-- 
-	      <dependency>
-	        <groupId>org.apache.geronimo.specs</groupId>
-	        <artifactId>geronimo-ejb_3.0_spec</artifactId>
-	      </dependency>
-
-		<dependency>
-		    <groupId>org.apache.geronimo.specs</groupId>
-		    <artifactId>geronimo-jta_1.1_spec</artifactId>
-		    <version>1.1.1</version>
-		    <scope>provided</scope>
-		</dependency>
-		
-			<dependency>
-			    <groupId>javax.jmdns</groupId>
-			    <artifactId>jmdns</artifactId>
-			</dependency>
-			
-			<dependency>
-				<groupId>javax.jdo</groupId>
-				<artifactId>jdo-api</artifactId>
-			</dependency>
-	      
-	      <dependency>
-	        <groupId>commons-lang</groupId>
-	        <artifactId>commons-lang</artifactId>
-	      </dependency>
-	      <dependency>
-	        <groupId>commons-beanutils</groupId>
-	        <artifactId>commons-beanutils</artifactId>
-	      </dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-	      <dependency>
-	        <groupId>org.apache.servicemix.bundles</groupId>
-	        <artifactId>org.apache.servicemix.bundles.xstream</artifactId>
-	      </dependency>
-
-  -->				
-	      <dependency><groupId>org.nightlabs.jfire.eclipse</groupId>
-	<artifactId>org.nightlabs.bundle.test</artifactId><version>1.2.0-SNAPSHOT</version></dependency>
 	</dependencies>
 
 	<properties>
