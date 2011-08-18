@@ -5,14 +5,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nightlabs.jfire.eclipse</groupId>
 	<artifactId>org.nightlabs.jfire.base.j2ee</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 
 	<parent>
 		<groupId>org.nightlabs.jfire.eclipse</groupId>
-		<artifactId>org.nightlabs.jfire.eclipse.parent</artifactId>
+		<artifactId>org.nightlabs.jfire.eclipse.parent.legacy</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
-		<relativePath>../org.nightlabs.jfire.eclipse.parent/pom.xml</relativePath>
+		<relativePath>../org.nightlabs.jfire.eclipse.parent.legacy/pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
@@ -45,28 +45,22 @@
 			<artifactId>org.nightlabs.jfire.classloader.remote</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-ejb3x</artifactId>
+			<version>${project.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/jboss-ejb3x.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jbossall-client</artifactId>
+			<version>${project.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/jbossall-client.jar</systemPath>
+		</dependency>
+
 	<!-- ### org.nightlabs.jfire :: END ### -->
 	</dependencies>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>bin</outputDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<!-- TODO following may be removed when upper is removed (defined in parent) -->
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>plugin.xml</include>
-					<include>plugin*.properties</include>
-					<include>schema/**/*</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
 </project>
