@@ -12,8 +12,8 @@
 	<name>${project.artifactId}</name>
 
 	<parent>
-		<groupId>org.nightlabs.jfire</groupId>
-		<artifactId>org.nightlabs.jfire.parent</artifactId>
+		<groupId>org.nightlabs.jfire.eclipse</groupId>
+		<artifactId>org.nightlabs.jfire.eclipse.parent</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 
@@ -23,6 +23,16 @@
 			<artifactId>org.nightlabs.base.ui.errorreport.mantis</artifactId>
 			<scope>provided</scope>
 		</dependency>		
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.base.ui</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
