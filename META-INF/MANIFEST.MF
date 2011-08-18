@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.nightlabs.jfire.base.admin.ui;singleton:=true
 Bundle-Version: 1.1.8.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.nightlabs.jfire.base.admin.ui.BaseAdminPlugin
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: NightLabs.com
 Bundle-Localization: plugin
 Export-Package: org.nightlabs.jfire.base.admin.ui,
@@ -34,4 +35,5 @@ Require-Bundle: org.nightlabs.jfire.base.ui;visibility:=reexport,
  org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
  org.nightlabs.jfire.base.login.ui;bundle-version="1.0.0",
  org.nightlabs.jfire.base.j2ee
-Eclipse-LazyStart: true
+Import-Package: org.apache.log4j, org.nightlabs.progress, org.nightlabs.util, org.nightlabs.i18n
+
