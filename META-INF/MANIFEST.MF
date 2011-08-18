@@ -5,9 +5,9 @@ Bundle-SymbolicName: org.nightlabs.jfire.querystore.ui
 Bundle-Version: 1.0.3.qualifier
 Bundle-Activator: org.nightlabs.jfire.querystore.ui.QuerystorePlugin
 Bundle-Vendor: NightLabs
-Require-Bundle: org.nightlabs.jfire.base.ui;bundle-version="0.9.7",
- org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
- org.nightlabs.jfire.base.login.ui;bundle-version="1.0.0"
+Require-Bundle: org.nightlabs.jfire.base.ui,
+ org.nightlabs.eclipse.compatibility,
+ org.nightlabs.jfire.base.login.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.querystore.ui,
