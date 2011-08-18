@@ -63,11 +63,6 @@
 			<artifactId>org.nightlabs.eclipse.ui.treestate</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.nightlabs.eclipse</groupId>
-			<artifactId>org.nightlabs.eclipse.ui.treestate</artifactId>
-		</dependency>
-
 		<!-- <dependency><groupId>org.nightlabs</groupId><artifactId>org.nightlabs.htmlcontent</artifactId></dependency> -->
 		<dependency>
 			<groupId>org.nightlabs</groupId>
