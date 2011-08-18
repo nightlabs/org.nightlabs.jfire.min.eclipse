@@ -8,6 +8,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.nightlabs.singleton,
  org.nightlabs.jfire.base.ui,
  org.nightlabs.eclipse.compatibility;bundle-version="1.0.0"
+Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.nightlabs.jfire.base.ui.app.rcp

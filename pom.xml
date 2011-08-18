@@ -75,5 +75,15 @@
 				</includes>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<!-- FIXME Used to fix wrong version import of org.nightlabs.base.ui.context -> results in no versions in Import-Package statement --> 
+					<excludeDependencies>*;scope=compile|provided|runtime</excludeDependencies>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
