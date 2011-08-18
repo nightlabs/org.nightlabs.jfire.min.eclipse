@@ -433,7 +433,9 @@ public class LoginDialog extends TitleAreaDialog
 	{
 		createButton(parent, IDialogConstants.OK_ID, Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.labelbutton.login"), true); //$NON-NLS-1$
 		createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("org.nightlabs.jfire.base.ui.login.LoginDialog.labelbutton.offline"), false); //$NON-NLS-1$
-		createButton(parent, DETAILS_ID, CompatibleDialogConstants.get().SHOW_DETAILS_LABEL, false);
+		// FIXME: Build-Problem: .SHOW_DETAILS_LABEL is static in RCP but nun-static in RAP, can't build only against one platform!!
+//		createButton(parent, DETAILS_ID, CompatibleDialogConstants.get().SHOW_DETAILS_LABEL, false);
+		createButton(parent, DETAILS_ID, "Details", false);
 	}
 
 	private void initializeWidgetValues()	{
@@ -823,10 +825,14 @@ public class LoginDialog extends TitleAreaDialog
 		Button detailsButton = getButton(DETAILS_ID);
 		if(visible) {
 			detailsAreaGridData.heightHint = SWT.DEFAULT;
-			detailsButton.setText(CompatibleDialogConstants.get().HIDE_DETAILS_LABEL);
+			// FIXME: Build-Problem: .SHOW_DETAILS_LABEL is static in RCP but nun-static in RAP, can't build only against one platform!!
+//			detailsButton.setText(CompatibleDialogConstants.get().HIDE_DETAILS_LABEL);
+			detailsButton.setText("Hide details");
 		} else {
 			detailsAreaGridData.heightHint = 0;
-			detailsButton.setText(CompatibleDialogConstants.get().SHOW_DETAILS_LABEL);
+			// FIXME: Build-Problem: .SHOW_DETAILS_LABEL is static in RCP but nun-static in RAP, can't build only against one platform!!
+//			detailsButton.setText(CompatibleDialogConstants.get().SHOW_DETAILS_LABEL);
+			detailsButton.setText("Show details");
 		}
 		Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		if(getShell().isVisible())

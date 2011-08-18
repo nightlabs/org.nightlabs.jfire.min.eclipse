@@ -6,14 +6,15 @@ Bundle-ClassPath: .
 Bundle-Version: 1.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-Activator: org.nightlabs.jfire.base.login.rcp.ui.JFireRCPLoginPlugin
-Require-Bundle: org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
- org.nightlabs.progress;bundle-version="1.0.1",
- org.nightlabs.util;bundle-version="1.0.3",
- org.nightlabs.base.ui;bundle-version="1.2.16",
- org.nightlabs.config;bundle-version="1.0.2",
- org.nightlabs.jfire.base.login.ui;bundle-version="1.0.0",
- org.nightlabs.jfire.base.j2ee;bundle-version="1.0.5",
- org.nightlabs.jfire.classloader.remote;bundle-version="1.1.0"
+Require-Bundle: org.nightlabs.eclipse.compatibility,
+ org.nightlabs.progress,
+ org.nightlabs.util,
+ org.nightlabs.base,
+ org.nightlabs.base.ui,
+ org.nightlabs.config,
+ org.nightlabs.jfire.base.login.ui,
+ org.nightlabs.jfire.base.j2ee
+Import-Package: org.apache.log4j, org.nightlabs.jfire.classloader.remote, org.nightlabs.jfire.classloader.remote.backend
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.nightlabs.jfire.base.login.rcp.ui,
  org.nightlabs.jfire.base.login.rcp.ui.action
