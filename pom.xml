@@ -38,31 +38,32 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>hookconfigurators.properties</include>
+				</includes>
+			</resource>
 		</resources>
 
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<inherited>false</inherited>
 				<configuration>
-					<!-- We deactivated the dependency-embedding in the parent-pom, but need it here. Hence,
-					overriding the excludeDependencies here. Marco :-) -->
-					<excludeDependencies>*;scope=runtime</excludeDependencies>
-
 					<instructions>
-						<!-- the provide:=true instruction results in having Import-Package 
-							with version range e.g. "[1.2,1.3)" instead of "[1.2,2)" which is the default. 
-							Applies to all org.nightlabs packages. See http://www.aqute.biz/Bnd/Versioning -->
-						<Import-Package>org.nightlabs.*;provide:=true,*</Import-Package>
+						<!-- Overwrite single:=true -->
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<!-- No import package allowed for this bundle -->
+						<Import-Package>!*</Import-Package>
+						<Fragment-Host>org.eclipse.osgi</Fragment-Host>
+						<!-- Fixme We omit the -split-package:=first directive here for org.nightlabs.classloader.delegating 
+							which results in the classes being copied to the bundle which is what we want, see the README.txt file in that package -->
 						<Export-Package>
 						org.nightlabs.classloader.delegating;version="${project.version}",
 						org.nightlabs.classloader.osgi;version="${project.version}",
 						org.nightlabs.jfire.base.j2ee.osgi;version="${project.version}"
 						</Export-Package>
-<!--						<Private-Package>${bundle.namespace}.internal.*</Private-Package> -->
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 					</instructions>
 				</configuration>
 			</plugin>
