@@ -4,11 +4,12 @@ Bundle-Name: Querystore UI Plugin
 Bundle-SymbolicName: org.nightlabs.jfire.querystore.ui
 Bundle-Version: 1.0.3.qualifier
 Bundle-Activator: org.nightlabs.jfire.querystore.ui.QuerystorePlugin
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: NightLabs
 Require-Bundle: org.nightlabs.jfire.base.ui,
  org.nightlabs.eclipse.compatibility,
  org.nightlabs.jfire.base.login.ui
+Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Eclipse-LazyStart: true
 Export-Package: org.nightlabs.jfire.querystore.ui,
  org.nightlabs.jfire.querystore.ui.overview
