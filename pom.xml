@@ -178,7 +178,8 @@
 
 	<properties>
 		<assembly.directory>${project.build.directory}/assembly</assembly.directory>
-		<assembly.plugins.directory>${assembly.directory}/eclipse/plugins</assembly.plugins.directory>
+		<assembly.eclipse.directory>${assembly.directory}/eclipse</assembly.eclipse.directory>
+		<assembly.plugins.directory>${assembly.eclipse.directory}/plugins</assembly.plugins.directory>
 	</properties>
 
 	<build>
@@ -265,6 +266,25 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase> <!-- append to the packaging phase. -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/bin.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 
