@@ -200,7 +200,41 @@
 								<outputDirectory>${assembly.directory}</outputDirectory>
 								<includeGroupIds>org.eclipse</includeGroupIds>
 								<includeArtifactIds>${eclipse.platform.artifactId}</includeArtifactIds>
-								<!-- TODO excludes? <excludes>**\/*icon.xmp,eclipse.ini,eclipse</excludes> -->
+								<excludes>
+									**/eclipse.ini
+									eclipse/eclipse.ini,
+									eclipse/.eclipseproduct,
+									eclipse/eclipse,
+									eclipse/eclipse.exe,
+									eclipse/eclipsec.exe,
+									**/config.ini,
+									**/org.eclipse.team*,
+									**/org.eclipse.debug*,
+									**/org.eclipse.ltk*,
+									**/org.eclipse.search*,
+									**/org.eclipse.platform.doc*,
+									**/org.eclipse.ui.externaltools*,
+									**/org.eclipse.core.externaltools*,
+									**/org.eclipse.ui.navigator.resources*,
+									**/org.eclipse.equinox.simpleconfigurator*,
+									**/org.eclipse.equinox.p2.artifact.repository*,
+									**/org.eclipse.equinox.p2.console*,
+									**/org.eclipse.equinox.p2.director*,
+									**/org.eclipse.equinox.p2.directorywatcher*,
+									**/org.eclipse.equinox.p2.extensionlocation*,
+									**/org.eclipse.equinox.p2.garbagecollector*,
+									**/org.eclipse.equinox.p2.jarprocessor*,
+									**/org.eclipse.equinox.p2.metadata.generator*,
+									**/org.eclipse.equinox.p2.operations*,
+									**/org.eclipse.equinox.p2.publisher*,
+									**/org.eclipse.equinox.p2.ql*,
+									**/org.eclipse.equinox.p2.reconciler.dropins*,
+									**/org.eclipse.equinox.p2.repository.tools*,
+									**/org.eclipse.equinox.p2.touchpoint*,
+									**/org.eclipse.equinox.p2.ui*,
+									**/org.eclipse.equinox.p2.update*,
+									**/org.sat4j*
+								</excludes>
 							</configuration>
 						</execution>
 						<execution>
@@ -221,7 +255,6 @@
 							<artifactItem>
 								<groupId>org.eclipse</groupId>
 								<artifactId>org.eclipse.platform.linux-gtk-x86_64</artifactId>
-								<excludes>icon.xpm,eclipse,eclipse.ini,readme/**/*</excludes>
 							</artifactItem>
 						</artifactItems>
 					</configuration>
