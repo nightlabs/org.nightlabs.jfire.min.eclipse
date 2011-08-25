@@ -20,7 +20,8 @@
 			<groupId>org.eclipse</groupId>
 			<artifactId>org.eclipse.platform.linux-gtk-x86_64</artifactId>
 			<version>3.6</version>
-			<type>tar.gz</type>
+			<!-- FIXME: Using manually created zip-bundle because tar.gz bundles can't be filtered with excludes. See: http://jira.codehaus.org/browse/MDEP-242 -->
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 
