@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.jdo.JDOHelper;
+import javax.jdo.spi.PersistenceCapable;
 
 import org.apache.log4j.Logger;
 import org.nightlabs.jdo.ObjectID;
@@ -63,7 +64,7 @@ public class JDOObjectLazyTreeNode
 			this.jdoObjectID = jdoObjectID;
 		}
 		else {
-			if (!this.jdoObjectID.equals(JDOHelper.getObjectId(jdoObject)))
+			if (jdoObject instanceof PersistenceCapable && !this.jdoObjectID.equals(JDOHelper.getObjectId(jdoObject)))
 				throw new IllegalArgumentException("this.jdoObjectID != JDOHelper.getObjectId(jdoObject) :: " + this.jdoObjectID + " != " + JDOHelper.getObjectId(jdoObject)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 

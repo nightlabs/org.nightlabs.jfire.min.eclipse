@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -188,6 +189,10 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		return c;
 	}
 
+	protected boolean includeObjectIDForLifecycleListener(ObjectID objectID) {
+		return true;
+	}
+	
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
 	 * track new objects that are children of one of the objects referenced by
@@ -206,16 +211,23 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 //				new JDOLifecycleState[] { JDOLifecycleState.NEW });
 
 		Set<Class<? extends JDOObject>> classes = getJDOObjectClasses();
+		Set<ObjectID> filteredParentIDs = new HashSet<ObjectID>(parentObjectIDs);
+		Iterator<ObjectID> filterIt = filteredParentIDs.iterator();
+		while (filterIt.hasNext()) {
+			if (!includeObjectIDForLifecycleListener(filterIt.next())) {
+				filterIt.remove();
+			}
+		}
 		if (getTreeNodeMultiParentResolver() == null) {
 			return new TreeLifecycleListenerFilter(
 					classes.toArray(new Class[classes.size()]), true,
-					parentObjectIDs, getTreeNodeParentResolver(),
+					filteredParentIDs, getTreeNodeParentResolver(),
 					new JDOLifecycleState[] { JDOLifecycleState.NEW });
 		}
 		else {
 			return new TreeLifecycleListenerFilter(
 					classes.toArray(new Class[classes.size()]), true,
-					parentObjectIDs, getTreeNodeMultiParentResolver(),
+					filteredParentIDs, getTreeNodeMultiParentResolver(),
 					new JDOLifecycleState[] { JDOLifecycleState.NEW });
 		}
 	}
@@ -300,7 +312,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 			ignoredNodes.putAll(dirtyNodes);
 			Collection<JDOObject> retrievedObjects = retrieveJDOObjects(dirtyNodes.keySet(), monitor);
 			for (JDOObject retrievedObject : retrievedObjects) {
-				JDOObjectID retrievedID = (JDOObjectID) JDOHelper.getObjectId(retrievedObject);
+				JDOObjectID retrievedID = getJDOObjectID(retrievedObject);
 				ignoredNodes.remove(retrievedID);
 				List<TreeNode> nodeList = dirtyNodes.get(retrievedID);
 				for (TreeNode node : nodeList) {
@@ -490,10 +502,9 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 
 				Collection<JDOObject> objects = retrieveJDOObjects(objectIDs, getProgressMonitor());
 				iterateObjects: for (JDOObject object : objects) {
-					@SuppressWarnings("unchecked")
-					JDOObjectID objectID = (JDOObjectID) JDOHelper.getObjectId(object);
+					JDOObjectID objectID = getJDOObjectID(object);
 					if (objectID == null)
-						throw new IllegalStateException("JDOHelper.getObjectId(object) returned null! " + object); //$NON-NLS-1$
+						throw new IllegalStateException("getJDOObjectID(object) returned null! " + object); //$NON-NLS-1$
 
 					// Find all 'parentObjectIDs' of the current 'object'. That's how things are in the server and should be here in the tree.
 					Collection<ObjectID> parentObjectIDs;
@@ -1177,8 +1188,7 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 						}
 
 						for (JDOObject jdoObject : jdoObjects) {
-							@SuppressWarnings("unchecked")
-							JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
+							JDOObjectID jdoObjectID = getJDOObjectID(jdoObject);
 							ignoredJDOObjectIDs.remove(jdoObjectID);
 							List<TreeNode> treeNodes = objectID2TreeNodeList.get(jdoObjectID);
 							if (treeNodes == null)
@@ -1351,6 +1361,10 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 	// -------------------------------------------------------------------------------------------------- ++ ------>>
 
 
+	protected JDOObjectID getJDOObjectID(JDOObject jdoObject) {
+		return (JDOObjectID) JDOHelper.getObjectId(jdoObject);
+	}
+	
 	protected TreeNode getHiddenRootNode() {
 		return hiddenRootNode;
 	}
