@@ -98,6 +98,15 @@ public class PersonResultTable extends PropertySetTable<Person, Person> {
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				String s1 = ((PropertySet)e1).getDisplayName();
 				String s2 = ((PropertySet)e2).getDisplayName();
+				
+				if (s1 == null && s2 != null) {
+					return -1;
+				} else if (s1 == null && s2 == null) {
+					return 0;
+				} else if (s1 != null && s2 == null) {
+					return 1;
+				}
+				
 				return collator.compare(s1, s2);
 			}
 		});
