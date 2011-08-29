@@ -130,28 +130,41 @@ implements ILazyTreeContentProvider
 		if (child == null) { // loading
 			if (logger.isDebugEnabled())
 				logger.debug("updateElement: parent.oid=" + (parent == null ? null : parent.getJdoObjectID()) + " :: Child is not yet loaded!"); //$NON-NLS-1$ //$NON-NLS-2$
-
-			String updateElementReplaceActiveID = parentElement == null ? "null" : parentElement.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(parentElement)) + '/' + Integer.toString(index, 36); //$NON-NLS-1$
-			if (!updateElementReplaceActiveIDSet.contains(updateElementReplaceActiveID)) {
-				updateElementReplaceActiveIDSet.add(updateElementReplaceActiveID);
-				try {
-
-					if (parent == null ? true : !parent.isDeleted())
-						try {
-							long start = System.currentTimeMillis();
-							getTreeViewer().replace(parentElement, index, LOADING);
-							if (logger.isDebugEnabled()) {
-								long duration = System.currentTimeMillis() - start;
-								logger.debug(duration+" ms took getTreeViewer().replace("+parentElement+", "+index+", "+LOADING);
+			
+			if (parent != null && parent.getChildNodes() == null && parent.getChildNodeCount() < 0) {
+				// We detected a mismatch (actual number of children is different from expected)
+				// and thus have to recalculate the parent's children. getController().getNode(parent, index)
+				// clears the childNodes and childNodeCount when it detects this. Marco :-)
+				getTreeViewer().getTree().getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						getTreeViewer().refresh(parentElement);
+					}
+				});
+			}
+			else {
+				String updateElementReplaceActiveID = parentElement == null ? "null" : parentElement.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(parentElement)) + '/' + Integer.toString(index, 36); //$NON-NLS-1$
+				if (!updateElementReplaceActiveIDSet.contains(updateElementReplaceActiveID)) {
+					updateElementReplaceActiveIDSet.add(updateElementReplaceActiveID);
+					try {
+	
+						if (parent == null ? true : !parent.isDeleted())
+							try {
+								long start = System.currentTimeMillis();
+								getTreeViewer().replace(parentElement, index, LOADING);
+								if (logger.isDebugEnabled()) {
+									long duration = System.currentTimeMillis() - start;
+									logger.debug(duration+" ms took getTreeViewer().replace("+parentElement+", "+index+", "+LOADING);
+								}
+							} catch (NullPointerException x) {
+								logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x); //$NON-NLS-1$
+	//						getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
+								return;
 							}
-						} catch (NullPointerException x) {
-							logger.warn("Hmmm... I thought the isDeleted() would solve the problem :-( Marco.", x); //$NON-NLS-1$
-//						getTreeViewer().collapseAll(); // seems to cause a crash of SWT on linux - at least sometimes :-(
-							return;
-						}
-
-				} finally {
-					updateElementReplaceActiveIDSet.remove(updateElementReplaceActiveID);
+	
+					} finally {
+						updateElementReplaceActiveIDSet.remove(updateElementReplaceActiveID);
+					}
 				}
 			}
 		}
