@@ -11,7 +11,6 @@ import java.util.Set;
 import javax.jdo.JDOHelper;
 import javax.jdo.spi.PersistenceCapable;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -31,8 +30,8 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
@@ -41,6 +40,8 @@ import org.nightlabs.progress.ProgressMonitor;
 import org.nightlabs.progress.SubProgressMonitor;
 import org.nightlabs.util.CollectionUtil;
 import org.nightlabs.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EntityEditorPageController that manages one single object that it assumes to be a
@@ -95,7 +96,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 
 	private static final boolean ENABLE_LISTENER = true;
 
-	private static final Logger logger = Logger.getLogger(ActiveEntityEditorPageController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActiveEntityEditorPageController.class);
 
 	/**
 	 * Enum of choices for the user when an object was changed.
@@ -326,7 +327,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 									logger.debug("Entity: " + controllerObject); //$NON-NLS-1$
 									logger.debug("EntityFetchGroups: " + getEntityFetchGroups()); //$NON-NLS-1$
 								}
-								Cache.sharedInstance().put(null, controllerObject, getEntityFetchGroups(), getEntityMaxFetchDepth());
+								GlobalJDOManagerProvider.sharedInstance().getCache().put(null, controllerObject, getEntityFetchGroups(), getEntityMaxFetchDepth());
 								setStale(false);
 							} else {
 								// another controller/client has caused the change
@@ -434,7 +435,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 				controllerObjectClass = controllerObject.getClass();
 				if (entityChangeListener == null && ENABLE_LISTENER) {
 					entityChangeListener = new EntityChangeListener(getProcessChangesJobName());
-					JDOLifecycleManager.sharedInstance().addNotificationListener(controllerObjectClass, entityChangeListener);
+					GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().addNotificationListener(controllerObjectClass, entityChangeListener);
 					if (logger.isDebugEnabled())
 						logger.debug("Registered changeListener for " + controllerObjectClass); //$NON-NLS-1$
 				}
@@ -480,7 +481,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 					}	
 				}
 				if (oid != null) {
-					Cache.sharedInstance().removeByObjectID(oid, false);	
+					GlobalJDOManagerProvider.sharedInstance().getCache().removeByObjectID(oid, false);	
 				}
 				newControllerObject = retrieveEntity(new SubProgressMonitor(monitor, 50));
 				if (newControllerObject == oldControllerObject && oid != null)
@@ -527,7 +528,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	@Override
 	public void dispose() {
 		if (entityChangeListener != null) {
-			JDOLifecycleManager.sharedInstance().removeNotificationListener(controllerObjectClass, entityChangeListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeNotificationListener(controllerObjectClass, entityChangeListener);
 		}
 		super.dispose();
 		disposed = true;
@@ -653,12 +654,12 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("checkForSelfCausedChange looking for sourceSessionIDs."); //$NON-NLS-1$
-			logger.debug("Cache sessionID is: " + Cache.sharedInstance().getSessionID()); //$NON-NLS-1$
+			logger.debug("Cache sessionID is: " + GlobalJDOManagerProvider.sharedInstance().getCache().getSessionID()); //$NON-NLS-1$
 		}
 
 		// There is a change by someone else, if our session-id is either not in the set of sourceSessionIDs or if there is
 		// additionally another sessionID. Kai & Marco ;-)
-		String mySessionID = Cache.sharedInstance().getSessionID();
+		String mySessionID = GlobalJDOManagerProvider.sharedInstance().getCache().getSessionID();
 		boolean selfCaused = dirtyObjectID.getSourceSessionIDs().contains(mySessionID) && dirtyObjectID.getSourceSessionIDs().size() == 1;
 
 		// [Problem encountered: 17.06.2009] Kai & Marco.

@@ -17,7 +17,7 @@ import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.part.PartAdapter;
 import org.nightlabs.base.ui.util.RCPUtil;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
+import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.login.ui.part.ICloseOnLogoutEditorPart;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
@@ -87,7 +87,7 @@ implements ICloseOnLogoutEditorPart
 		if (entityObjectID == null)
 			throw new IllegalStateException("Entity has no object-id assigned! " + entity); //$NON-NLS-1$
 
-		JDOLifecycleManager.sharedInstance().addNotificationListener(
+		GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().addNotificationListener(
 				entityClass, changeListener
 		);
 	}
@@ -97,7 +97,7 @@ implements ICloseOnLogoutEditorPart
 		if (entityClass == null)
 			return;
 
-		JDOLifecycleManager.sharedInstance().removeNotificationListener(
+		GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeNotificationListener(
 				entityClass, changeListener
 		);
 
