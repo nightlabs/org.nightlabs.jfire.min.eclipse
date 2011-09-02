@@ -82,6 +82,11 @@
 				<configuration>
 					<!-- FIXME Used to fix wrong version import of org.nightlabs.base.ui.context -> results in no versions in Import-Package statement --> 
 					<excludeDependencies>*;scope=compile|provided|runtime</excludeDependencies>
+					<instructions>
+						<!-- Auto-start needed to set the correct service-context RCPServiceContext -->
+						<Bundle-Activator>org.nightlabs.jfire.base.ui.app.rcp.JFireRCPAppPlugin</Bundle-Activator>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
