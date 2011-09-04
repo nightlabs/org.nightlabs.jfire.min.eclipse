@@ -2,6 +2,9 @@ package org.nightlabs.jfire.base.ui.edit;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.composite.XComposite;
@@ -16,6 +19,22 @@ extends XComposite implements IEntryEditor
 			notifyModificationListeners();
 		}
 	};
+	
+	private SelectionListener swtSelectionListener = null;
+	
+	public SelectionListener getSwtSelectionListener() {
+		if (swtSelectionListener == null) {
+			swtSelectionListener =  new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					notifyModificationListeners();
+				}
+			};
+		}
+		return swtSelectionListener;
+	}
+
+	
 	
 	private ListenerList modificationListeners = new ListenerList();
 	

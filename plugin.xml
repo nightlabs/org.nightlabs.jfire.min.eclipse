@@ -130,6 +130,11 @@
             description="%org.nightlabs.jfire.prop.structfield.I18nTextStructField.description"
             editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.I18nTextStructFieldEditor$I18nTextStructFieldEditorFactory"
             factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.I18nTextStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.I18nTextStructField.name"/>
+        <propStructField
+            class="org.nightlabs.jfire.prop.structfield.BooleanStructField"
+            description="%org.nightlabs.jfire.prop.structfield.BooleanStructField.description"
+            editorFactoryClass="org.nightlabs.jfire.base.ui.prop.structedit.BooleanStructFieldEditor$BooleanStructFieldFactory"
+            factoryClass="org.nightlabs.jfire.base.ui.prop.structedit.BooleanStructFieldFactory" name="%org.nightlabs.jfire.prop.structfield.BooleanStructField.name"/>
     </extension>
     <extension
         id="org.nightlabs.jfire.person.edit.blockbased.special.PersonalDataBlockEditor" point="org.nightlabs.jfire.base.ui.specialisedDataBlockEditor">
@@ -145,6 +150,7 @@
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.RegexDataFieldEditor$Factory"/>
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.PhoneNumberDataFieldEditor$PhoneNumberDataFieldEditorFactory"/>
         <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.I18nTextDataFieldEditor$Factory"/>
+        <propDataFieldEditorFactory class="org.nightlabs.jfire.base.ui.prop.edit.blockbased.BooleanDataFieldEditor$Factory"/>
     </extension>
     <extension point="org.nightlabs.base.ui.login">
         <login class="org.nightlabs.jfire.base.login.ui.LoginDelegate"/>
@@ -337,6 +343,16 @@
              structFieldClass="org.nightlabs.jfire.prop.structfield.RegexStructField"
              structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.RegexStructFieldSearchFilterItemEditor$Factory">
        </structFieldSearchFilterItemEditor>
+       <structFieldSearchFilterItemEditor
+             priority="500"
+             structFieldClass="org.nightlabs.jfire.prop.structfield.MultiSelectionStructField"
+             structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.MultiSelectionStructFieldSearchFilterItemEditor$Factory">
+       </structFieldSearchFilterItemEditor>
+		<structFieldSearchFilterItemEditor
+             priority="500"
+             structFieldClass="org.nightlabs.jfire.prop.structfield.BooleanStructField"
+             structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.BooleanStructFieldSearchFilterItemEditor$Factory">
+       </structFieldSearchFilterItemEditor>       
     </extension>
     <extension
           point="org.eclipse.ui.preferencePages">

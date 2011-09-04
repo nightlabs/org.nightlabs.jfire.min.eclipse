@@ -1,7 +1,9 @@
 package org.nightlabs.jfire.base.ui.edit;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -25,9 +27,9 @@ extends AbstractInlineEditComposite
 	private Composite wrapper;
 	private ILabelProvider labelProvider;
 
-	public MultiSelectionEditComposite(Composite parent, int style, final ILabelProvider labelProvider)
+	public MultiSelectionEditComposite(Composite parent, int style, final ILabelProvider labelProvider, boolean showTitle)
 	{
-		super(parent, style);
+		super(parent, style, showTitle);
 		
 		this.labelProvider = labelProvider;
 		
@@ -98,6 +100,16 @@ extends AbstractInlineEditComposite
 		}
 		layout(true, true);
 	}
+	
+	public void setSelection(Collection<T> selected) {
+		for (Map.Entry<Button, T> buttonME : getButton2Values().entrySet()) {
+			buttonME.getKey().setSelection(selected != null && selected.contains(buttonME.getValue()));
+		}
+	}
+	
+	public void setSelection(Set<String> selected) {
+		setSelection(getValues(selected));
+	}
 
 	/**
 	 * Get the selected values.
@@ -109,6 +121,32 @@ extends AbstractInlineEditComposite
 			return null;
 		Control[] children = wrapper.getChildren();
 		Set<T> result = new HashSet<T>(children.length);
+		for (Map.Entry<Button, T> buttonME : getButton2Values().entrySet()) {
+			if (buttonME.getKey().getSelection()) {
+				result.add(buttonME.getValue());
+			}
+		}
+		return result;
+	}
+	
+	private Set<T> getValues(Set<String> fieldValueIDs) {
+		if(wrapper == null || fieldValueIDs == null)
+			return null;
+		Control[] children = wrapper.getChildren();
+		Set<T> result = new HashSet<T>(children.length);
+		for (T value : getButton2Values().values()) {
+			if (fieldValueIDs.contains(((MultiSelectionStructFieldValue)value).getStructFieldValueID())) {
+				result.add(value);
+			}			
+		}
+		return result;
+	}
+	
+	private Map<Button, T> getButton2Values() {
+		if(wrapper == null)
+			return null;
+		Control[] children = wrapper.getChildren();
+		Map<Button, T> result = new HashMap<Button, T>();
 		for (Control control : children) {
 			if(!(control instanceof Button))
 				continue;
@@ -118,8 +156,8 @@ extends AbstractInlineEditComposite
 			Object data = b.getData();
 			if(data == null || !(data instanceof MultiSelectionStructFieldValue))
 				continue;
-			result.add((T) data);
-		}
+			result.put(b, (T) data);
+		}		
 		return result;
 	}
 }

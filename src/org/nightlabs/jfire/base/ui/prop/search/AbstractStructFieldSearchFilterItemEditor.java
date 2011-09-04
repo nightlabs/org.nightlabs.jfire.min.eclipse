@@ -30,7 +30,7 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 		this.structFields = structFields;
 		
 		if (matchType != null && !getSupportedMatchTypes().contains(matchType))
-			throw new IllegalArgumentException("This Editor does not support the given MatchType.");
+			throw new IllegalArgumentException("This Editor (" + getClass().getSimpleName() + ") does not support the given MatchType (" + matchType + "), it supports " + getSupportedMatchTypes() + ".");
 		
 		this.matchType = matchType;
 	}
@@ -53,11 +53,7 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 		
 		if (showTitle) {
 			Label titleLabel = new Label(wrapper, SWT.NONE);
-			String name = "";
-			for (StructField<?> structField : getStructFields()) {
-				name += structField.getName().getText() + ", ";
-			}
-			titleLabel.setText(name.substring(0, name.length()-2));
+			titleLabel.setText(getStructFieldNames());
 		}
 		
 		// No MatchType specified in constructor, thus create combo to select it
@@ -129,5 +125,15 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 		for (Object listener : searchTriggerListener.getListeners()) {
 			((ISearchTriggerListener) listener).searchTriggered();
 		}
+	}
+	
+	protected String getStructFieldNames() {
+		StringBuilder name = new StringBuilder();
+		for (StructField<?> structField : getStructFields()) {
+			if (name.length() > 0)
+				name.append(", ");
+			name.append(structField.getName().getText());
+		}
+		return name.toString();		
 	}
 }

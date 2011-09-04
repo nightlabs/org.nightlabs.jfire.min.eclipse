@@ -71,7 +71,7 @@ extends AbstractDataFieldEditor<MultiSelectionDataField> {
 	@Override
 	public Control createControl(Composite parent) {
 		if (multiSelectionEditComposite == null) {
-			multiSelectionEditComposite = new MultiSelectionEditComposite<MultiSelectionStructFieldValue>(parent, SWT.NONE, LABEL_PROVIDER);
+			multiSelectionEditComposite = new MultiSelectionEditComposite<MultiSelectionStructFieldValue>(parent, SWT.NONE, LABEL_PROVIDER, true);
 			multiSelectionEditComposite.addModificationListener(getModifyListener());
 		}
 		

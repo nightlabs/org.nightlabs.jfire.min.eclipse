@@ -28,6 +28,9 @@ package org.nightlabs.jfire.base.ui.prop.edit;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.edit.IEntryEditor;
 import org.nightlabs.jfire.prop.DataField;
@@ -63,6 +66,8 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 		}
 	};
 
+	private SelectionListener swtSelectionListener = null;
+	
 	private ModifyListener modifyListener = new ModifyListener() {
 		@Override
 		public void modifyData() {
@@ -72,6 +77,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 			}
 		}
 	};
+	
 
 	public AbstractDataFieldEditor(IStruct struct, F data)
 	{
@@ -256,7 +262,7 @@ public abstract class AbstractDataFieldEditor<F extends DataField> implements Da
 	protected org.eclipse.swt.events.ModifyListener getSwtModifyListener() {
 		return swtModifyListener;
 	}
-
+	
 	/**
 	 * This method returns a {@link ModifyListener} that can be used if {@link ModifyListener}s of this {@link DataFieldEditor}
 	 * should be notified of some other change in the data fields.

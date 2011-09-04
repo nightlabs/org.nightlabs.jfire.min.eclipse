@@ -361,7 +361,7 @@ implements StructFieldEditor<F>
 	 *
 	 * @param parent
 	 * @param style
-	 * @return
+	 * @return A Composite to edit the extended properties of a StructField, or <code>null</code>.
 	 */
 	protected abstract Composite createSpecialComposite(Composite parent, int style);
 
