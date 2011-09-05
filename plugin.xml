@@ -353,6 +353,11 @@
              structFieldClass="org.nightlabs.jfire.prop.structfield.BooleanStructField"
              structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.BooleanStructFieldSearchFilterItemEditor$Factory">
        </structFieldSearchFilterItemEditor>       
+       <structFieldSearchFilterItemEditor
+             priority="500"
+             structFieldClass="org.nightlabs.jfire.prop.structfield.PhoneNumberStructField"
+             structFieldSearchFilterItemEditorFactory="org.nightlabs.jfire.base.ui.prop.search.PhoneNumberStructFieldSearchFilterItemEditor$Factory">
+       </structFieldSearchFilterItemEditor>       
     </extension>
     <extension
           point="org.eclipse.ui.preferencePages">
