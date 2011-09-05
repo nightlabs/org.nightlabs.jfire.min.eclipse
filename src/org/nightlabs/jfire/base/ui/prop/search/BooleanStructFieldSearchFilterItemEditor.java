@@ -70,6 +70,8 @@ public class BooleanStructFieldSearchFilterItemEditor extends AbstractStructFiel
 	protected Control createEditControl(Composite parent) {
 		booleanEditComposite = new BooleanEditComposite(parent, SWT.NONE);
 		booleanEditComposite.setTitle(getStructFieldNames());
+		// Initialize with undefined
+		booleanEditComposite.setValue(null);
 		return booleanEditComposite;
 	}
 

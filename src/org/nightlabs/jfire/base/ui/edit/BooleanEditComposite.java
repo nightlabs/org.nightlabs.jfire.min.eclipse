@@ -41,6 +41,7 @@ public class BooleanEditComposite extends AbstractInlineEditComposite
 	}
 	
 	public void setValue(Boolean value) {
+		button.setSelection(true);
 		button.setGrayed(value == null);
 		if (value != null) {
 			button.setSelection(value);	

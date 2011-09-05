@@ -67,6 +67,7 @@ extends AbstractDataFieldEditor<BooleanDataField>
 	{
 		if (booleanEditComposite == null) {
 			booleanEditComposite = new BooleanEditComposite(parent, SWT.NONE);
+			booleanEditComposite.addModificationListener(getModifyListener());
 		}
 		return booleanEditComposite;
 	}
