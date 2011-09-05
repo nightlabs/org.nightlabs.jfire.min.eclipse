@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructField;
@@ -114,10 +115,10 @@ extends AbstractTableComposite<SelectionType> {
 		super(parent, style, false, viewerStyle);
 		this.config = getPropertySetTableConfig();
 		if (this.config == null) {
-			throw new IllegalStateException("The config of this PropertySetTable is null, the method getPropertySetTableConfig() was not implemented correctly.");
+			throw new IllegalStateException("The config of this PropertySetTable is null, the method getPropertySetTableConfig() was not implemented correctly."); //$NON-NLS-1$
 		}
 		if (this.config.getColumnDescriptors() == null) {
-			throw new IllegalStateException("The config of this PropertySetTable returns null for its column-descriptors, this is not supported.");
+			throw new IllegalStateException("The config of this PropertySetTable returns null for its column-descriptors, this is not supported."); //$NON-NLS-1$
 		}
 		initTable();
 	}

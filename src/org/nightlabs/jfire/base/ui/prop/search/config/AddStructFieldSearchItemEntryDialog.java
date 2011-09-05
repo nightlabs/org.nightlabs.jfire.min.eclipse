@@ -113,7 +113,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 				combinedStructFieldReferenceSelected();
 			}
 		});
-		combinedStructFieldReference.setText("Multi-struct field reference");
+		combinedStructFieldReference.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.combinedStructFieldReferenceButton.text")); //$NON-NLS-1$
 		
 		setTitle(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.dialog.title")); //$NON-NLS-1$
 		setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.config.AddStructFieldEntryDialog.dialog.message")); //$NON-NLS-1$
@@ -135,7 +135,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 		stackLayoutComposite.layout();
 		
 		XComposite wrapper = new XComposite(comp, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL, 2);
-		new Label(wrapper, SWT.NONE).setText("Match type:");
+		new Label(wrapper, SWT.NONE).setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.matchTypeComboLabel.text")); //$NON-NLS-1$
 		matchTypeCombo = new ComboComposite<MatchType>(wrapper, SWT.NONE);
 		matchTypeCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -171,11 +171,11 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 					}
 					
 					if (!StructFieldSearchFilterEditorRegistry.sharedInstance().hasEditor(field.getClass())) {
-						singleSelectionErrorMessage = "Fields of this type cannot be added because no editor is available.";
+						singleSelectionErrorMessage = Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.singleSelectionErrorMessage.noEditorAvailable"); //$NON-NLS-1$
 					}
 					
 				} else {
-					singleSelectionErrorMessage = "The selected item is no field.";
+					singleSelectionErrorMessage = Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.singleSelectionErrorMessage.itemNoField"); //$NON-NLS-1$
 				}
 				
 				updateUI();
@@ -204,7 +204,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 							StructField<?> field = ((StructFieldNode) node).getField();
 							structFields.add(field);
 						} else {
-							multiSelectionErrorMessage = "At least one of the selected items is no field.";
+							multiSelectionErrorMessage = Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.multiSelectionErrorMessage.oneIsNoField"); //$NON-NLS-1$
 							break;
 						}
 					}
@@ -220,7 +220,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 							}
 							
 							if (!field.getClass().equals(fieldClass)) {
-								multiSelectionErrorMessage = "All selected fields have to be of the same type.";
+								multiSelectionErrorMessage = Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.multiSelectionErrorMessage.allHaveToBeSameType"); //$NON-NLS-1$
 								break;
 							}
 						}
@@ -228,7 +228,7 @@ public class AddStructFieldSearchItemEntryDialog extends ResizableTitleAreaDialo
 						// if there has been no error so far
 						if (multiSelectionErrorMessage == null) {
 							if (!StructFieldSearchFilterEditorRegistry.sharedInstance().hasEditor(fieldClass)) {
-								multiSelectionErrorMessage = "Fields of this type cannot be added because no editor is available.";
+								multiSelectionErrorMessage = Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AddStructFieldSearchItemEntryDialog.multiSelectionErrorMessage.noEditorAvailable"); //$NON-NLS-1$
 							}
 						}
 					}

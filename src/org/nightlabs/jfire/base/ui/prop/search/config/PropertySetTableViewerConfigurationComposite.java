@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.ListComposite;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
@@ -51,7 +52,7 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		XComposite columnDescriptorWrapper = new XComposite(wrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
 		
 		Label label = new Label(columnDescriptorWrapper, SWT.WRAP);
-		label.setText("Define the columns you want to be displayed in the result table.");
+		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite.columnTableLabel.text")); //$NON-NLS-1$
 		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		XComposite tableButtonWrapper = new XComposite(columnDescriptorWrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA, 2);
@@ -81,10 +82,10 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 							sb.append(descriptor.getColumnHeaderSeparator());
 					}
 					if (sb.length() == 0)
-						sb.append("No fields defined yet...");
+						sb.append(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite.columnDescriptorList.noFieldsYet")); //$NON-NLS-1$
 					return sb.toString();
 				}
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		});
 		columnDescriptorList.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -105,7 +106,7 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		
 		addButton = new Button(buttonWrapper, SWT.PUSH);
 		addButton.setLayoutData(gd);
-		addButton.setText("Add");
+		addButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite.addButton.text")); //$NON-NLS-1$
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -129,7 +130,7 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		gd.verticalAlignment = GridData.BEGINNING;
 		removeButton = new Button(buttonWrapper, SWT.PUSH);
 		removeButton.setLayoutData(gd);
-		removeButton.setText("Remove");
+		removeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite.removeButton.text")); //$NON-NLS-1$
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -141,7 +142,7 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		gd.verticalAlignment = GridData.BEGINNING;
 		upButton = new Button(buttonWrapper, SWT.PUSH);
 		upButton.setLayoutData(gd);
-		upButton.setText("Up");
+		upButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite.upButton.text")); //$NON-NLS-1$
 		upButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -157,7 +158,7 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		gd.verticalAlignment = GridData.BEGINNING;
 		downButton = new Button(buttonWrapper, SWT.PUSH);
 		downButton.setLayoutData(gd);
-		downButton.setText("Down");
+		downButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite.downButton.text")); //$NON-NLS-1$
 		downButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

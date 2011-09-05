@@ -21,10 +21,10 @@ import org.nightlabs.jfire.prop.search.PropSearchFilter;
  */
 public class PropertySetViewerRegistry extends AbstractEPProcessor {
 	
-	private static final String EXTENSION_POINT_ID = JFireBasePlugin.class.getPackage().getName() + ".propertySetViewer";
-	private static final String PROPERTY_SET_SEARCH_RESULT_VIEWER_ELEMENT_NAME = "propertySetViewer";
-	private static final String IDENTIFIER_ATTRIBUTE_NAME = "identifier";
-	private static final String VIEWER_FACTORY_ATTRIBUTE_NAME = "viewerFactory";
+	private static final String EXTENSION_POINT_ID = JFireBasePlugin.class.getPackage().getName() + ".propertySetViewer"; //$NON-NLS-1$
+	private static final String PROPERTY_SET_SEARCH_RESULT_VIEWER_ELEMENT_NAME = "propertySetViewer"; //$NON-NLS-1$
+	private static final String IDENTIFIER_ATTRIBUTE_NAME = "identifier"; //$NON-NLS-1$
+	private static final String VIEWER_FACTORY_ATTRIBUTE_NAME = "viewerFactory"; //$NON-NLS-1$
 	
 	private static PropertySetViewerRegistry sharedInstance;
 	

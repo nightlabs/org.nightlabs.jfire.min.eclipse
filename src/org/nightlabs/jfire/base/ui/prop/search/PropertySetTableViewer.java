@@ -24,6 +24,7 @@ import org.nightlabs.jfire.base.ui.prop.IPropertySetTableConfig;
 import org.nightlabs.jfire.base.ui.prop.PropertySetTable;
 import org.nightlabs.jfire.base.ui.prop.view.AbstractPropertySetTableViewer;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewer;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.PropertyManagerRemote;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.dao.TrimmedPropertySetDAO;
@@ -62,7 +63,7 @@ implements SearchResultFetcher {
 	@Override
 	protected PropertySetTable<SelectionType, SelectionType> createPropertySetTable(Composite parent) {
 		if (getConfiguration() == null) {
-			throw new IllegalStateException("The configuration for this PropertySetViewer was not set!");
+			throw new IllegalStateException("The configuration for this PropertySetViewer was not set!"); //$NON-NLS-1$
 		}
 		PropertySetTable<SelectionType, SelectionType> personResultTable = new PropertySetTable<SelectionType, SelectionType>(parent, SWT.NONE) {
 			@Override
@@ -88,9 +89,9 @@ implements SearchResultFetcher {
 	@Override
 	public void setInput(Collection<PropertySetID> propertySetIDs, ProgressMonitor monitor) {
 		if (getConfiguration() == null) {
-			throw new IllegalStateException("The configuration for this PropertySetViewer was not set!");
+			throw new IllegalStateException("The configuration for this PropertySetViewer was not set!"); //$NON-NLS-1$
 		}
-		monitor.beginTask("Loading PropertySets", 2);
+		monitor.beginTask(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetTableViewer.loadPropertySetsTask.name"), 2); //$NON-NLS-1$
 		monitor.worked(1);
 		final Collection<? extends PropertySet> trimmedPropertySets = TrimmedPropertySetDAO.sharedInstance().getTrimmedPropertySets(
 				new HashSet<PropertySetID>(propertySetIDs), getConfiguration().getAllStructFieldIDs(), null,
@@ -117,11 +118,11 @@ implements SearchResultFetcher {
 		logger.debug("Search triggered, getting PersonManager"); //$NON-NLS-1$
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				setMessage("Searching...");
+				setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetTableViewer.searchMessage.text")); //$NON-NLS-1$
 			}
 		});
 
-		Job loadJob = new Job("Loading person search result...") {
+		Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetTableViewer.loadSearchResultTask.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				monitor.beginTask(getName(), 10);

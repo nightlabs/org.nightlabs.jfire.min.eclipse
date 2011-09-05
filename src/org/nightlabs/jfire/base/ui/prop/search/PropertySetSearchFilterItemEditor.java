@@ -164,7 +164,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 	protected List<PropertySetStructFieldSearchItemEditorHelper> buildSearchFieldList(ProgressMonitor monitor) {
 		List<PropertySetStructFieldSearchItemEditorHelper> helperList = new ArrayList<PropertySetStructFieldSearchItemEditorHelper>();
 		if (getStructLocalID() == null) {
-			throw new IllegalStateException("This PropertySetSearchFilterItemEditor does not have a StructLocalID set it therefore does not know about its structure. Please set the StructLocalID first.");
+			throw new IllegalStateException("This PropertySetSearchFilterItemEditor does not have a StructLocalID set it therefore does not know about its structure. Please set the StructLocalID first."); //$NON-NLS-1$
 		}
 		IStruct struct = StructLocalDAO.sharedInstance().getStructLocal(getStructLocalID(), monitor);
 		for (StructBlock structBlock : struct.getStructBlocks()) {

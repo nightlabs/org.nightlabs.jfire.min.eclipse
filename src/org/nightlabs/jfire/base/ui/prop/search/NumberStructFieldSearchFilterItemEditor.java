@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.nightlabs.jdo.search.MatchType;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.search.IStructFieldSearchFilterItem;
@@ -28,7 +29,7 @@ extends AbstractStructFieldSearchFilterItemEditor<NumberStructField>
 		public <T extends DataField> IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<T>> structFields, MatchType matchType) {
 			StructField<?> structField = structFields.iterator().next();
 			if (!NumberStructField.class.isAssignableFrom(structField.getClass()))
-				throw new IllegalArgumentException("The given structField is not of type NumberStructField");
+				throw new IllegalArgumentException("The given structField is not of type NumberStructField"); //$NON-NLS-1$
 			
 			return new NumberStructFieldSearchFilterItemEditor((NumberStructField) structField, matchType);
 		}
@@ -62,7 +63,7 @@ extends AbstractStructFieldSearchFilterItemEditor<NumberStructField>
 	
 	@Override
 	public boolean hasSearchConstraint() {
-		return !numberEditComposite.getText().equals("");
+		return !numberEditComposite.getText().equals(""); //$NON-NLS-1$
 	}
 
 	@Override
@@ -91,13 +92,20 @@ extends AbstractStructFieldSearchFilterItemEditor<NumberStructField>
 				try {
 					value = Integer.parseInt(numberEditComposite.getText());
 				} catch (NumberFormatException nfe) {
-					MessageDialog.openError(numberEditComposite.getShell(), "Invalid number", "The value you have entered is no valid number.");
+					MessageDialog.openError(
+							numberEditComposite.getShell(), 
+							Messages.getString("org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor.invalidNumberDialog.title"), //$NON-NLS-1$
+							String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor.invalidNumberDialog.message"), numberEditComposite.getText())); //$NON-NLS-1$
 					return;
 				}
 				if (value < min) {
-					MessageDialog.openError(numberEditComposite.getShell(), "Number too small", "The value you have entered may be at least " + min + ".");
+					MessageDialog.openError(numberEditComposite.getShell(), 
+							Messages.getString("org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor.numberTooSmallDialog.title"), //$NON-NLS-1$ 
+							String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor.numberTooSmallDialog.message"), numberEditComposite.getText(), min)); //$NON-NLS-1$
 				} else if (value > max) {
-					MessageDialog.openError(numberEditComposite.getShell(), "Number too big", "The value you have entered may be at most " + min + ".");
+					MessageDialog.openError(numberEditComposite.getShell(), 
+							Messages.getString("org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor.numberTooBigDialog.title"), //$NON-NLS-1$ 
+							String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.NumberStructFieldSearchFilterItemEditor.numberTooBigDialog.message"), numberEditComposite.getText(), max)); //$NON-NLS-1$ 
 				}
 			}
 		});

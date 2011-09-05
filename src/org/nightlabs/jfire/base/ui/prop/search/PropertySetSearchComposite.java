@@ -252,7 +252,7 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 	 */
 	private class ResultFetcher implements SearchResultFetcher {
 		public void searchTriggered(final SearchFilterProvider filterProvider) {
-			Job loadJob = new Job("Loading search results") {
+			Job loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchComposite.loadJob.title")) { //$NON-NLS-1$
 				@SuppressWarnings("unchecked")
 				@Override
 				protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -322,7 +322,7 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 		public Control createControl(Composite parent) {
 			Label l = new Label(resultWrapper, SWT.WRAP);
 			l.setLayoutData(new GridData(GridData.FILL_BOTH));
-			l.setText("Could not find the IPropertySetViewerFactory configured as result viewer for this use-case. The viewer identifier is : "
+			l.setText("Could not find the IPropertySetViewerFactory configured as result viewer for this use-case. The viewer identifier is : " //$NON-NLS-1$
 							+ resultViewerIdentifier);
 			return l;
 		}
@@ -397,7 +397,7 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 	 */
 	public void addLoadingStateListener(final ILoadingStateListener listener) {
 		if (Display.getCurrent() == null)
-			throw new IllegalStateException("Thread mismatch. This method can only be called from the UI thread.");
+			throw new IllegalStateException("Thread mismatch. This method can only be called from the UI thread."); //$NON-NLS-1$
 
 		loadingStateListeners.add(listener);
 
@@ -417,7 +417,7 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 	 */
 	public void removeLoadingStateListener(final ILoadingStateListener listener) {
 		if (Display.getCurrent() == null)
-			throw new IllegalStateException("Thread mismatch. This method can only be called from the UI thread.");
+			throw new IllegalStateException("Thread mismatch. This method can only be called from the UI thread."); //$NON-NLS-1$
 
 		loadingStateListeners.remove(listener);
 	}
@@ -444,11 +444,11 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 	protected Control init(Composite parent) {
 		createWrapper(parent);
 		loadingLabel = new Label(getWrapper(), SWT.NONE);
-		loadingLabel.setText("Loading...");
+		loadingLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchComposite.loadingLabel.text")); //$NON-NLS-1$
 		final Composite wrapper = getWrapper();
 		final Display display = wrapper.getDisplay();
 
-		Job loadCfModJob = new Job("Loading PersonSearchConfigModule") {
+		Job loadCfModJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchComposite.loadCfModJob.title")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				final String cfModID = AbstractEditLayoutConfigModule.getCfModID(AbstractEditLayoutConfigModule.CLIENT_TYPE_RCP, getPropertySetSearchUseCase());

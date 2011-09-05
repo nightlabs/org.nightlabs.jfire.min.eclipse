@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.nightlabs.eclipse.ui.dialog.ToolTipDialogSupport;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.datafield.IContentDataField;
 import org.nightlabs.jfire.prop.datafield.ImageDataField;
 
@@ -54,7 +55,7 @@ public class ImageDataFieldPreviewToolTipDialog extends Dialog
 		bounds.width = newShell.getDisplay().getBounds().width / 2;
 		bounds.height = newShell.getDisplay().getBounds().height / 2;
 		newShell.setBounds(bounds);
-		newShell.setText(String.format("%s: %s", imageDataFieldEditor.getStructField().getName().getText(), imageDataFieldEditor.getDataField().getFileName()));
+		newShell.setText(String.format(Messages.getString("org.nightlabs.jfire.base.ui.prop.edit.blockbased.ImageDataFieldPreviewToolTipDialog.shell.text.pattern"), imageDataFieldEditor.getStructField().getName().getText(), imageDataFieldEditor.getDataField().getFileName())); //$NON-NLS-1$
 	}
 
 	@Override
@@ -143,7 +144,7 @@ public class ImageDataFieldPreviewToolTipDialog extends Dialog
 			}
 
 			if (logger.isDebugEnabled())
-				logger.debug("displayImage: width=" + width + " height=" + height + " maxWidth=" + maxWidth + " maxHeight=" + maxHeight + " factorX=" + factorX + " factorY=" + factorY + " factor=" + factor);
+				logger.debug("displayImage: width=" + width + " height=" + height + " maxWidth=" + maxWidth + " maxHeight=" + maxHeight + " factorX=" + factorX + " factorY=" + factorY + " factor=" + factor); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
 			int scaleWidth = (int) (factor * width);
 			int scaleHeight = (int) (factor * height);

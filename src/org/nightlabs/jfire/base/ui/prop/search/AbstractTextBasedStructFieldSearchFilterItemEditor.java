@@ -50,7 +50,7 @@ public abstract class AbstractTextBasedStructFieldSearchFilterItemEditor<T exten
 
 	@Override
 	public boolean hasSearchConstraint() {
-		return !textEditComposite.getContent().equals("");
+		return !textEditComposite.getContent().equals(""); //$NON-NLS-1$
 	}
 
 	@Override

@@ -129,7 +129,7 @@ public class RegexDataFieldEditor extends AbstractDataFieldEditor<RegexDataField
 				if (!getDataField().isEmpty())
 					textEditComposite.setContent(getDataField().getText());
 				else
-					textEditComposite.setContent(""); // $NON-NLS-1$
+					textEditComposite.setContent(""); // $NON-NLS-1$ //$NON-NLS-1$
 				ignoreModifyEvents(false);
 			}
 		}

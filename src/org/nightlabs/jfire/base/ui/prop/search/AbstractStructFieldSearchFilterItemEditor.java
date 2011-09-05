@@ -30,7 +30,7 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 		this.structFields = structFields;
 		
 		if (matchType != null && !getSupportedMatchTypes().contains(matchType))
-			throw new IllegalArgumentException("This Editor (" + getClass().getSimpleName() + ") does not support the given MatchType (" + matchType + "), it supports " + getSupportedMatchTypes() + ".");
+			throw new IllegalArgumentException("This Editor (" + getClass().getSimpleName() + ") does not support the given MatchType (" + matchType + "), it supports " + getSupportedMatchTypes() + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
 		this.matchType = matchType;
 	}
@@ -131,7 +131,7 @@ public abstract class AbstractStructFieldSearchFilterItemEditor<SF extends Struc
 		StringBuilder name = new StringBuilder();
 		for (StructField<?> structField : getStructFields()) {
 			if (name.length() > 0)
-				name.append(", ");
+				name.append(", "); //$NON-NLS-1$
 			name.append(structField.getName().getText());
 		}
 		return name.toString();		

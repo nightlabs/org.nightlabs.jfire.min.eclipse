@@ -30,6 +30,7 @@ import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructBlockNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructFieldNode;
 import org.nightlabs.jfire.base.ui.prop.structedit.StructTreeComposite;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.organisation.Organisation;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.StructField;
@@ -58,12 +59,12 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		@Override
 		protected void configureShell(Shell newShell) {
 			super.configureShell(newShell);
-			newShell.setText("Select struct field");
+			newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.structDialog.shell.text")); //$NON-NLS-1$
 		}
 
 		@Override
 		protected Control createDialogArea(Composite parent) {
-			setTitle("Select struct field for column");
+			setTitle(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.structDialog.title")); //$NON-NLS-1$
 			treeComposite = new StructTreeComposite(parent, true, null);
 			treeComposite.setInput(
 					StructLocalDAO.sharedInstance().getStructLocal(
@@ -82,11 +83,11 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 					if (selectedStructField != null) {
 						boolean alreadyContained = selectedStructFieldList.getElements().contains(selectedStructField);
 						if (alreadyContained) {
-							setMessage("Struct field is already contained", IMessageProvider.INFORMATION);
+							setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.structDialog.errorMessage.fieldAlreadyContained"), IMessageProvider.INFORMATION); //$NON-NLS-1$
 						}
 						boolean canBeDisplayed = II18nTextDataField.class.isAssignableFrom(selectedStructField.getDataFieldClass());
 						if (!canBeDisplayed) {
-							setMessage("Data of this type can't be displayed in a table", IMessageProvider.ERROR);
+							setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.structDialog.errorMessage.dataCannotBeDisplayedInTable"), IMessageProvider.ERROR); //$NON-NLS-1$
 						}
 						boolean enabled = !alreadyContained && canBeDisplayed;
 						if (enabled) {
@@ -164,7 +165,7 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		super(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
 		
 		Label label = new Label(this, SWT.WRAP);
-		label.setText("Select the fields whose values you want to be displayed in the column.");
+		label.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.tableLabel.text")); //$NON-NLS-1$
 		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		XComposite tableButtonWrapper = new XComposite(this, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA, 2);
@@ -192,7 +193,7 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		
 		addButton = new Button(buttonWrapper, SWT.PUSH);
 		addButton.setLayoutData(gd);
-		addButton.setText("Add");
+		addButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.addButton.text")); //$NON-NLS-1$
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -207,7 +208,7 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		gd.verticalAlignment = GridData.BEGINNING;
 		removeButton = new Button(buttonWrapper, SWT.PUSH);
 		removeButton.setLayoutData(gd);
-		removeButton.setText("Remove");
+		removeButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.removeButton.text")); //$NON-NLS-1$
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -219,7 +220,7 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		gd.verticalAlignment = GridData.BEGINNING;
 		upButton = new Button(buttonWrapper, SWT.PUSH);
 		upButton.setLayoutData(gd);
-		upButton.setText("Up");
+		upButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.upButton.text")); //$NON-NLS-1$
 		upButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -235,7 +236,7 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		gd.verticalAlignment = GridData.BEGINNING;
 		downButton = new Button(buttonWrapper, SWT.PUSH);
 		downButton.setLayoutData(gd);
-		downButton.setText("Down");
+		downButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.downButton.text")); //$NON-NLS-1$
 		downButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -247,9 +248,9 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 			}
 		});
 		
-		columnHeaderSeparator = new LabeledText(this, "Column header separator");
-		columnDataSeparator = new LabeledText(this, "Column data separator");
-		columnWeight = new LabeledText(this, "Column weight");
+		columnHeaderSeparator = new LabeledText(this, Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.columnHeaderSeparatorLabel.text")); //$NON-NLS-1$
+		columnDataSeparator = new LabeledText(this, Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.columnDataSeparatorLabel.text")); //$NON-NLS-1$
+		columnWeight = new LabeledText(this, Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerColumnDescriptorComposite.columnWeightLabel.text")); //$NON-NLS-1$
 		
 //		structLocal = StructLocalDAO.sharedInstance().getStructLocal(structLocalID, new NullProgressMonitor());
 	}
@@ -260,11 +261,11 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		selectedStructFieldList.setInput(new LinkedList<StructField>(columnDescriptor.getStructFields()));
 		selectedStructFieldList.refresh();
 		if (columnDescriptor.getColumnHeaderSeparator() == null) {
-			columnDescriptor.setColumnHeaderSeparator(", ");
+			columnDescriptor.setColumnHeaderSeparator(", "); //$NON-NLS-1$
 		}
 		columnHeaderSeparator.setText(columnDescriptor.getColumnHeaderSeparator());
 		if (columnDescriptor.getColumnDataSeparator() == null) {
-			columnDescriptor.setColumnDataSeparator(", ");
+			columnDescriptor.setColumnDataSeparator(", "); //$NON-NLS-1$
 		}
 		columnDataSeparator.setText(columnDescriptor.getColumnDataSeparator());
 		if (columnDescriptor.getColumnWeight() <= 0) {
@@ -288,7 +289,7 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 			try {
 				columnDescriptor.setColumnWeight(Integer.parseInt(columnWeight.getText()));
 			} catch (NumberFormatException e) {
-				columnWeight.setText("1");
+				columnWeight.setText("1"); //$NON-NLS-1$
 				columnDescriptor.setColumnWeight(1);
 			}
 		}

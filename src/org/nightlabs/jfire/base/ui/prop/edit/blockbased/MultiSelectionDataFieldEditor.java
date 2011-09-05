@@ -60,7 +60,7 @@ extends AbstractDataFieldEditor<MultiSelectionDataField> {
 		@Override
 		public String getText(Object element) {
 			if (!MultiSelectionStructFieldValue.class.isAssignableFrom(element.getClass()))
-				throw new RuntimeException("Given element is not of type MultiSelectionStructFieldValue");
+				throw new RuntimeException("Given element is not of type MultiSelectionStructFieldValue"); //$NON-NLS-1$
 			
 			MultiSelectionStructFieldValue msfv = (MultiSelectionStructFieldValue) element;
 			

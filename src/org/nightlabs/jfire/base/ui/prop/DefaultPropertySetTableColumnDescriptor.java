@@ -14,8 +14,8 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
  */
 public class DefaultPropertySetTableColumnDescriptor implements IPropertySetTableColumnDescriptor {
 
-	private String columDataSeparator = ", ";
-	private String columHeaderSeparator = ", ";
+	private String columDataSeparator = ", "; //$NON-NLS-1$
+	private String columHeaderSeparator = ", "; //$NON-NLS-1$
 	private List<StructFieldID> structFieldIDs = new LinkedList<StructFieldID>();
 	private int columnWeight = 1;
 

@@ -137,7 +137,7 @@ public class DataBlockGroupEditor implements IDataBlockGroupEditor
 	private void checkComposite() {
 		if (editorComposite == null) {
 			throw new IllegalStateException(
-					"This DataBlockGroupEditor works only if its control was created. (editorComposite == null!");
+					"This DataBlockGroupEditor works only if its control was created. (editorComposite == null!"); //$NON-NLS-1$
 		}
 	}
 

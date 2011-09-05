@@ -86,7 +86,7 @@ public class StructFieldFactoryRegistry extends AbstractEPProcessor {
 				description = description == null ? "" : description; //$NON-NLS-1$
 				addFieldMetadata(fieldFactory, editorFactory, fieldName, description);
 			} catch (Throwable e) {
-				throw new RuntimeException("Error creating extension for extension point " + EXTENSION_POINT_ID);
+				throw new RuntimeException("Error creating extension for extension point " + EXTENSION_POINT_ID); //$NON-NLS-1$
 			}
 		} else {
 			throw new IllegalArgumentException("Element " + element.getName() + " is not supported by extension-point " //$NON-NLS-1$ //$NON-NLS-2$

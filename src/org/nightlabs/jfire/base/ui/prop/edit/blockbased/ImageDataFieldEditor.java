@@ -335,7 +335,7 @@ implements IEntryEditor
 			displayImage(id);
 		}
 		else { //@Marco, why did you remove these 2 lines? Probably a merge-mistake during back-/forward-porting. Marco.
-			filenameTextbox.setText("");
+			filenameTextbox.setText(""); //$NON-NLS-1$
 			displayImage(null);
 		}
 

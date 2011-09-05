@@ -70,12 +70,12 @@ extends AbstractEPProcessor
 		try {
 			if (element.getName().equals(GENERAL_EXTENSION_POINT_ELEMENT_NAME)) {
 				
-				Class<? extends StructField<?>> structFieldClass = (Class<? extends StructField<?>>) Class.forName(element.getAttribute("structFieldClass"));
+				Class<? extends StructField<?>> structFieldClass = (Class<? extends StructField<?>>) Class.forName(element.getAttribute("structFieldClass")); //$NON-NLS-1$
 				
 				IStructFieldSearchFilterItemEditorFactory factory =
-					(IStructFieldSearchFilterItemEditorFactory) element.createExecutableExtension("structFieldSearchFilterItemEditorFactory");
+					(IStructFieldSearchFilterItemEditorFactory) element.createExecutableExtension("structFieldSearchFilterItemEditorFactory"); //$NON-NLS-1$
 				
-				int priority = Integer.parseInt(element.getAttribute("priority"));
+				int priority = Integer.parseInt(element.getAttribute("priority")); //$NON-NLS-1$
 				
 				Pair<IStructFieldSearchFilterItemEditorFactory, Integer> pair =
 					new Pair<IStructFieldSearchFilterItemEditorFactory, Integer>(factory, priority);
@@ -87,12 +87,12 @@ extends AbstractEPProcessor
 				
 			} else if (element.getName().equals(SPECIALISED_EXTENSION_POINT_ELEMENT_NAME)) {
 				
-				StructFieldID structFieldID = (StructFieldID) ObjectIDUtil.createObjectID(element.getAttribute("structFieldID"));
+				StructFieldID structFieldID = (StructFieldID) ObjectIDUtil.createObjectID(element.getAttribute("structFieldID")); //$NON-NLS-1$
 				
 				IStructFieldSearchFilterItemEditorFactory factory =
-					(IStructFieldSearchFilterItemEditorFactory) element.createExecutableExtension("structFieldSearchFilterItemEditorFactory");
+					(IStructFieldSearchFilterItemEditorFactory) element.createExecutableExtension("structFieldSearchFilterItemEditorFactory"); //$NON-NLS-1$
 				
-				int priority = Integer.parseInt(element.getAttribute("priority"));
+				int priority = Integer.parseInt(element.getAttribute("priority")); //$NON-NLS-1$
 				
 				Pair<IStructFieldSearchFilterItemEditorFactory, Integer> pair =
 					new Pair<IStructFieldSearchFilterItemEditorFactory, Integer>(factory, priority);
@@ -178,7 +178,7 @@ extends AbstractEPProcessor
 			MatchType matchType, boolean doSpecialisedSearch) {
 		
 		if (structFields.isEmpty())
-			throw new IllegalArgumentException("Parameter structFields must contain at least one element.");
+			throw new IllegalArgumentException("Parameter structFields must contain at least one element."); //$NON-NLS-1$
 		
 		if (doSpecialisedSearch && structFields.size() == 1) {
 			// if there was only one field passed we can also do the specialised search
@@ -189,7 +189,7 @@ extends AbstractEPProcessor
 		
 		for (StructField<?> structField : structFields) {
 			if (!structField.getClass().equals(structFieldClass))
-				throw new IllegalArgumentException("The given structFields must all have exactly the same class.");
+				throw new IllegalArgumentException("The given structFields must all have exactly the same class."); //$NON-NLS-1$
 		}
 		
 		Pair<IStructFieldSearchFilterItemEditorFactory, Integer> pair = getGeneralStructFieldSearchItemEditors().get(structFieldClass);

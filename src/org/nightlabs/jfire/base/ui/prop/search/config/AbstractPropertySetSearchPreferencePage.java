@@ -38,6 +38,7 @@ import org.nightlabs.jfire.base.ui.layout.AbstractEditLayoutPreferencePage;
 import org.nightlabs.jfire.base.ui.person.search.config.StructFieldSearchGridLayoutConfig;
 import org.nightlabs.jfire.base.ui.prop.search.PropertySetViewerRegistry;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewerFactory;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.AbstractEditLayoutConfigModule;
 import org.nightlabs.jfire.layout.EditLayoutEntry;
 import org.nightlabs.jfire.prop.config.PropertySetEditLayoutConfigModule;
@@ -85,7 +86,7 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 
 		@Override
 		protected Control createDialogArea(Composite parent) {
-			setMessage("Selet a type of result-viewer to add to the configuration");
+			setMessage(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.viewerFactoryDialog.message")); //$NON-NLS-1$
 			final ListComposite<IPropertySetViewerFactory> viewerFactoryList = new ListComposite<IPropertySetViewerFactory>(parent,
 					SWT.BORDER);
 			viewerFactoryList.addListener(SWT.MouseDoubleClick, new Listener() {
@@ -128,7 +129,7 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 		@Override
 		protected void configureShell(Shell newShell) {
 			super.configureShell(newShell);
-			newShell.setText("Choose result-viewer type");
+			newShell.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.viewerFactoryDialog.shell.text")); //$NON-NLS-1$
 		}
 	}
 
@@ -204,7 +205,7 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 
 		TabFolder tabFolder = getTabFolder();
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-		tabItem.setText("Result viewer configuration");
+		tabItem.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.resultViewerTab.text")); //$NON-NLS-1$
 
 		tabItem.setControl(createResultViewerConfigurationControl(tabFolder));
 	}
@@ -239,8 +240,8 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 		});
 
 		Button addConfigurationButton = new Button(headerRow, SWT.PUSH);
-		addConfigurationButton.setText("+");
-		addConfigurationButton.setToolTipText("Add a configuration for a result viewer.");
+		addConfigurationButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.addConfigurationButton.text")); //$NON-NLS-1$
+		addConfigurationButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.addConfigurationButton.toolTip")); //$NON-NLS-1$
 		addConfigurationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -263,8 +264,8 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 		});
 
 		Button removeConfigurationButton = new Button(headerRow, SWT.PUSH);
-		removeConfigurationButton.setToolTipText("Remove the current result viewer configuration.");
-		removeConfigurationButton.setText("-");
+		removeConfigurationButton.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.removeConfigurationButton.toolTip")); //$NON-NLS-1$
+		removeConfigurationButton.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.removeConfigurationButton.text")); //$NON-NLS-1$
 		removeConfigurationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -446,7 +447,7 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 	protected Composite createFooterComposite(Composite wrapper, final GridLayoutConfigComposite gridLayoutConfigComposite) {
 		XComposite comp = new XComposite(wrapper, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		Button button = new Button(comp, SWT.PUSH);
-		button.setText("Set as quick search");
+		button.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.buttonSetAsQuickSearch.text")); //$NON-NLS-1$
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -456,8 +457,8 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 							.getSearchEntryForGridDataEntry(gridLayoutConfigComposite.getSelectedGridDataEntry());
 
 					if (layoutEntry.getEntryType().equals(EditLayoutEntry.ENTRY_TYPE_SEPARATOR)) {
-						MessageDialog.openError(getShell(), "Cannot select separator as quick search item",
-								"You cannot select a separator as quick search item.");
+						MessageDialog.openError(getShell(), Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.errorDialog.noSeparatorAsQuickSearch.title"), //$NON-NLS-1$
+								Messages.getString("org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage.errorDialog.noSeparatorAsQuickSearch.message")); //$NON-NLS-1$
 						return;
 					}
 

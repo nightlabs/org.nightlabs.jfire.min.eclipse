@@ -48,12 +48,12 @@ public class BooleanStructFieldSearchFilterItemEditor extends AbstractStructFiel
 	@Override
 	public String getInput() {
 		Boolean value = booleanEditComposite.getValue();
-		return value != null ? value.toString() : "null";
+		return value != null ? value.toString() : "null"; //$NON-NLS-1$
 	}
 
 	@Override
 	public void setInput(String input) {
-		if ("null".equals(input))
+		if ("null".equals(input)) //$NON-NLS-1$
 			booleanEditComposite.setValue(null);
 		else 
 			booleanEditComposite.setValue(Boolean.valueOf(input));

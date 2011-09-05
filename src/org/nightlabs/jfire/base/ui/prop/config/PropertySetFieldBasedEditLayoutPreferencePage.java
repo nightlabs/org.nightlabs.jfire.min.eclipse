@@ -83,7 +83,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 				PropertySetFieldBasedEditLayoutEntry entry = entriesMap.get(gdEntry);
 				if (entry != null && PropertySetFieldBasedEditLayoutEntry.ENTRY_TYPE_STRUCT_FIELD_REFERENCE.equals(entry.getEntryType())) {
 					if (entry.getStructFieldID() != null)
-						ignoreIDs.put(entry.getStructFieldID(), "This field cannot be added because it has already been assigned.");
+						ignoreIDs.put(entry.getStructFieldID(), Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferencePage.message.ignoredBecauseAlreadyAssigned")); //$NON-NLS-1$
 				}
 			}
 			AddStructFieldEntryDialog dlg = new AddStructFieldEntryDialog(getShell(), null, ignoreIDs, structLocal);
@@ -111,7 +111,7 @@ public class PropertySetFieldBasedEditLayoutPreferencePage extends AbstractUserC
 				@Override
 				public String getName() {
 					if (entry.getStructFieldID() == null) {
-						return "Separator";
+						return Messages.getString("org.nightlabs.jfire.base.ui.prop.config.PropertySetFieldBasedEditLayoutPreferencePage.separator.name"); //$NON-NLS-1$
 					}
 					try {
 						loadStructLocalJob.join();

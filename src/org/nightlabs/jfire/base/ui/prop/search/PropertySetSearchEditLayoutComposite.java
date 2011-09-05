@@ -74,13 +74,13 @@ public class PropertySetSearchEditLayoutComposite extends AbstractEditLayoutComp
 			if (editor != null) {
 				addSearchFilterItemEditor(editor);
 				Control control = editor.createControl(parent, true);
-				if (entry.equals(defaultEntry) && quickSearchText != null && !"".equals(quickSearchText)) {
+				if (entry.equals(defaultEntry) && quickSearchText != null && !"".equals(quickSearchText)) { //$NON-NLS-1$
 					editor.setInput(quickSearchText);
 				}
 				
 				return control;
 			} else {
-				logger.warn("No StructFieldSearchFilterEditor was found for the following entry:\n" + entry.toString());
+				logger.warn("No StructFieldSearchFilterEditor was found for the following entry:\n" + entry.toString()); //$NON-NLS-1$
 				return null;
 			}
 		}

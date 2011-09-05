@@ -29,7 +29,7 @@ extends AbstractStructFieldSearchFilterItemEditor<SelectionStructField>
 		public <T extends DataField> IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<T>> structFields, MatchType matchType) {
 			StructField<?> structField = structFields.iterator().next();
 			if (!SelectionStructField.class.isAssignableFrom(structField.getClass()))
-				throw new IllegalArgumentException("The given structField is not of type SelectionStructField");
+				throw new IllegalArgumentException("The given structField is not of type SelectionStructField"); //$NON-NLS-1$
 			
 			return new SelectionStructFieldSearchFilterItemEditor((SelectionStructField) structField);
 		}
@@ -47,7 +47,7 @@ extends AbstractStructFieldSearchFilterItemEditor<SelectionStructField>
 			@Override
 			public String getText(Object element) {
 				if (element == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				
 				return ((StructFieldValue) element).getValueName().getText();
 			}

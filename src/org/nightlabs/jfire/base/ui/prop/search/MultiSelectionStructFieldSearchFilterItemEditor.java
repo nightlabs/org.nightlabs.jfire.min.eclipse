@@ -30,7 +30,7 @@ extends AbstractStructFieldSearchFilterItemEditor<MultiSelectionStructField>
 		public <T extends DataField> IStructFieldSearchFilterItemEditor createEditorInstance(Collection<StructField<T>> structFields, MatchType matchType) {
 			StructField<?> structField = structFields.iterator().next();
 			if (!MultiSelectionStructField.class.isAssignableFrom(structField.getClass()))
-				throw new IllegalArgumentException("The given structField is not of type SelectionStructField");
+				throw new IllegalArgumentException("The given structField is not of type SelectionStructField"); //$NON-NLS-1$
 			
 			return new MultiSelectionStructFieldSearchFilterItemEditor((MultiSelectionStructField) structField);
 		}
@@ -49,7 +49,7 @@ extends AbstractStructFieldSearchFilterItemEditor<MultiSelectionStructField>
 			@Override
 			public String getText(Object element) {
 				if (element == null)
-					return "";
+					return ""; //$NON-NLS-1$
 				
 				return ((MultiSelectionStructFieldValue) element).getValueName().getText();
 			}
@@ -116,7 +116,7 @@ extends AbstractStructFieldSearchFilterItemEditor<MultiSelectionStructField>
 		if (selectedValueIDs != null) {
 			for (String selectedValueID : selectedValueIDs) {
 				if (sb.length() > 0)
-					sb.append(", ");
+					sb.append(", "); //$NON-NLS-1$
 				sb.append(selectedValueID);
 			}
 		}
@@ -127,7 +127,7 @@ extends AbstractStructFieldSearchFilterItemEditor<MultiSelectionStructField>
 	public void setInput(String input) {
 		Set<String> selection = new HashSet<String>();
 		if (input != null) {
-			String[] inputValues = input.split(",");
+			String[] inputValues = input.split(","); //$NON-NLS-1$
 			for (String inputValue : inputValues) {
 				if (inputValue != null) {
 					selection.add(inputValue.trim());
