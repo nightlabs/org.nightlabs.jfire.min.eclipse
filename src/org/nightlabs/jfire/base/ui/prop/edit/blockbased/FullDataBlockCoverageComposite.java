@@ -43,6 +43,7 @@ import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructBlock;
 import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.id.StructBlockID;
+import org.nightlabs.jfire.prop.id.StructLocalID;
 
 /**
  * A composite that creates a block-based {@link PropertySetEditor} that will cover all
@@ -56,13 +57,24 @@ public class FullDataBlockCoverageComposite extends Composite {
 	private EditorStructBlockRegistry structBlockRegistry;
 	
 	/**
+	 * Constructs a new {@link FullDataBlockCoverageComposite} that will cover all DataBlocks of the given {@link StructLocalID}. 
+	 * 
+	 * @param parent The parent Composite for the new instance.
+	 * @param style The SWT style for the new instance.
+	 * @param structLocalID The id of the StructLocal to get the list of StructBlocks from.
+	 */
+	public FullDataBlockCoverageComposite(Composite parent, int style, StructLocalID structLocalID) {
+		this(parent, style, null, new EditorStructBlockRegistry(structLocalID), null);
+	}
+	
+	/**
 	 * Constructs a new {@link FullDataBlockCoverageComposite}.
 	 * 
 	 * @param parent The parent Composite for the new instance.
 	 * @param style The SWT style for the new instance.
-	 * @param propertySet The {@link PropertySet} to edit.
-	 * @param structBlockRegistry The registry where the blocks already covered can be obtained from. Might be <code>null</code>.
-	 * @param validationResultHandler Handler for validation results.
+	 * @param propertySet The {@link PropertySet} to edit. Or <code>null</code> to intialize the editor without propertySet. 
+	 * @param structBlockRegistry The registry where the blocks already covered can be obtained from. Might be <code>null</code> if propertySet is not <code>null</code>.
+	 * @param validationResultHandler Handler for validation results. Might be <code>null</code>.
 	 */
 	public FullDataBlockCoverageComposite(
 			Composite parent, int style,
@@ -71,16 +83,15 @@ public class FullDataBlockCoverageComposite extends Composite {
 	) {
 		super(parent, style);
 		this.numColumns = 1;
-		if (!(propertySet.getStructure() instanceof StructLocal))
+		if (propertySet != null && !(propertySet.getStructure() instanceof StructLocal))
 			throw new IllegalArgumentException("The given propertySet was not exploded by a StructLocal"); //$NON-NLS-1$
 		this.structBlockRegistry = structBlockRegistry;
 		if (structBlockRegistry == null) {
 			this.structBlockRegistry = new EditorStructBlockRegistry(propertySet.getStructLocalObjectID());
-//					propertySet.getStructure().getOrganisationID(),
-//					propertySet.getStructLinkClass(), propertySet.getStructScope(), propertySet.getStructLocalScope());
 		}
 		StructBlockID[] fullCoverageBlockIDs = this.structBlockRegistry.getUnassignedBlockKeyArray();
 		createPropEditors(validationResultHandler);
+		@SuppressWarnings("unchecked")
 		List<StructBlockID>[] splitBlockIDs = new List[numColumns];
 		for (int i=0; i<numColumns; i++) {
 			splitBlockIDs[i] = new ArrayList<StructBlockID>();
@@ -102,7 +113,7 @@ public class FullDataBlockCoverageComposite extends Composite {
 			propEditor.setPropertySet(propertySet);
 //			propEditor.setEditorDomain(editorScope,"#FullDatBlockCoverageComposite"+i);
 			propEditor.setEditorStructBlockList(splitBlockIDs[i]);
-			Control propEditorControl = propEditor.createControl(wrapper, true);
+			Control propEditorControl = propEditor.createControl(wrapper, propertySet != null);
 			GridData editorControlGD = new GridData(GridData.FILL_BOTH);
 			propEditorControl.setLayoutData(editorControlGD);
 		}
@@ -151,6 +162,12 @@ public class FullDataBlockCoverageComposite extends Composite {
 		}
 	}
 
+	public void setValidationResultHandler(IValidationResultHandler validationResultHandler) {
+		for (PropertySetEditor editor : propEditors) {
+			editor.setValidationResultHandler(validationResultHandler);
+		}
+	}
+	
 	private ListenerList listenerList = new ListenerList();
 
 	private DataBlockEditorChangedListener listenerProxy = new DataBlockEditorChangedListener() {

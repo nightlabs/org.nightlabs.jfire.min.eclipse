@@ -55,6 +55,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.nightlabs.base.ui.composite.AsyncInitComposite;
 import org.nightlabs.base.ui.composite.AsyncInitListener;
 import org.nightlabs.base.ui.composite.AsyncInitListenerList;
+import org.nightlabs.base.ui.composite.DefaultButtonFilter;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.jdo.NLJDOHelper;
@@ -643,6 +644,7 @@ public abstract class PropertySetSearchComposite<InputType, ElementType> extends
 				performSearch();
 			}
 		});
+		new DefaultButtonFilter(searchButton, this);
 		return searchButton;
 	}
 

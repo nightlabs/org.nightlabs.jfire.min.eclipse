@@ -213,11 +213,12 @@ implements IEntryEditor
 			clearButton.setEnabled(false);
 		}
 
-		// re-layout the top level container
-		Composite top = imageLabel.getParent();
-		while (top.getParent() != null)
-			top = top.getParent();
-		top.layout(true, true);
+//		// re-layout the top level container
+//		Composite top = imageLabel.getParent();
+//		while (top.getParent() != null)
+//			top = top.getParent();
+//		top.layout(true, true);
+		group.getParent().layout(true, true);
 
 		imageDataFieldPreviewToolTipDialog.getToolTipDialogSupport().setEnabled(imageLabel.getImage() != null);
 	}
