@@ -52,7 +52,7 @@ extends LSDWorkbenchWindowActionDelegate
 				UserConfigSetup.CONFIG_GROUP_CONFIG_TYPE_USER_CONFIG,
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateUserConfigGroupAction.wizardTitle"), //$NON-NLS-1$
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateUserConfigGroupAction.pageTitle")); //$NON-NLS-1$
-		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getWindow().getShell(), wiz);
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getShell(), wiz);
 		if (wzd.open() == Window.OK) {
 			try {
 				RCPUtil.openEditor(new UserConfigGroupEditorInput(wiz.getCreatedConfigID()), UserConfigGroupEditor.EDITOR_ID);
