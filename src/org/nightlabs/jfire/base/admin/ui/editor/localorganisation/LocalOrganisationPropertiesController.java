@@ -125,8 +125,9 @@ public class LocalOrganisationPropertiesController extends ActiveEntityEditorPag
 	 * @see org.nightlabs.jfire.base.ui.entity.editor.ActiveEntityEditorPageController#storeEntity(java.lang.Object, org.nightlabs.progress.ProgressMonitor)
 	 */
 	@Override
-	protected Organisation storeEntity(Organisation controllerObject,
+	protected Organisation storeEntity(Organisation localOrganisation,
 			ProgressMonitor monitor) {
-		return OrganisationDAO.sharedInstance().storeLocalOrganisation(controllerObject, true, FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
+		localOrganisation.getPerson().deflate();
+		return OrganisationDAO.sharedInstance().storeLocalOrganisation(localOrganisation, true, FETCH_GROUPS, NLJDOHelper.MAX_FETCH_DEPTH_NO_LIMIT, monitor);
 	}
 }
