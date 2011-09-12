@@ -44,7 +44,7 @@ extends LSDWorkbenchWindowActionDelegate
 	public void run(IAction action)
 	{
 		RegisterOrganisationWizard registerOrganisationWizard = new RegisterOrganisationWizard();
-		WizardDialog wd = new WizardDialog(getWindow().getShell(), registerOrganisationWizard);
+		WizardDialog wd = new WizardDialog(getShell(), registerOrganisationWizard);
 		wd.open();
 	}
 }

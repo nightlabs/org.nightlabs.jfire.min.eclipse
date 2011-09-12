@@ -53,7 +53,7 @@ extends LSDWorkbenchWindowActionDelegate
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.wizardTitle"), //$NON-NLS-1$
 				Messages.getString("org.nightlabs.jfire.base.admin.ui.configgroup.CreateWorkstationConfigGroupAction.pageTitle")); //$NON-NLS-1$
 		
-		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getWindow().getShell(), wiz);
+		DynamicPathWizardDialog wzd = new DynamicPathWizardDialog(getShell(), wiz);
 		if (wzd.open() == Window.OK) {
 			try {
 				RCPUtil.openEditor(new WorkstationGroupEditorInput(wiz.getCreatedConfigID()), WorkstationGroupEditor.EDITOR_ID);
