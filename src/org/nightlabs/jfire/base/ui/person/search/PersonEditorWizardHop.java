@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.Status;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.wizard.WizardHop;
 import org.nightlabs.jdo.NLJDOHelper;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.config.ConfigUtil;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditConstants;
 import org.nightlabs.jfire.prop.config.PropertySetFieldBasedEditLayoutConfigModule;
@@ -33,11 +33,18 @@ public class PersonEditorWizardHop extends WizardHop {
 	private Job loadJob;
 	private PropertySetFieldBasedEditLayoutConfigModule configModule;
 	private Person person;
+	
+	private String pageTitle;
 
+	public PersonEditorWizardHop() {
+		this(null);
+	}
+	
 	/**
 	 *
 	 */
-	public PersonEditorWizardHop() {
+	public PersonEditorWizardHop(String pageTitle) {
+		this.pageTitle = pageTitle;
 		loadJob = new Job(Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonEditorWizardHop.job.loadLayout.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
@@ -76,12 +83,18 @@ public class PersonEditorWizardHop extends WizardHop {
 
 			setEntryPage(personalPage);
 			personalPage.getEditor().setPropertySet(person, false);
+			if (pageTitle != null) {
+				personalPage.setTitle(pageTitle);
+			}
 		} else {
 			personalPage.getEditor().setPropertySet(person, true);
 		}
 
 		if (otherPage == null) {
 			otherPage = new PersonEditorWizardOtherPage(person);
+			if (pageTitle != null) {
+				otherPage.setTitle(pageTitle);
+			}
 			addHopPage(otherPage);
 		}
 		else

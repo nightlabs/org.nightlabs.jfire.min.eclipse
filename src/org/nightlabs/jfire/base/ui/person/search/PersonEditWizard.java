@@ -27,13 +27,34 @@ public class PersonEditWizard extends DynamicPathWizard
 	 * Creates a PersonEditWizard.
 	 * @param person the Person to show / edit the properties
 	 */
-	public PersonEditWizard(Person person) 
+	public PersonEditWizard(Person person) {
+		this(person, null, null);
+	}
+	
+	/**
+	 * Creates a PersonEditWizard.
+	 * @param person the Person to show / edit the properties
+	 * @param windowTitle The title of the wizard-window
+	 * @param personPagesTitle The title of the wizard-pages that edit person-properties.
+	 */
+	public PersonEditWizard(Person person, String windowTitle) {
+		this(person, windowTitle, null);
+	}
+	
+	/**
+	 * Creates a PersonEditWizard.
+	 * @param person the Person to show / edit the properties
+	 * @param windowTitle The title of the wizard-window
+	 * @param personPagesTitle The title of the wizard-pages that edit person-properties.
+	 */
+	public PersonEditWizard(Person person, String windowTitle, String personPagesTitle) 
 	{
 		if (person == null)
 			throw new IllegalArgumentException("Param person must not be null!"); //$NON-NLS-1$
-		
+		if (windowTitle != null)
+			setWindowTitle(windowTitle);
 		this.person = person;
-		personEditorWizardHop = new PersonEditorWizardHop();
+		personEditorWizardHop = new PersonEditorWizardHop(personPagesTitle);
 		personEditorWizardHop.initialise(person);
 		addPage(personEditorWizardHop.getEntryPage());
 	}
