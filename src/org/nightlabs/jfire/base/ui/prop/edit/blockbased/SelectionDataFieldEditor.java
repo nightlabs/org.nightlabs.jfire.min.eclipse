@@ -75,6 +75,9 @@ public class SelectionDataFieldEditor extends AbstractDataFieldEditor<SelectionD
 			selectionEditComposite = new SelectionEditComposite<StructFieldValue>(parent, SWT.NONE, labelProvider, true);
 			selectionEditComposite.addModificationListener(getModifyListener());
 		}
+		
+		refresh();
+		
 		return selectionEditComposite;
 	}
 
