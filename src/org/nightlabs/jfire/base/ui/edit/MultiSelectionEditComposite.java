@@ -10,11 +10,15 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.structfield.MultiSelectionStructFieldValue;
 
 /**
@@ -24,6 +28,8 @@ import org.nightlabs.jfire.prop.structfield.MultiSelectionStructFieldValue;
 public class MultiSelectionEditComposite<T>
 extends AbstractInlineEditComposite
 {
+	private static Font italicLabelFont;
+	
 	private Composite wrapper;
 	private ILabelProvider labelProvider;
 
@@ -82,22 +88,33 @@ extends AbstractInlineEditComposite
 			createWrapper();
 		}
 		
-		
-		for (T entry : input) {
-			Button b = new Button(wrapper, SWT.CHECK);
-			b.setData(entry);
-			b.setText(labelProvider.getText(entry));
-			b.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			if(selected.contains(entry))
-				b.setSelection(true);
-			
-			b.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					notifyModificationListeners();
-				}
-			});
+		if (input != null && !input.isEmpty()){
+			for (T entry : input) {
+				Button b = new Button(wrapper, SWT.CHECK);
+				b.setData(entry);
+				b.setText(labelProvider.getText(entry));
+				b.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				if(selected.contains(entry))
+					b.setSelection(true);
+				
+				b.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						notifyModificationListeners();
+					}
+				});
+			}
+		}else{
+			Label noValuesLabel = new Label(wrapper, SWT.NONE);
+			noValuesLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.edit.MultiSelectionEditComposite.noValuesAvailabeLabelText")); //$NON-NLS-1$
+			if (italicLabelFont == null){
+				FontData fontData = noValuesLabel.getFont().getFontData()[0];
+				italicLabelFont = new Font(noValuesLabel.getDisplay(), new FontData(fontData.getName(), fontData.getHeight(), SWT.ITALIC));
+			}
+			noValuesLabel.setFont(italicLabelFont);
+			noValuesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		}
+		
 		layout(true, true);
 	}
 	
