@@ -375,14 +375,16 @@
              viewerFactory="org.nightlabs.jfire.base.ui.person.search.PersonTableViewerFactory">
        </propertySetViewer>
     </extension>
-    <extension
+    
+    <!-- This perspective is defined in org.nightlabs.jfire.base.ui.app.rcp -->
+    <!--extension
           point="org.eclipse.ui.perspectives">
        <perspective
              class="org.nightlabs.jfire.base.ui.JFireWelcomePerspective"
              id="org.nightlabs.jfire.base.ui.JFireWelcomePerspective"
              name="Welcome">
        </perspective>
-    </extension>
+    </extension-->
     
     <!--
     <extension
