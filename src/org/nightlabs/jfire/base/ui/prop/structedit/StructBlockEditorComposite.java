@@ -272,6 +272,7 @@ public class StructBlockEditorComposite extends XComposite
 		displayColumnCountLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.displayColumnCountLabel.text")); //$NON-NLS-1$
 		displayColumnCountLabel.setToolTipText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructBlockEditorComposite.displayColumnCountLabel.toolTipText")); //$NON-NLS-1$
 		displayColumnCountLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		displayColumnCount.setMinimum(1);	// I suppose that having zero columns does not make much sence. Denis.
 		
 		displayColumnCount.addModifyListener(new ModifyListener() {
 			@Override
