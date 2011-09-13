@@ -12,7 +12,7 @@
       </intro>
       <introProductBinding
             introId="org.nightlabs.jfire.base.intro.ui.introID"
-            productId="org.nightlabs.jfire.base.ui.product">
+            productId="org.nightlabs.jfire.base.ui.app.rcp.product">
       </introProductBinding>
    </extension>
    <extension
