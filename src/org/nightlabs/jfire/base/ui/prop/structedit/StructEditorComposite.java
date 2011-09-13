@@ -6,6 +6,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.base.ui.language.LanguageChooser;
@@ -38,6 +39,13 @@ public class StructEditorComposite extends XComposite {
 		XComposite topLine = new XComposite(this, SWT.NONE, LayoutMode.LEFT_RIGHT_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 		topLine.getGridLayout().numColumns = 2;
 		topLine.getGridData().horizontalSpan = 2;
+		
+		Label structNameLabel = new Label(topLine, SWT.NONE);
+		structNameLabel.setText(Messages.getString("org.nightlabs.jfire.base.ui.prop.structedit.StructEditorComposite.structNameLabel")); //$NON-NLS-1$
+		gd = new GridData();
+		gd.horizontalSpan = 2;
+		structNameLabel.setLayoutData(gd);
+		
 		XComposite nameWrapper = new XComposite(topLine, SWT.NONE, LayoutMode.TOTAL_WRAPPER, LayoutDataMode.GRID_DATA_HORIZONTAL);
 
 		gd = new GridData();
@@ -52,7 +60,6 @@ public class StructEditorComposite extends XComposite {
 				structEditor.setChanged(true);
 			}
 		});
-
 
 		this.structTree = structTree;
 		structTree.createComposite(this, style, languageChooser);
