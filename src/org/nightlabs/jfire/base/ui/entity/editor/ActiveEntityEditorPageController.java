@@ -30,6 +30,8 @@ import org.nightlabs.base.ui.notification.NotificationAdapterJob;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jdo.NLJDOHelper;
+import org.nightlabs.jfire.base.GlobalJFireEjb3Provider;
+import org.nightlabs.jfire.base.JFireEjb3Provider;
 import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.ui.resource.Messages;
@@ -387,6 +389,9 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 * is registered {@link #doLoad(ProgressMonitor)}.
 	 */
 	private EntityChangeListener entityChangeListener = null;
+	
+	/** Lazy created ejbProvider to be used by subclasses */
+	private JFireEjb3Provider ejbProvider;
 
 	/**
 	 * Create a new {@link ActiveEntityEditorPageController} that will not start background loading.
@@ -795,5 +800,25 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 	 */
 	protected boolean isNewObject(EntityType controllerObject) {
 		return controllerObject instanceof PersistenceCapable;
+	}
+	
+	
+	/**
+	 * Get the ejbProvider.
+	 * @return the ejbProvider
+	 */
+	public JFireEjb3Provider getEjbProvider() {
+		if(ejbProvider == null) {
+			return GlobalJFireEjb3Provider.sharedInstance();
+		}
+		return ejbProvider;
+	}
+	
+	/**
+	 * Set the ejbProvider.
+	 * @param ejbProvider the ejbProvider to set
+	 */
+	public void setEjbProvider(JFireEjb3Provider ejbProvider) {
+		this.ejbProvider = ejbProvider;
 	}
 }
