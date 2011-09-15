@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -23,6 +24,7 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.CollectionUtil;
 
 /**
@@ -68,6 +70,8 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 			input = null;
 		}
 	}
+	
+	private ContentProvider contentProvider;
 
 	private ActiveJDOObjectController<JDOObjectID, JDOObject> controller;
 
@@ -98,14 +102,15 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 */
 	@Override
 	protected void setTableProvider(TableViewer tableViewer) {
-		tableViewer.setContentProvider(new ContentProvider());
+		contentProvider = new ContentProvider();
+		tableViewer.setContentProvider(contentProvider);
 		ITableLabelProvider labelProvider = createLabelProvider();
 		if (labelProvider != null)
 			tableViewer.setLabelProvider(labelProvider);
 	}
 
 	private ContentProvider getContentProvider() {
-		return (ContentProvider) getTableViewer().getContentProvider();
+		return contentProvider;
 	}
 
 	/**
@@ -140,7 +145,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 
 							if (!getContentProvider().isInputSet()) {
 								getContentProvider().setInput(loadedObjects);
-								getTableViewer().setInput(loadedObjects);
+								setInput(loadedObjects);
 								fireSetInputEvent();
 							} else {
 								for (JDOObject loadedObject : loadedObjects) {
@@ -195,7 +200,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 			}
 		});
 
-		controller.getJDOObjects();
+		load();
 	}
 
 	/**
@@ -203,6 +208,7 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 * via the {@link ActiveJDOObjectController}.
 	 */
 	public void load() {
+		setLoadingMessage(getLoadingMessage());
 		getActiveJDOObjectController().getJDOObjects();
 	}
 
@@ -214,6 +220,13 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 		getContentProvider().clearInput();
 		getActiveJDOObjectController().clearCache();
 		load();
+	}
+
+	/**
+	 * @return The message that should be shown while the controller loads.
+	 */
+	protected String getLoadingMessage() {
+		return Messages.getString("org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectTableComposite.loadingMessage"); //$NON-NLS-1$
 	}
 	
 

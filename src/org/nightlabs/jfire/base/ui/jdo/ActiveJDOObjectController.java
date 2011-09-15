@@ -74,6 +74,21 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 	 */
 	protected abstract Collection<JDOObject> retrieveJDOObjects(ProgressMonitor monitor);
 
+	/**
+	 * This method is called when the controller receives a notification of a
+	 * changed or new object that is not yet part of the table. The method
+	 * decides whether or not to integrate that object into the table.
+	 * <p>
+	 * The default implementation returns <code>true</code> for eery object. Subclasses may overwrite.
+	 * </p>
+	 * 
+	 * @param jdoObjectID The Id of the object to check.
+	 * @return <code>true</code> if the object with the given Id should be integrated.
+	 */
+	protected boolean isIntegrateNewObject(JDOObjectID jdoObjectID) {
+		return true;
+	}
+
 	private ListenerList jdoObjectsChangedListeners = new ListenerList();
 
 	/**
@@ -169,7 +184,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 					@SuppressWarnings("unchecked")
 					JDOObjectID jdoObjectID = (JDOObjectID) dirtyObjectID.getObjectID();
 					// only load it, if it's really new - i.e. we don't have it yet!
-					if (!jdoObjectID2jdoObject.containsKey(jdoObjectID))
+					if (!jdoObjectID2jdoObject.containsKey(jdoObjectID) && isIntegrateNewObject(jdoObjectID))
 						jdoObjectIDsToLoad.add(jdoObjectID);
 				}
 
@@ -242,7 +257,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 						_deletedJDOObjects.put(jdoObjectID, jdoObject);
 						jdoObjectIDsToLoad.remove(jdoObjectID);
 					}
-					else if (jdoObjectID2jdoObject.containsKey(jdoObjectID)) // only load it, if it's already here
+					else if (jdoObjectID2jdoObject.containsKey(jdoObjectID) && isIntegrateNewObject(jdoObjectID)) // only load it, if it's already here
 						jdoObjectIDsToLoad.add(jdoObjectID);
 				}
 
