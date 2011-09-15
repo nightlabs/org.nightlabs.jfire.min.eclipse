@@ -143,7 +143,6 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		
 
 	
-	@SuppressWarnings("unchecked")
 	private ListComposite<StructField> selectedStructFieldList;
 	private Button addButton;
 	private Button removeButton;
@@ -160,7 +159,6 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 	 * @param parent
 	 * @param style
 	 */
-	@SuppressWarnings("unchecked")
 	public PropertySetTableViewerColumnDescriptorComposite(Composite parent, StructLocalID structLocalID) {
 		super(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.GRID_DATA);
 		
@@ -225,6 +223,10 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int selectionIndex = selectedStructFieldList.getSelectionIndex();
+				if (selectionIndex < 0
+						|| selectedStructFieldList.getElements().size() < 2){ 
+					return;
+				}
 				Collections.swap(selectedStructFieldList.getElements(), selectionIndex, selectionIndex-1);
 				selectedStructFieldList.refresh();
 				selectedStructFieldList.setSelection(selectionIndex-1);
@@ -241,6 +243,10 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int selectionIndex = selectedStructFieldList.getSelectionIndex();
+				if (selectionIndex < 0 
+						|| selectedStructFieldList.getElements().size() < 2){	// nothing selected
+					return;
+				}
 				Collections.swap(selectedStructFieldList.getElements(), selectionIndex, selectionIndex+1);
 				selectedStructFieldList.refresh();
 				selectedStructFieldList.setSelection(selectionIndex+1);
@@ -255,7 +261,6 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 //		structLocal = StructLocalDAO.sharedInstance().getStructLocal(structLocalID, new NullProgressMonitor());
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void setColumnDescriptor(PropertySetTableViewerColumnDescriptor columnDescriptor) {
 		this.columnDescriptor = columnDescriptor;
 		selectedStructFieldList.setInput(new LinkedList<StructField>(columnDescriptor.getStructFields()));
@@ -280,7 +285,6 @@ public class PropertySetTableViewerColumnDescriptorComposite extends XComposite 
 		downButton.setEnabled(selectedStructFieldList.getSelectedElement() != null && selectedStructFieldList.getSelectionIndex() != selectedStructFieldList.getElements().size()-1);
 	}
 
-	@SuppressWarnings("unchecked")
 	public PropertySetTableViewerColumnDescriptor updateColumnDescriptor() {
 		if (columnDescriptor != null && !selectedStructFieldList.isDisposed()) {
 			columnDescriptor.setStructFields(new ArrayList<StructField>(selectedStructFieldList.getElements()));

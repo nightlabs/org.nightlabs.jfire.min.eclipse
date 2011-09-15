@@ -24,7 +24,7 @@ import org.nightlabs.jfire.prop.StructField;
 import org.nightlabs.jfire.prop.id.StructLocalID;
 import org.nightlabs.jfire.prop.view.PropertySetTableViewerColumnDescriptor;
 import org.nightlabs.jfire.prop.view.PropertySetTableViewerConfiguration;
-import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.jfire.security.GlobalSecurityReflector;
 
 /**
  * Master-detail composite to configure the columns displayed in a PropertySetTable.
@@ -69,7 +69,6 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		buttonWrapper.getGridData().verticalAlignment = SWT.BEGINNING;
 		
 		columnDescriptorList.setLabelProvider(new LabelProvider() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public String getText(Object element) {
 				if (element instanceof PropertySetTableViewerColumnDescriptor) {
@@ -90,9 +89,10 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 		});
 		columnDescriptorList.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
-			public void selectionChanged(SelectionChangedEvent arg0) {
+			public void selectionChanged(SelectionChangedEvent event) {
 				PropertySetTableViewerColumnDescriptor columnDescriptor = columnDescriptorComposite.updateColumnDescriptor();
-				if (columnDescriptor != null) {
+				if (columnDescriptor != null
+						&& columnDescriptorList.contains(columnDescriptor)) {
 					columnDescriptorList.refreshElement(columnDescriptor);
 				}
 				if (columnDescriptorList.getSelectedElement() != null) {
@@ -111,12 +111,13 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				PropertySetTableViewerColumnDescriptor columnDescriptor = columnDescriptorComposite.updateColumnDescriptor();
-				if (columnDescriptor != null) {
+				if (columnDescriptor != null
+						&& columnDescriptorList.contains(columnDescriptor)) {
 					columnDescriptorList.refreshElement(columnDescriptor);
 				}
 				
-				PropertySetTableViewerColumnDescriptor newColumnDescriptor = new PropertySetTableViewerColumnDescriptor(SecurityReflector
-						.getUserDescriptor().getOrganisationID(), IDGenerator.nextID(PropertySetTableViewerColumnDescriptor.class));
+				PropertySetTableViewerColumnDescriptor newColumnDescriptor = new PropertySetTableViewerColumnDescriptor(
+						GlobalSecurityReflector.sharedInstance().getUserDescriptor().getOrganisationID(), IDGenerator.nextID(PropertySetTableViewerColumnDescriptor.class));
 				columnDescriptorList.addElement(newColumnDescriptor);
 				columnDescriptorList.setSelection(newColumnDescriptor);
 				
@@ -147,6 +148,10 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int selectionIndex = columnDescriptorList.getSelectionIndex();
+				if (selectionIndex < 0 
+						|| columnDescriptorList.getElements().size() < 2){	// nothing selected
+					return;
+				}
 				Collections.swap(columnDescriptorList.getElements(), selectionIndex, selectionIndex-1);
 				columnDescriptorList.refresh();
 				columnDescriptorList.setSelection(selectionIndex-1);
@@ -163,6 +168,10 @@ public class PropertySetTableViewerConfigurationComposite extends XComposite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int selectionIndex = columnDescriptorList.getSelectionIndex();
+				if (selectionIndex < 0 
+						|| columnDescriptorList.getElements().size() < 2){	// nothing selected
+					return;
+				}
 				Collections.swap(columnDescriptorList.getElements(), selectionIndex, selectionIndex+1);
 				columnDescriptorList.refresh();
 				columnDescriptorList.setSelection(selectionIndex+1);
