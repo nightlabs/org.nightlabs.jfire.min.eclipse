@@ -16,6 +16,7 @@
 		<assembly.eclipse.directory>${assembly.directory}/eclipse</assembly.eclipse.directory>
 		<assembly.plugins.directory>${assembly.eclipse.directory}/plugins</assembly.plugins.directory>
 		<skipPluginExecution>true</skipPluginExecution>
+		<eclipse.babel.artifactIds>org.eclipse.babel.eclipse-de</eclipse.babel.artifactIds>
 	</properties>
 
 	<dependencies>
@@ -180,6 +181,16 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
+		
+		
+		<!-- babel dependencies -->
+		<dependency>
+			<groupId>org.eclipse.babel</groupId>
+			<artifactId>org.eclipse.babel.eclipse-de</artifactId>
+			<version>3.6.0</version>
+			<type>zip</type>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -237,6 +248,37 @@
 								</excludes>
 							</configuration>
 						</execution>
+						<execution>
+							<id>unpack-babel</id>
+							<phase>package</phase>
+							<goals>
+								<goal>unpack-dependencies</goal>
+							</goals>
+							<configuration>
+								<skip>${skipPluginExecution}</skip>
+								<outputDirectory>${assembly.directory}</outputDirectory>
+								<includeGroupIds>org.eclipse.babel</includeGroupIds>
+								<includeArtifactIds>${eclipse.babel.artifactIds}</includeArtifactIds>
+								<excludes>
+									**/org.eclipse.ant*,
+									**/org.eclipse.compare*,
+									**/org.eclipse.cvs*,
+									**/org.eclipse.debug*,
+									**/org.eclipse.equinox.launcher*,
+									**/org.eclipse.jdt*,
+									**/org.eclipse.ltk*,
+									**/org.eclipse.pde*,
+									**/org.eclipse.sdk*,
+									**/org.eclipse.swt.examples*,
+									**/org.eclipse.team*,
+									**/org.eclipse.ui.examples*,
+									**/org.eclipse.ui.externaltools*,
+									**/org.eclipse.ui.ide*,
+									**/org.eclipse.ui.navigator*,
+									**/org.eclipse.update*
+								</excludes>
+							</configuration>
+						</execution>						
 						<execution>
 							<id>copy-plugins</id>
 							<goals>
