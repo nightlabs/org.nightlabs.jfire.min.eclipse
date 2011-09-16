@@ -5,11 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.jdo.JDOHelper;
 
@@ -26,8 +25,8 @@ import org.nightlabs.jdo.ObjectID;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.jfire.jdo.notification.JDOLifecycleState;
@@ -189,10 +188,6 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 		return c;
 	}
 
-	protected boolean includeObjectIDForLifecycleListener(ObjectID objectID) {
-		return true;
-	}
-	
 	/**
 	 * Creates an {@link IJDOLifecycleListenerFilter} that will be used to
 	 * track new objects that are children of one of the objects referenced by
@@ -211,23 +206,16 @@ public abstract class ActiveJDOObjectLazyTreeController<JDOObjectID extends Obje
 //				new JDOLifecycleState[] { JDOLifecycleState.NEW });
 
 		Set<Class<? extends JDOObject>> classes = getJDOObjectClasses();
-		Set<ObjectID> filteredParentIDs = new HashSet<ObjectID>(parentObjectIDs);
-		Iterator<ObjectID> filterIt = filteredParentIDs.iterator();
-		while (filterIt.hasNext()) {
-			if (!includeObjectIDForLifecycleListener(filterIt.next())) {
-				filterIt.remove();
-			}
-		}
 		if (getTreeNodeMultiParentResolver() == null) {
 			return new TreeLifecycleListenerFilter(
 					classes.toArray(new Class[classes.size()]), true,
-					filteredParentIDs, getTreeNodeParentResolver(),
+					parentObjectIDs, getTreeNodeParentResolver(),
 					new JDOLifecycleState[] { JDOLifecycleState.NEW });
 		}
 		else {
 			return new TreeLifecycleListenerFilter(
 					classes.toArray(new Class[classes.size()]), true,
-					filteredParentIDs, getTreeNodeMultiParentResolver(),
+					parentObjectIDs, getTreeNodeMultiParentResolver(),
 					new JDOLifecycleState[] { JDOLifecycleState.NEW });
 		}
 	}
