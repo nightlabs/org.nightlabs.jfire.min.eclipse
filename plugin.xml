@@ -365,7 +365,7 @@
              category="org.nightlabs.base.ui.preference.UIPreferencePage"
              class="org.nightlabs.jfire.base.ui.preferences.PersonSearchCategoryPreferencePage"
              id="org.nightlabs.jfire.base.ui.preferences.PersonSearchPreferencePage"
-             name="Person Search Configuration">
+             name="%org.nightlabs.jfire.base.ui.preferences.PersonSearchPreferencePage.name">
        </page>       
     </extension>
     <extension
