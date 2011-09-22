@@ -117,7 +117,7 @@ public class EditorStructBlockRegistry
 	/**
 	 * Returns a {@link List} of the structBlockIDs for the given <code>editorName</code>.
 	 * @param editorName The name of the editor whose registered structBlockIDs are to be returned.
-	 * @return a {@link List} of the structBlockIDs for the given <code>editorName</code>.
+	 * @return a {@link List} of the structBlockIDs for the given <code>editorName</code> or an empty unmodifiable List if none.
 	 */
 	public List<StructBlockID> getEditorStructBlocks(String editorName)
 	{

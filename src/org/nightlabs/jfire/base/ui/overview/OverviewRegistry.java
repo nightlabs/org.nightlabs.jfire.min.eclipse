@@ -78,13 +78,13 @@ public class OverviewRegistry
 				DefaultCategoryFactory defaultCategory = new DefaultCategoryFactory();
 				defaultCategory.setName(name);
 				defaultCategory.setCategoryID(categoryID);
-				if (checkString(iconString)) {
+				if (iconString != null && !iconString.trim().isEmpty()) {
 					ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 							extension.getNamespaceIdentifier(), iconString);
 					if (imageDescriptor != null)
 						defaultCategory.setImage(imageDescriptor.createImage());
 				}
-				if (checkString(indexString)) {
+				if (indexString != null && !indexString.trim().isEmpty()) {
 					int index = Integer.valueOf(indexString);
 					defaultCategory.setIndex(index);
 				}
@@ -183,7 +183,7 @@ public class OverviewRegistry
 		}
 	}
 
-	public List<CategoryFactory> getCategoryFacories(String scope)
+	public List<CategoryFactory> getCategoryFactories(String scope)
 	{
 		checkProcessing();
 		final List<String> categoryIDs = scope2CategoryIDs.get(scope);
@@ -209,7 +209,7 @@ public class OverviewRegistry
 	public List<Category> createCategories(String scope)
 	{
 		assert scope != null && scope.length() != 0;
-		List<CategoryFactory> factories = getCategoryFacories(scope);
+		List<CategoryFactory> factories = getCategoryFactories(scope);
 		List<Category> categories = new ArrayList<Category>(factories.size());
 		for (CategoryFactory factory : factories) {
 			categories.add(factory.createCategory());
