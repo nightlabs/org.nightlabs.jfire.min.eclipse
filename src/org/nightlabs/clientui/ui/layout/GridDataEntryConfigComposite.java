@@ -159,7 +159,7 @@ public class GridDataEntryConfigComposite extends XComposite {
 	public void setGridDataEntry(IGridDataEntry gridDataEntry) {
 		this.gridDataEntry = gridDataEntry;
 		if (!isDisposed()) {
-			getDisplay().asyncExec(new Runnable() {
+			getDisplay().syncExec(new Runnable() {
 				public void run() {
 					if (!isDisposed()) {
 						updating = true;
