@@ -42,7 +42,6 @@ import org.nightlabs.jfire.prop.StructLocal;
 import org.nightlabs.jfire.prop.dao.PropertySetDAO;
 import org.nightlabs.jfire.prop.dao.StructLocalDAO;
 import org.nightlabs.jfire.prop.id.PropertySetID;
-import org.nightlabs.jfire.security.SecurityReflector;
 import org.nightlabs.progress.NullProgressMonitor;
 
 /**
@@ -257,7 +256,7 @@ public class PersonSearchWizardPage extends WizardHopPage
 		try {
 			if (newPerson == null) {
 				newPerson = new Person(
-						SecurityReflector.getUserDescriptor().getOrganisationID(),
+						IDGenerator.getOrganisationID(),
 						IDGenerator.nextID(PropertySet.class)
 				);
 				StructLocal structLocal = StructLocalDAO.sharedInstance().getStructLocal(
@@ -395,10 +394,14 @@ public class PersonSearchWizardPage extends WizardHopPage
 		} else {
 			if (newPerson != null && editingNewPerson)
 				return newPerson;
-			else {
-				// Has to be the edited person here, because the search-page is not the current one
+			else if (editorWizardHop != null) {
+				// Is the edited person here, because the search-page is not the current one
 				// and we are not editing a new person.
 				return editorWizardHop.getPerson();
+			} else {
+				// in this case we are not creating a new person and not editing an existing one,
+				// The search page is simply not the current one but was asked for the selected person nevertheless
+				return (Person) searchComposite.getResultViewer().getFirstSelectedElement();
 			}
 		}
 	}
