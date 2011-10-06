@@ -5,7 +5,7 @@ import java.util.WeakHashMap;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.service.ISessionStore;
-import org.nightlabs.jfire.compatibility.SessionStoreRegistry;
+import org.nightlabs.eclipse.compatibility.SessionStoreRegistry;
 import org.nightlabs.singleton.AbstractSingletonProvider;
 import org.nightlabs.singleton.IServiceContextAware;
 import org.nightlabs.singleton.ISingletonProvider;

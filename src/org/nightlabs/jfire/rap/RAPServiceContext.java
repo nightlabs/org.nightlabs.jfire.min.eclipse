@@ -8,7 +8,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.context.UIContext;
-import org.nightlabs.jfire.compatibility.SessionStoreRegistry;
+import org.nightlabs.eclipse.compatibility.SessionStoreRegistry;
 import org.nightlabs.singleton.IServiceContext;
 
 @SuppressWarnings("restriction")

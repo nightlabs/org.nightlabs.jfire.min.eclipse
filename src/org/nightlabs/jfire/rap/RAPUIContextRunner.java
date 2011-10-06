@@ -7,7 +7,7 @@ import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.context.IUIContextRunner;
-import org.nightlabs.jfire.compatibility.SessionStoreRegistry;
+import org.nightlabs.eclipse.compatibility.SessionStoreRegistry;
 
 /**
  * @author Alexander Bieber <!-- alex [AT] nightlabs [dOt] de -->
