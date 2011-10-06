@@ -14,8 +14,9 @@ public class LoginHandlerRegistry extends AbstractEPProcessor
 			LoginHandlerRegistry r = new LoginHandlerRegistry();
 			r.process();
 
-			if (r.getLoginHandler() == null)
-				throw new IllegalStateException("There is no extension to the extension-point '" + r.getExtensionPointID() + "' registered! Exactly one ILoginHandler is required!");
+			// commented because registration now also works via service registration, which is processed afterwards. Daniel
+//			if (r.getLoginHandler() == null)
+//				throw new IllegalStateException("There is no extension to the extension-point '" + r.getExtensionPointID() + "' registered! Exactly one ILoginHandler is required!");
 
 			sharedInstance = r;
 		}
