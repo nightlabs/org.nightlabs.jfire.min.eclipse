@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.querystore.ui;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import javax.jdo.FetchPlan;
 
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -18,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.nightlabs.base.ui.layout.WeightedTableLayout;
+import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.base.ui.util.JFaceUtil;
 import org.nightlabs.jdo.NLJDOHelper;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
@@ -31,7 +34,7 @@ import org.nightlabs.jfire.query.store.dao.QueryStoreDAO;
 import org.nightlabs.jfire.query.store.id.QueryStoreID;
 import org.nightlabs.jfire.query.store.jdo.filter.BaseQueryStoreLifecycleFilter;
 import org.nightlabs.jfire.querystore.ui.resource.Messages;
-import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.jfire.security.GlobalSecurityReflector;
 import org.nightlabs.progress.ProgressMonitor;
 
 /**
@@ -168,9 +171,55 @@ public class BaseQueryStoreActiveTableComposite
 	@Override
 	protected ITableLabelProvider createLabelProvider()
 	{
-		return null;
+		return new DelegateLabelProvider(getTableViewer());
 	}
 
+	/**
+	 * Table label provider which delegates to column label providers.
+	 * See issue https://www.jfire.org/modules/bugs/view.php?id=2062
+	 * 
+	 * @author Denis Dudnik <deniska.dudnik[at]gmail{dot}com>
+	 *
+	 */
+	class DelegateLabelProvider extends TableLabelProvider{
+		TableViewer viewer;
+		
+		List<CellLabelProvider> labelProviders;
+		
+		public DelegateLabelProvider(TableViewer viewer){
+			this.viewer = viewer;
+			
+			int columnCount = viewer.getTable().getColumnCount();
+			labelProviders = new ArrayList<CellLabelProvider>(columnCount);
+			for (int i=0; i < columnCount; i++){
+				labelProviders.add(viewer.getLabelProvider(i));
+			}
+		}
+		
+		@Override
+		public Image getColumnImage(Object element, int columnIndex) {
+			CellLabelProvider labelProvider = labelProviders.get(columnIndex);
+			if (labelProvider instanceof ColumnLabelProvider){
+				return ((ColumnLabelProvider) labelProvider).getImage(element);
+			}
+			return super.getColumnImage(element, columnIndex);
+		}
+
+		@Override
+		public String getColumnText(Object element, int columnIndex) {
+			CellLabelProvider labelProvider = labelProviders.get(columnIndex);
+			if (labelProvider instanceof ColumnLabelProvider){
+				return ((ColumnLabelProvider) labelProvider).getText(element);
+			}
+			return element!=null ? element.toString() : null;
+		}
+		
+		@Override
+		public String getText(Object element) {
+			return element!=null ? element.toString() : null;
+		}
+	}
+	
 	/**
 	 * Base class of all ColumnLabelProviders showing the description of the given BaseQueryStore
 	 * as tooltip and calling doGetText with the correctly cast BaseQueryStore.
@@ -264,7 +313,7 @@ class BaseQueryStoreActiveController
 	protected IJDOLifecycleListenerFilter createJDOLifecycleListenerFilter()
 	{
 		return new BaseQueryStoreLifecycleFilter(
-			SecurityReflector.getUserDescriptor().getUserObjectID(), resultType, true,
+				GlobalSecurityReflector.sharedInstance().getUserDescriptor().getUserObjectID(), resultType, true,
 			new JDOLifecycleState[] { JDOLifecycleState.NEW });
 	}
 
