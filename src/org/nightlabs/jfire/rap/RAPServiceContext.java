@@ -3,10 +3,10 @@ package org.nightlabs.jfire.rap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.FakeContextUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.nightlabs.base.ui.context.UIContext;
 import org.nightlabs.eclipse.compatibility.SessionStoreRegistry;
 import org.nightlabs.singleton.IServiceContext;
@@ -20,10 +20,17 @@ public class RAPServiceContext implements IServiceContext {
 	public RAPServiceContext(Map<Thread, ISessionStore> threadMap, ISessionStore store) {
 		this.threadMap = threadMap;
 		this.store = store;
-		sessionDisplay = RWTLifeCycle.getSessionDisplay();
+
+		// RWTLifeCycle.getSessionDisplay() not available anymore in final RAP 1.4, so changed this. Daniel
+//		sessionDisplay = RWTLifeCycle.getSessionDisplay();
+//		if (sessionDisplay == null) {
+//			throw new IllegalStateException("RWTLifeCycle.getSessionDisplay() returned null.");
+//		}
+		sessionDisplay = PlatformUI.getWorkbench().getDisplay();
 		if (sessionDisplay == null) {
-			throw new IllegalStateException("RWTLifeCycle.getSessionDisplay() returned null.");
+			throw new IllegalStateException("PlatformUI.getWorkbench().getDisplay() returned null.");
 		}
+
 		associateRunner(Thread.currentThread());
 	}
 
