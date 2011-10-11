@@ -3,8 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.nightlabs.jfire.eclipse</groupId>
-	<artifactId>org.nightlabs.clientui.ui</artifactId>
+	<groupId>org.nightlabs.jfire.eclipse</groupId> <!-- FIXME XXX -->
+	<artifactId>org.nightlabs.clientui.ui</artifactId> <!-- FIXME XXX -->
+	 <!-- FIXME XXX : Project should be renamed, according to groupID/artifactID (Sebl, 2011-10-11)-->
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 
@@ -46,15 +47,8 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.jdo</groupId>
-			<artifactId>jdo-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+
+<!-- 
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
@@ -63,14 +57,22 @@
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui</artifactId>
 		</dependency>
-		<dependency>
+ -->	
+ 		<dependency>
 			<groupId>org.nightlabs.eclipse</groupId>
-			<artifactId>org.nightlabs.base.ui</artifactId>
+			<artifactId>${org.nightlabs.eclipse.compatibility.artifactId}</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.clientui</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.base.ui</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -78,6 +80,7 @@
 			<artifactId>org.nightlabs.eclipse.ui.dialog</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.nightlabs.jfire</groupId>
 			<artifactId>org.nightlabs.jfire.base</artifactId>
@@ -87,7 +90,19 @@
 			<groupId>org.nightlabs.jfire</groupId>
 			<artifactId>org.nightlabs.jfire.base.j2ee</artifactId>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.jdo</groupId>
+			<artifactId>jdo-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
 	</dependencies>
 
 		<!-- FIXME Fix package-situation to be able to use Import-Pakcage (maven-bundle-plugin)  
