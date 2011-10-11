@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import org.nightlabs.util.Util;
 
+@Deprecated
+/**
+ * @deprecated seems to to be used anywhere. Daniel
+ */
 public class LoginProfile implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

@@ -3,6 +3,10 @@ package org.nightlabs.jfire.base.login.ui;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated
+/**
+ * @deprecated seems to to be used anywhere. Daniel
+ */ 
 public class LoginProfileList {
 	private LinkedList<LoginProfile> loginProfileQueue;
 	
