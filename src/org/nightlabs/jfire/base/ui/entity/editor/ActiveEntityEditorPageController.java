@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.nightlabs.base.ui.celleditor.ComboBoxCellEditor;
+import org.nightlabs.base.ui.context.UIContext;
 import org.nightlabs.base.ui.entity.editor.EntityEditor;
 import org.nightlabs.base.ui.entity.editor.EntityEditorPageController;
 import org.nightlabs.base.ui.entity.editor.EntityEditorStaleHandler;
@@ -517,7 +518,7 @@ public abstract class ActiveEntityEditorPageController<EntityType> extends Entit
 		// TODO: Think about doing this in a job and notifying the page before the reload (so it can show the progress view)
 		setLoaded(false);
 		doLoad(monitor);
-		Display.getDefault().asyncExec(new Runnable() {
+		UIContext.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				if (!disposed) {
 					getEntityEditor().editorDirtyStateChanged();

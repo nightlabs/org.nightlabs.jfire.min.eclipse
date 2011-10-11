@@ -53,6 +53,7 @@ public class JFireBasePlugin
 //	//Resource bundle.
 //	private ResourceBundle resourceBundle;
 
+	
 	/**
 	 * The constructor registeres this plugin
 	 * as LoginStateListener.
@@ -107,26 +108,32 @@ public class JFireBasePlugin
 		//       AbstractUIPlugin.getImageRegistry().
 	}
 	
+	private boolean inited = false;
+	
 	public void init() {
-		// We cannot use org.nightlabs.jfire.idgenerator.IDGenerator.PROPERTY_KEY_ID_GENERATOR_CLASS
-		// or IDGeneratorClient,  because this would cause the server side class to be loaded -
-		// and probably we're OFFLINE and can't do that!
-		System.setProperty("org.nightlabs.jfire.idgenerator.idGeneratorClass", "org.nightlabs.jfire.base.idgenerator.IDGeneratorClient"); //$NON-NLS-1$ //$NON-NLS-2$
-//		System.setProperty("org.nightlabs.jfire.security.SecurityReflector", "org.nightlabs.jfire.base.ui.security.SecurityReflectorRCP"); //$NON-NLS-1$ //$NON-NLS-2$
-//		System.setProperty("org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager", "org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleManagerRCP"); //$NON-NLS-1$ //$NON-NLS-2$
+		if (!inited) {
+			// We cannot use org.nightlabs.jfire.idgenerator.IDGenerator.PROPERTY_KEY_ID_GENERATOR_CLASS
+			// or IDGeneratorClient,  because this would cause the server side class to be loaded -
+			// and probably we're OFFLINE and can't do that!
+			System.setProperty("org.nightlabs.jfire.idgenerator.idGeneratorClass", "org.nightlabs.jfire.base.idgenerator.IDGeneratorClient"); //$NON-NLS-1$ //$NON-NLS-2$
+			//		System.setProperty("org.nightlabs.jfire.security.SecurityReflector", "org.nightlabs.jfire.base.ui.security.SecurityReflectorRCP"); //$NON-NLS-1$ //$NON-NLS-2$
+			//		System.setProperty("org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager", "org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleManagerRCP"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		GlobalSecurityReflector.setSharedInstanceProvider(SingletonProviderFactory.createProviderForFactory(new ISingletonFactory<ISecurityReflector>() {
-			@Override
-			public ISecurityReflector makeInstance() {
-				return new SecurityReflectorRCP();
-			}
-		}));
-		
-		GlobalJDOManagerProvider.setSharedInstanceProvider(SingletonProviderFactory.createProviderForFactory(new ISingletonFactory<JDOManagerProvider>() {
-			@Override
-			public JDOManagerProvider makeInstance() {
-				return new OSGiJDOManagerProvider();
-			}
-		}));
+			GlobalSecurityReflector.setSharedInstanceProvider(SingletonProviderFactory.createProviderForFactory(new ISingletonFactory<ISecurityReflector>() {
+				@Override
+				public ISecurityReflector makeInstance() {
+					return new SecurityReflectorRCP();
+				}
+			}));
+
+			GlobalJDOManagerProvider.setSharedInstanceProvider(SingletonProviderFactory.createProviderForFactory(new ISingletonFactory<JDOManagerProvider>() {
+				@Override
+				public JDOManagerProvider makeInstance() {
+					return new OSGiJDOManagerProvider();
+				}
+			}));
+			
+			inited = true;
+		}
 	}
 }
