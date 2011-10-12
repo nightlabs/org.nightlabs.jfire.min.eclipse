@@ -5,6 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nightlabs.jfire.eclipse</groupId>
 	<artifactId>org.nightlabs.jdo.query.ui</artifactId>
+	<!-- TODO XXX rename project or artifactId (Sebl, 2011-10-11) -->
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 
