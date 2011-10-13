@@ -120,9 +120,11 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 
 			getShell().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					// recalculate the size of the dialog (make it beautiful)
-					Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-					getShell().setSize(newSize);
+					if (!getShell().isDisposed()) {
+						// recalculate the size of the dialog (make it beautiful)
+						Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+						getShell().setSize(newSize);
+					}
 				}
 			});
 		}
@@ -151,18 +153,20 @@ public class InsufficientPermissionDialog extends DefaultErrorDialog
 						final Job thisJob = this;
 						requiredRoleGroupList.getDisplay().asyncExec(new Runnable() {
 							public void run() {
-								if (loadRoleGroupsJob != thisJob)
-									return;
-
-								if (requiredRoleGroupList.isDisposed())
-									return;
-
-								requiredRoleGroupList.removeAll();
-								requiredRoleGroupList.addElements(roleGroupList);
-
-								// recalculate the size of the dialog (make it beautiful)
-								Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-								getShell().setSize(newSize);
+								if (!getShell().isDisposed()) {
+									if (loadRoleGroupsJob != thisJob)
+										return;
+	
+									if (requiredRoleGroupList.isDisposed())
+										return;
+	
+									requiredRoleGroupList.removeAll();
+									requiredRoleGroupList.addElements(roleGroupList);
+	
+									// recalculate the size of the dialog (make it beautiful)
+									Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+									getShell().setSize(newSize);
+								}
 							}
 						});
 
