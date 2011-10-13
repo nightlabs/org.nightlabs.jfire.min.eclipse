@@ -269,7 +269,7 @@ implements ISelectionProvider // needed for updating ViewActions
 					monitor.worked(1);
 
 					final Task clonedNewTask = Util.cloneSerializable(newTask);
-					Display.getDefault().asyncExec(new Runnable() {
+					getDisplay().asyncExec(new Runnable() {
 						public void run() {
 							try {
 								if (!Util.equals(task, clonedNewTask))
@@ -279,7 +279,6 @@ implements ISelectionProvider // needed for updating ViewActions
 								taskEnabled = clonedNewTask == null ? false : task.isEnabled();
 								updateUI();
 							} finally {
-								setFaded(false);
 								fireSelectionChangedEvent();
 							}
 						}
@@ -287,6 +286,12 @@ implements ISelectionProvider // needed for updating ViewActions
 
 				} catch (Exception x) {
 					throw new RuntimeException(x);
+				} finally {
+					getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							setFaded(false);
+						}
+					});
 				}
 
 				monitor.done();
