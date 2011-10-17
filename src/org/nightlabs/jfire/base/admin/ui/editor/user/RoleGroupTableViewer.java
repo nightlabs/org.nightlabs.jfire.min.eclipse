@@ -143,7 +143,7 @@ public class RoleGroupTableViewer extends TableViewer
 		TableColumn col4 = new TableColumn(getTable(), SWT.NULL);
 		col4.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.editor.user.RoleGroupTableViewer.description")); //$NON-NLS-1$
 
-		int column1Width = showAssignmentSourceColum ? 40 : 0;
+		int column1Width = showAssignmentSourceColum ? 45 : 0;
 		int column2Witdh = showCheckBoxes ? 22 : 0;
 
 		TableLayout tlayout = new WeightedTableLayout(new int[] { -1, -1, 30, 70 }, new int[] { column1Width, column2Witdh, -1, -1 });
