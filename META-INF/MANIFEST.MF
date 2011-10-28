@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ui
 Bundle-SymbolicName: org.nightlabs.jfire.base.login.rcp.ui;singleton:=true
 Bundle-ClassPath: .
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.2.0
 Bundle-Localization: plugin
 Bundle-Activator: org.nightlabs.jfire.base.login.rcp.ui.JFireRCPLoginPlugin
 Require-Bundle: org.nightlabs.eclipse.compatibility,
