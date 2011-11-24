@@ -30,14 +30,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.nightlabs.base.ui.composite.Formular;
 import org.nightlabs.base.ui.composite.FormularChangeListener;
 import org.nightlabs.base.ui.composite.FormularChangedEvent;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.resource.SharedImages;
 import org.nightlabs.base.ui.wizard.DynamicPathWizardPage;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
@@ -47,7 +46,7 @@ import org.nightlabs.jfire.base.admin.ui.workstation.CreateWorkstationPage;
 import org.nightlabs.jfire.language.LanguageConfig;
 import org.nightlabs.jfire.language.LanguageManagerRemote;
 import org.nightlabs.jfire.language.LanguageSyncMode;
-import org.nightlabs.jfire.security.SecurityReflector;
+import org.nightlabs.jfire.security.GlobalSecurityReflector;
 
 /**
  * Wizard page for configuring language-specific settings,
@@ -72,24 +71,17 @@ public class ConfigureLanguageModePage extends DynamicPathWizardPage implements 
 
 	@Override
 	public Control createPageContents(Composite parent) {
-		final Formular f = new Formular(parent, SWT.NONE, this);
-		final GridLayout gridLayout = new GridLayout(2, false);
-		final GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		gd.grabExcessHorizontalSpace = true;
-		gd.minimumWidth = 350;
-		f.setLayout(gridLayout);
-		f.setLayoutData(gd);
-
-		final Label label = new Label(f, SWT.NULL);
-		label.setLayoutData(gd);
+		XComposite wrapper = new XComposite(parent, SWT.NONE);
+		
+		final Label label = new Label(wrapper, SWT.WRAP);
+		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		label.setText(Messages.getString("org.nightlabs.jfire.base.admin.ui.language.ConfigureLanguageModePage.labelText"));
 
-		languageSyncModeCombo = new Combo(f, SWT.NONE);
-		languageSyncModeCombo.setLayoutData(gd);
+		languageSyncModeCombo = new Combo(wrapper, SWT.READ_ONLY);
+		languageSyncModeCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		final LanguageManagerRemote lm = JFireEjb3Factory.getRemoteBean(
-			LanguageManagerRemote.class, SecurityReflector.getInitialContextProperties());
+			LanguageManagerRemote.class, GlobalSecurityReflector.sharedInstance().getInitialContextProperties());
 		LanguageConfig languageConfig = lm.getLanguageConfig(null, -1);
 		final String currentLanguageSyncMode = languageConfig.getLanguageSyncMode().toString();
 
@@ -113,7 +105,7 @@ public class ConfigureLanguageModePage extends DynamicPathWizardPage implements 
 			public void keyReleased(KeyEvent arg0) {
 			}
 		});
-		return f;
+		return wrapper;
 	}
 
 	public String getChosenLanguageSyncMode() {
