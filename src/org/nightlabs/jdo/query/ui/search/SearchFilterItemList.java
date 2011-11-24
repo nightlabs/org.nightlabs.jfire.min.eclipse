@@ -50,10 +50,10 @@ import org.nightlabs.jdo.search.SearchFilter;
  */
 public class SearchFilterItemList
 	extends ScrolledComposite {
-	
+
 	private XComposite listWrapper;
 	private List<SearchFilterItemEditor> searchFilterItemEditors = new ArrayList<SearchFilterItemEditor>();
-	
+
 	public SearchFilterItemList(Composite parent, int style) {
 		super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridLayout thisLayout = new GridLayout();
@@ -62,13 +62,13 @@ public class SearchFilterItemList
 		this.setLayout(thisLayout);
 		createListWrapperAndLayout();
 	}
-	
+
 	protected void createListWrapperAndLayout() {
 		listWrapper = new XComposite(this, SWT.BORDER, LayoutMode.TIGHT_WRAPPER);
 		GridData listWrapperLData = new GridData();
 		listWrapperLData.grabExcessHorizontalSpace = true;
 		listWrapperLData.horizontalAlignment = SWT.FILL;
-		
+
 		listWrapper.setLayoutData(listWrapperLData);
 		setExpandHorizontal(true);
 		setExpandVertical(true);
@@ -76,19 +76,19 @@ public class SearchFilterItemList
 		setMinSize(listWrapper.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		this.layout();
 	}
-	
+
 	/**
 	 * Composite used to remove itemEditors.
 	 */
 	private class SearchFilterItemEditorCloser
 	extends XComposite
 	implements SelectionListener {
-		
+
 		private Button buttonClose;
 
 		private SearchFilterItemEditor editor;
 		private SearchFilterItemList itemList;
-		
+
 		public SearchFilterItemEditorCloser(Composite parent, int style, SearchFilterItemList itemList, SearchFilterItemEditor editor) {
 			super(parent, style, LayoutMode.TIGHT_WRAPPER, LayoutDataMode.NONE);
 			GridData gd = new GridData();
@@ -114,11 +114,11 @@ public class SearchFilterItemList
 		public void widgetDefaultSelected(SelectionEvent evt) {
 		}
 	}
-	
-	
+
+
 	/**
 	 * Runnable to add items on the gui thread.
-	 * 
+	 *
 	 */
 	private class ItemEditorAdder implements Runnable {
 		private SearchFilterItemEditor itemEditor;
@@ -126,6 +126,9 @@ public class SearchFilterItemList
 			this.itemEditor = itemEditor;
 		}
 		public void run() {
+			if (listWrapper.isDisposed())
+				return;
+
 			XComposite wrapper = new XComposite(
 					listWrapper,
 					SWT.NONE,
@@ -137,7 +140,7 @@ public class SearchFilterItemList
 			wrapperLData.grabExcessHorizontalSpace = true;
 			wrapperLData.horizontalAlignment = SWT.FILL;
 			wrapper.setLayoutData(wrapperLData);
-			
+
 			itemEditor.getControl(wrapper);
 			searchFilterItemEditors.add(itemEditor);
 			new SearchFilterItemEditorCloser(wrapper,SWT.NONE,SearchFilterItemList.this,itemEditor);
@@ -146,12 +149,12 @@ public class SearchFilterItemList
 			listWrapper.layout();
 //			SearchFilterItemList.this.layout();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Runnable to remove items on the gui thread.
-	 * 
+	 *
 	 */
 	private class ItemEditorRemover implements Runnable {
 		private SearchFilterItemEditor itemEditor;
@@ -164,23 +167,23 @@ public class SearchFilterItemList
 			itemEditor.close();
 			itemEditor.getControl(null).getParent().dispose();
 			searchFilterItemEditors.remove(itemEditor);
-			
+
 			SearchFilterItemList.this.setMinSize(listWrapper.computeSize(SWT.DEFAULT,SWT.DEFAULT));
 			listWrapper.layout();
 		}
-		
+
 	}
 
 	/**
 	 * Add the given SearchFilterItemEditor to the end of the list;
-	 * 
+	 *
 	 * @param itemEditor
 	 */
 	public void addItemEditor(SearchFilterItemEditor itemEditor) {
 		if (itemEditor != null)
 			Display.getDefault().asyncExec(new ItemEditorAdder(itemEditor));
 	}
-	
+
 	public void addItemEditor(Class<? extends SearchFilterItemEditor> editorClass) {
 		SearchFilterItemEditor itemEditor = null;
 		try {
@@ -190,7 +193,7 @@ public class SearchFilterItemList
 		}
 		addItemEditor(itemEditor);
 	}
-	
+
 	/**
 	 * Removes the itemEditor and disposes its control.
 	 * @param itemEditor
@@ -198,11 +201,11 @@ public class SearchFilterItemList
 	public void removeItemEditor(SearchFilterItemEditor itemEditor) {
 		Display.getDefault().asyncExec(new ItemEditorRemover(itemEditor));
 	}
-	
-	
+
+
 	/**
 	 * Adds all filter items in this list to the passed SearchFilter.
-	 * 
+	 *
 	 * @param filter
 	 */
 	public void addItemsToFilter(SearchFilter filter) {
@@ -211,11 +214,11 @@ public class SearchFilterItemList
 			filter.addSearchFilterItem(itemEditor.getSearchFilterItem());
 		}
 	}
-	
+
 	protected List<SearchFilterItemEditor> getSearchFilterItemEditors() {
 		return searchFilterItemEditors;
 	}
-	
+
 	public void clear() {
 		searchFilterItemEditors.clear();
 		if (listWrapper != null && !listWrapper.isDisposed())
