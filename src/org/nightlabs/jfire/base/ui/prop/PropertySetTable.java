@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableLabelProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataField;
 import org.nightlabs.jfire.prop.PropertySet;
 import org.nightlabs.jfire.prop.StructField;
@@ -58,17 +57,17 @@ import org.nightlabs.jfire.prop.id.StructFieldID;
  * be returned on {@link #getPropertySetTableConfig()}. For technical reasons this config is queried
  * only in the constructor and can't be changed within the lifetime of one {@link PropertySetTable}.
  * </p>
- * 
+ *
  * @param <InputType> The type of elements in the collection that can be set as input for this table.
  *            The table will have an {@link ArrayContentProvider} so Arrays of Collections of this
  *            type are supported.
- * 
+ *
  * @param <SelectionType> The type that this table treats as selection-type (i.e. element-type) for
  *            the table. Implementors have to provide a conversion from the InputType to the
  *            SelectionType (see {@link #convertInputElement(Object)}).
- * 
+ *
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
- * 
+ *
  */
 public abstract class PropertySetTable<InputType, SelectionType>
 extends AbstractTableComposite<SelectionType> {
@@ -96,7 +95,7 @@ extends AbstractTableComposite<SelectionType> {
 	/**
 	 * Create a new {@link PropertySetTable}. The table will be multi-selection-capable and will
 	 * have a border.
-	 * 
+	 *
 	 * @param parent The parent to add the new table to.
 	 * @param style The style of the {@link AbstractTableComposite} surrounding the table.
 	 */
@@ -106,7 +105,7 @@ extends AbstractTableComposite<SelectionType> {
 
 	/**
 	 * Create a new PropertySetTable that allows for a non-default style of the table-viewer.
-	 * 
+	 *
 	 * @param parent The parent to add the new table to.
 	 * @param style The style of the {@link AbstractTableComposite} surrounding the table.
 	 * @param viewerStyle The style to create the {@link TableViewer} with.
@@ -157,7 +156,7 @@ extends AbstractTableComposite<SelectionType> {
 	 * <p>
 	 * The default implementation does nothing
 	 * </p>
-	 * 
+	 *
 	 * @param tableViewer The {@link TableViewer} to add the columns to.
 	 * @param table The {@link Table} to add the columns to.
 	 */
@@ -219,7 +218,7 @@ extends AbstractTableComposite<SelectionType> {
 					return ""; //$NON-NLS-1$
 				}
 			});
-			
+
 			addColumnLayoutData(columnDescriptor.createColumnLayoutData());
 		}
 	}
@@ -232,7 +231,7 @@ extends AbstractTableComposite<SelectionType> {
 	 * {@link #createAdditionalColumns(TableViewer, Table)} as this is a defined moment where
 	 * layout-data can be contributed.
 	 * </p>
-	 * 
+	 *
 	 * @param columnLayoutData The {@link ColumnLayoutData} to add.
 	 */
 	protected void addColumnLayoutData(ColumnLayoutData columnLayoutData) {
@@ -248,7 +247,7 @@ extends AbstractTableComposite<SelectionType> {
 	 * {@link #createAdditionalColumns(TableViewer, Table)} as this is a defined moment where
 	 * layout-data can be contributed.
 	 * </p>
-	 * 
+	 *
 	 * @param columnLayoutData The {@link ColumnLayoutData} to add.
 	 */
 	protected void addColumnLayoutData(int index, ColumnLayoutData columnLayoutData) {
@@ -259,8 +258,8 @@ extends AbstractTableComposite<SelectionType> {
 	 * Takes all {@link ColumnLayoutData}s defined using
 	 * {@link #addColumnLayoutData(ColumnLayoutData)} and
 	 * {@link #addColumnLayoutData(int, ColumnLayoutData)} and creates a TableLayout using this
-	 * definition. 
-	 * 
+	 * definition.
+	 *
 	 * @param table The {@link Table} to layout.
 	 */
 	protected void applyTableLayout(final Table table) {
@@ -281,6 +280,8 @@ extends AbstractTableComposite<SelectionType> {
 		if (useWorkaround) {
 			table.getDisplay().asyncExec(new Runnable() {
 				public void run() {
+					if (table.isDisposed())
+						return;
 					applyTableLayout(table, false);
 					table.layout(true, true);
 				}
@@ -314,7 +315,7 @@ extends AbstractTableComposite<SelectionType> {
 	 * Used by the {@link LabelProvider} of the columns that display contents of DataFields.
 	 * Currently this method is capable of returning a result for all DataFields that implement
 	 * {@link II18nTextDataField}.
-	 * 
+	 *
 	 * @param propertySet The {@link PropertySet} to get the field value from.
 	 * @param columnIdx The index of the {@link StructFieldID} to get. (Array passed in the
 	 *            constructor).
@@ -351,7 +352,7 @@ extends AbstractTableComposite<SelectionType> {
 	 * StructFields will be displayed in which column and the weights of these columns in the table.
 	 * This method is called once in the constructor and there is no way to change the config once
 	 * it was applied.
-	 * 
+	 *
 	 * @return The {@link IPropertySetTableConfig} of this table.
 	 */
 	protected abstract IPropertySetTableConfig getPropertySetTableConfig();
@@ -362,7 +363,7 @@ extends AbstractTableComposite<SelectionType> {
 	 * If <code>null</code> is returned here, the given inputElement will not be represented in the
 	 * selection of this table when queried by the methods of {@link AbstractTableComposite}.
 	 * </p>
-	 * 
+	 *
 	 * @param inputElement The element form the input collection to get the SelectionType for.
 	 * @return The instance of SelectionType corresponding to the given inputElemen, or
 	 *         <code>null</code>.

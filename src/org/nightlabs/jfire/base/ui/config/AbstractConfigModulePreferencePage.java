@@ -62,6 +62,7 @@ import org.nightlabs.inheritance.FieldMetaData;
 import org.nightlabs.inheritance.InheritanceManager;
 import org.nightlabs.jfire.base.JFireBaseEAR;
 import org.nightlabs.jfire.base.JFireEjb3Factory;
+import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.jdo.cache.Cache;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.login.ui.Login;
@@ -223,10 +224,20 @@ extends LSDPreferencePage
 //			would be capable of efficiently checking whether a given ConfigID is contained inside itself,
 //			then this check would be a lot faster.
 			boolean moduleIsUpdated = false;
+			String mySessionID = GlobalJDOManagerProvider.sharedInstance().getCache().getSessionID();
+
 			for (DirtyObjectID dirtyID : dirtyObjectIDs) {
 				if (! dirtyID.getObjectID().equals( currentModuleID ))
 					continue;
 
+				boolean selfCaused = dirtyID.getSourceSessionIDs().contains(mySessionID);
+				// FIXME: This is a workaround for self-caused notifications
+				// that will come with no source-session-IDs. I was to lazy to
+				// analyze this from the server to the Cache-code, sorry, Alex
+				selfCaused = selfCaused || dirtyID.getSourceSessionIDs().isEmpty();
+				if (selfCaused)
+					continue;
+				
 				moduleIsUpdated = true;
 				break;
 			}

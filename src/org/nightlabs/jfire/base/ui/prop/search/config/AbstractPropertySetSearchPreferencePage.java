@@ -368,6 +368,7 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 		if (previouslySelectedFactory != null) {
 			getPropertySetSearchConfigModule().setResultViewerConfiguration(previouslySelectedFactory.getViewerIdentifier(),
 					previouslySelectedFactory.getViewerConfiguration());
+			setConfigChanged(true);
 		}
 
 		if (currentViewerConfigurationControl != null) {
@@ -390,7 +391,6 @@ public abstract class AbstractPropertySetSearchPreferencePage extends AbstractEd
 			currentViewerConfigurationControl = selectedFactory.createViewerConfigurationControl(configControlWrapper,
 					resultViewerConfiguration);
 			configControlWrapper.layout();
-			setConfigChanged(true);
 
 			previouslySelectedFactory = selectedFactory;
 		}

@@ -271,6 +271,18 @@
               elementPath="category"
               extensionPointID="org.eclipse.ui.newWizards">
         </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.birt.*"
+              elementPath="page"
+              extensionPointID="org.eclipse.ui.preferencePages">
+        </removeExtension>
+        <removeExtension
+              attributeName="id"
+              attributePattern="org.eclipse.datatools.*"
+              elementPath="page"
+              extensionPointID="org.eclipse.ui.preferencePages">
+        </removeExtension>
     </extension>
     
     <extension point="org.nightlabs.base.ui.exceptionhandler">

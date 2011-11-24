@@ -517,6 +517,10 @@ public abstract class SearchEntryViewer<R, Q extends AbstractSearchQuery>
 		// clear the parts not listening on query changes...
 		searchText.setText(""); //$NON-NLS-1$
 		for (Section advancedSearchSection : advancedSearchSections) {
+			if (advancedSearchSection.getClient() instanceof AbstractQueryFilterComposite<?>) {
+				AbstractQueryFilterComposite<?> qfc = (AbstractQueryFilterComposite<?>) advancedSearchSection.getClient();
+				qfc.resetSearchSectionActiveState();
+			}
 			advancedSearchSection.setExpanded(false);
 //			AbstractQueryFilterComposite filterComposite = (AbstractQueryFilterComposite)advancedSearchSection.getClient();
 //			Set<Button> activeButtons = filterComposite.getActiveButtons();

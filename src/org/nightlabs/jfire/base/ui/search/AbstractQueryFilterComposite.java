@@ -164,12 +164,13 @@ public abstract class AbstractQueryFilterComposite<Q extends AbstractSearchQuery
 		return getSectionButtonActiveStateManager().isActive();
 	}
 
-	protected void resetSearchSectionActiveState()
+	public void resetSearchSectionActiveState()
 	{
 		while (sectionButtonActiveStateManager.isActive())
 		{
 			sectionButtonActiveStateManager.setActive(false);
 		}
+		sectionButtonActiveStateManager.setSelection(false);
 	}
 
 	/**
