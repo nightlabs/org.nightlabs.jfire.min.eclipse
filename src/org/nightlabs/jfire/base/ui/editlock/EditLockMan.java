@@ -49,6 +49,8 @@ public class EditLockMan
 
 	private class EditLockRefreshJob extends Job
 	{
+		boolean aborted = false;
+		
 		private EditLockCarrier editLockCarrier;
 		private EditLockID editLockID;
 		private EditLock editLock;
@@ -153,6 +155,9 @@ public class EditLockMan
 		@Override
 		protected IStatus run(ProgressMonitor monitor) throws Exception
 		{
+			if (aborted)
+				return Status.OK_STATUS;
+			
 			synchronized (editLockID2Job) {
 				if (editLockID2Job.get(editLockID) != this) {
 					logger.info("EditLockRefreshJob.run: job has been replaced - cancelling."); //$NON-NLS-1$
@@ -210,6 +215,10 @@ public class EditLockMan
 			long delay = Math.min(delayClientLost, delayUserInactivity);
 			logger.info("scheduleWithEditLockTypeDelay: delay="+delay+" delayClientLost="+delayClientLost + " delayUserInactivity="+delayUserInactivity); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			schedule(delay); // wake up as soon as some action is required
+		}
+		
+		void abort() {
+			this.aborted = true;
 		}
 	}
 
@@ -491,8 +500,9 @@ public class EditLockMan
 				synchronized (editLockID2Job) {
 					job = editLockID2Job.remove(JDOHelper.getObjectId(editLockCarrier.getEditLock()));
 				}
-				if (job != null)
-					job.cancel();
+				if (job != null && (job instanceof EditLockRefreshJob)) {
+					((EditLockRefreshJob) job).abort();
+				}
 			}
 
 			editLockDAO.releaseEditLock(objectID, ReleaseReason.normal, monitor);
