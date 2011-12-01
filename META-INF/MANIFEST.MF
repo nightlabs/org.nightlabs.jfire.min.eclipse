@@ -13,7 +13,8 @@ Require-Bundle: org.nightlabs.eclipse.compatibility,
  org.nightlabs.base.ui,
  org.nightlabs.config,
  org.nightlabs.jfire.base.login.ui,
- org.nightlabs.jfire.base.j2ee
+ org.nightlabs.jfire.base.j2ee,
+ org.nightlabs.unifiedjndi.jboss.client
 Import-Package: org.apache.log4j, org.nightlabs.jfire.classloader.remote, org.nightlabs.jfire.classloader.remote.backend
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.nightlabs.jfire.base.login.rcp.ui,

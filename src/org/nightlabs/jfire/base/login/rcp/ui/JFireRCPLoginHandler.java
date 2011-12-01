@@ -50,12 +50,13 @@ import org.nightlabs.jfire.base.j2ee.JFireJ2EEPlugin;
 import org.nightlabs.jfire.base.j2ee.RemoteResourceFilterRegistry;
 import org.nightlabs.jfire.base.login.ui.ILoginHandler;
 import org.nightlabs.jfire.base.login.ui.Login;
-import org.nightlabs.jfire.base.login.ui.Login.AsyncLoginResult;
 import org.nightlabs.jfire.base.login.ui.LoginConfigModule;
 import org.nightlabs.jfire.base.login.ui.LoginConfiguration;
+import org.nightlabs.jfire.base.login.ui.Login.AsyncLoginResult;
 import org.nightlabs.jfire.classloader.remote.JFireRCDLDelegate;
 import org.nightlabs.jfire.classloader.remote.backend.JFireRCLBackendRemote;
 import org.nightlabs.math.Base62Coder;
+import org.nightlabs.unifiedjndi.jboss.client.UnifiedNamingContextFactory;
 import org.nightlabs.util.IOUtil;
 
 /**
@@ -122,7 +123,9 @@ public class JFireRCPLoginHandler implements ILoginHandler {
 					latestConfig.setLoginConfigModule(loginConfigModule);
 					LoginData defaultData = latestConfig.getLoginData();
 					defaultData.setDefaultValues();
-					defaultData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory"); // TODO need a jboss-independent solution! Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco. //$NON-NLS-1$
+					// TODO need a jboss-independent solution! 
+					// Maybe a list of possible ones (for multiple servers!) accessible via a "..."-button and initially an empty text field?! Marco. //$NON-NLS-1$
+					defaultData.setInitialContextFactory(UnifiedNamingContextFactory.class.getName()); 
 				}
 
 				LoginData lastUsed = latestConfig.getLoginData();
