@@ -7,5 +7,6 @@ Bundle-Vendor: NightLabs.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.nightlabs.clientui.ui,
  org.nightlabs.jfire.base.ui,
- org.nightlabs.eclipse.compatibility
+ org.nightlabs.eclipse.compatibility,
+ org.nightlabs.jdo;bundle-version="1.0.13"
 Bundle-Localization: plugin

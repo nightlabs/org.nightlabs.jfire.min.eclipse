@@ -1,9 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
+   <extension-point id="dashboardGadgetFactory" name="Extension-Point for DashboardGadgets" schema="schema/dashboardGadgetFactory.exsd"/>
     <extension point="org.eclipse.ui.preferencePages">
         <page
             category="org.nightlabs.base.ui.preference.UIPreferencePage"
             class="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage"
             id="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage" name="%org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage.name"/>
+    </extension>
+    <extension
+          point="org.nightlabs.jfire.base.dashboard.ui.dashboardGadgetFactory">
+       <dashboardGadgetFactory
+             class="org.nightlabs.jfire.base.dashboard.ui.welcome.DashboardGadgetFactoryWelcome"
+             dashboardGadgetType="DashboardGadgetFactoryWelcome"
+             description="This gadget displays a nice welcome \n message to the user.
+Line break test
+test
+"
+             name="Welcome-Gadget">
+       </dashboardGadgetFactory>
+    </extension>
+    <extension
+          point="org.eclipse.ui.views">
+       <category
+             id="org.nightlabs.jfire.base.dashboard.ui.category"
+             name="JFire Dashboard">
+       </category>
+       <view
+             category="org.nightlabs.jfire.base.dashboard.ui.category"
+             class="org.nightlabs.jfire.base.dashboard.ui.DashboardView"
+             id="org.nightlabs.jfire.base.dashboard.ui.DashboardView"
+             name="JFire Dashboard"
+             restorable="true">
+       </view>
+    </extension>
+    <extension
+          point="org.eclipse.ui.perspectiveExtensions">
+       <perspectiveExtension
+             targetID="org.nightlabs.jfire.base.ui.JFireWelcomePerspective">
+          <view
+                closeable="false"
+                id="org.nightlabs.jfire.base.dashboard.ui.DashboardView"
+                minimized="false"
+                moveable="false"
+                ratio="1.0f"
+                relationship="left"
+                relative="org.eclipse.ui.editorss"
+                showTitle="false"
+                standalone="true"
+                visible="true">
+          </view>
+       </perspectiveExtension>
     </extension>
 </plugin>

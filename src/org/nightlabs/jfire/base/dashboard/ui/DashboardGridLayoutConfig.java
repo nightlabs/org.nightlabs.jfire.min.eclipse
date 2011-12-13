@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.clientui.layout.GridData;
 import org.nightlabs.clientui.layout.GridLayout;
 import org.nightlabs.clientui.ui.layout.IGridDataEntry;
@@ -39,6 +42,16 @@ public class DashboardGridLayoutConfig<T> implements IGridLayoutConfig {
 	 */
 	@Override
 	public IGridDataEntry addGridDataEntry() {
+		
+		AddDashboardGadgetWizard wiz = new AddDashboardGadgetWizard(configModule);
+		WizardDialog dlg = new WizardDialog(RCPUtil.getActiveShell(), wiz);
+		if (dlg.open() == Window.OK) {
+			DashboardGadgetLayoutEntry<T> layoutEntry = (DashboardGadgetLayoutEntry<T>) wiz.getLayoutEntry();
+			configModule.addEditLayoutEntry(layoutEntry);
+			createIndex(true);
+			return createGridDataEntry(layoutEntry);
+		}
+		
 		return null;
 	}
 
