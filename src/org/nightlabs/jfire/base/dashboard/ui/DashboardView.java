@@ -75,6 +75,11 @@ public class DashboardView extends LSDViewPart {
 							
 							GridData gridData = GridLayoutUtil.createGridData(layoutEntry.getGridData());
 							gadgetSection.setLayoutData(gridData);
+							
+							IDashboardGadgetFactory gadgetFactory = DashboardGadgetRegistry.sharedInstance().getFactory(layoutEntry.getEntryType());
+							Composite gadgetControl = gadgetFactory.createGadgetControl(gadgetSection);
+							gadgetSection.setClient(gadgetControl);
+							
 						}
 						
 						form.layout(true, true);

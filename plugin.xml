@@ -5,17 +5,15 @@
         <page
             category="org.nightlabs.base.ui.preference.UIPreferencePage"
             class="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage"
-            id="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage" name="%org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage.name"/>
+            id="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage"
+            name="%org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage.name"/>
     </extension>
     <extension
           point="org.nightlabs.jfire.base.dashboard.ui.dashboardGadgetFactory">
        <dashboardGadgetFactory
              class="org.nightlabs.jfire.base.dashboard.ui.welcome.DashboardGadgetFactoryWelcome"
              dashboardGadgetType="DashboardGadgetFactoryWelcome"
-             description="This gadget displays a nice welcome \n message to the user.
-Line break test
-test
-"
+             description="This gadget displays a nice welcome message to the user."
              name="Welcome-Gadget">
        </dashboardGadgetFactory>
     </extension>
@@ -50,5 +48,17 @@ test
                 visible="true">
           </view>
        </perspectiveExtension>
+    </extension>
+    <extension
+          point="org.eclipse.ui.views">
+       <view
+             allowMultiple="false"
+             class="org.nightlabs.jfire.base.dashboard.ui.welcome.WelcomeGadget"
+             fastViewWidthRatio="1.0f"
+             icon="icons/JFire-Logo.16x16.png"
+             id="org.nightlabs.jfire.base.dashboard.ui.welcome.WelcomeGadget"
+             name="Welcome-Gadget"
+             restorable="true">
+       </view>
     </extension>
 </plugin>
