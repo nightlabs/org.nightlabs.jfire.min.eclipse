@@ -1,13 +1,12 @@
 package org.nightlabs.jfire.base.dashboard.ui.welcome;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashboardGadgetFactory;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetConfigPage;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
@@ -36,59 +35,31 @@ public class DashboardGadgetFactoryWelcome extends AbstractDashboardGadgetFactor
 	@Override
 	public Composite createGadgetControl(Composite parent) {
 		XComposite welcomeGadget = new XComposite(parent, SWT.NONE);
-		Browser browser = new Browser(welcomeGadget, SWT.NONE);
+		welcomeGadget.getGridLayout().numColumns = 2;
 		
-		GridData layoutData = new GridData(GridData.FILL_BOTH);
-		layoutData.minimumHeight = 400;
-		browser.setLayoutData(layoutData);
-		
-//		String localPathToWelcomePage = this.getClass().getResource("/res/html/welcome.html").toString();
-//		URL url = getClass().getClassLoader().getResource("res/html/welcome.html");
-//		logger.info("localPathToWelcomePage={}, url={}", localPathToWelcomePage, url);
-//		browser.setUrl(localPathToWelcomePage);
-	
-		String readResourceToBuffer = readResourceToBuffer("res/html/welcome.html");
-		browser.setText(readResourceToBuffer);
-		
-//		welcomeGadget.getGridLayout().numColumns = 2;
-//		welcomeGadget.getGridLayout().makeColumnsEqualWidth = false;
-//		appendNewRow(welcomeGadget, "icons/JFire-Logo.81x81.png", "Welcome to JFire ...");
-//		appendNewRow(welcomeGadget, "icons/JFire-Logo.81x81.png", "Easy to use");
-//		appendNewRow(welcomeGadget, "icons/JFire-Logo.81x81.png", "Easy to extend...");
+		welcomeGadget.getGridLayout().makeColumnsEqualWidth = false;
+		appendNewRow(welcomeGadget, "icons/JFire-Logo.81x81.png", "Thank you for using JFire", 
+				"JFire v1.3 is the most easiest ERP/CRM ever seen in the JFire universe!!!");
 		
 		return welcomeGadget;
 	}
 	
-//	private static void appendNewRow(Composite welcomeGadget, String iconPath, String rowText) {
-//		Label icon0 = new Label(welcomeGadget, SWT.NONE);
-//		icon0.setImage(AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.base.dashboard.ui", iconPath).createImage());
-//		icon0.setLayoutData(new GridData());
-//		Text text = new Text(welcomeGadget, SWT.WRAP);
-//		text.setText(rowText);
-//		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//	}
-
-	
-	private String readResourceToBuffer(String res) {
-		InputStream in = null;
-		try {
-			in = getClass().getClassLoader().getResourceAsStream(res);
-			Scanner scanner = new Scanner(in);
-			StringBuilder sb = new StringBuilder();
-			while(scanner.hasNextLine()) {
-				sb.append(scanner.nextLine());
-				sb.append("\n"); //do not loose line breaks!
-			}
-			return sb.toString();
-		} catch (Exception e) {
-			logger.warn("Could not read from resource:", e);
-			return "";
-		} finally {
-			if (in != null)
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
-		}
+	private static void appendNewRow(Composite welcomeGadget, String iconPath, String caption, String rowText) {
+		Label icon = new Label(welcomeGadget, SWT.NONE);
+		icon.setImage(AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.base.dashboard.ui", iconPath).createImage());
+		icon.setLayoutData(new GridData());
+		
+		XComposite wrapper2 = new XComposite(welcomeGadget, SWT.NONE);
+		wrapper2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		Label captionLabel = new Label(wrapper2, SWT.WRAP);
+		captionLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		captionLabel.setText(caption);
+		RCPUtil.setControlFontStyle(captionLabel, SWT.BOLD, 0);
+		
+		Text text = new Text(wrapper2, SWT.WRAP);
+		text.setText(rowText);
+		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
+
 }
