@@ -44,5 +44,6 @@ public class JFireWelcomePerspective implements IPerspectiveFactory
 	 */
 	public void createInitialLayout(IPageLayout layout) {
 		RCPUtil.addAllPerspectiveShortcuts(layout);
+		layout.setEditorAreaVisible(false);
 	}
 }
