@@ -52,18 +52,18 @@ public abstract class AbstractDashboardGadgetFactory implements
 	 */
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
-		String dashBoardGadgetTypeAttr = config.getAttribute("dashboardGadgetType");
+		String dashBoardGadgetTypeAttr = config.getAttribute("dashboardGadgetType"); //$NON-NLS-1$
 		if (dashBoardGadgetTypeAttr == null || dashBoardGadgetTypeAttr.isEmpty())
-			throw new CoreException(new Status(IStatus.ERROR, "org.nightlabs.jfire.base.dashboard.ui", "Attribute dashboardGadgetType is invalid"));
+			throw new CoreException(new Status(IStatus.ERROR, "org.nightlabs.jfire.base.dashboard.ui", "Attribute dashboardGadgetType is invalid")); //$NON-NLS-1$ //$NON-NLS-2$
 		this.dashBoardGadgetType = dashBoardGadgetTypeAttr;
 		
-		name = config.getAttribute("name");
+		name = config.getAttribute("name"); //$NON-NLS-1$
 		if (name == null || name.isEmpty())
 			name = dashBoardGadgetType;
 		
-		description = config.getAttribute("description");
+		description = config.getAttribute("description"); //$NON-NLS-1$
 		if (description == null || description.isEmpty())
-			description = "";
+			description = ""; //$NON-NLS-1$
 	}
 
 }

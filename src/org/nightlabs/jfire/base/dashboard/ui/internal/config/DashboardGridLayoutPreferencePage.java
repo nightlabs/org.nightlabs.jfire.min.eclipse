@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.nightlabs.clientui.ui.layout.IGridLayoutConfig;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.config.AbstractConfigModuleController;
 import org.nightlabs.jfire.base.ui.config.AbstractConfigModulePreferencePage;
 import org.nightlabs.jfire.base.ui.config.IConfigModuleController;
@@ -82,7 +83,7 @@ public class DashboardGridLayoutPreferencePage extends
 	 */
 	@Override
 	public String getUseCaseDescription() {
-		return "JFire Dashboard";
+		return Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.config.DashboardGridLayoutPreferencePage.useCaseDescription"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)

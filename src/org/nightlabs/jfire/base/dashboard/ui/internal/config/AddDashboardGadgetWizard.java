@@ -4,6 +4,7 @@
 package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 import org.nightlabs.jfire.dashboard.DashboardLayoutConfigModule;
 
@@ -17,7 +18,7 @@ public class AddDashboardGadgetWizard extends Wizard {
 	private DashboardGadgetTypePage gadgetTypePage;
 	
 	public AddDashboardGadgetWizard(DashboardLayoutConfigModule<?> configModule) {
-		setWindowTitle("Add gadget");
+		setWindowTitle(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.config.AddDashboardGadgetWizard.windowTitle")); //$NON-NLS-1$
 		gadgetTypePage = new DashboardGadgetTypePage(configModule);
 		addPage(gadgetTypePage);
 		setForcePreviousAndNextButtons(true);

@@ -23,6 +23,7 @@ import org.nightlabs.base.ui.wizard.WizardHopPage;
 import org.nightlabs.jfire.base.dashboard.ui.DashboardGadgetRegistry;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetConfigPage;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 import org.nightlabs.jfire.dashboard.DashboardLayoutConfigModule;
 
@@ -64,8 +65,8 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 		super(DashboardGadgetTypePage.class.getName());
 		this.configModule = configModule;
 		setWizardHop(new WizardHop(this));
-		setTitle("Dashboard gadget type");
-		setMessage("Select the type of gadget to use");
+		setTitle(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.config.DashboardGadgetTypePage.title")); //$NON-NLS-1$
+		setMessage(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.config.DashboardGadgetTypePage.message")); //$NON-NLS-1$
 	}
 	
 	@Override

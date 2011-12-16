@@ -11,6 +11,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.eclipse.extension.AbstractEPProcessor;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DashboardGadgetRegistry extends AbstractEPProcessor {
 
-	public static final String EXTENSION_POINT_ID = DashboardGadgetRegistry.class.getPackage().getName() + ".dashboardGadgetFactory";
+	public static final String EXTENSION_POINT_ID = DashboardGadgetRegistry.class.getPackage().getName() + ".dashboardGadgetFactory"; //$NON-NLS-1$
 	
 	private Map<String, IDashboardGadgetFactory> factories = new HashMap<String, IDashboardGadgetFactory>();
 	
@@ -56,11 +57,11 @@ public class DashboardGadgetRegistry extends AbstractEPProcessor {
 	 */
 	@Override
 	public void processElement(IExtension extension, IConfigurationElement element) throws Exception {
-		IDashboardGadgetFactory factory = (IDashboardGadgetFactory) element.createExecutableExtension("class");
+		IDashboardGadgetFactory factory = (IDashboardGadgetFactory) element.createExecutableExtension("class"); //$NON-NLS-1$
 		if (!factories.containsKey(factory.getDashboardGadgetType())) {
 			factories.put(factory.getDashboardGadgetType(), factory);
 		} else {
-			LoggerFactory.getLogger(DashboardGadgetRegistry.class).warn("There already exists a IDashboardGadgetFactory for the type {}: {}. We ignore all new factories, in this case {}", new Object[] {factory.getDashboardGadgetType(), factories.get(factory.getDashboardGadgetType()), factory});
+			LoggerFactory.getLogger(DashboardGadgetRegistry.class).warn("There already exists a IDashboardGadgetFactory for the type {}: {}. We ignore all new factories, in this case {}", new Object[] {factory.getDashboardGadgetType(), factories.get(factory.getDashboardGadgetType()), factory}); //$NON-NLS-1$
 		}
 		
 	}

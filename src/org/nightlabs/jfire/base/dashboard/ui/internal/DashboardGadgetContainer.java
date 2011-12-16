@@ -12,6 +12,7 @@ import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadget;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetContainer;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 
 /**
@@ -73,7 +74,7 @@ public class DashboardGadgetContainer implements IDashboardGadgetContainer {
 			} else {
 				gadgetControl = new XComposite(sectionPart.getContainer(), SWT.NONE);
 				Label l = new Label(gadgetControl, SWT.WRAP);
-				l.setText("The extension to display this gadget could not be found");
+				l.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.DashboardGadgetContainer.extensionMissing.text")); //$NON-NLS-1$
 			}
 			
 		}

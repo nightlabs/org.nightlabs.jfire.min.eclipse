@@ -33,6 +33,7 @@ import org.nightlabs.jfire.base.dashboard.ui.DashboardGadgetRegistry;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
 import org.nightlabs.jfire.base.dashboard.ui.internal.DashboardGadgetContainer;
 import org.nightlabs.jfire.base.dashboard.ui.internal.config.ConfigureDashboardGadgetWizard;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.login.ui.part.LSDViewPart;
 import org.nightlabs.jfire.base.ui.config.ConfigUtil;
@@ -102,7 +103,7 @@ public class DashboardView extends LSDViewPart {
 	}
 
 	private void load() {
-		Job loadConfigJob = new Job("Loading dashboard config...") {
+		Job loadConfigJob = new Job(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.view.DashboardView.loadConfigJob.name")) { //$NON-NLS-1$
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -172,7 +173,7 @@ public class DashboardView extends LSDViewPart {
 	@SuppressWarnings("unchecked")
 	private void removeGadget(DashboardGadgetContainer container) {
 		configModule.removeEditLayoutEntry((DashboardGadgetLayoutEntry)container.getLayoutEntry());
-		Job storeConfigJob = new Job("Storing dashboard config...") {
+		Job storeConfigJob = new Job(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.view.DashboardView.storeConfigJob.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				storeConfigModule(monitor);
@@ -191,7 +192,7 @@ public class DashboardView extends LSDViewPart {
 	
 	
 	private void modifyGadget(final DashboardGadgetContainer changedContainer) {
-		Job storeConfigJob = new Job("Storing dashboard config...") {
+		Job storeConfigJob = new Job(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.view.DashboardView.storeConfigJob.name")) { //$NON-NLS-1$
 			@Override
 			protected IStatus run(ProgressMonitor monitor) throws Exception {
 				storeConfigModule(monitor);
@@ -229,8 +230,8 @@ public class DashboardView extends LSDViewPart {
 			@Override
 			public ImageDescriptor getImageDescriptor() {
 				return AbstractUIPlugin.imageDescriptorFromPlugin(
-						"org.nightlabs.jfire.base.dashboard.ui", 
-						"icons/internal/view/DashboardView-ConfigureGadgetAction.16x16.png");
+						"org.nightlabs.jfire.base.dashboard.ui",  //$NON-NLS-1$
+						"icons/internal/view/DashboardView-ConfigureGadgetAction.16x16.png"); //$NON-NLS-1$
 			}
 			@Override
 			public void run() {
@@ -246,12 +247,12 @@ public class DashboardView extends LSDViewPart {
 			@Override
 			public ImageDescriptor getImageDescriptor() {
 				return AbstractUIPlugin.imageDescriptorFromPlugin(
-						"org.nightlabs.jfire.base.dashboard.ui", 
-						"icons/internal/view/DashboardView-DeleteGadgetAction.16x16.png");
+						"org.nightlabs.jfire.base.dashboard.ui",  //$NON-NLS-1$
+						"icons/internal/view/DashboardView-DeleteGadgetAction.16x16.png"); //$NON-NLS-1$
 			}
 			@Override
 			public void run() {
-				if (MessageDialog.openQuestion(getSite().getShell(), "Remove gadget?", "Do you really want to remove this gadget?")) {
+				if (MessageDialog.openQuestion(getSite().getShell(), Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.view.DashboardView.confirmDeleteDialog.title"), Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.view.DashboardView.confirmDeleteDialog.message"))) { //$NON-NLS-1$ //$NON-NLS-2$
 					removeGadget(container);
 				}
 			}

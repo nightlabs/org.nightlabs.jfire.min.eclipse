@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 
 /**
  * @author abieber
@@ -35,7 +36,7 @@ public class DashboardGadgetFactoryTable extends AbstractTableComposite<IDashboa
 	@Override
 	protected void createTableColumns(TableViewer tableViewer, Table table) {
 		TableColumn col = new TableColumn(table, SWT.LEFT);
-		col.setText("Name");
+		col.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.config.DashboardGadgetFactoryTable.nameColumn.text")); //$NON-NLS-1$
 //		table.setHeaderVisible(false);
 		TableLayout layout = new TableLayout();
 		layout.addColumnData(new ColumnWeightData(100));
@@ -55,7 +56,7 @@ public class DashboardGadgetFactoryTable extends AbstractTableComposite<IDashboa
 				if (columnIndex == 0) {
 					return ((IDashboardGadgetFactory) element).getName();
 				}
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		});
 	}

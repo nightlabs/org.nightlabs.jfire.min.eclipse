@@ -13,6 +13,7 @@ import org.nightlabs.base.ui.language.I18nTextEditor;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.i18n.I18nTextBuffer;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashbardGadgetConfigPage;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 import org.nightlabs.jfire.dashboard.DashboardLayoutConfigModuleInitialiser;
 
@@ -26,7 +27,7 @@ public class ConfigureWelcomeGadgetPage extends AbstractDashbardGadgetConfigPage
 	
 	public ConfigureWelcomeGadgetPage() {
 		super(ConfigureWelcomeGadgetPage.class.getName());
-		setTitle("Welcome Gadget");
+		setTitle(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.welcome.ConfigureWelcomeGadgetPage.title")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -34,9 +35,9 @@ public class ConfigureWelcomeGadgetPage extends AbstractDashbardGadgetConfigPage
 		XComposite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER);
 		
 		Label l = new Label(wrapper, SWT.WRAP);
-		l.setText("The JFire welcome gadget does not need to be configured.\nYou can, however, change its title.");
+		l.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.welcome.ConfigureWelcomeGadgetPage.labelText")); //$NON-NLS-1$
 		
-		gadgetTitle = new I18nTextEditor(wrapper, "Gadget title");
+		gadgetTitle = new I18nTextEditor(wrapper, Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.welcome.ConfigureWelcomeGadgetPage.nameEditor.caption")); //$NON-NLS-1$
 		if (!getLayoutEntry().getEntryName().isEmpty()) {
 			gadgetTitle.setI18nText(getLayoutEntry().getEntryName());
 		} else {

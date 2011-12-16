@@ -12,6 +12,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashboardGadget;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 
 /**
  * @author abieber
@@ -27,15 +28,15 @@ public class DashboardGadgetWelcome extends AbstractDashboardGadget {
 		welcomeGadget.getGridLayout().numColumns = 2;
 		
 		welcomeGadget.getGridLayout().makeColumnsEqualWidth = false;
-		appendNewRow(welcomeGadget, "icons/JFire-Logo.81x81.png", "Thank you for using JFire", 
-				"JFire v1.3 is the easiest ERP/CRM ever seen in the JFire universe!");
+		appendNewRow(welcomeGadget, "icons/JFire-Logo.81x81.png", Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.welcome.DashboardGadgetWelcome.row1.title"),  //$NON-NLS-1$ //$NON-NLS-2$
+				Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.welcome.DashboardGadgetWelcome.row1.message")); //$NON-NLS-1$
 		
 		return welcomeGadget;
 	}
 
 	private static void appendNewRow(Composite welcomeGadget, String iconPath, String caption, String rowText) {
 		Label icon = new Label(welcomeGadget, SWT.NONE);
-		icon.setImage(AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.base.dashboard.ui", iconPath).createImage());
+		icon.setImage(AbstractUIPlugin.imageDescriptorFromPlugin("org.nightlabs.jfire.base.dashboard.ui", iconPath).createImage()); //$NON-NLS-1$
 		icon.setLayoutData(new GridData());
 		
 		XComposite wrapper2 = new XComposite(welcomeGadget, SWT.NONE);
