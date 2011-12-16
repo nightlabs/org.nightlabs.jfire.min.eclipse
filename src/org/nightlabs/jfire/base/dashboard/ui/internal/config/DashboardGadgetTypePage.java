@@ -6,7 +6,9 @@ package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -75,6 +77,15 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 		table.getTableViewer().setComparator(new ViewerComparator());
 		
 		table.addSelectionChangedListener(typeSelectedListener);
+		table.getTableViewer().addOpenListener(new IOpenListener() {
+			@Override
+			public void open(OpenEvent event) {
+				IDashboardGadgetFactory selectedType = table.getFirstSelectedElement();
+				if (selectedType != null) {
+					getContainer().showPage(getNextPage());
+				}
+			}
+		});
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		typeDescription = new Text(wrapper, SWT.WRAP);

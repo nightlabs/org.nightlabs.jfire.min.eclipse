@@ -4,7 +4,10 @@
 package org.nightlabs.jfire.base.dashboard.ui.internal;
 
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadget;
 import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetContainer;
@@ -28,8 +31,10 @@ public class DashboardGadgetContainer implements IDashboardGadgetContainer {
 	public DashboardGadgetContainer(ToolBarSectionPart sectionPart, IDashboardGadgetFactory gadgetFactory) {
 		this.sectionPart = sectionPart;
 		this.gadgetFactory = gadgetFactory;
-		this.gadget = gadgetFactory.createDashboardGadget();
-		gadget.setGadgetContainer(this);
+		if (gadgetFactory != null) {
+			this.gadget = gadgetFactory.createDashboardGadget();
+			gadget.setGadgetContainer(this);
+		}
 	}
 	
 	public DashboardGadgetLayoutEntry<?> getLayoutEntry() {
@@ -44,7 +49,9 @@ public class DashboardGadgetContainer implements IDashboardGadgetContainer {
 	
 	public void refreshGadget() {
 		sectionPart.getSection().setText(layoutEntry.getName());
-		gadget.refresh();
+		if (gadget != null) {
+			gadget.refresh();
+		}
 	}
 	
 	public void setTitle(String title) {
@@ -60,8 +67,16 @@ public class DashboardGadgetContainer implements IDashboardGadgetContainer {
 	}
 	
 	public void createGadgetControl() {
-		if (gadgetControl == null)
-			gadgetControl = gadget.createControl(sectionPart.getContainer());
+		if (gadgetControl == null) {
+			if (gadget != null) {
+				gadgetControl = gadget.createControl(sectionPart.getContainer());
+			} else {
+				gadgetControl = new XComposite(sectionPart.getContainer(), SWT.NONE);
+				Label l = new Label(gadgetControl, SWT.WRAP);
+				l.setText("The extension to display this gadget could not be found");
+			}
+			
+		}
 	}
 	
 	public IToolBarManager getToolBarManager() {

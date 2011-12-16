@@ -136,7 +136,9 @@ public class DashboardView extends LSDViewPart {
 					gadgetContainer.createGadgetControl();
 					gadgetContainer.setLayoutEntry(layoutEntry, true);
 					
-					createGadgetActions(gadgetContainer);
+					if (gadgetContainer.getGadgetFactory() != null) {
+						createGadgetActions(gadgetContainer);
+					}
 
 				}
 
