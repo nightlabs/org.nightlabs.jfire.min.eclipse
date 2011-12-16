@@ -4,7 +4,6 @@
 package org.nightlabs.jfire.base.dashboard.ui;
 
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author abieber
@@ -20,6 +19,6 @@ public interface IDashboardGadgetFactory extends IExecutableExtension {
 	
 	IDashboardGadgetConfigPage createConfigurationWizardPage();
 	
-	Composite createGadgetControl(Composite parent);
+	IDashboardGadget createDashboardGadget();
 	
 }

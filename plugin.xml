@@ -4,14 +4,14 @@
     <extension point="org.eclipse.ui.preferencePages">
         <page
             category="org.nightlabs.base.ui.preference.UIPreferencePage"
-            class="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage"
+            class="org.nightlabs.jfire.base.dashboard.ui.internal.config.DashboardGridLayoutPreferencePage"
             id="org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage"
-            name="%org.nightlabs.jfire.base.dashboard.ui.DashboardGridLayoutPreferencePage.name"/>
+            name="%org.nightlabs.jfire.base.dashboard.ui.internal.config.DashboardGridLayoutPreferencePage.name"/>
     </extension>
     <extension
           point="org.nightlabs.jfire.base.dashboard.ui.dashboardGadgetFactory">
        <dashboardGadgetFactory
-             class="org.nightlabs.jfire.base.dashboard.ui.welcome.DashboardGadgetFactoryWelcome"
+             class="org.nightlabs.jfire.base.dashboard.ui.internal.welcome.DashboardGadgetFactoryWelcome"
              dashboardGadgetType="DashboardGadgetFactoryWelcome"
              description="This gadget displays a nice welcome message to the user."
              name="Welcome-Gadget">
@@ -25,7 +25,7 @@
        </category>
        <view
              category="org.nightlabs.jfire.base.dashboard.ui.category"
-             class="org.nightlabs.jfire.base.dashboard.ui.DashboardView"
+             class="org.nightlabs.jfire.base.dashboard.ui.internal.view.DashboardView"
              id="org.nightlabs.jfire.base.dashboard.ui.DashboardView"
              name="JFire Dashboard"
              restorable="true">
@@ -53,7 +53,7 @@
           point="org.eclipse.ui.views">
        <view
              allowMultiple="false"
-             class="org.nightlabs.jfire.base.dashboard.ui.welcome.WelcomeGadget"
+             class="org.nightlabs.jfire.base.dashboard.ui.internal.welcome.WelcomeGadget"
              fastViewWidthRatio="1.0f"
              icon="icons/JFire-Logo.16x16.png"
              id="org.nightlabs.jfire.base.dashboard.ui.welcome.WelcomeGadget"

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.dashboard.ui;
+package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableLabelProvider;
+import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
 
 /**
  * @author abieber

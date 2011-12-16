@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.dashboard.ui.welcome;
+package org.nightlabs.jfire.base.dashboard.ui.internal.welcome;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;

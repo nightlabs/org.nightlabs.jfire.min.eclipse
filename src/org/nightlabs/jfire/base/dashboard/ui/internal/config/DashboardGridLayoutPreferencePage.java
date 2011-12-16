@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.dashboard.ui;
+package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import java.util.HashSet;
 import java.util.Set;

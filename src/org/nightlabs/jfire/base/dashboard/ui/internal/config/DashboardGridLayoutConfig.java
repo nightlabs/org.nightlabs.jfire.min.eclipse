@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.dashboard.ui;
+package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,6 +40,7 @@ public class DashboardGridLayoutConfig<T> implements IGridLayoutConfig {
 	/* (non-Javadoc)
 	 * @see org.nightlabs.clientui.ui.layout.IGridLayoutConfig#addGridDataEntry()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public IGridDataEntry addGridDataEntry() {
 		

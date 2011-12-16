@@ -6,5 +6,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JFireDashboard"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.nightlabs.clientui"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.nightlabs.jfire.base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JFireBaseBean"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JFireBaseClientLib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JFireBaseDAO"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

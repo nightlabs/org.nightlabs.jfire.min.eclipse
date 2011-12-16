@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.nightlabs.jfire.base.dashboard.ui;
+package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +18,9 @@ import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.util.RCPUtil;
 import org.nightlabs.base.ui.wizard.WizardHop;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
+import org.nightlabs.jfire.base.dashboard.ui.DashboardGadgetRegistry;
+import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetConfigPage;
+import org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 import org.nightlabs.jfire.dashboard.DashboardLayoutConfigModule;
 
@@ -53,13 +56,8 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 			}
 		}
 	};
-
 	
 	
-	
-	/**
-	 * @param pageName
-	 */
 	public DashboardGadgetTypePage(DashboardLayoutConfigModule<?> configModule) {
 		super(DashboardGadgetTypePage.class.getName());
 		this.configModule = configModule;
@@ -68,9 +66,6 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 		setMessage("Select the type of gadget to use");
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.nightlabs.base.ui.wizard.DynamicPathWizardPage#createPageContents(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Control createPageContents(Composite parent) {
 		XComposite wrapper = new XComposite(parent, SWT.NONE);
@@ -92,6 +87,7 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 		return wrapper;
 	}
 
+	@SuppressWarnings("unchecked")
 	private PageEntry getCreateFactoryConfigEntry(IDashboardGadgetFactory factory) {
 		PageEntry pageEntry = (PageEntry) factoryConfigPages.get(factory.getDashboardGadgetType());
 		if (pageEntry == null) {
