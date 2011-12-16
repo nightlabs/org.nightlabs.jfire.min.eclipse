@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -208,8 +207,10 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 * via the {@link ActiveJDOObjectController}.
 	 */
 	public void load() {
-		setLoadingMessage(getLoadingMessage());
-		getActiveJDOObjectController().getJDOObjects();
+		if (!isDisposed()) {
+			setLoadingMessage(getLoadingMessage());
+			getActiveJDOObjectController().getJDOObjects();			
+		}
 	}
 
 	/**
@@ -217,9 +218,11 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 * reload using the {@link ActiveJDOObjectController}.
 	 */
 	public void reload() {
-		getContentProvider().clearInput();
-		getActiveJDOObjectController().clearCache();
-		load();
+		if (!isDisposed()) {
+			getContentProvider().clearInput();
+			getActiveJDOObjectController().clearCache();
+			load();			
+		}
 	}
 
 	/**
