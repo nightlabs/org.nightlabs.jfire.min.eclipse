@@ -1,0 +1,1058 @@
+/*******************************************************************************
+* Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Button */
+
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  animation: hoverIn 100ms ease-in, hoverOut 500ms ease-out;
+}
+
+Button.clearButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 2px;
+}
+
+Button-FocusIndicator.clearButton {
+  border: none;
+}
+
+Button.clearButton:hover, Button.clearButton:selected, Button.clearButton:pressed {
+  background-image: none;
+}
+
+Button.configMenuButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 1px;
+}
+
+Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.configMenuButton {
+  border: none;
+}
+
+Button.viewClose {
+  background-color: transparent;
+  background-image: url( img/fancy/stack_tab_active_close_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.viewClose:pressed {
+  background-image: url( img/fancy/stack_tab_active_close_active.png );
+}
+
+Button.viewClose:hover {
+  background-image: url( img/fancy/stack_tab_active_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewClose {
+  border: none;
+}
+
+Button.viewCloseInactive {
+  background-color: transparent;
+  background-image: url( img/fancy/stack_tab_inactive_close_active.png );
+  border: none;
+}
+
+Button.viewCloseInactive:pressed {
+  background-image: url( img/fancy/stack_tab_inactive_close_active.png );
+}
+
+Button.viewCloseInactive:hover {
+  background-image: url( img/fancy/stack_tab_inactive_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewCloseInactive {
+  border: none;
+}
+
+Button.toolbarOverflowInactive {
+  background-color: transparent;
+  background-image: url( img/fancy/toolbar_overflow.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowInactive:pressed {
+  background-image: url( img/fancy/toolbar_overflow.png );
+}
+
+Button.toolbarOverflowInactive:hover {
+  background-image: url( img/fancy/toolbar_overflow_hover.png );
+}
+
+Button-FocusIndicator.toolbarOverflowInactive {
+  border: none;
+}
+
+Button.toolbarOverflowActive {
+  background-color: transparent;
+  background-image: url( img/fancy/toolbar_overflow_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowActive:pressed {
+  background-image: url( img/fancy/toolbar_overflow_active.png );
+}
+
+Button.toolbarOverflowActive:hover {
+  background-image: url( img/fancy/toolbar_overflow_hover_active.png );
+}
+
+Button-FocusIndicator.toolbarOverflowActive {
+  border: none;
+}
+
+Button.partActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #3e4042;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partActive:pressed, Button.partActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partActive {
+  border: none;
+}
+
+Button.partInActiveActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #495f15;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInActiveActive:pressed, Button.partInActiveActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partInActiveActive {
+  border: none;
+}
+
+Button.partInactive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #ffffff;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactive:pressed, Button.partInactive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partInactive {
+  border: none;
+}
+
+Button.perspective {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #cccccc;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.perspective:hover {
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-image: none;
+}
+
+Button.perspective:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspective {
+  border: none;
+}
+
+Button.perspectiveActive {
+  color: #70c6f3;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.perspectiveActive:hover, Button.perspectiveActive:pressed, Button.perspectiveActive:selected {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspectiveActive {
+  border: none;
+}
+
+Button.tabOverflowActive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( img/fancy/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:pressed {
+  background-image: url( img/fancy/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:hover {
+  background-image: url( img/fancy/stack_tab_overflow_active_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowActive {
+  border: none;
+}
+
+Button.tabOverflowInactive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( img/fancy/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:pressed {
+  background-image: url( img/fancy/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:hover {
+  background-image: url( img/fancy/stack_tab_overflow_inactive_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowInactive {
+  border: none;
+}
+
+/* Shell */
+
+Shell-Titlebar {
+  background-image: gradient( linear, left top, left bottom,
+                              from( #a8dd32 ), to( #87b127 ) );
+}
+
+Shell-Titlebar:inactive {
+  color: #aaaaaa;
+  background-image: gradient( linear, left top, left bottom,
+                              from( #595959 ), to( #4b4b4b ) );
+}
+
+Shell {
+  color: #4a4a4a;
+}
+
+Shell[BORDER], Shell[TITLE] {
+  border: 2px solid #99c92c;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  background-color: white;
+  border: 2px solid #4b4b4b;
+}
+
+Shell-DisplayOverlay {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  background-image: none;
+  background-color: #FFFFFF;
+  opacity: 0.5;
+}
+
+Shell[BORDER], Shell[TITLE] {
+  border: 2px solid #99c92c;
+}
+
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  background-color: white;
+}
+
+Shell-CloseButton {
+  background-image: url( "theme/fancy/icons/shell-close.png" );
+}
+
+Shell-MaxButton {
+  background-image: url( "theme/fancy/icons/shell-max.png" );
+}
+
+Shell-MinButton {
+  background-image: url( "theme/fancy/icons/shell-min.png" );
+}
+
+Shell-CloseButton:hover {
+  background-image: url( "theme/fancy/icons/shell-close-hover.png" );
+}
+
+Shell-MaxButton:hover {
+  background-image: url( "theme/fancy/icons/shell-max-hover.png" );
+}
+
+Shell-MinButton:hover {
+  background-image: url( "theme/fancy/icons/shell-min-hover.png" );
+}
+
+.shellGray {
+  background-color: #ffffff;
+}
+
+Shell.toolbarLayer {
+  background-color: #ffffff;
+  border: none;
+}
+
+Shell-DisplayOverlay.confDialog {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  background-image: none;
+  background-color: #999999;
+  opacity: 0.5;
+}
+
+/* Tree */
+
+Tree[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
+TreeItem {
+  background-color: transparent;
+  color: inherit;
+}
+
+TreeItem:hover {
+  background-color: #e9f3d2;
+}
+
+TreeItem:selected {
+  background-color: #abe033;
+  color: #ffffff;
+}
+
+TreeItem:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TreeColumn {
+  background-image: url( "theme/fancy/icons/table-column.png" );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+  padding: 1px 2px;
+}
+
+TreeColumn:hover {
+  background-image: url( "theme/fancy/icons/table-column-hover.png" );
+  border-bottom:none;
+}
+
+TreeColumn-SortIndicator:up {
+  background-image: url( theme/fancy/icons/sort-indicator-up.png );
+}
+
+TreeColumn-SortIndicator:down {
+  background-image: url( theme/fancy/icons/sort-indicator-down.png );
+}
+
+Tree-Indent:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Tree-Indent:first:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:first:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:first:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:first:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Tree-Indent:last:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:last:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:last:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:last:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Tree-Indent:first:last:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:first:last:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:first:last:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:first:last:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+/* Table */
+
+TableColumn {
+  background-image: url( "theme/fancy/icons/table-column.png" );
+}
+
+TableColumn:hover {
+  background-image: url( "theme/fancy/icons/table-column-hover.png" );
+}
+
+TableItem:hover {
+  background-color: #e9f3d2;
+}
+
+TableItem:selected {
+  background-color: #abe033;
+}
+
+TableItem:selected:unfocused {
+  background-color: #959595;
+}
+
+TableItem:even {
+  background-color: #f3f3f4;
+}
+
+TableItem:even:hover {
+  background-color: #e9f3d2;
+}
+
+TableItem:even:selected {
+  background-color: #abe033;
+}
+
+TableItem:even:selected:unfocused {
+  background-color: #959595;
+}
+
+Table-Checkbox {
+  width: 21px;
+  background-image: url( theme/fancy/icons/check-unselected.png );
+}
+
+Table-Checkbox:hover {
+  background-image: url( theme/fancy/icons/check-unselected-hover.png );
+}
+
+Table-Checkbox:checked {
+  background-image: url( theme/fancy/icons/check-selected.png );
+}
+
+Table-Checkbox:checked:hover {
+  background-image: url( theme/fancy/icons/check-selected-hover.png );
+}
+
+Table-Checkbox:checked:grayed {
+  background-image: url( theme/fancy/icons/check-grayed.png );
+}
+
+Table-Checkbox:checked:grayed:hover {
+  background-image: url( theme/fancy/icons/check-grayed-hover.png );
+}
+
+TableColumn-SortIndicator:up {
+  background-image: url( theme/fancy/icons/sort-indicator-up.png );
+}
+
+TableColumn-SortIndicator:down {
+  background-image: url( theme/fancy/icons/sort-indicator-down.png );
+}
+
+/* List */
+
+List-Item:hover {
+  background-color: #e9f3d2;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e9f3d2 ),
+    to( #d9e3c2 )
+  );
+}
+
+List-Item:selected {
+  background-color: #abe033;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #aee336 ),
+    to( #88bd10 )
+  );
+}
+
+List-Item:selected:unfocused {
+  background-color: #959595;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #A5A5A5 ),
+    to( #858585 )
+  );
+}
+
+List-Item:even:hover {
+  background-color: #e9f3d2;
+}
+
+List-Item:even:selected {
+  background-color: #abe033;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #aee336 ),
+    to( #88bd10 )
+  );
+}
+
+List-Item:even:selected:unfocused {
+  background-color: #959595;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #A5A5A5 ),
+    to( #858585 )
+  );
+}
+
+/* Check Buttons */
+
+Button-CheckIcon {
+  background-image: url( theme/fancy/icons/check-unselected.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( theme/fancy/icons/check-selected.png );
+}
+
+Button-CheckIcon:hover {
+  background-image: url( theme/fancy/icons/check-unselected-hover.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( theme/fancy/icons/check-selected-hover.png );
+}
+
+Button-CheckIcon:selected:grayed {
+  background-image: url( theme/fancy/icons/check-grayed.png );
+}
+
+Button-CheckIcon:selected:grayed:hover {
+  background-image: url( theme/fancy/icons/check-grayed-hover.png );
+}
+
+/* Radio Buttons */
+
+Button-RadioIcon {
+  background-image: url( theme/fancy/icons/radio-unselected.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( theme/fancy/icons/radio-selected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( theme/fancy/icons/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( theme/fancy/icons/radio-selected-hover.png );
+}
+
+/* Menu */
+Menu {
+  color: #0059a5;
+  background-color: white;
+  border: 1px #abe033;
+  border-radius: 2px;
+}
+
+MenuItem:hover {
+  background-color: #e9f3d2;
+  color: #4a4a4a;
+}
+
+/* Label */
+
+Label.menuBorder {
+  background-color: #dddddd;
+}
+
+Label.stackBorder {
+  background-color: #ebebeb;
+}
+
+Label.standaloneView {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+/* Custom Variants */
+
+Composite.compGray {
+  background-color: #ffffff;
+}
+
+.compTrans {
+  background-color: transparent;
+}
+
+.partBorder {
+  border: #eb0000;
+}
+
+/* Expand Bar */
+
+ExpandItem-Button {
+  background-image: url( theme/fancy/icons/expanditem-expand.png );
+}
+
+ExpandItem-Button:hover {
+  background-image: url( theme/fancy/icons/expanditem-expand-hover.png );
+}
+
+ExpandItem-Button:expanded {
+  background-image: url( theme/fancy/icons/expanditem-collapse.png );
+}
+
+ExpandItem-Button:expanded:hover {
+  background-image: url( theme/fancy/icons/expanditem-collapse-hover.png );
+}
+
+/* Combo */
+
+/* Combo always shows a border, the BORDER style flag is ignored by SWT */
+
+Combo, CCombo {
+  color: #4a4a4a;
+}
+
+Combo-Button-Icon, CCombo-Button-Icon {
+  background-image: url( theme/fancy/icons/down.png );
+}
+
+Combo-Button-Icon:hover, CCombo-Button-Icon:hover {
+  background-image: url( theme/fancy/icons/down-hover.png );
+}
+
+/* Spinner */
+
+Spinner-DownButton-Icon {
+  background-image: url( theme/fancy/icons/down.png );
+}
+
+Spinner-DownButton-Icon:hover {
+  background-image: url( theme/fancy/icons/down-hover.png );
+}
+
+Spinner-UpButton-Icon {
+  background-image: url( theme/fancy/icons/up.png );
+}
+
+Spinner-UpButton-Icon:hover {
+  background-image: url( theme/fancy/icons/up-hover.png );
+}
+
+/* DateTime */
+
+DateTime {
+  color: #4a4a4a;
+}  
+
+DateTime-Calendar-Day:hover {
+  background-color: #e9f3d2;
+}
+
+DateTime-Calendar-Navbar {
+  background-color: #abe033;
+}
+
+DateTime-Calendar-PreviousMonthButton {
+  background-image: url( theme/fancy/icons/lastMonth.png );
+}
+
+DateTime-Calendar-PreviousMonthButton:hover {
+  background-image: url( theme/fancy/icons/lastMonth-hover.png );
+}
+
+DateTime-Calendar-NextMonthButton {
+  background-image: url( theme/fancy/icons/nextMonth.png );
+}
+
+DateTime-Calendar-NextMonthButton:hover {
+  background-image: url( theme/fancy/icons/nextMonth-hover.png );
+}
+
+DateTime-Calendar-PreviousYearButton {
+  background-image: url( theme/fancy/icons/lastYear.png );
+}
+
+DateTime-Calendar-PreviousYearButton:hover {
+  background-image: url( theme/fancy/icons/lastYear-hover.png );
+}
+
+DateTime-Calendar-NextYearButton {
+  background-image: url( theme/fancy/icons/nextYear.png );
+}
+
+DateTime-Calendar-NextYearButton:hover {
+  background-image: url( theme/fancy/icons/nextYear-hover.png );
+}
+
+DateTime-DownButton-Icon {
+  background-image: url( theme/fancy/icons/down.png );
+}
+
+DateTime-DownButton-Icon:hover {
+  background-image: url( theme/fancy/icons/down-hover.png );
+}
+
+DateTime-UpButton-Icon {
+  background-image: url( theme/fancy/icons/up.png );
+}
+
+DateTime-UpButton-Icon:hover {
+  background-image: url( theme/fancy/icons/up-hover.png );
+}
+
+DateTime-DropDownButton-Icon {
+  background-image: url( theme/fancy/icons/down.png );
+}
+
+DateTime-DropDownButton-Icon:hover {
+  background-image: url( theme/fancy/icons/down-hover.png );
+}
+
+DateTime-Calendar-Day:selected:hover {
+  background-color: #abe033;
+}
+
+/* Link */
+
+Link-Hyperlink {
+  color: #93c12b;
+}
+
+Link-Hyperlink:disabled {
+  color: #959595;
+}
+
+/* Progress Bar */
+
+ProgressBar-Indicator {
+  background-color: #abe033;
+  background-image: url( theme/fancy/icons/progress.png );
+}
+
+ProgressBar-Indicator:paused {
+  background-color: #ebebeb;
+}
+
+/* Composite */
+
+Composite.tabActive {
+  border: 1px solid #ffffff;
+  border-radius: 5px 5px 0px 0px;
+  background-color: #ffffff;
+}
+
+Composite.tabInactive {
+  border: 1px solid #ffffff;
+  border-radius: 5px 5px 0px 0px;
+  background-color: #ffffff;
+}
+
+Composite.inactiveButton {
+  background-color: transparent;
+  border: none;
+}
+
+/* ToolTip */
+
+Widget-ToolTip {
+  background-color: #e9f3d2;
+  border: 1px solid #abe033;
+}
+
+/* Slider */
+
+Slider-DownButton-Icon[HORIZONTAL] {
+  background-image: url( theme/fancy/icons/left.png );
+}
+
+Slider-DownButton-Icon[HORIZONTAL]:hover {
+  background-image: url( theme/fancy/icons/left-hover.png );
+}
+
+Slider-UpButton-Icon[HORIZONTAL] {
+  background-image: url( theme/fancy/icons/right.png );
+}
+
+Slider-UpButton-Icon[HORIZONTAL]:hover {
+  background-image: url( theme/fancy/icons/right-hover.png );
+}
+
+Slider-DownButton-Icon[VERTICAL] {
+  background-image: url( theme/fancy/icons/up.png );
+}
+
+Slider-DownButton-Icon[VERTICAL]:hover {
+  background-image: url( theme/fancy/icons/up-hover.png );
+}
+
+Slider-UpButton-Icon[VERTICAL] {
+  background-image: url( theme/fancy/icons/down.png );
+}
+
+Slider-UpButton-Icon[VERTICAL]:hover {
+  background-image: url( theme/fancy/icons/down-hover.png );
+}
+
+/* Display */
+
+Display {
+  background-image: url( theme/fancy/icons/browser_bg.png );
+}
+
+/* CTabFolder, TabFolder */
+
+TabItem {
+  background-color: white;
+}
+
+TabItem:selected {
+  border-top-color: #abe033;
+  border-bottom-color: #abe033;
+}
+
+TabItem:hover {
+  background-color: #e9f3d2;
+}
+
+CTabItem:selected {
+  background-color: #97c72c;
+}
+
+CTabFolder-DropDownButton-Icon {
+  background-image: url( theme/fancy/icons/ctabfolder-dropdown.png );
+}
+
+CTabFolder-DropDownButton-Icon:hover {
+  background-image: url( theme/fancy/icons/ctabfolder-dropdown-hover.png );
+}
+
+/* Header Toolbar */
+
+ToolBar.header-toolbar {
+  padding: 0px 0px 0px 25px;
+  color: white;
+  spacing: 25px;
+}
+
+ToolItem.header-toolbar {
+  color: white;
+  border: none;
+  padding: 5px 5px 5px 5px;
+  spacing: 10px;
+}
+
+ToolItem.header-toolbar:hover {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #3b8fc2;
+  border-radius: 5px 5px 0px 0px;
+  padding: 5px 5px 5px 5px;
+}
+
+ToolItem-DropDownIcon.header-toolbar {
+  background-image: url( img/fancy/toolbar_arrow.png );
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-toolbar:hover {
+  background-image: url( img/fancy/toolbar_arrow.png );
+  border: 1px solid #3b8fc2;
+}
+
+Menu.header-toolbar {
+  color: #3b8fc2;
+  background-color: white;
+  border: 1px solid #3b8fc2;
+  border-radius: 0px 0px 5px 5px;
+}
+
+MenuItem.header-toolbar {
+  color: #656565;
+}
+
+MenuItem.header-toolbar:hover {
+  color: #3b8fc2;
+  background-color: transparent;
+}
+
+
+/* Header overflow toolbar */
+
+ToolItem.header-overflow {
+  color: #656565;
+  border: none;
+  padding: 0px 25px 0px 0px;
+}
+
+ToolItem.header-overflow:hover {
+  background-color: transparent;
+  color: #3b8fc2;
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-overflow {
+  background-image: url( img/fancy/toolbar_overflow_arrow.png );
+}
+
+ToolItem-DropDownIcon.header-overflow:hover {
+  background-image: url( img/fancy/toolbar_overflow_arrow.png );
+  border: none;
+}
+
+Menu.header-overflow {
+  color: #656565;
+  background-color: white;
+  border: 1px #69b0df;
+  border-radius: 5px;
+}
+
+MenuItem.header-overflow {
+  color: #656565;
+}
+
+MenuItem.header-overflow:hover {
+  color: #3b8fc2;
+  background-color: transparent;
+}
+
+/* MenuBar */
+
+ToolBar.menuBar {
+  background-color: transparent;
+  padding: 0px;
+  color: #656565;
+  spacing: 25px;
+}
+
+ToolItem.menuBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #656565;
+  padding: 0px 10px 0px 10px;
+  spacing: 5px;
+}
+
+ToolItem.menuBar:hover {
+  background-color: transparent;
+    background-image: gradient(
+    linear, left top, left bottom,
+    from( #9acd2b ),
+    to( #8fbe29 )
+  );
+  border: 1px solid #83a438;
+  border-radius: 3px 3px 0px 0px;
+  color: white;
+  padding: 0px 10px 0px 10px;
+}
+
+ToolItem-DropDownIcon.menuBar {
+  background-image: url( img/fancy/menu_arrow.png );
+}
+
+ToolItem-DropDownIcon.menuBar:hover {
+  background-image: url( img/fancy/menu_arrow_hover.png );
+  border: 1px solid #83a438;
+}
+
+Menu.menuBar {
+  color: #656565;
+  background-color: #f1fbdb;
+  border: 1px solid #83a438;
+  border-radius: 0px 0px 3px 3px;
+  animation: slideIn 250ms ease-out, slideOut 50ms ease-out;
+}
+
+MenuItem.menuBar {
+  color: #656565;
+}
+
+MenuItem.menuBar:hover {
+  color: #8fbe29;
+  background-color: transparent;
+}
+
+/* Sash */
+Sash:hover {
+  background-color: #e9f3d2;
+}
+
+/* View ToolBar */
+
+ToolBar.viewToolbar {
+  background-color: transparent;
+  padding: 0px 2px;
+  spacing: 2px;
+}
+
+ToolItem.viewToolbar {
+  border: none;
+}
+
+ToolItem:selected.viewToolbar {
+  padding: 0px;
+  border: 1px solid #8fbe29;
+}
+
+ToolItem-DropDownIcon.viewToolbar {
+  background-image: url( img/fancy/viewMenu.png );
+  border: none;
+}

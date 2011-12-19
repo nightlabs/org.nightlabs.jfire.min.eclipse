@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.presentationFactories">
+      <factory
+            class="org.nightlabs.jfire.rap.themes.business.BusinessPresentationFactory"
+            id="org.nightlabs.jfire.rap.themes.business.factory"
+            name="Business Presentation Factory">
+      </factory>
+      <factory
+            class="org.nightlabs.jfire.rap.themes.fancy.FancyPresentationFactory"
+            id="org.nightlabs.jfire.rap.themes.fancy.factory"
+            name="Fancy Presentation Factory">
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            defaultEntrypointId="org.nightlabs.jfire.rap.entrypoint2"
+            favicon="img/business/favicon.ico"
+            id="org.nightlabs.jfire.rap.themes.business.branding"
+            servletName="business2"
+            themeId="org.nightlabs.jfire.rap.themes.business.theme"
+            title="JFire RAP business design">
+         <presentationFactory
+               defaultLayoutId="org.nightlabs.jfire.rap.themes.business.layout"
+               id="org.nightlabs.jfire.rap.themes.business.factory"
+               name="Business Presentation Factory"
+               viewActionsVisible="false">
+            <defaultStackPresentation
+                  id="org.nightlabs.jfire.rap.themes.stack.view">
+            </defaultStackPresentation>
+         </presentationFactory>
+      </branding>
+      <branding
+            favicon="img/fancy/favicon.png"
+            id="org.nightlabs.jfire.rap.themes.fancy.branding"
+            servletName="fancy"
+            themeId="org.nightlabs.jfire.rap.themes.fancy.theme"
+            title="RAP fancy design">
+         <presentationFactory
+               defaultLayoutId="org.nightlabs.jfire.rap.themes.fancy.layout"
+               id="org.nightlabs.jfire.rap.themes.fancy.factory"
+               name="Fancy Presentation Factory"
+               viewActionsVisible="false">
+            <defaultStackPresentation
+                  id="org.nightlabs.jfire.rap.themes.stack.view">
+            </defaultStackPresentation>
+         </presentationFactory>
+      </branding>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.layouts">
+      <layout
+            id="org.nightlabs.jfire.rap.themes.business.layout"
+            name="Business Layout Blue">
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.LogoInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.logo"
+               name="Logo">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.HeaderInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.header"
+               name="Header">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.FooterInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.footer"
+               name="Footer">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.MenuBarInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.menubar"
+               name="MenuBar">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.PerspectiveSwitcherInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.perspective"
+               name="Perspective Switcher">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.StackInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.stack"
+               name="Business Stack">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.ConfigDialogInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.confdialog"
+               name="Config Dialog">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.CoolbarInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.coolbar"
+               name="Coolbar">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.business.layoutsets.CoolbarOverflowInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.coolbaroverflow"
+               name="Coolbar Overflow">
+         </layoutSet>
+      </layout>
+      <layout
+            id="org.nightlabs.jfire.rap.themes.fancy.layout"
+            name="Fancy Layout">
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.LogoInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.logo"
+               name="Logo">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.HeaderInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.header"
+               name="Header">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.FooterInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.footer"
+               name="Footer">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.MenuBarInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.menubar"
+               name="MenuBar">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.PerspectiveSwitcherInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.perspective"
+               name="Perspective Switcher">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.StackInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.stack"
+               name="Fancy Stack">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.ConfigDialogInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.confdialog"
+               name="Config Dialog">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.CoolbarInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.coolbar"
+               name="Coolbar">
+         </layoutSet>
+         <layoutSet
+               class="org.nightlabs.jfire.rap.themes.fancy.layoutsets.CoolbarOverflowInitializer"
+               id="org.nightlabs.jfire.rap.themes.layoutset.coolbaroverflow"
+               name="Coolbar Overflow">
+         </layoutSet>
+      </layout>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.themes">
+      <theme
+            file="theme/business/business.css"
+            id="org.nightlabs.jfire.rap.themes.business.theme"
+            name="Business Theme">
+      </theme>
+      <theme
+            file="theme/fancy/fancy.css"
+            id="org.nightlabs.jfire.rap.themes.fancy.theme"
+            name="Fancy Theme">
+      </theme>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.stackPresentations">
+      <stackPresentation
+            actionClass="org.nightlabs.jfire.rap.themes.stacks.ConfigAction"
+            class="org.nightlabs.jfire.rap.themes.stacks.ViewStackPresentation"
+            id="org.nightlabs.jfire.rap.themes.stack.view"
+            name="Example Stack Presentation"
+            type="view">
+      </stackPresentation>
+   </extension>
+
+</plugin>
