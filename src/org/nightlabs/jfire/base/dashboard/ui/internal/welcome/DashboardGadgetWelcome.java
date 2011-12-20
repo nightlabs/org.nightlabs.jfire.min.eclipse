@@ -16,6 +16,7 @@ import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 
 /**
  * @author abieber
+ * @author sschefczyk
  */
 public class DashboardGadgetWelcome extends AbstractDashboardGadget {
 
