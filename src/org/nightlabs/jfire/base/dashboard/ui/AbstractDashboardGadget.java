@@ -17,7 +17,7 @@ public abstract class AbstractDashboardGadget implements IDashboardGadget {
 		this.gadgetContainer = gadgetContainer;
 	}
 	
-	protected IDashboardGadgetContainer getGadgetContainer() {
+	public IDashboardGadgetContainer getGadgetContainer() {
 		return gadgetContainer;
 	}
 
