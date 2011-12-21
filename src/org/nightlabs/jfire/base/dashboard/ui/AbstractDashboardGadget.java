@@ -1,5 +1,9 @@
 package org.nightlabs.jfire.base.dashboard.ui;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.nightlabs.base.ui.composite.XComposite;
+
 
 /**
  * @author abieber
@@ -19,6 +23,12 @@ public abstract class AbstractDashboardGadget implements IDashboardGadget {
 	
 	public IDashboardGadgetContainer getGadgetContainer() {
 		return gadgetContainer;
+	}
+
+	protected XComposite createDefaultWrapper(Composite parent) {
+		XComposite wrapper = new XComposite(parent, SWT.NONE);
+		wrapper.getGridData().minimumHeight = 200;
+		return wrapper;
 	}
 
 }

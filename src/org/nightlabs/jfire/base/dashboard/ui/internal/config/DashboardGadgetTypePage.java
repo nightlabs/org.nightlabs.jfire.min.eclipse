@@ -106,6 +106,8 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 			pageEntry = new PageEntry();
 			IDashboardGadgetConfigPage<Object> page = factory.createConfigurationWizardPage();
 			DashboardGadgetLayoutEntry<Object> layoutEntry = (DashboardGadgetLayoutEntry<Object>) configModule.createEditLayoutEntry(factory.getDashboardGadgetType());
+			layoutEntry.getGridData().setGrabExcessHorizontalSpace(true);
+			layoutEntry.getGridData().setHorizontalAlignment(GridData.FILL);
 			page.initialize(layoutEntry);
 			pageEntry.page = page;
 			pageEntry.layoutEntry = layoutEntry;

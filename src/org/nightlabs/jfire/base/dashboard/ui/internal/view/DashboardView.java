@@ -123,6 +123,10 @@ public class DashboardView extends LSDViewPart {
 		form.getDisplay().syncExec(new Runnable() {
 			public void run() {
 				GridLayout layout = GridLayoutUtil.createGridLayout(configModule.getGridLayout());
+				if (layout.verticalSpacing < 10)
+					layout.verticalSpacing = 10;
+				if (layout.horizontalSpacing < 10)
+					layout.horizontalSpacing = 10;
 				
 				form.getBody().setLayout(layout);
 				

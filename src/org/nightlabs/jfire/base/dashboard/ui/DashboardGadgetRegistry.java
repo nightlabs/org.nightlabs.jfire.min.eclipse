@@ -11,7 +11,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.nightlabs.eclipse.extension.AbstractEPProcessor;
-import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.slf4j.LoggerFactory;
 
 /**

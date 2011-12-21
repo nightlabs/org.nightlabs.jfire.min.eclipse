@@ -48,9 +48,9 @@ public class DashboardGadgetWelcome extends AbstractDashboardGadget {
 		captionLabel.setText(caption);
 		RCPUtil.setControlFontStyle(captionLabel, SWT.BOLD, 0);
 		
-		Text text = new Text(wrapper2, SWT.WRAP);
-		text.setText(rowText);
-		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		Label textLabel = new Label(wrapper2, SWT.WRAP);
+		textLabel.setText(rowText);
+		textLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
 	
 	@Override
