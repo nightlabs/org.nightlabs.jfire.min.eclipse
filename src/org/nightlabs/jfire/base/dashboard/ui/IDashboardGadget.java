@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.dashboard.ui;
 
 import org.eclipse.swt.widgets.Composite;

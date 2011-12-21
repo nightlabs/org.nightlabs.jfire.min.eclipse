@@ -10,4 +10,5 @@ Require-Bundle: org.nightlabs.clientui.ui,
  org.nightlabs.eclipse.compatibility,
  org.nightlabs.jdo;bundle-version="1.0.13"
 Bundle-Localization: plugin
-Export-Package: org.nightlabs.jfire.base.dashboard.ui
+Export-Package: org.nightlabs.jfire.base.dashboard.ui,
+ org.nightlabs.jfire.base.dashboard.ui.action

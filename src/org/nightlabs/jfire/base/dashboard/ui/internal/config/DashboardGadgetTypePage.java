@@ -1,13 +1,9 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.IOpenListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -46,20 +42,9 @@ public class DashboardGadgetTypePage extends WizardHopPage {
 	
 	private DashboardLayoutConfigModule<?> configModule;
 	
-	private boolean processSelection = true;
-	
 	private ISelectionChangedListener typeSelectedListener = new ISelectionChangedListener() {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			if (!processSelection)
-				return;
-			
-			int idx = table.getSelectionIndex();
-			processSelection = false;
-			table.setSelection((ISelection) null, false);
-			table.select(idx);
-			processSelection = true;
-			
 			IDashboardGadgetFactory selectedType = table.getFirstSelectedElement();
 			if (selectedType != null) {
 				typeDescription.setText(selectedType.getDescription());

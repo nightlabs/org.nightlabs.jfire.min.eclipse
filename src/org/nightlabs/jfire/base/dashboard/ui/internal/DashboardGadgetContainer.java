@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.dashboard.ui.internal;
 
 import org.eclipse.jface.action.IToolBarManager;

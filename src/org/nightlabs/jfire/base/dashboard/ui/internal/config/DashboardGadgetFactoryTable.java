@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -27,7 +24,7 @@ public class DashboardGadgetFactoryTable extends AbstractTableComposite<IDashboa
 	 * @param style
 	 */
 	public DashboardGadgetFactoryTable(Composite parent, int style) {
-		super(parent, style);
+		super(parent, style, true, AbstractTableComposite.DEFAULT_STYLE_SINGLE_BORDER);
 	}
 
 	/* (non-Javadoc)

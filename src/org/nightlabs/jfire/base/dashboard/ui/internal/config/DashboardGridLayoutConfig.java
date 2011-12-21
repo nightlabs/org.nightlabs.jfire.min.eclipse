@@ -15,9 +15,6 @@ import org.nightlabs.clientui.ui.layout.IGridLayoutConfig;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 import org.nightlabs.jfire.dashboard.DashboardLayoutConfigModule;
 
-/**
- * 
- */
 
 /**
  * @author abieber

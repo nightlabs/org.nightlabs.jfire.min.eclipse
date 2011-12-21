@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.dashboard.ui.internal.config;
 
 import org.eclipse.jface.wizard.Wizard;

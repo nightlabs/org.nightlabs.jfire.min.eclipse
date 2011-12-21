@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.nightlabs.jfire.base.dashboard.ui.internal.welcome;
 
 import org.eclipse.swt.SWT;
