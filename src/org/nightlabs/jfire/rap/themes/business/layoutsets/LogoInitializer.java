@@ -21,12 +21,12 @@ public class LogoInitializer implements ILayoutSetInitializer {
 
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
-    layoutSet.addImagePath( ILayoutSetConstants.LOGO, path + "logo_jfire_header.jpg" ); //$NON-NLS-1$
+    layoutSet.addImagePath( ILayoutSetConstants.LOGO, path + "logo_jfire_header.png" ); //$NON-NLS-1$
     
     // positions
     FormData fdLogo = new FormData();
     fdLogo.right = new FormAttachment( 100, -75 );
-    fdLogo.top = new FormAttachment( 0, 32 );
+    fdLogo.top = new FormAttachment( 0, 10 );
     layoutSet.addPosition( ILayoutSetConstants.LOGO_POSITION, fdLogo );
   }
 }
