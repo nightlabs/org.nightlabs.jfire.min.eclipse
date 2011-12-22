@@ -10,7 +10,6 @@ import java.util.Set;
 
 import javax.jdo.JDOHelper;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
@@ -18,11 +17,11 @@ import org.eclipse.swt.widgets.Display;
 import org.nightlabs.base.ui.context.UIContext;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.base.ui.notification.NotificationAdapterJob;
+import org.nightlabs.jfire.base.jdo.GlobalJDOManagerProvider;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
-import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleManager;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
@@ -33,6 +32,8 @@ import org.nightlabs.notification.NotificationEvent;
 import org.nightlabs.notification.NotificationListener;
 import org.nightlabs.notification.SubjectCarrier;
 import org.nightlabs.progress.ProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A subclass should be instantiated to show data in an UI element ({@link org.eclipse.swt.widgets.List}, {@link org.eclipse.swt.widgets.Combo}, table and the like).
@@ -49,7 +50,7 @@ import org.nightlabs.progress.ProgressMonitor;
  */
 public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 {
-	private static final Logger logger = Logger.getLogger(ActiveJDOObjectController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActiveJDOObjectController.class);
 
 	/**
 	 * This method is called on a worker thread and must retrieve JDO objects for
@@ -323,8 +324,8 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 			if (logger.isDebugEnabled())
 				logger.debug("close: unregistering listeners (" + getJDOObjectClass() + ')'); //$NON-NLS-1$
 
-			JDOLifecycleManager.sharedInstance().removeLifecycleListener(lifecycleListener);
-			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), notificationListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeLifecycleListener(lifecycleListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeNotificationListener(getJDOObjectClass(), notificationListener);
 		}
 		else {
 			if (logger.isDebugEnabled())
@@ -354,8 +355,8 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 				logger.debug("getElements: registering listeners (" + getJDOObjectClass() + ')'); //$NON-NLS-1$
 
 			listenersExist = true;
-			JDOLifecycleManager.sharedInstance().addLifecycleListener(lifecycleListener);
-			JDOLifecycleManager.sharedInstance().addNotificationListener(getJDOObjectClass(), notificationListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().addLifecycleListener(lifecycleListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().addNotificationListener(getJDOObjectClass(), notificationListener);
 		}
 
 		if (jdoObjects != null)
@@ -416,8 +417,8 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject>
 
 		synchronized (jdoObjectID2jdoObjectMutex)
 		{
-			JDOLifecycleManager.sharedInstance().removeLifecycleListener(lifecycleListener);
-			JDOLifecycleManager.sharedInstance().removeNotificationListener(getJDOObjectClass(), notificationListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeLifecycleListener(lifecycleListener);
+			GlobalJDOManagerProvider.sharedInstance().getLifecycleManager().removeNotificationListener(getJDOObjectClass(), notificationListener);
 			listenersExist = false;
 
 			if (jdoObjectID2jdoObject != null)
