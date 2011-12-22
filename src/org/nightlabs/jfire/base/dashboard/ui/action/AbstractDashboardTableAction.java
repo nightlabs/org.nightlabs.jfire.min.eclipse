@@ -7,17 +7,20 @@ import org.nightlabs.base.ui.action.IUpdateActionOrContributionItem;
 import org.nightlabs.base.ui.action.SelectionAction;
 
 /**
+ * Use this as base class for actions whose enabled state will be updated by an {@link DashboardTableActionManager}.
+ *  
  * @author abieber
- *
  */
 public class AbstractDashboardTableAction<T> extends SelectionAction implements IUpdateActionOrContributionItem {
 
-	/**
-	 * 
-	 */
 	public AbstractDashboardTableAction() {
 	}
 
+	/**
+	 * Overwrite this to calculate the enabled-state of this action. You can
+	 * access {@link #getSelectedTableItems()} and
+	 * {@link #getFirstSelectedTableItem()} to do so.
+	 */
 	@Override
 	public boolean calculateEnabled() {
 		return true;
@@ -27,7 +30,10 @@ public class AbstractDashboardTableAction<T> extends SelectionAction implements 
 	public boolean calculateVisible() {
 		return true;
 	}
-	
+
+	/**
+	 * @return All selected table items, if they are of type T.
+	 */
 	@SuppressWarnings("unchecked")
 	public List<T> getSelectedTableItems() {
 		List<?> selectedObjects = super.getSelectedObjects();
@@ -46,6 +52,9 @@ public class AbstractDashboardTableAction<T> extends SelectionAction implements 
 		return tableItems;
 	}
 	
+	/**
+	 * @return The first selected table item of type T.
+	 */
 	public T getFirstSelectedTableItem() {
 		List<T> tableItems = getSelectedTableItems();
 		if (tableItems == null || tableItems.size() <= 0)

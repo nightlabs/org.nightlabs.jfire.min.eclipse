@@ -6,34 +6,28 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 /**
+ * Use this as base class for implementing {@link IDashboardGadgetFactory}. It
+ * will initialize {@link #getDashboardGadgetType() dashboardGadgetType},
+ * {@link #getName() name} and {@link #getDescription() description} from the
+ * extension-element in the plugin.xml.
+ * 
  * @author abieber
- *
  */
-public abstract class AbstractDashboardGadgetFactory implements
-		IDashboardGadgetFactory {
+public abstract class AbstractDashboardGadgetFactory implements IDashboardGadgetFactory {
 
 	
 	private String dashBoardGadgetType;
 	private String name;
 	private String description;
 	
-	/**
-	 * 
-	 */
 	public AbstractDashboardGadgetFactory() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory#getDashboardGadgetType()
-	 */
 	@Override
 	public String getDashboardGadgetType() {
 		return dashBoardGadgetType;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.dashboard.ui.IDashboardGadgetFactory#getName()
-	 */
 	@Override
 	public String getName() {
 		return name;
@@ -44,9 +38,6 @@ public abstract class AbstractDashboardGadgetFactory implements
 		return description;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		String dashBoardGadgetTypeAttr = config.getAttribute("dashboardGadgetType"); //$NON-NLS-1$

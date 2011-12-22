@@ -11,8 +11,12 @@ import org.nightlabs.base.ui.action.ISelectionAction;
 import org.nightlabs.base.ui.table.AbstractTableComposite;
 
 /**
+ * A manager that can be used to handle actions whose enabled state is dependent
+ * on the selection in a table. The manager will install a
+ * SelectionChangedListener and update the actions attributes. You'll need to
+ * use {@link #addAction(Action)} so the manager knows the action.
+ * 
  * @author abieber
- *
  */
 public class DashboardTableActionManager<T> {
 	
@@ -26,11 +30,11 @@ public class DashboardTableActionManager<T> {
 		}
 	};
 	
-	public DashboardTableActionManager(AbstractTableComposite<T> invoiceTable) {
-		this.table = invoiceTable;
+	public DashboardTableActionManager(AbstractTableComposite<T> table) {
+		this.table = table;
 		menuManager = new MenuManager();
-		createContextMenu(invoiceTable);
-		invoiceTable.addSelectionChangedListener(selectionChangedListener);
+		createContextMenu(table);
+		table.addSelectionChangedListener(selectionChangedListener);
 	}
 
 	private void createContextMenu(AbstractTableComposite<T> invoiceTable) {

@@ -2,13 +2,15 @@ package org.nightlabs.jfire.base.dashboard.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.nightlabs.base.ui.wizard.WizardHopPage;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 
 /**
+ * Use this as base for implementing {@link IDashboardGadgetConfigPage}. It will store the
+ * {@link #getLayoutEntry() layoutEntry} set for this page make it accessible in your
+ * implementation of the {@link WizardHopPage#createPageContents(Composite)} method.
+ * 
  * @author abieber
- *
  */
 public abstract class AbstractDashbardGadgetConfigPage<T> extends WizardHopPage implements IDashboardGadgetConfigPage<T> {
 
