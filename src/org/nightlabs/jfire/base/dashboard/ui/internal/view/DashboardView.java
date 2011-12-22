@@ -12,6 +12,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -22,6 +23,8 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.nightlabs.base.ui.composite.XComposite;
+import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.job.Job;
 import org.nightlabs.clientui.ui.layout.GridLayoutUtil;
@@ -57,12 +60,13 @@ public class DashboardView extends LSDViewPart {
 							AbstractEditLayoutEntry.FETCH_GROUP_GRID_DATA};
 	
 	
-	private ScrolledForm form;
 	private FormToolkit toolkit;
-	
-	private List<DashboardGadgetContainer> gadgetContainers = new LinkedList<DashboardGadgetContainer>();
+	private ScrolledForm form;
+	private XComposite wrapper;
 	
 	private DashboardLayoutConfigModule<DashboardGadgetLayoutEntry<?>> configModule;
+	private List<DashboardGadgetContainer> gadgetContainers = new LinkedList<DashboardGadgetContainer>();
+	
 	
 	private boolean viewStoredConfigModuleItself = false;
 	
@@ -118,16 +122,26 @@ public class DashboardView extends LSDViewPart {
 	
 	private void createViewContents() {
 		form.getDisplay().syncExec(new Runnable() {
+
 			public void run() {
+				
+				clearFormBody();
+				
+				configureBody(form.getBody());
+				
+				wrapper = new XComposite(form.getBody(), SWT.NONE, LayoutMode.TIGHT_WRAPPER);
+				
 				GridLayout layout = GridLayoutUtil.createGridLayout(configModule.getGridLayout());
 				if (layout.verticalSpacing < 10)
 					layout.verticalSpacing = 10;
 				if (layout.horizontalSpacing < 10)
 					layout.horizontalSpacing = 10;
 				
-				form.getBody().setLayout(layout);
+				wrapper.setLayout(layout);
+				// widthHint = 1 is a workaround for horizontally growing pages (preventing horizontal scrollbar)
+				wrapper.getGridData().widthHint = 1;
 				
-				clearFormBody();
+				
 				gadgetContainers.clear();
 
 				for (DashboardGadgetLayoutEntry<?> layoutEntry : configModule.getEditLayoutEntries()) {
@@ -145,10 +159,8 @@ public class DashboardView extends LSDViewPart {
 				}
 
 				form.layout(true, true);
-				form.getBody().layout(true, true);
-				form.redraw();
-				getSite().getShell().update();
-				getSite().getShell().layout(true, true);
+				wrapper.layout(true, true);
+				wrapper.update();
 			}
 		});		
 	}
@@ -162,8 +174,21 @@ public class DashboardView extends LSDViewPart {
 		}
 	}
 	
+	protected void configureBody(Composite body) {
+		GridLayout layout = new GridLayout();
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.marginTop = 0;
+		layout.marginBottom = 0;
+		body.setLayout(layout);
+	}	
+	
 	private DashboardGadgetContainer createGadgetContainer(DashboardGadgetLayoutEntry<?> layoutEntry) {
-		ToolBarSectionPart gadgetSection = new ToolBarSectionPart(toolkit, form.getBody(), ExpandableComposite.TITLE_BAR, layoutEntry.getName());
+		ToolBarSectionPart gadgetSection = new ToolBarSectionPart(toolkit, wrapper, ExpandableComposite.TITLE_BAR, layoutEntry.getName());
 		GridData gridData = GridLayoutUtil.createGridData(layoutEntry.getGridData());
 		gadgetSection.getSection().setLayoutData(gridData);
 		IDashboardGadgetFactory gadgetFactory = DashboardGadgetRegistry.sharedInstance().getFactory(layoutEntry.getEntryType());
