@@ -18,31 +18,57 @@ import org.nightlabs.math.Base62Coder;
 import org.nightlabs.util.IOUtil;
 
 public class LoginServlet extends HttpServlet {
-	public static final String ATT_LOGIN = LoginServlet.class.getName() +".loginData";
+	
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = Logger.getLogger(LoginServlet.class);
+	protected static final Logger logger = Logger.getLogger(LoginServlet.class);
+
+	public final static String ATT_LOGIN = LoginServlet.class.getName() +".loginData";
+	
+	public static class FallBacks {
+		static final String INITIAL_CONTEXT_FACTORY = "org.jboss.security.jndi.LoginInitialContextFactory";
+		static final String PROVIDER_URL = "jnp://localhost:1099";
+		static final String servletName  = "rap";
+	}
+	
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String user = request.getParameter("user");
+		
+		String target = request.getHeader("Referer");
+		
 		if (user == null || user.trim().length() == 0) {
-			redirectToIndex(response, "Login is not set");
+			redirectToIndex(response, target, "Login is not set");
 			return;
 		}
 
 		String password = request.getParameter("password");
 		if (password == null || password.trim().length() == 0) {
-			redirectToIndex(response, "Password is not set");
+			redirectToIndex(response, target, "Password is not set");
 			return;
 		}
 
 		String organization = request.getParameter("organization");
 		if (organization == null || organization.trim().length() == 0) {
-			redirectToIndex(response, "Organization is not set");
+			redirectToIndex(response, target, "Organization is not set");
 			return;
 		}
-
+		
+		
+		String workstation = request.getParameter("workstation");
+		if (workstation == null || workstation.trim().length() == 0)
+			workstation = null;
+		String initialContextFactory = request.getParameter("initialContextFactory");
+		if (initialContextFactory == null || initialContextFactory.trim().length() == 0)
+			initialContextFactory = FallBacks.INITIAL_CONTEXT_FACTORY;
+		String providerUrl = request.getParameter("providerUrl");
+		if (providerUrl == null || providerUrl.trim().length() == 0)
+			providerUrl = FallBacks.PROVIDER_URL;
+		String servletName = request.getParameter("servletName");
+		if (servletName == null || servletName.trim().length() == 0)
+			servletName = FallBacks.servletName;
+		
 		LoginData loginData = new LoginData();
 
 		Base62Coder coder = Base62Coder.sharedInstance();
@@ -50,9 +76,12 @@ public class LoginServlet extends HttpServlet {
 
 		loginData.setUserID(user);
 		loginData.setPassword(password);
-		loginData.setInitialContextFactory("org.jboss.security.jndi.LoginInitialContextFactory");
 		loginData.setOrganisationID(organization);
-		loginData.setProviderURL("jnp://localhost:1099");
+		//TODO set workstation
+		
+		loginData.setInitialContextFactory(initialContextFactory);
+		loginData.setProviderURL(providerUrl);
+		
 		loginData.setSecurityProtocol("jfire");
 
 		// test once again. if not - where do we get AsyncLoginResult???
@@ -62,13 +91,16 @@ public class LoginServlet extends HttpServlet {
 			checkOSGIProperties();
 			request.getSession().setAttribute(ATT_LOGIN, loginData);
 			String contextPath = request.getContextPath();
-			String redirect = contextPath + "/rap?startup=jfire";
-			response.sendRedirect(redirect);
+			response.sendRedirect(getRedirect(contextPath, servletName));
 			if (logger.isDebugEnabled()) {
 				logger.debug("contextPath = "+contextPath);
 			}
 		} else
-			redirectToIndex(response, "Login failed: " + res.getMessage());
+			redirectToIndex(response, target, "Login failed: " + res.getMessage());
+	}
+
+	protected String getRedirect(String contextPath, String servletName) {
+		return contextPath + "/" + servletName  + "?startup=jfire";
 	}
 
 	@Override
@@ -78,8 +110,10 @@ public class LoginServlet extends HttpServlet {
 		JFireSecurityConfiguration.declareConfiguration();
 	}
 
-	private void redirectToIndex(HttpServletResponse response, String message) throws UnsupportedEncodingException, IOException {
-		response.sendRedirect("index.jsp?message=" + URLEncoder.encode(message, "UTF-8"));
+	protected void redirectToIndex(HttpServletResponse response, String target, String message) throws UnsupportedEncodingException, IOException {
+		if (target == null)
+			target = "";
+		response.sendRedirect(target + "?message=" + URLEncoder.encode(message, "UTF-8"));
 	}
 	
 	private void checkOSGIProperties() 
