@@ -37,6 +37,7 @@ public abstract class AbstractDashboardGadget implements IDashboardGadget {
 	protected XComposite createDefaultWrapper(Composite parent) {
 		XComposite wrapper = new XComposite(parent, SWT.NONE);
 		wrapper.getGridData().minimumHeight = 200;
+		wrapper.getGridData().heightHint = 200;
 		return wrapper;
 	}
 

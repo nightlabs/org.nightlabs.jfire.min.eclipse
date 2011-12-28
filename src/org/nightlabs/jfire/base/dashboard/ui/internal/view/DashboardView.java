@@ -190,6 +190,7 @@ public class DashboardView extends LSDViewPart {
 	private DashboardGadgetContainer createGadgetContainer(DashboardGadgetLayoutEntry<?> layoutEntry) {
 		ToolBarSectionPart gadgetSection = new ToolBarSectionPart(toolkit, wrapper, ExpandableComposite.TITLE_BAR, layoutEntry.getName());
 		GridData gridData = GridLayoutUtil.createGridData(layoutEntry.getGridData());
+		gridData.verticalAlignment = SWT.BEGINNING;
 		gadgetSection.getSection().setLayoutData(gridData);
 		IDashboardGadgetFactory gadgetFactory = DashboardGadgetRegistry.sharedInstance().getFactory(layoutEntry.getEntryType());
 		return new DashboardGadgetContainer(gadgetSection, gadgetFactory);
