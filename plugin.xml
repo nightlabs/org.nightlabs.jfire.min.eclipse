@@ -14,6 +14,14 @@
             dashboardGadgetType="DashboardGadgetFactoryWelcome"
             description="%org.nightlabs.jfire.base.dashboard.ui.internal.welcome.DashboardGadgetFactoryWelcome.description" name="%org.nightlabs.jfire.base.dashboard.ui.internal.welcome.DashboardGadgetFactoryWelcome.name"/>
     </extension>
+    <extension
+         point="org.nightlabs.jfire.base.dashboard.ui.dashboardGadgetFactory">
+      <dashboardGadgetFactory
+            class="org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsFactory"
+            dashboardGadgetType="DashboardGadgetClientScriptsFactory"
+            name="Client Scripts Gadget">
+      </dashboardGadgetFactory>
+   </extension>
     <extension point="org.eclipse.ui.views">
         <category id="org.nightlabs.jfire.base.dashboard.ui.category" name="%org.nightlabs.jfire.base.dashboard.ui.category.name"/>
         <view category="org.nightlabs.jfire.base.dashboard.ui.category"
