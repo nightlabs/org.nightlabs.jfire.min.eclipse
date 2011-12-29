@@ -15,13 +15,13 @@ import org.nightlabs.eclipse.ui.dialog.ResizableTitleAreaDialog;
 
 public class DashboardGadgetClientScriptsNewEditDialog extends ResizableTitleAreaDialog {
 
-	DashboardGadgetClientScriptsConfigPage.ClientScriptPropertiesWrapper contentWrapper;
+	DashboardGadgetClientScriptsConfigPage.ClientScriptPropertiesWrapper data;
 	
-	public DashboardGadgetClientScriptsNewEditDialog(final Shell shell, final DashboardGadgetClientScriptsConfigPage.ClientScriptPropertiesWrapper 
-		contentWrapper) {
+	public DashboardGadgetClientScriptsNewEditDialog(final Shell shell, 
+		final DashboardGadgetClientScriptsConfigPage.ClientScriptPropertiesWrapper data) {
 		
 		super(shell, null);
-		this.contentWrapper = contentWrapper;
+		this.data = data;
 	}
 
 	@Override
@@ -43,12 +43,12 @@ public class DashboardGadgetClientScriptsNewEditDialog extends ResizableTitleAre
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd.verticalIndent = 10;
 		textClientScriptName.setLayoutData(gd);
-		textClientScriptName.setText("Client script name");
+		textClientScriptName.setText(data.getClientScriptName() != null ? data.getClientScriptName() : "Client script name");
 		textClientScriptName.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(final ModifyEvent event) {
 				if (event.getSource() instanceof Text)
-					contentWrapper.setClientScriptName(((Text) event.getSource()).getText());	// TODO add delay
+					data.setClientScriptName(((Text) event.getSource()).getText());	// TODO add delay
 			}
 		});
 		
@@ -61,12 +61,12 @@ public class DashboardGadgetClientScriptsNewEditDialog extends ResizableTitleAre
 		final Text textClientScriptContent = new Text(content, SWT.BORDER | SWT.WRAP);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		textClientScriptContent.setLayoutData(gd);
-		textClientScriptContent.setText("Client script content");
+		textClientScriptContent.setText(data.getClientScriptContent() != null ? data.getClientScriptContent() : "Client script content");
 		textClientScriptContent.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(final ModifyEvent event) {
 				if (event.getSource() instanceof Text)
-					contentWrapper.setClientScriptContent(((Text) event.getSource()).getText());	// TODO add delay
+					data.setClientScriptContent(((Text) event.getSource()).getText());	// TODO add delay
 			}
 		});
 		

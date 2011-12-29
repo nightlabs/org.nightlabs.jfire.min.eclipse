@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -150,6 +151,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		buttonRemove = new Button(parent, SWT.PUSH);
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonRemove.setLayoutData(gd);
+		buttonRemove.setEnabled(false);
 		buttonRemove.setText("Remove");
 		buttonRemove.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -162,6 +164,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		buttonEdit = new Button(parent, SWT.PUSH);
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonEdit.setLayoutData(gd);
+		buttonEdit.setEnabled(false);
 		buttonEdit.setText("Edit");
 		buttonEdit.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -179,7 +182,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		buttonMoveUp.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				updateItemOrder();
+				updateItemOrder(true);
 				updateButtonStates();
 			}
 		});
@@ -192,7 +195,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		buttonMoveDown.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				updateItemOrder();
+				updateItemOrder(false);
 				updateButtonStates();
 			}
 		});
@@ -204,8 +207,6 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		private String clientScriptContent;
 		
 		public ClientScriptPropertiesWrapper() {
-			clientScriptName = "";
-			clientScriptContent = "";
 		}
 		
 		public ClientScriptPropertiesWrapper(final String clientScriptName, final String clientScriptContent) {
@@ -227,51 +228,89 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void createClientScript() {
 		final ClientScriptPropertiesWrapper data = new ClientScriptPropertiesWrapper();
 		final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), data);
+		
 		if (dialog.open() == Window.OK) {
 			// Create new ClientScript instance and insert it into the table (not persisted yet)
-			DashboardGadgetClientScriptsConfig.ClientScript newClientScript = config.createNewClientScript(
-				data.getClientScriptName(), data.getClientScriptContent());		// TODO
-//			final DashboardGadgetClientScriptsConfig.ClientScript newClientScript = new DashboardGadgetClientScriptsConfig.ClientScript(
-//				data.getClientScriptName(), data.getClientScriptContent());
-			if (tableViewer.getInput() instanceof List<?>) {
-				final List<DashboardGadgetClientScriptsConfig.ClientScript> clientScripts = (List<DashboardGadgetClientScriptsConfig.ClientScript>) tableViewer.getInput();
-				clientScripts.add(newClientScript);
-				tableViewer.setInput(null);		// TODO
-				tableViewer.setInput(clientScripts);
+			final DashboardGadgetClientScriptsConfig.ClientScript clientScript = new DashboardGadgetClientScriptsConfig.ClientScript(
+				data.getClientScriptName(), data.getClientScriptContent());
+			
+			if (tableViewer.getInput() == null)		// nothing set yet
+				clientScripts = new ArrayList<DashboardGadgetClientScriptsConfig.ClientScript>();
+			else if (tableViewer.getInput() instanceof List<?>) {
+				clientScripts = (List<DashboardGadgetClientScriptsConfig.ClientScript>) tableViewer.getInput();
 			}
+			
+			clientScripts.add(clientScript);
+			tableViewer.setInput(clientScripts);
 		}
 	}
 	
 	private void editClientScript() {
-		TableItem item = tableViewer.getTable().getItem(tableViewer.getTable().getSelectionIndex());
-		Object data_ = item.getData();
+		final Object data_ = tableViewer.getTable().getItem(tableViewer.getTable().getSelectionIndex()).getData();
+		
 		if (data_ instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
-			DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
-			ClientScriptPropertiesWrapper data = new ClientScriptPropertiesWrapper(clientScript.getName(), clientScript.getScript());
+			final DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
+			final ClientScriptPropertiesWrapper data = new ClientScriptPropertiesWrapper(clientScript.getName(), clientScript.getContent());
 			final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), data);
-			if (dialog.open() == Window.OK) {
-				
-			}
+			
+			if (dialog.open() == Window.OK)
+				for (final DashboardGadgetClientScriptsConfig.ClientScript clientScript_ : clientScripts)
+					if (clientScript_.getName().equals(clientScript.getName())) {
+						clientScript_.setName(data.getClientScriptName());
+						clientScript_.setContent(data.getClientScriptContent());
+						tableViewer.setInput(clientScripts);	// perhaps update(...) instead of setInput(...)
+						break;
+					}
 		}
 	}
 	
 	private void removeClientScript() {
+		final Object data_ = tableViewer.getTable().getItem(tableViewer.getTable().getSelectionIndex()).getData();
 		
+		if (data_ instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
+			final DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
+			clientScripts.remove(clientScript);
+			tableViewer.remove(clientScript);
+		}
 	}
 	
-	private void updateItemOrder() {
+	private void updateItemOrder(final boolean up) {
+		final int sourceIdx = tableViewer.getTable().getSelectionIndex();
+		final int targetIdx = up ? sourceIdx - 1 : sourceIdx + 1;
+		final Object dataSource = tableViewer.getTable().getItem(sourceIdx).getData();
+		final Object dataTarget = tableViewer.getTable().getItem(targetIdx).getData();
 		
+		if (dataSource instanceof DashboardGadgetClientScriptsConfig.ClientScript && dataTarget instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
+			final DashboardGadgetClientScriptsConfig.ClientScript clientScriptSource = (DashboardGadgetClientScriptsConfig.ClientScript) dataSource;
+			final DashboardGadgetClientScriptsConfig.ClientScript clientScriptTarget = (DashboardGadgetClientScriptsConfig.ClientScript) dataTarget;
+			for (int i = 0; i < clientScripts.size(); i++) {
+				final DashboardGadgetClientScriptsConfig.ClientScript clientScript_ = clientScripts.get(i);
+				if (clientScript_.getName().equals(up ? clientScriptTarget.getName() : clientScriptSource.getName())) {
+					final String nameTmp = clientScript_.getName();
+					final String contentTmp = clientScript_.getContent();
+					clientScript_.setName(up ? clientScriptSource.getName() : clientScriptTarget.getName());
+					clientScript_.setContent(up ? clientScriptSource.getContent() : clientScriptTarget.getContent());
+					clientScripts.get(i + 1).setName(nameTmp);
+					clientScripts.get(i + 1).setContent(contentTmp);
+					break;
+				}
+			}
+			tableViewer.setInput(clientScripts);
+			tableViewer.getTable().setSelection(targetIdx);
+		}
 	}
 	
 	private void updateButtonStates() {
-		final boolean validIdx = tableViewer.getTable().getSelectionIndex() > 0 ? true : false;
-		buttonRemove.setEnabled(validIdx);
-		buttonEdit.setEnabled(validIdx);
-		buttonMoveUp.setEnabled(validIdx);
-		buttonMoveDown.setEnabled(tableViewer.getTable().getSelectionIndex() < tableViewer.getTable().getItemCount() - 1);
+		final int idx = tableViewer.getTable().getSelectionIndex();
+		final boolean itemSelected = idx > -1 ? true : false;
+		buttonRemove.setEnabled(itemSelected);
+		buttonEdit.setEnabled(itemSelected);
+		buttonMoveUp.setEnabled(idx > 0);
+		buttonMoveDown.setEnabled(idx < tableViewer.getTable().getItemCount() - 1);
 	}
 	
 	private void attachContentProvider() {
@@ -307,7 +346,9 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	}
 	
 	@Override
-	public void configure(final DashboardGadgetLayoutEntry<?> layoutEntry) {
+	public void configure(final DashboardGadgetLayoutEntry layoutEntry) {
+//		DashboardGadgetClientScriptsConfig config = new DashboardGadgetClientScriptsConfig(clientScripts);
+//		layoutEntry.setConfig(config);
 	}
 	
 }
