@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.language.I18nTextEditor;
@@ -33,6 +32,10 @@ import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 
+/**
+ * 
+ * @author Frederik Loeser <!-- frederik [AT] nightlabs [DOT] de -->
+ */
 public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadgetConfigPage<Object> {
 
 	private I18nTextEditor gadgetTitle;
@@ -57,7 +60,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	
 	public DashboardGadgetClientScriptsConfigPage() {
 		super(DashboardGadgetClientScriptsConfigPage.class.getName());
-		setTitle("Client scripts");
+		setTitle(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.page.title")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -66,11 +69,11 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		
 		final Label labelDescription1 = new Label(wrapper, SWT.WRAP);
 		labelDescription1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		labelDescription1.setText("This gadget will show you all stored client scripts.");
+		labelDescription1.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.gadget.description.text")); //$NON-NLS-1$
 		
 		final Label labelTitle = new Label(wrapper, SWT.NONE);
 		labelTitle.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		labelTitle.setText("Set the title of this gadget:");
+		labelTitle.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.gadget.title.text")); //$NON-NLS-1$
 
 		gadgetTitle = new I18nTextEditor(wrapper);
 		gadgetTitle.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -92,7 +95,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
 		gd.verticalIndent = 10;
 		buttonConfirmProcessing.setLayoutData(gd);
-		buttonConfirmProcessing.setText("Confirm processing");
+		buttonConfirmProcessing.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonConfirmProcessing.text")); //$NON-NLS-1$
 		buttonConfirmProcessing.setSelection(confirmProcessing);
 		buttonConfirmProcessing.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -103,7 +106,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		
 		final Label labelDescription2 = new Label(parent, SWT.WRAP);
 		labelDescription2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		labelDescription2.setText("Select a client script to be edited or create a new one.");
+		labelDescription2.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.description.text")); //$NON-NLS-1$
 
 	}
 	
@@ -116,20 +119,13 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		table.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(final Event event) {
 				updateButtonStates();
-				
-				
-				
 			}
 		});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(final MouseEvent e) {
-				if (table.getSelectionIndex() > -1) {
-					final TableItem item = table.getItem(table.getSelectionIndex());
-					
-					
-					
-				}
+				if (table.getSelectionIndex() > -1)
+					editClientScript();
 			}
 		});
 		
@@ -147,7 +143,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		final Button buttonNew = new Button(parent, SWT.PUSH);
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonNew.setLayoutData(gd);
-		buttonNew.setText("New");
+		buttonNew.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonNew.text")); //$NON-NLS-1$
 		buttonNew.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -161,7 +157,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonRemove.setLayoutData(gd);
 		buttonRemove.setEnabled(false);
-		buttonRemove.setText("Remove");
+		buttonRemove.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonRemove.text")); //$NON-NLS-1$
 		buttonRemove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -174,7 +170,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonEdit.setLayoutData(gd);
 		buttonEdit.setEnabled(false);
-		buttonEdit.setText("Edit");
+		buttonEdit.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonEdit.text")); //$NON-NLS-1$
 		buttonEdit.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -186,7 +182,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonMoveUp.setLayoutData(gd);
 		buttonMoveUp.setEnabled(false);
-		buttonMoveUp.setText("Up");
+		buttonMoveUp.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonUp.text")); //$NON-NLS-1$
 		buttonMoveUp.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -199,7 +195,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		buttonMoveDown.setLayoutData(gd);
 		buttonMoveDown.setEnabled(false);
-		buttonMoveDown.setText("Down");
+		buttonMoveDown.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonDown.text")); //$NON-NLS-1$
 		buttonMoveDown.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -336,9 +332,8 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		tableViewer.setLabelProvider(new TableLabelProvider() {
 			@Override
 			public String getColumnText(final Object element, final int columnIndex) {
-				if (element instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
+				if (element instanceof DashboardGadgetClientScriptsConfig.ClientScript)
 					return ((DashboardGadgetClientScriptsConfig.ClientScript) element).getName();
-				}
 				return null;
 			}
 		});
@@ -346,7 +341,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	
 	private I18nText createInitialName() {
 		final I18nTextBuffer textBuffer = new I18nTextBuffer();
-		initializeGadgetName(textBuffer, "clientScriptsGadget.title");
+		initializeGadgetName(textBuffer, "clientScriptsGadget.title"); //$NON-NLS-1$
 		return textBuffer;
 	}
 	
@@ -354,7 +349,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gadgetName.readFromProperties(
 			Messages.BUNDLE_NAME, 
 			DashboardGadgetClientScriptsConfigPage.class.getClassLoader(), 
-			DashboardGadgetClientScriptsConfigPage.class.getName() + "." + nameKeySuffix);
+			DashboardGadgetClientScriptsConfigPage.class.getName() + "." + nameKeySuffix); //$NON-NLS-1$
 	}
 
 	@Override
