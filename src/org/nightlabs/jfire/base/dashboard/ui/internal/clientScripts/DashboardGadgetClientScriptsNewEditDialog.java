@@ -23,6 +23,11 @@ public class DashboardGadgetClientScriptsNewEditDialog extends ResizableTitleAre
 		super(shell, null);
 		this.data = data;
 	}
+	
+//	@Override
+//	protected Point getInitialSize() {
+//		return new Point(700, 600);
+//	}
 
 	@Override
 	protected Control createDialogArea(final Composite parent) {
@@ -72,17 +77,4 @@ public class DashboardGadgetClientScriptsNewEditDialog extends ResizableTitleAre
 		
 		return parent_;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

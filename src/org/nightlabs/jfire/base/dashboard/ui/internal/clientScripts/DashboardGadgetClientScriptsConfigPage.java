@@ -1,6 +1,7 @@
 package org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -28,6 +29,7 @@ import org.nightlabs.base.ui.table.TableLabelProvider;
 import org.nightlabs.i18n.I18nText;
 import org.nightlabs.i18n.I18nTextBuffer;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashbardGadgetConfigPage;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 
@@ -91,7 +93,13 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		gd.verticalIndent = 10;
 		buttonConfirmProcessing.setLayoutData(gd);
 		buttonConfirmProcessing.setText("Confirm processing");
-		buttonConfirmProcessing.setEnabled(confirmProcessing);
+		buttonConfirmProcessing.setSelection(confirmProcessing);
+		buttonConfirmProcessing.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				confirmProcessing = !confirmProcessing;
+			}
+		});
 		
 		final Label labelDescription2 = new Label(parent, SWT.WRAP);
 		labelDescription2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -144,7 +152,8 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				createClientScript();
-				updateButtonStates();
+				if (tableViewer.getTable().getSelectionIndex() > -1)
+					updateButtonStates();
 			}
 		});
 		
@@ -170,7 +179,6 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				editClientScript();
-//				updateButtonStates();
 			}
 		});
 
@@ -269,13 +277,19 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	}
 	
 	private void removeClientScript() {
-		final Object data_ = tableViewer.getTable().getItem(tableViewer.getTable().getSelectionIndex()).getData();
+		final int amount = tableViewer.getTable().getSelectionCount();
+		final int[] indices = tableViewer.getTable().getSelectionIndices();
+		final DashboardGadgetClientScriptsConfig.ClientScript[] clientScriptsToRemove = new DashboardGadgetClientScriptsConfig.ClientScript[amount];
 		
-		if (data_ instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
-			final DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
-			clientScripts.remove(clientScript);
-			tableViewer.remove(clientScript);
+		for (int i = 0; i < amount; i++) {
+			final Object data_ = tableViewer.getTable().getItem(indices[i]).getData();
+			if (data_ instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
+				final DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
+				clientScriptsToRemove[i] = clientScript;
+			}
 		}
+		clientScripts.removeAll(Arrays.asList(clientScriptsToRemove));
+		tableViewer.remove(clientScriptsToRemove);
 	}
 	
 	private void updateItemOrder(final boolean up) {
@@ -306,11 +320,12 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	
 	private void updateButtonStates() {
 		final int idx = tableViewer.getTable().getSelectionIndex();
-		final boolean itemSelected = idx > -1 ? true : false;
-		buttonRemove.setEnabled(itemSelected);
-		buttonEdit.setEnabled(itemSelected);
-		buttonMoveUp.setEnabled(idx > 0);
-		buttonMoveDown.setEnabled(idx < tableViewer.getTable().getItemCount() - 1);
+		final int amount = tableViewer.getTable().getSelectionCount();
+		final boolean singleItemSelected = amount == 1 ? true : false;
+		buttonRemove.setEnabled(amount > 0);
+		buttonEdit.setEnabled(singleItemSelected);
+		buttonMoveUp.setEnabled(singleItemSelected && idx > 0);
+		buttonMoveDown.setEnabled(singleItemSelected && idx < tableViewer.getTable().getItemCount() - 1);
 	}
 	
 	private void attachContentProvider() {
@@ -331,8 +346,15 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	
 	private I18nText createInitialName() {
 		final I18nTextBuffer textBuffer = new I18nTextBuffer();
-//		TradeDashboardGadgetsConfigModuleInitialiser.initializeClientScriptsGadgetName(textBuffer);
+		initializeGadgetName(textBuffer, "clientScriptsGadget.title");
 		return textBuffer;
+	}
+	
+	private void initializeGadgetName(final I18nText gadgetName, final String nameKeySuffix) {
+		gadgetName.readFromProperties(
+			Messages.BUNDLE_NAME, 
+			DashboardGadgetClientScriptsConfigPage.class.getClassLoader(), 
+			DashboardGadgetClientScriptsConfigPage.class.getName() + "." + nameKeySuffix);
 	}
 
 	@Override
@@ -342,13 +364,18 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		if (config_ instanceof DashboardGadgetClientScriptsConfig) {
 			config = (DashboardGadgetClientScriptsConfig) config_;
 			clientScripts = config.getClientScripts();
+			confirmProcessing = config.isConfirmProcessing();
 		}
 	}
 	
 	@Override
 	public void configure(final DashboardGadgetLayoutEntry layoutEntry) {
-//		DashboardGadgetClientScriptsConfig config = new DashboardGadgetClientScriptsConfig(clientScripts);
-//		layoutEntry.setConfig(config);
+		layoutEntry.getEntryName().copyFrom(gadgetTitle != null ? gadgetTitle.getI18nText() : createInitialName());
+		
+		final DashboardGadgetClientScriptsConfig config = new DashboardGadgetClientScriptsConfig();
+		config.setClientScripts(clientScripts);
+		config.setConfirmProcessing(confirmProcessing);
+		
+		layoutEntry.setConfig(config);
 	}
-	
 }
