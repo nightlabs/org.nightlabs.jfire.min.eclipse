@@ -26,13 +26,11 @@ public class DashboardGadgetClientScriptsNewEditDialog extends ResizableTitleAre
 		final DashboardGadgetClientScriptsConfigPage.ClientScriptPropertiesWrapper data) {
 		
 		super(shell, Messages.RESOURCE_BUNDLE);
-		System.out.println("constructor");
 		this.data = data;
 	}
 	
 	@Override
 	protected Control createDialogArea(final Composite parent) {
-		System.out.println("createDialogArea");
 		final Composite parent_ = (Composite) super.createDialogArea(parent);
 		setTitle(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsNewEditDialog.createDialogArea.dialog.title")); //$NON-NLS-1$
 		setMessage(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsNewEditDialog.createDialogArea.dialog.message")); //$NON-NLS-1$
