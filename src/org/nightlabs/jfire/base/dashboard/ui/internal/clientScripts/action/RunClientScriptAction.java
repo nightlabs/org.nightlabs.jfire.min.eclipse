@@ -5,22 +5,46 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
+import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientScript;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Runs a given {@link ClientScript} by utilising an appropriate JavaScript script engine.
+ * @author Frederik Loeser <!-- frederik [AT] nightlabs [DOT] de -->
+ */
 public class RunClientScriptAction extends Action {
-
-	private String clientScriptContent;
 	
-	public RunClientScriptAction(String clientScriptContent) {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RunClientScriptAction.class);
+
+	private ClientScript clientScript;
+	
+	private boolean confirmProcessing;
+	
+	public RunClientScriptAction(ClientScript clientScript, boolean confirmProcessing) {
 		setId(RunClientScriptAction.class.getName());
-		setText("Perform client script");
-		this.clientScriptContent = clientScriptContent;
+		setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.action.RunClientScriptAction.action.text")); //$NON-NLS-1$
+		this.clientScript = clientScript;
+		this.confirmProcessing = confirmProcessing;
 	}
 	
 	@Override
 	public void run() {
+		if (confirmProcessing && !MessageDialog.openQuestion(
+				Display.getCurrent().getActiveShell(), 
+				Messages.getString(
+					"org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.action.RunClientScriptAction.questionDialog.title"),  //$NON-NLS-1$
+				String.format(Messages.getString(
+					"org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.action.RunClientScriptAction.questionDialog.message"),  //$NON-NLS-1$
+				clientScript.getName())))	
+			return;
+		
 		ScriptEngineManager manager = new ScriptEngineManager();
 	    
-		// Engines
+		// Engine
 		// =========================
 		// EngineName: Mozilla Rhino
 		// EngineVersion: 1.6 release 2
@@ -31,27 +55,15 @@ public class RunClientScriptAction extends Action {
 		// Names: [js, rhino, JavaScript, javascript, ECMAScript, ecmascript]
 //		List<ScriptEngineFactory> factoryList = manager.getEngineFactories();
 		
-	    ScriptEngine engine = manager.getEngineByName("js");
+	    ScriptEngine engine = manager.getEngineByName("js"); //$NON-NLS-1$
+	    
+	    if (engine == null)
+	    	throw new IllegalStateException(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.action.RunClientScriptAction.error.engineNotFound")); //$NON-NLS-1$
 	    
 	    try {
-//	    	String clientScriptContent = "var date = new Date();" + "date.getHours()";
-//			Double hour = (Double) engine.eval(clientScriptContent);
-//		    String msg;
-//		      
-//		    if (hour < 10)
-//		    	msg = "Good morning";
-//		    else if (hour < 16)
-//		    	msg = "Good afternoon";
-//		    else if (hour < 20)
-//		    	msg = "Good evening";
-//		    else
-//		    	msg = "Good night";
-//		      
-//		    System.out.println(hour);
-//		    System.out.println(msg);
-		    
-		    engine.eval(clientScriptContent);
-		    
+	    	LOGGER.debug("Executing script '"+ clientScript.getName() +"'..."); //$NON-NLS-1$ //$NON-NLS-2$
+	    	engine.eval(clientScript.getContent());
+	    	
 		} catch (ScriptException e) {
 			throw new RuntimeException(e);
 		}

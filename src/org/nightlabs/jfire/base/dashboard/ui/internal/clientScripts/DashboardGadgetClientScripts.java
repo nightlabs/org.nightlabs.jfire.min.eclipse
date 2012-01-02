@@ -63,7 +63,7 @@ public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 		DashboardGadgetLayoutEntry<?> layoutEntry = getGadgetContainer().getLayoutEntry();
 		if (layoutEntry == null)
 			throw new IllegalStateException("layoutEntry==null; this is not allowed!");
-		DashboardGadgetClientScriptsConfig config = (DashboardGadgetClientScriptsConfig) layoutEntry.getConfig();
+		final DashboardGadgetClientScriptsConfig config = (DashboardGadgetClientScriptsConfig) layoutEntry.getConfig();
 		
 		for (final ClientScript clientScript : config.getClientScripts()) {
 			Hyperlink scriptLink = new Hyperlink(scriptsComposite, SWT.NONE);
@@ -71,12 +71,10 @@ public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 			scriptLink.addHyperlinkListener(new HyperlinkAdapter() {
 				@Override
 				public void linkActivated(HyperlinkEvent e) {
-					System.out.println("Executing script '"+ clientScript.getName() +"'...");
-					new RunClientScriptAction(clientScript.getContent()).run();
+					new RunClientScriptAction(clientScript, config.isConfirmProcessing()).run();
 				}
 			});
 		}
 		scriptsComposite.setSize(scriptsComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
-	
 }
