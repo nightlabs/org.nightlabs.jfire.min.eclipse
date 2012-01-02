@@ -31,6 +31,7 @@ import org.nightlabs.jfire.base.dashboard.ui.AbstractDashbardGadgetConfigPage;
 import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
+import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientScript;
 
 /**
  * 
@@ -42,7 +43,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	
 	private Button buttonConfirmProcessing;
 	
-	private List<DashboardGadgetClientScriptsConfig.ClientScript> clientScripts;
+	private List<ClientScript> clientScripts;
 	
 	private boolean confirmProcessing;
 	
@@ -62,13 +63,15 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		super(DashboardGadgetClientScriptsConfigPage.class.getName());
 		setTitle(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.page.title")); //$NON-NLS-1$
 	}
+	
+	private int amountOfColumns = 3;
 
 	@Override
 	public Control createPageContents(final Composite parent) {
-		final XComposite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, 3);
+		final XComposite wrapper = new XComposite(parent, SWT.NONE, LayoutMode.TIGHT_WRAPPER, amountOfColumns);
 		
 		final Label labelDescription1 = new Label(wrapper, SWT.WRAP);
-		labelDescription1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		labelDescription1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, amountOfColumns, 1));
 		labelDescription1.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.gadget.description.text")); //$NON-NLS-1$
 		
 		final Label labelTitle = new Label(wrapper, SWT.NONE);
@@ -92,7 +95,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		GridData gd;
 		
 		buttonConfirmProcessing = new Button(parent, SWT.CHECK);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, amountOfColumns, 1);
 		gd.verticalIndent = 10;
 		buttonConfirmProcessing.setLayoutData(gd);
 		buttonConfirmProcessing.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.buttonConfirmProcessing.text")); //$NON-NLS-1$
@@ -105,7 +108,7 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		});
 		
 		final Label labelDescription2 = new Label(parent, SWT.WRAP);
-		labelDescription2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		labelDescription2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, amountOfColumns, 1));
 		labelDescription2.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScriptsConfigPage.description.text")); //$NON-NLS-1$
 
 	}
@@ -234,18 +237,17 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	
 	@SuppressWarnings("unchecked")
 	private void createClientScript() {
+		if (tableViewer.getInput() == null)		// nothing set yet
+			clientScripts = new ArrayList<ClientScript>();
 		final ClientScriptPropertiesWrapper data = new ClientScriptPropertiesWrapper();
-		final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), data);
+		final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), clientScripts, data);
 		
 		if (dialog.open() == Window.OK) {
 			// Create new ClientScript instance and insert it into the table (not persisted yet)
-			final DashboardGadgetClientScriptsConfig.ClientScript clientScript = new DashboardGadgetClientScriptsConfig.ClientScript(
-				data.getClientScriptName(), data.getClientScriptContent());
+			final ClientScript clientScript = new ClientScript(data.getClientScriptName(), data.getClientScriptContent());
 			
-			if (tableViewer.getInput() == null)		// nothing set yet
-				clientScripts = new ArrayList<DashboardGadgetClientScriptsConfig.ClientScript>();
-			else if (tableViewer.getInput() instanceof List<?>) {
-				clientScripts = (List<DashboardGadgetClientScriptsConfig.ClientScript>) tableViewer.getInput();
+			if (tableViewer.getInput() instanceof List<?>) {
+				clientScripts = (List<ClientScript>) tableViewer.getInput();
 			}
 			
 			clientScripts.add(clientScript);
@@ -256,13 +258,13 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	private void editClientScript() {
 		final Object data_ = tableViewer.getTable().getItem(tableViewer.getTable().getSelectionIndex()).getData();
 		
-		if (data_ instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
-			final DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
+		if (data_ instanceof ClientScript) {
+			final ClientScript clientScript = (ClientScript) data_;
 			final ClientScriptPropertiesWrapper data = new ClientScriptPropertiesWrapper(clientScript.getName(), clientScript.getContent());
-			final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), data);
+			final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), clientScripts, data);
 			
 			if (dialog.open() == Window.OK)
-				for (final DashboardGadgetClientScriptsConfig.ClientScript clientScript_ : clientScripts)
+				for (final ClientScript clientScript_ : clientScripts)
 					if (clientScript_.getName().equals(clientScript.getName())) {
 						clientScript_.setName(data.getClientScriptName());
 						clientScript_.setContent(data.getClientScriptContent());
@@ -275,12 +277,12 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	private void removeClientScript() {
 		final int amount = tableViewer.getTable().getSelectionCount();
 		final int[] indices = tableViewer.getTable().getSelectionIndices();
-		final DashboardGadgetClientScriptsConfig.ClientScript[] clientScriptsToRemove = new DashboardGadgetClientScriptsConfig.ClientScript[amount];
+		final ClientScript[] clientScriptsToRemove = new ClientScript[amount];
 		
 		for (int i = 0; i < amount; i++) {
 			final Object data_ = tableViewer.getTable().getItem(indices[i]).getData();
-			if (data_ instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
-				final DashboardGadgetClientScriptsConfig.ClientScript clientScript = (DashboardGadgetClientScriptsConfig.ClientScript) data_;
+			if (data_ instanceof ClientScript) {
+				final ClientScript clientScript = (ClientScript) data_;
 				clientScriptsToRemove[i] = clientScript;
 			}
 		}
@@ -294,11 +296,11 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		final Object dataSource = tableViewer.getTable().getItem(sourceIdx).getData();
 		final Object dataTarget = tableViewer.getTable().getItem(targetIdx).getData();
 		
-		if (dataSource instanceof DashboardGadgetClientScriptsConfig.ClientScript && dataTarget instanceof DashboardGadgetClientScriptsConfig.ClientScript) {
-			final DashboardGadgetClientScriptsConfig.ClientScript clientScriptSource = (DashboardGadgetClientScriptsConfig.ClientScript) dataSource;
-			final DashboardGadgetClientScriptsConfig.ClientScript clientScriptTarget = (DashboardGadgetClientScriptsConfig.ClientScript) dataTarget;
+		if (dataSource instanceof ClientScript && dataTarget instanceof ClientScript) {
+			final ClientScript clientScriptSource = (ClientScript) dataSource;
+			final ClientScript clientScriptTarget = (ClientScript) dataTarget;
 			for (int i = 0; i < clientScripts.size(); i++) {
-				final DashboardGadgetClientScriptsConfig.ClientScript clientScript_ = clientScripts.get(i);
+				final ClientScript clientScript_ = clientScripts.get(i);
 				if (clientScript_.getName().equals(up ? clientScriptTarget.getName() : clientScriptSource.getName())) {
 					final String nameTmp = clientScript_.getName();
 					final String contentTmp = clientScript_.getContent();
@@ -332,8 +334,8 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 		tableViewer.setLabelProvider(new TableLabelProvider() {
 			@Override
 			public String getColumnText(final Object element, final int columnIndex) {
-				if (element instanceof DashboardGadgetClientScriptsConfig.ClientScript)
-					return ((DashboardGadgetClientScriptsConfig.ClientScript) element).getName();
+				if (element instanceof ClientScript)
+					return ((ClientScript) element).getName();
 				return null;
 			}
 		});
