@@ -17,6 +17,10 @@ import org.nightlabs.base.ui.composite.XComposite;
  */
 public abstract class AbstractDashboardGadget implements IDashboardGadget {
 
+	protected static final int DEFAULT_MIN_HEIGHT = 200;
+
+	protected static final int DEFAULT_HEIGHT_HINT = 200;
+	
 	private IDashboardGadgetContainer gadgetContainer;
 	
 	public AbstractDashboardGadget() {
@@ -36,8 +40,8 @@ public abstract class AbstractDashboardGadget implements IDashboardGadget {
 	 */
 	protected XComposite createDefaultWrapper(Composite parent) {
 		XComposite wrapper = new XComposite(parent, SWT.NONE);
-		wrapper.getGridData().minimumHeight = 200;
-		wrapper.getGridData().heightHint = 200;
+		wrapper.getGridData().minimumHeight = DEFAULT_MIN_HEIGHT;
+		wrapper.getGridData().heightHint = DEFAULT_HEIGHT_HINT;
 		return wrapper;
 	}
 

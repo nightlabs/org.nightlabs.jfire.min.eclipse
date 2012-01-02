@@ -1,19 +1,80 @@
 package org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashboardGadget;
+import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig;
+import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientScript;
+import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 
+/**
+ * @author sschefczyk
+ * @author Frederik Loeser <!-- frederik [AT] nightlabs [DOT] de -->
+ */
 public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 
+	private Composite scriptsComposite;
+
 	@Override
-	public Composite createControl(Composite parent) {
-		return parent;
+	public Composite createControl(Composite parent) 
+	{
+		XComposite xComposite = createDefaultWrapper(parent);
+		
+		ScrolledComposite scrolledScriptsComposite = createWrapper(xComposite);
+		scrolledScriptsComposite.setExpandHorizontal(true);
+		
+		scriptsComposite = new Composite(scrolledScriptsComposite, SWT.NONE);
+		scrolledScriptsComposite.setContent(scriptsComposite);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		layout.marginBottom = 10;
+		scriptsComposite.setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+		scriptsComposite.setLayoutData(gridData);
+		return xComposite;
 	}
+	
+	
+	protected ScrolledComposite createWrapper(Composite parent) {
+		ScrolledComposite wrapper = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.BORDER);
+		GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+		wrapper.setLayoutData(layoutData);
+		return wrapper;
+	}
+	
 
 	@Override
 	public void refresh() {
-		// TODO Auto-generated method stub
-
+		getGadgetContainer().setTitle(getGadgetContainer().getLayoutEntry().getName());
+		
+		for (Control c : scriptsComposite.getChildren()) {
+			c.dispose();
+		}
+		
+		DashboardGadgetLayoutEntry<?> layoutEntry = getGadgetContainer().getLayoutEntry();
+		if (layoutEntry == null)
+			throw new IllegalStateException("layoutEntry==null; this is not allowed!");
+		DashboardGadgetClientScriptsConfig config = (DashboardGadgetClientScriptsConfig) layoutEntry.getConfig();
+		
+		for (final ClientScript clientScript : config.getClientScripts()) {
+			Hyperlink scriptLink = new Hyperlink(scriptsComposite, SWT.NONE);
+			scriptLink.setText(clientScript.getName());
+			scriptLink.addHyperlinkListener(new HyperlinkAdapter() {
+				@Override
+				public void linkActivated(HyperlinkEvent e) {
+					System.out.println("Executing script '"+ clientScript.getName() +"'...");
+				}
+			});
+		}
+		scriptsComposite.setSize(scriptsComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
-
+	
 }
