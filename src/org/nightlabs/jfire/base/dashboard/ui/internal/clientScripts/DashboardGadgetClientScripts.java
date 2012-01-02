@@ -11,9 +11,10 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashboardGadget;
+import org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.action.RunClientScriptAction;
 import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig;
-import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientScript;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
+import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientScript;
 
 /**
  * @author sschefczyk
@@ -71,6 +72,7 @@ public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 				@Override
 				public void linkActivated(HyperlinkEvent e) {
 					System.out.println("Executing script '"+ clientScript.getName() +"'...");
+					new RunClientScriptAction(clientScript.getContent()).run();
 				}
 			});
 		}
