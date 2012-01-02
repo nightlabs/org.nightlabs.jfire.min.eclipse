@@ -2,16 +2,22 @@ package org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.nightlabs.base.ui.composite.XComposite;
 import org.nightlabs.jfire.base.dashboard.ui.AbstractDashboardGadget;
 import org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.action.RunClientScriptAction;
+import org.nightlabs.jfire.base.dashboard.ui.resource.Messages;
 import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientScript;
@@ -23,7 +29,7 @@ import org.nightlabs.jfire.dashboard.DashboardGadgetClientScriptsConfig.ClientSc
 public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 
 	private Composite scriptsComposite;
-
+	
 	@Override
 	public Composite createControl(Composite parent) 
 	{
@@ -40,6 +46,7 @@ public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 		scriptsComposite.setLayout(layout);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
 		scriptsComposite.setLayoutData(gridData);
+		
 		return xComposite;
 	}
 	
@@ -62,12 +69,14 @@ public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 		
 		DashboardGadgetLayoutEntry<?> layoutEntry = getGadgetContainer().getLayoutEntry();
 		if (layoutEntry == null)
-			throw new IllegalStateException("layoutEntry==null; this is not allowed!");
+			throw new IllegalStateException("layoutEntry==null; this is not allowed!"); //$NON-NLS-1$
 		final DashboardGadgetClientScriptsConfig config = (DashboardGadgetClientScriptsConfig) layoutEntry.getConfig();
 		
 		for (final ClientScript clientScript : config.getClientScripts()) {
 			Hyperlink scriptLink = new Hyperlink(scriptsComposite, SWT.NONE);
 			scriptLink.setText(clientScript.getName());
+			Menu menu = createContextMenu(clientScript, config.isConfirmProcessing());			
+			scriptLink.setMenu(menu);
 			scriptLink.addHyperlinkListener(new HyperlinkAdapter() {
 				@Override
 				public void linkActivated(HyperlinkEvent e) {
@@ -76,5 +85,26 @@ public class DashboardGadgetClientScripts extends AbstractDashboardGadget {
 			});
 		}
 		scriptsComposite.setSize(scriptsComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	}
+	
+	private Menu createContextMenu(ClientScript clientScript, final boolean confirmProcessing) {
+		Menu menu = new Menu(Display.getCurrent().getActiveShell(), SWT.POP_UP);
+		MenuItem item = new MenuItem(menu, SWT.NONE);
+		item.setData("clientScript", clientScript); //$NON-NLS-1$
+		item.setText(Messages.getString("org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts.DashboardGadgetClientScripts.createContextMenu.item1.text")); //$NON-NLS-1$
+		item.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (e.getSource() instanceof MenuItem) {
+					MenuItem item = (MenuItem) e.getSource();
+					if (item.getData("clientScript") instanceof ClientScript) { //$NON-NLS-1$
+						ClientScript clientScript = (ClientScript) (item.getData("clientScript")); //$NON-NLS-1$
+						new RunClientScriptAction(clientScript, confirmProcessing).run();
+					}
+				}
+			}
+		});
+		
+		return menu;
 	}
 }
