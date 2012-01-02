@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.base.dashboard.ui.internal.clientScripts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -237,6 +238,8 @@ public class DashboardGadgetClientScriptsConfigPage extends AbstractDashbardGadg
 	@SuppressWarnings("unchecked")
 	private void createClientScript() {
 		final ClientScriptPropertiesWrapper data = new ClientScriptPropertiesWrapper();
+		if (clientScripts == null)	// if config has not been called yet
+			clientScripts = new ArrayList<ClientScript>();
 		final DashboardGadgetClientScriptsNewEditDialog dialog = new DashboardGadgetClientScriptsNewEditDialog(getShell(), clientScripts, data);
 		
 		if (dialog.open() == Window.OK) {
