@@ -73,6 +73,11 @@
 			<artifactId>org.nightlabs.util</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.unifiedjndi.jboss.client</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	<!-- ### org.nightlabs :: END ### -->
 
 	<!-- ### org.nightlabs.eclipse :: BEGIN ### -->
