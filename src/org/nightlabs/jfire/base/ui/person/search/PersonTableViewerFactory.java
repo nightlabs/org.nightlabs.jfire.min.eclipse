@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Control;
 import org.nightlabs.jfire.base.ui.prop.search.config.PropertySetTableViewerConfigurationComposite;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewer;
 import org.nightlabs.jfire.base.ui.prop.view.IPropertySetViewerFactory;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.idgenerator.IDGenerator;
 import org.nightlabs.jfire.person.Person;
 import org.nightlabs.jfire.person.PersonSearchFilter;
@@ -37,12 +38,12 @@ public class PersonTableViewerFactory implements IPropertySetViewerFactory<Prope
 
 	@Override
 	public String getDescription() {
-		return "A table for persons.";
+		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonTableViewerFactory.description"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getName() {
-		return "Person table";
+		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.PersonTableViewerFactory.name"); //$NON-NLS-1$
 	}
 	
 	@Override

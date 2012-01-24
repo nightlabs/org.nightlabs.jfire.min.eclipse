@@ -497,6 +497,7 @@ extends LSDPreferencePage
 		if (!fadableWrapper.isDisposed()) {
 			StackLayout layout = (StackLayout) fadableWrapper.getLayout();
 			layout.topControl = loadingDone;
+			fadableWrapper.getParent().layout(true, true);
 			fadableWrapper.layout(true, true);
 		}
 	}

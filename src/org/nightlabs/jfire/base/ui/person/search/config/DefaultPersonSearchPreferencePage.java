@@ -2,6 +2,7 @@ package org.nightlabs.jfire.base.ui.person.search.config;
 
 import org.nightlabs.jfire.base.ui.person.search.PersonSearchUseCaseConstants;
 import org.nightlabs.jfire.base.ui.prop.search.config.AbstractPropertySetSearchPreferencePage;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.layout.AbstractEditLayoutConfigModule;
 import org.nightlabs.jfire.person.PersonSearchConfigModule;
 import org.nightlabs.jfire.prop.config.PropertySetEditLayoutConfigModule;
@@ -27,11 +28,11 @@ public class DefaultPersonSearchPreferencePage extends AbstractPropertySetSearch
 
 	@Override
 	public String getUseCaseDescription() {
-		return "You can configure the default layout of the the person search here, which is used when no dedicated layout is assigned.";
+		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.config.DefaultPersonSearchPreferencePage.useCaseDescription"); //$NON-NLS-1$
 	}
 	
 	@Override
 	protected String getLayoutConfigTabText() {
-		return "Search configuration";
+		return Messages.getString("org.nightlabs.jfire.base.ui.person.search.config.DefaultPersonSearchPreferencePage.layoutConfigTabText"); //$NON-NLS-1$
 	}
 }
