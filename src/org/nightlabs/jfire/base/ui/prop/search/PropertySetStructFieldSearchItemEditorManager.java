@@ -72,7 +72,7 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 	@Override
 	public Control getControl(Composite parent) {
 		if (helper != null)
-			if (helperControl != null)
+			if (helperControl != null && !helperControl.isDisposed())
 				return helperControl;
 			
 //		PropertySetSearchFilterItemEditorHelperRegistry registry = PropertySetSearchFilterItemEditorHelperRegistry.sharedInstance();
@@ -95,6 +95,14 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 			@Override
 			public void close() {
 			}
+			
+			public String getInput() {
+				return filterItemEditor.getInput();
+			};
+			
+			public void setInput(String input) {
+				filterItemEditor.setInput(input);
+			};
 		};
 		
 		if (helper instanceof PropertySetStructFieldSearchItemEditorHelper)
@@ -120,6 +128,19 @@ public class PropertySetStructFieldSearchItemEditorManager extends
 	 * @see org.nightlabs.jfire.base.ui.prop.search.PropertySetSearchFilterItemEditorHelper#close()
 	 */
 	public void close() {
+	}
+
+	@Override
+	public String getInput() {
+		if (helper != null)
+			return helper.getInput();
+		return null;
+	}
+
+	@Override
+	public void setInput(String input) {
+		if (helper != null)
+			helper.setInput(input);
 	}
 
 }

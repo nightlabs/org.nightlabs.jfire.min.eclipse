@@ -66,5 +66,7 @@ public interface PropertySetSearchFilterItemEditorHelper {
 	 */
 	public void close();
 	
+	public String getInput();
 	
+	public void setInput(String input);
 }

@@ -204,7 +204,9 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 		if (idx < 0)
 			return;
 		PropertySetSearchFilterItemEditorHelper helper = getCurrentHelper();
+		String lastInput = null;
 		if (lastHelper != null) {
+			lastInput = lastHelper.getInput();
 			lastHelper.close();
 			try {
 				lastHelper.getControl(null).dispose();
@@ -213,6 +215,7 @@ public class PropertySetSearchFilterItemEditor extends SearchFilterItemEditor im
 			}
 		}
  		helper.getControl(wrapper);
+ 		helper.setInput(lastInput);
 		wrapper.layout();
 		lastIdx = idx;
 		lastHelper = helper;
