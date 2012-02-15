@@ -61,13 +61,22 @@ public class DataBlockGroupEditorComposite extends XComposite {
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.IDataBlockGroupEditor#refresh(org.nightlabs.jfire.prop.IStruct, org.nightlabs.jfire.prop.DataBlockGroup)
 	 */
-	public void refresh(IStruct struct, DataBlockGroup blockGroup) {
+	public final void refresh(IStruct struct, DataBlockGroup blockGroup) {
 		this.dataBlockGroup = blockGroup;
 		this.struct = struct;
+		doRefresh();
+	}
+
+	/**
+	 * This method is called by {@link #refresh(IStruct, DataBlockGroup)} after
+	 * initializing the members of the editor. This method does all the work
+	 * (creating ui etc.) and might be overwritten.
+	 */
+	protected void doRefresh() {
 		createDataBlockEditors(struct, content);
 		scrolledComposite.setMinSize(content.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-		assert(dataBlockEditors.size() == blockGroup.getDataBlocks().size());
+		assert(dataBlockEditors.size() == getDataBlockGroup().getDataBlocks().size());
 
 		content.layout(true, true);
 	}
@@ -218,7 +227,7 @@ public class DataBlockGroupEditorComposite extends XComposite {
 	public IStruct getStruct() {
 		return struct;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.blockbased.IDataBlockGroupEditor#getDataBlockGroup()
 	 */
@@ -264,26 +273,33 @@ public class DataBlockGroupEditorComposite extends XComposite {
 	}
 
 	protected synchronized void notifyChangeListeners(DataBlockEditorChangedEvent changedEvent) {
-		DataBlockEditor dataBlockEditor = changedEvent.getDataBlockEditor();
-		DataFieldEditor<? extends DataField> dataFieldEditor = changedEvent.getDataFieldEditor();
-//		Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
-		StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup());
-		if (structBlock.getDataBlockValidators().size() > 0) {
-			// if there are validators for the block we have to update the propertySet
-			// i.e. write the data from the editor to the property set
-			dataFieldEditor.updatePropertySet();
+		if (changedEvent != null) {
+			DataBlockEditor dataBlockEditor = changedEvent.getDataBlockEditor();
+			DataFieldEditor<? extends DataField> dataFieldEditor = changedEvent.getDataFieldEditor();
+	//		Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
+			StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup());
+			if (structBlock.getDataBlockValidators().size() > 0) {
+				// if there are validators for the block we have to update the propertySet
+				// i.e. write the data from the editor to the property set
+				dataFieldEditor.updatePropertySet();
+			}
+	//		else {
+	//			for (DisplayNamePart part : parts) {
+	//				if (dataFieldEditor.getStructField().equals(part.getStructField())) {
+	//					dataFieldEditor.updatePropertySet();
+	//					break;
+	//				}
+	//			}
 		}
-//		else {
-//			for (DisplayNamePart part : parts) {
-//				if (dataFieldEditor.getStructField().equals(part.getStructField())) {
-//					dataFieldEditor.updatePropertySet();
-//					break;
-//				}
-//			}
-				
+		
 		Object[] listeners = changeListener.getListeners();
 		for (Object listener : listeners) {
 			((DataBlockEditorChangedListener) listener).dataBlockEditorChanged(changedEvent);
 		}
+	}
+
+
+	protected XComposite getContent() {
+		return content;
 	}
 }
