@@ -28,6 +28,7 @@ package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -94,7 +96,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 	 * It shows the {@link DataBlock}s name as title and creates a {@link DataBlockGroupEditor}
 	 * as content.
 	 */
-	private class ContentProvider implements GroupedContentProvider {
+	public class ContentProvider implements GroupedContentProvider {
 		private IDataBlockGroupEditor groupEditor;
 		private DataBlockGroup blockGroup;
 		private IStruct struct;
@@ -454,12 +456,33 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 			groupedContentComposite = new GroupedContentComposite(parent, SWT.NONE, true);
 			groupedContentComposite.setGroupTitle("propTail"); //$NON-NLS-1$
+			for (ISelectionChangedListener item:listenerList) {
+				addSelectionChangedListener(item);
+			}
 		}
 		if (refresh)
 			refreshControl();
 		return groupedContentComposite;
 	}
 
+	
+	private List<ISelectionChangedListener> listenerList = new ArrayList<ISelectionChangedListener>(); 
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		if (groupedContentComposite == null) {
+			listenerList.add(listener);
+		}
+		else
+			groupedContentComposite.addSelectionChangedListener(listener);
+		
+		
+	}
+	
+	public GroupedContentProvider getSelectedContentProvider() {
+		if (groupedContentComposite == null)
+			return null;
+			
+		return groupedContentComposite.getSelectedContentProvider();
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor#disposeControl()
