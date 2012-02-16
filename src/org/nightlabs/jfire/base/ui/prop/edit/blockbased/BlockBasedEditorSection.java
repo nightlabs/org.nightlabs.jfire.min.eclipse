@@ -14,6 +14,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.nightlabs.base.ui.editor.RestorableSectionPart;
+import org.nightlabs.base.ui.editor.ToolBarSectionPart;
 import org.nightlabs.base.ui.entity.editor.EntityEditorUtil;
 import org.nightlabs.jfire.base.ui.prop.ValidationUtil;
 import org.nightlabs.jfire.base.ui.prop.edit.ValidationResultHandler;
@@ -24,7 +25,7 @@ import org.nightlabs.jfire.prop.validation.ValidationResult;
  * @author Marc Klinger - marc[at]nightlabs[dot]de
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public class BlockBasedEditorSection extends RestorableSectionPart
+public class BlockBasedEditorSection extends ToolBarSectionPart
 {
 	/**
 	 * The person editor used in this section.
@@ -44,7 +45,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	 */
 	public BlockBasedEditorSection(final FormPage page, final Composite parent, final String sectionDescriptionText)
 	{
-		super(parent, page.getEditor().getToolkit(), ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+		super(page.getEditor().getToolkit(), parent,ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, sectionDescriptionText);
 		createClient(getSection(), page.getEditor().getToolkit(), sectionDescriptionText);
 	}
 
@@ -57,7 +58,7 @@ public class BlockBasedEditorSection extends RestorableSectionPart
 	 */
 	public BlockBasedEditorSection(final FormPage page, final Composite parent, final int sectionType, final String sectionDescriptionText)
 	{
-		super(parent, page.getEditor().getToolkit(), sectionType);
+		super(page.getEditor().getToolkit(), parent, sectionType, sectionDescriptionText);
 		createClient(getSection(), page.getEditor().getToolkit(), sectionDescriptionText);
 	}
 
