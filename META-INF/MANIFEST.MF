@@ -9,7 +9,12 @@ Bundle-Vendor: NightLabs
 Require-Bundle: org.nightlabs.jfire.base.ui,
  org.nightlabs.eclipse.compatibility,
  org.nightlabs.jfire.base.login.ui
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.nightlabs.config,
+ org.nightlabs.concurrent,
+ org.nightlabs.progress, 
+ org.nightlabs.util, 
+ org.nightlabs.i18n
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.nightlabs.jfire.querystore.ui,
  org.nightlabs.jfire.querystore.ui.overview
