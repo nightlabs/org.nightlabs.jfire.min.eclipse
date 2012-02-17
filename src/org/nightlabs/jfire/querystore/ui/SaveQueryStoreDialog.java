@@ -119,9 +119,13 @@ public class SaveQueryStoreDialog extends TitleAreaDialog
 	protected void createButtonsForButtonBar(Composite parent)
 	{
 		createButton(parent, CREATE_NEW_QUERY, Messages.getString("org.nightlabs.jfire.querystore.ui.SaveQueryStoreDialog.createNewQuery"), false); //$NON-NLS-1$
-		okButton = createButton(parent, IDialogConstants.OK_ID, CompatibleDialogConstants.get().OK_LABEL,	false);
+		// TODO: Fix static non static field problem with IDialogConstants labels
+//		okButton = createButton(parent, IDialogConstants.OK_ID, CompatibleDialogConstants.get().OK_LABEL,	false);
+//		okButton.setEnabled(false);
+//		createButton(parent, IDialogConstants.CANCEL_ID, CompatibleDialogConstants.get().CANCEL_LABEL, true);
+		okButton = createButton(parent, IDialogConstants.OK_ID, "OK",	false);
 		okButton.setEnabled(false);
-		createButton(parent, IDialogConstants.CANCEL_ID, CompatibleDialogConstants.get().CANCEL_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID, "Cancel", true);
 	}
 
 	@Override
