@@ -52,11 +52,12 @@ public class DataBlockGroupEditor implements IDataBlockGroupEditor
 		
 	}
 	
+	private IStruct struct;
 	private DataBlockGroupEditorComposite editorComposite;
 
 	@Override
-	public final Composite createControl(Composite parent) {
-		editorComposite = createDataBlockGroupEditorComposite(parent);
+	public final Composite createControl(Composite parent, DataBlockGroup blockGroup) {
+		editorComposite = createDataBlockGroupEditorComposite(parent, blockGroup);
 		return editorComposite;
 	}
 
@@ -68,13 +69,12 @@ public class DataBlockGroupEditor implements IDataBlockGroupEditor
 	 * @param parent The parent to create the Composite for.
 	 * @return A new {@link DataBlockGroupEditorComposite}.
 	 */
-	protected DataBlockGroupEditorComposite createDataBlockGroupEditorComposite(
-			Composite parent) {
+	protected DataBlockGroupEditorComposite createDataBlockGroupEditorComposite(Composite parent, DataBlockGroup blockGroup) {
 		return new DataBlockGroupEditorComposite(parent, this);
 	}
 
 	/**
-	 * @return The {@link DataBlockGroupEditorComposite} created in {@link #createDataBlockGroupEditorComposite(Composite)}.
+	 * @return The {@link DataBlockGroupEditorComposite} created in {@link #createDataBlockGroupEditorComposite(IStruct, Composite)}.
 	 */
 	protected DataBlockGroupEditorComposite getEditorComposite() {
 		return editorComposite;
@@ -87,14 +87,15 @@ public class DataBlockGroupEditor implements IDataBlockGroupEditor
 	}
 
 	@Override
-	public IStruct getStruct() {
+	public void refresh(DataBlockGroup blockGroup) {
 		checkComposite();
-		return editorComposite.getStruct();
-	}
-
-	@Override
-	public void refresh(IStruct struct, DataBlockGroup blockGroup) {
-		checkComposite();
+		IStruct blockGroupStruct = blockGroup.getProperty().getStructure();		
+		if (this.struct != null && !this.struct.equals(blockGroupStruct)) {
+			// TODO: Refresh Composite here!
+		}
+		if (struct == null) {
+			struct = blockGroup.getProperty().getStructure();
+		}
 		editorComposite.refresh(struct, blockGroup);
 	}
 

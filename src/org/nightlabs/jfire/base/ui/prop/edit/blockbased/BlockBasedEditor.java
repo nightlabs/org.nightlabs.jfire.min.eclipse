@@ -55,10 +55,10 @@ import org.nightlabs.base.ui.composite.XComposite.LayoutDataMode;
 import org.nightlabs.base.ui.composite.XComposite.LayoutMode;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentComposite;
 import org.nightlabs.base.ui.composite.groupedcontent.GroupedContentProvider;
-import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.prop.edit.DataFieldEditor;
 import org.nightlabs.jfire.base.ui.prop.edit.IValidationResultHandler;
 import org.nightlabs.jfire.base.ui.prop.edit.PropertySetEditor;
+import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.prop.DataBlock;
 import org.nightlabs.jfire.prop.DataBlockGroup;
 import org.nightlabs.jfire.prop.DataField;
@@ -116,16 +116,14 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		}
 		@Override
 		public Composite createGroupContent(Composite parent) {
-			groupEditor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(struct, blockGroup); 
-			Composite editorComp = groupEditor.createControl(parent);
+			groupEditor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(); 
+			Composite editorComp = groupEditor.createControl(parent, blockGroup);
 			groupEditor.setValidationResultHandler(validationResultHandler);
 			if (changeListenerProxy != null) {
 				groupEditor.addDataBlockEditorChangedListener(changeListenerProxy);
 				groupEditor.addDataBlockGroupEditorChangedListener(changeListenerProxy);
 			}
-			if (this.blockGroup != null) {
-				refresh(this.blockGroup);
-			}
+			refresh(this.blockGroup);
 			return editorComp;
 		}
 		/**
@@ -135,7 +133,7 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 		 */
 		public void refresh(DataBlockGroup blockGroup) {
 			if (groupEditor != null) {
-				groupEditor.refresh(struct, blockGroup);
+				groupEditor.refresh(blockGroup);
 			}
 			this.blockGroup = blockGroup;
 		}

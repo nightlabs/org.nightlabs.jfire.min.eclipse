@@ -68,10 +68,10 @@ extends ExpandableComposite
 			IValidationResultHandler validationResultHandler
 	) {
 		super(parent, SWT.NONE);
-		blockGroupEditor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(struct, blockGroup); 
-		Composite editorControl = blockGroupEditor.createControl(this);
+		blockGroupEditor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(); 
+		Composite editorControl = blockGroupEditor.createControl(this, blockGroup);
 		blockGroupEditor.setValidationResultHandler(validationResultHandler);
-		blockGroupEditor.refresh(struct, blockGroup);
+		blockGroupEditor.refresh(blockGroup);
 		
 		GridLayout thisLayout = new GridLayout();
 		thisLayout.verticalSpacing = 0;

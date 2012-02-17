@@ -153,12 +153,12 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 		dataBlockGroupEditors.clear();
 		for (int i = 0; i < structBlockIDs.length; i++) {
 			DataBlockGroup dataBlockGroup = dataBlockGroups.get(structBlockIDs[i]);
-			IDataBlockGroupEditor editor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor(propSet.getStructure(), dataBlockGroup);
-			editor.createControl(wrapperComp);
+			IDataBlockGroupEditor editor = DataBlockGroupEditorFactoryRegistry.sharedInstance().createDataBlockGroupEditor();
+			editor.createControl(wrapperComp, dataBlockGroup);
 			editor.setValidationResultHandler(validationResultHandler);
 			editor.addDataBlockEditorChangedListener(listenerProxy);
 			editor.addDataBlockGroupEditorChangedListener(groupChangeListenerProxy);
-			editor.refresh(propSet.getStructure(), dataBlockGroup);
+			editor.refresh(dataBlockGroup);
 			dataBlockGroupEditors.put(
 					structBlockIDs[i],
 					editor
@@ -231,7 +231,7 @@ public class CompoundDataBlockWizardPage extends WizardHopPage {
 			try {
 				DataBlockGroup blockGroup = propertySet.getDataBlockGroup(entry.getKey());
 				dataBlockGroups.put(entry.getKey(), blockGroup);
-				entry.getValue().refresh(propertySet.getStructure(), blockGroup);
+				entry.getValue().refresh(blockGroup);
 			} catch (DataBlockGroupNotFoundException e) {
 				throw new RuntimeException(e);
 			}

@@ -4,8 +4,6 @@
 package org.nightlabs.jfire.base.ui.prop.edit.blockbased;
 
 import org.nightlabs.jfire.base.ui.prop.edit.blockbased.DataBlockGroupEditor.Factory;
-import org.nightlabs.jfire.prop.DataBlockGroup;
-import org.nightlabs.jfire.prop.IStruct;
 
 /**
  * Registry for the creation of {@link IDataBlockGroupEditor}s.
@@ -30,7 +28,7 @@ public class DataBlockGroupEditorFactoryRegistry {
 	 * @param dataBlockGroup The DataBlockGroup to create an editor for.
 	 * @return A new instance of {@link IDataBlockGroupEditor} to edit the given {@link DataBlockGroup}.
 	 */
-	public IDataBlockGroupEditor createDataBlockGroupEditor(IStruct struct, DataBlockGroup dataBlockGroup) {
+	public IDataBlockGroupEditor createDataBlockGroupEditor() {
 		
 		return defaultDataBlockGroupFactory.createDataBlockGroupEditor();
 	}
