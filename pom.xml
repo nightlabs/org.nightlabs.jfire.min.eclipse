@@ -159,11 +159,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<!-- FIXME Have a custom bundled log4j here, because the official release 
-				has two identical packages in Import-Package => OSGI won't resolve that bundle -->
-			<version>1.2.17-NL-SNAPSHOT</version>
+		    <groupId>org.apache.log4j</groupId>
+		    <artifactId>com.springsource.org.apache.log4j</artifactId>
+		    <version>1.2.16</version>
 		</dependency>
 		<!-- jmdns needed by log4j -->
 		<dependency>
@@ -184,14 +182,32 @@
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 		
-		
-		<!-- babel dependencies -->
 		<dependency>
+		    <groupId>org.apache.xmlcommons</groupId>
+		    <artifactId>com.springsource.org.apache.xmlcommons</artifactId>
+		    <version>1.3.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xerces</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xalan-serializer</artifactId>
+		</dependency>
+				
+		<!-- babel dependencies -->
+		<!--dependency>
 			<groupId>org.eclipse.babel</groupId>
 			<artifactId>org.eclipse.babel.eclipse-de</artifactId>
 			<version>3.6.0</version>
 			<type>zip</type>
-		</dependency>
+		</dependency-->
 		
 	</dependencies>
 
@@ -250,7 +266,7 @@
 								</excludes>
 							</configuration>
 						</execution>
-						<execution>
+						<!-- execution>
 							<id>unpack-babel</id>
 							<phase>package</phase>
 							<goals>
@@ -280,7 +296,7 @@
 									**/org.eclipse.update*
 								</excludes>
 							</configuration>
-						</execution>						
+						</execution-->						
 						<execution>
 							<id>copy-plugins</id>
 							<goals>
