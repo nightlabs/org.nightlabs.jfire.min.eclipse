@@ -3,7 +3,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.nightlabs.jfire.eclipse</groupId>
 	<artifactId>org.nightlabs.jfire.base.ui</artifactId>
 
 	<parent>
@@ -24,14 +23,6 @@
 			<artifactId>jdo-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- FIXME
-		<dependency>
-			<groupId>org.eclipse.nebula</groupId>
-			<artifactId>org.eclipse.nebula.widgets.pshelf</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		-->
 
 	<!-- ### org.nightlabs :: BEGIN ### -->
 		<dependency>
