@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="JFire Min assembly" uid="org.nightlabs.jfire.eclipse.platform.min.product" id="org.nightlabs.jfire.base.ui.app.rcp.product" application="org.nightlabs.jfire.base.ui.app.rcp.app" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgsLin>-xXrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n</programArgsLin>
+      <vmArgsLin>-Xms128M
+-Xmx512M
+-XX:PermSize=64m
+-XX:MaxPermSize=128m
+-Dosgi.framework.extensions=org.nightlabs.jfire.base.j2ee.osgi
+-XX:+UnlockDiagnosticVMOptions
+-XX:+UnsyncloadClass</vmArgsLin>
+      <vmArgsWin>-Xms128M
+-Xmx512M
+-XX:PermSize=64m
+-XX:MaxPermSize=128m
+-XX:+UnlockDiagnosticVMOptions
+-XX:+UnsyncloadClass</vmArgsWin>
+   </launcherArgs>
+
+   <windowImages i16="/org.nightlabs.jfire.base.ui/icons/JFire-Logo.16x16.png" i32="/org.nightlabs.jfire.base.ui/icons/JFire-Logo.32x32.png"/>
+
+   <splash
+      location="org.nightlabs.jfire.base.ui" />
+   <launcher name="jfire">
+      <linux icon="../../../src/main/resources/linux/icon.xpm"/>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <intro introId="org.nightlabs.jfire.base.intro.ui.introID"/>
+
+   <vm>
+   </vm>
+
+   <license>
+        <url>https://www.jfire.org/modules/content/index.php/license.html</url>
+   </license>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.babel.nls_eclipse_de" />
+      <feature id="org.nightlabs.jfire.eclipse.platform.min.feature"/>
+   </features>
+
+
+</product>
