@@ -41,6 +41,11 @@
 		-->
 		<module>../org.nightlabs.jfire.querystore.ui</module>
 		
+		<module>../org.nightlabs.jfire.eclipse.platform.parent</module>
+		<module>../org.nightlabs.jfire.eclipse.platform.target</module>
+		<module>../org.nightlabs.jfire.eclipse.platform.min.feature</module>
+		<module>../org.nightlabs.jfire.eclipse.platform.min.product</module>
+		
 		<module>../org.nightlabs.jfire.eclipse.min.assembly.parent</module>
 		<module>../org.nightlabs.jfire.eclipse.min.assembly.linux-gtk-x86_64</module>
 		<module>../org.nightlabs.jfire.eclipse.min.assembly.win32</module>
