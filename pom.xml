@@ -12,19 +12,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<eclipse.platform.artifactId>org.eclipse.platform.linux-gtk-x86_64</eclipse.platform.artifactId>
+		<eclipse.min.platform.classifier>linux.gtk.x86_64</eclipse.min.platform.classifier>
 	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>org.eclipse.platform.linux-gtk-x86_64</artifactId>
-			<version>3.6</version>
-			<!-- FIXME: Using manually created zip-bundle because tar.gz bundles can't 
-				be filtered with excludes. See: http://jira.codehaus.org/browse/MDEP-242 -->
-			<type>zip</type>
-		</dependency>
-	</dependencies>
 
 	<!-- FIXME: This can be removed when http://jira.codehaus.org/browse/MNG-5127 
 		is resolved. Then the parent-profile 'build-assembly' would have been activated 
@@ -32,12 +21,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
