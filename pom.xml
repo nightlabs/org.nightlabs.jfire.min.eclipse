@@ -3,15 +3,28 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
+	<version>1.3.0-SNAPSHOT</version>
 	<groupId>org.nightlabs.jfire.eclipse.platform</groupId>
 	<artifactId>org.nightlabs.jfire.eclipse.platform.parent</artifactId>
 	<packaging>pom</packaging>
 
-	<parent>
+	<!--parent>
 		<groupId>org.nightlabs</groupId>
 		<artifactId>org.nightlabs.parent</artifactId>
 		<version>1.3.0-SNAPSHOT</version>
-	</parent>
+	</parent-->
+
+	<!-- FIXME: make this pom a child of one of existing parents -->
+	<distributionManagement>
+		<repository>
+			<id>dev.nightlabs.org-libs-releases-local</id>
+			<url>https://dev.nightlabs.org/maven-repository/libs-releases-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>dev.nightlabs.org-libs-snapshots-local</id>
+			<url>https://dev.nightlabs.org/maven-repository/libs-snapshots-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 	
 	<repositories>
 		<repository>
