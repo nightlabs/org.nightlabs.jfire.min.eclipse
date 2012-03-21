@@ -18,7 +18,6 @@
 		<assembly.eclipse.directory>${assembly.directory}/eclipse</assembly.eclipse.directory>
 		<assembly.plugins.directory>${assembly.eclipse.directory}/plugins</assembly.plugins.directory>
 		<skipPluginExecution>true</skipPluginExecution>
-		<eclipse.babel.artifactIds>org.eclipse.babel.eclipse-de</eclipse.babel.artifactIds>
 	</properties>
 
 	<dependencies>
@@ -153,23 +152,6 @@
 
 		<!-- #### LIBS -->
 		<dependency>
-			<groupId>org.eclipse.nebula</groupId>
-			<artifactId>org.eclipse.nebula.widgets.pshelf</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
-		<dependency>
-		    <groupId>org.apache.log4j</groupId>
-		    <artifactId>com.springsource.org.apache.log4j</artifactId>
-		    <version>1.2.16</version>
-		</dependency>
-		<!-- jmdns needed by log4j -->
-		<dependency>
-			<groupId>javax.jmdns</groupId>
-			<artifactId>jmdns</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
@@ -182,32 +164,13 @@
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 		
+		<!-- Platform (including Babel plugins) -->
 		<dependency>
-		    <groupId>org.apache.xmlcommons</groupId>
-		    <artifactId>com.springsource.org.apache.xmlcommons</artifactId>
-		    <version>1.3.4</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xerces</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.xalan-serializer</artifactId>
-		</dependency>
-				
-		<!-- babel dependencies -->
-		<!--dependency>
-			<groupId>org.eclipse.babel</groupId>
-			<artifactId>org.eclipse.babel.eclipse-de</artifactId>
-			<version>3.6.0</version>
+			<groupId>org.nightlabs.jfire.eclipse.platform</groupId>
+			<artifactId>org.nightlabs.jfire.eclipse.platform.min.product</artifactId>
+			<version>${jfire.version}</version>
 			<type>zip</type>
-		</dependency-->
+		</dependency>
 		
 	</dependencies>
 
@@ -226,17 +189,12 @@
 							</goals>
 							<configuration>
 								<skip>${skipPluginExecution}</skip>
-								<outputDirectory>${assembly.directory}</outputDirectory>
-								<includeGroupIds>org.eclipse</includeGroupIds>
-								<includeArtifactIds>${eclipse.platform.artifactId}</includeArtifactIds>
+								<outputDirectory>${assembly.eclipse.directory}</outputDirectory>
+								<includeGroupIds>org.nightlabs.jfire.eclipse.platform</includeGroupIds>
+								<includeArtifactIds>org.nightlabs.jfire.eclipse.platform.min.product</includeArtifactIds>
+								<classifier>${eclipse.min.platform.classifier}</classifier>
+								<type>zip</type>
 								<excludes>
-									**/eclipse.ini
-									eclipse/eclipse.ini,
-									eclipse/.eclipseproduct,
-									eclipse/eclipse,
-									eclipse/eclipse.exe,
-									eclipse/eclipsec.exe,
-									**/config.ini,
 									**/org.eclipse.team*,
 									**/org.eclipse.debug*,
 									**/org.eclipse.ltk*,
@@ -262,41 +220,12 @@
 									**/org.eclipse.equinox.p2.touchpoint*,
 									**/org.eclipse.equinox.p2.ui*,
 									**/org.eclipse.equinox.p2.update*,
-									**/org.sat4j*
+									**/org.sat4j*,
+									.eclipseproduct,
+									eclipsec.exe
 								</excludes>
 							</configuration>
-						</execution>
-						<!-- execution>
-							<id>unpack-babel</id>
-							<phase>package</phase>
-							<goals>
-								<goal>unpack-dependencies</goal>
-							</goals>
-							<configuration>
-								<skip>${skipPluginExecution}</skip>
-								<outputDirectory>${assembly.directory}</outputDirectory>
-								<includeGroupIds>org.eclipse.babel</includeGroupIds>
-								<includeArtifactIds>${eclipse.babel.artifactIds}</includeArtifactIds>
-								<excludes>
-									**/org.eclipse.ant*,
-									**/org.eclipse.compare*,
-									**/org.eclipse.cvs*,
-									**/org.eclipse.debug*,
-									**/org.eclipse.equinox.launcher*,
-									**/org.eclipse.jdt*,
-									**/org.eclipse.ltk*,
-									**/org.eclipse.pde*,
-									**/org.eclipse.sdk*,
-									**/org.eclipse.swt.examples*,
-									**/org.eclipse.team*,
-									**/org.eclipse.ui.examples*,
-									**/org.eclipse.ui.externaltools*,
-									**/org.eclipse.ui.ide*,
-									**/org.eclipse.ui.navigator*,
-									**/org.eclipse.update*
-								</excludes>
-							</configuration>
-						</execution-->						
+						</execution>						
 						<execution>
 							<id>copy-plugins</id>
 							<goals>
@@ -307,37 +236,6 @@
 								<outputDirectory>${assembly.plugins.directory}</outputDirectory>
 								<includeTypes>jar</includeTypes>
 								<excludeTransitive>true</excludeTransitive>
-							</configuration>
-						</execution>
-					</executions>
-					<configuration>
-						<artifactItems>
-							<artifactItem>
-								<groupId>org.eclipse</groupId>
-								<artifactId>org.eclipse.platform.linux-gtk-x86_64</artifactId>
-							</artifactItem>
-						</artifactItems>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.5</version>
-					<executions>
-						<execution>
-							<id>copy-resources</id>
-							<phase>package</phase>
-							<goals>
-								<goal>copy-resources</goal>
-							</goals>
-							<configuration>
-								<skip>${skipPluginExecution}</skip>
-								<resources>
-									<resource>
-										<directory>src/main/resources</directory>
-									</resource>
-								</resources>
-								<outputDirectory>${assembly.directory}</outputDirectory>
-								<overwrite>true</overwrite>
 							</configuration>
 						</execution>
 					</executions>
@@ -361,6 +259,36 @@
 								</target>
 							</configuration>
 						</execution>
+						<execution>
+							<id>chmod-jfire-executable</id>
+							<phase>package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<target>
+									<!-- Dependency plugin discards file permissions so we need to set 
+										them back manually. See: http://jira.codehaus.org/browse/MDEP-109 Marco :-) -->
+									<chmod file="${assembly.eclipse.directory}/jfire" perm="ugo+rx" />
+								</target>
+							</configuration>
+						</execution>
+						
+						<!-- FIXME: remove this execution when https://issues.sonatype.org/browse/TYCHO-252 is solved 
+									and config.ini could be specified via .product declaration -->
+						<execution>
+							<id>copy-config-ini</id>
+							<phase>package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<target>
+									<copy file="src/main/resources/eclipse/configuration/config.ini" todir="${assembly.eclipse.directory}/configuration" overwrite="true" force="true"/>
+								</target>
+							</configuration>
+						</execution>
+												
 					</executions>
 				</plugin>
 				<plugin>
@@ -401,15 +329,10 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-					</plugin>
-					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<artifactId>maven-dependency-plugin</artifactId>
 					</plugin>
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
