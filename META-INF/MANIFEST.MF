@@ -10,6 +10,7 @@ Require-Bundle: org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
  org.nightlabs.eclipse.extension;bundle-version="1.0.1",
  org.nightlabs.config;bundle-version="1.0.2",
  org.nightlabs.base.ui;bundle-version="1.2.16",
+ org.nightlabs.jfire.base.ui,
  org.nightlabs.jfire.base.j2ee;bundle-version="1.0.0",
  org.apache.log4j
 Bundle-ActivationPolicy: lazy
@@ -18,4 +19,5 @@ Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  org.eclipse.equinox.http.helper,
  org.eclipse.equinox.jsp.jasper;version="1.0.0",
- org.osgi.service.http;version="1.2.1"
+ org.osgi.service.http;version="1.2.1",
+ org.nightlabs.util
