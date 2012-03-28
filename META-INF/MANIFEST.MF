@@ -6,8 +6,8 @@ Bundle-Version: 1.2.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.nightlabs.eclipse.compatibility;bundle-version="1.0.0",
  org.nightlabs.jfire.base.ui;bundle-version="1.1.20",
- org.nightlabs.config;bundle-version="1.0.2",
- org.nightlabs.jfire.base.j2ee;bundle-version="1.0.0",
- org.nightlabs.singleton;bundle-version="1.0.0",
- org.apache.log4j
+ org.nightlabs.jfire.base.j2ee;bundle-version="1.0.0"
 Bundle-Activator: org.nightlabs.jfire.rap.RAPBundleActivator
+Import-Package: org.apache.log4j,
+ org.nightlabs.singleton,
+ org.nightlabs.config
