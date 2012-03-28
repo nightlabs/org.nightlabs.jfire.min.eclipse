@@ -44,10 +44,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs.eclipse</groupId>
-			<artifactId>org.nightlabs.eclipse.compatibility.rap</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.eclipse</groupId>
 			<artifactId>org.nightlabs.eclipse.extension</artifactId>
 		</dependency>
 		<dependency>
@@ -97,10 +93,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs.jfire.eclipse</groupId>
-			<artifactId>org.nightlabs.jfire.base.login.rap.ui</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.jfire.base.login.ui</artifactId>
 		</dependency>
 		<dependency>
@@ -135,6 +127,20 @@
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.query.jdo</artifactId>
 		</dependency>
+		
+		<!-- RAP stuff -->
+		<dependency>
+			<groupId>org.nightlabs.eclipse</groupId>
+			<artifactId>org.nightlabs.eclipse.compatibility.rap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
+			<artifactId>org.nightlabs.jfire.rap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
+			<artifactId>org.nightlabs.jfire.base.login.rap.ui</artifactId>
+		</dependency>
 
 		<!-- #### LIBS -->
 		<dependency>
@@ -163,7 +169,6 @@
 		<dependency>
 		    <groupId>org.eclipse.equinox</groupId>
 		    <artifactId>org.eclipse.equinox.http.helper</artifactId>
-		    <version>1.0.1</version>
 		</dependency>
 
 	</dependencies>
