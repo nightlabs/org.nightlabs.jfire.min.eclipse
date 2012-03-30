@@ -141,8 +141,16 @@
 			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.jfire.base.login.rap.ui</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
+			<artifactId>org.nightlabs.jfire.base.j2ee.rap</artifactId>
+		</dependency>
 
 		<!-- #### LIBS -->
+		<dependency>
+		    <groupId>javax.jdo</groupId>
+		    <artifactId>jdo-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
