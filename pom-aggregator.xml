@@ -43,6 +43,7 @@
 		<module>../org.nightlabs.jfire.querystore.ui</module>
 		
 		<module>../org.nightlabs.jfire.rap</module>
+		<module>../org.nightlabs.jfire.rap.themes</module>
 		
 		<module>../org.nightlabs.jfire.eclipse.platform.parent</module>
 		<module>../org.nightlabs.jfire.eclipse.platform.target</module>
