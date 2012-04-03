@@ -11,3 +11,5 @@ Require-Bundle: org.nightlabs.clientui.ui,
 Bundle-Localization: plugin
 Export-Package: org.nightlabs.jfire.base.dashboard.ui,
  org.nightlabs.jfire.base.dashboard.ui.action
+Import-Package: org.nightlabs.i18n,
+ org.nightlabs.progress
