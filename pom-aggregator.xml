@@ -28,6 +28,7 @@
 		<module>../org.nightlabs.clientui.ui</module>
 		<module>../org.nightlabs.jdo.query.ui</module>
 		<module>../org.nightlabs.jfire.base.admin.ui</module>
+		<module>../org.nightlabs.jfire.base.dashboard.ui</module>
 		<module>../org.nightlabs.jfire.base.intro.ui</module>
 		<module>../org.nightlabs.jfire.base.j2ee</module>
 		<module>../org.nightlabs.jfire.base.j2ee.osgi</module>
