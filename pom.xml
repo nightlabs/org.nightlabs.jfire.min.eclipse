@@ -65,7 +65,11 @@
 			<artifactId>org.nightlabs.jfire.base.publicbean</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- TODO: add dashboard dependency -->
+		<dependency>
+			<groupId>org.nightlabs.jfire</groupId>
+			<artifactId>org.nightlabs.jfire.dashboard</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
