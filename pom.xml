@@ -93,6 +93,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.nightlabs.jfire.eclipse</groupId>
+			<artifactId>org.nightlabs.jfire.base.dashboard.ui</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nightlabs.jfire.eclipse</groupId>
 			<artifactId>org.nightlabs.jfire.base.login.ui</artifactId>
 		</dependency>
 		<dependency>
