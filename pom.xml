@@ -95,7 +95,7 @@
 							*;resolution:=optional
 						</Import-Package>
 						<Fragment-Host>org.nightlabs.jfire.base.j2ee</Fragment-Host>
-						<Embed-Dependency>*;scope=provided;type=!pom;inline=false</Embed-Dependency>
+						<Embed-Dependency>*;scope=provided;type=!pom;inline=false;artifactId=!slf4j-api</Embed-Dependency>
 						<Embed-StripVersion>true</Embed-StripVersion>
 						<Embed-Directory>lib</Embed-Directory>
 						<Embed-Transitive>false</Embed-Transitive>
