@@ -286,7 +286,6 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<finalName>jfirerap</finalName>
 							<skip>${skipPluginExecution}</skip>
 						</configuration>
 					</execution>
