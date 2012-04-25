@@ -3,7 +3,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.nightlabs.jfire.eclipse</groupId>
 	<artifactId>org.nightlabs.jfire.base.j2ee.rap</artifactId>
 	<packaging>bundle</packaging>
 
@@ -25,11 +24,12 @@
 			<artifactId>org.nightlabs.jdo</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		<!-- see FIXME comment in org.nightlabs.query.jdo pom file, as soon as it is resolved the following should be uncommented -->
+		<!-- dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.query</artifactId>
 			<scope>provided</scope>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.query.jdo</artifactId>
@@ -77,7 +77,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.4</version>
 				<extensions>true</extensions>
 				<inherited>true</inherited>
 				<configuration>
