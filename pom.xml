@@ -84,6 +84,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Import-Package>
+							!org.nightlabs.jdo,
 							javax.jdo,
 							javax.jdo.annotations,
 							javax.jdo.datastore,
