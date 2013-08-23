@@ -71,6 +71,9 @@ public class JFireRCPLoginHandler implements ILoginHandler {
 	 */
 	private static final Logger logger = Logger.getLogger(JFireRCPLoginHandler.class);
 
+	/** System property to disable the initialization of remote classloading **/
+	public static final String SYSTEM_PROPERTY_INITIALIZE_RCL = JFireRCPLoginHandler.class.getName() + ".initializeRCL";
+	
 	/** Constant for the application parameter that overrides the userID */
 	private static final String LOGIN_APP_PARAM_USERID = "login.userID"; //$NON-NLS-1$
 	/** Constant for the application parameter that overrides the users password */
@@ -214,9 +217,20 @@ public class JFireRCPLoginHandler implements ILoginHandler {
 		loginDialog.open();
 	}
 	
+	private static boolean isInitializeRCL() {
+		String sysProp = System.getProperty(SYSTEM_PROPERTY_INITIALIZE_RCL);
+		if ((sysProp == null) || (sysProp.isEmpty()))
+			return true;
+		return Boolean.parseBoolean(sysProp);
+	}
+
 	@Override
 	public boolean needsRestartAfterSuccessfullLogin() 
 	{
+		if (!isInitializeRCL()) {
+			return false;
+		}
+		
 		JFireRCDLDelegate.sharedInstance().register(DelegatingClassLoaderOSGI.getSharedInstance()); // this method does nothing, if already registered.
 		
 		boolean needRestart = false;
