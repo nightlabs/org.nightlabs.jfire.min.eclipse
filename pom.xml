@@ -146,9 +146,13 @@
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.xml</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.nightlabs</groupId> <artifactId>org.nightlabs.jdo</artifactId> 
-			</dependency> -->
-
+		<!-- 
+		Is either provided by RCL or fragment
+		<dependency>
+			<groupId>org.nightlabs</groupId>
+			<artifactId>org.nightlabs.jdo</artifactId> 
+		</dependency>
+ 		-->
 		<dependency>
 			<groupId>org.nightlabs</groupId>
 			<artifactId>org.nightlabs.query.jdo</artifactId>
