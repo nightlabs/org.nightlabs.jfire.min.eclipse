@@ -61,7 +61,7 @@
 						<artifact>
 							<groupId>org.nightlabs.jfire.eclipse.platform</groupId>
 							<artifactId>org.nightlabs.jfire.eclipse.platform.target</artifactId>
-							<version>1.3.2-SNAPSHOT</version>
+							<version>1.3.2</version>
 							<classifier>helios</classifier>
 						</artifact>
 					</target>
