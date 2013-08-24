@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Clientui Plug-in
 Bundle-SymbolicName: org.nightlabs.clientui.ui
-Bundle-Version: 1.3.2.SNAPSHOT
+Bundle-Version: 1.3.2
 Bundle-Activator: org.nightlabs.clientui.ui.ClientUIPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: NightLabs.org
