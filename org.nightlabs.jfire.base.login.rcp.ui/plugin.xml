@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet id="org.nightlabs.jfire.base.ui.login.rcp"
+            label="%org.nightlabs.jfire.base.ui.login.actions.label" visible="true">
+            
+            <menu id="loginMenu" label="%loginMenu.label">
+                <separator name="loginGroup"/>
+                <separator name="changePasswordGroup"/>
+            </menu>
+            
+            <action
+                class="org.nightlabs.jfire.base.login.rcp.ui.action.LoginAction"
+                icon="icons/action/LoginAction-Login.24x24.png"
+                id="org.nightlabs.jfire.base.ui.login.action.LoginAction#toolbar"
+                label="%org.nightlabs.jfire.base.ui.login.action.LoginAction.label"
+                toolbarPath="loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
+            <action
+                class="org.nightlabs.jfire.base.login.rcp.ui.action.LoginAction"
+                icon="icons/action/LoginAction-Login.16x16.png"
+                id="org.nightlabs.jfire.base.ui.login.action.LoginAction#menu"
+                label="%org.nightlabs.jfire.base.ui.login.action.LoginAction.label"
+                menubarPath="loginMenu/loginGroup" tooltip="%org.nightlabs.jfire.base.ui.login.action.LoginAction.toolTip"/>
+        </actionSet>
+   </extension>
+ <extension
+       point="org.nightlabs.jfire.base.login.ui.loginHandler">
+    <loginHandler
+          class="org.nightlabs.jfire.base.login.rcp.ui.JFireRCPLoginHandler">
+    </loginHandler>
+ </extension>
+
+</plugin>
