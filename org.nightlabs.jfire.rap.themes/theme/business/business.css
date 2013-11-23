@@ -1,0 +1,530 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Button */
+
+Button.clearButton {
+  color: #4a4a4a;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 2px;
+}
+
+Button.clearButton:pressed, Button.clearButton:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.clearButton {
+  border: none;
+}
+
+Button.configMenuButton {
+  color: #4a4a4a;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 1px;
+}
+
+Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.configMenuButton{
+  border: none;
+}
+
+Button.viewClose {
+  color: #4a4a4a;
+  background-color: transparent;
+  background-image: url( img/business/stack_tab_active_close_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.viewClose:pressed {
+  background-image: url( img/business/stack_tab_active_close_active.png );
+}
+
+Button.viewClose:hover {
+  background-image: url( img/business/stack_tab_active_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewClose {
+  border: none;
+}
+
+Button.viewCloseInactive {
+  color: #4a4a4a;
+  background-color: transparent;
+  background-image: url( img/business/stack_tab_inactive_close_active.png );
+  border: none;
+}
+
+Button.viewCloseInactive:pressed {
+  background-image: url( img/business/stack_tab_inactive_close_active.png );
+}
+
+Button.viewCloseInactive:hover {
+  background-image: url( img/business/stack_tab_inactive_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewCloseInactive {
+  border: none;
+}
+
+Button.toolbarOverflowInactive {
+  color: #4a4a4a;
+  background-color: transparent;
+  background-image: url( img/business/toolbar_overflow.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowInactive:pressed {
+  background-image: url( img/business/toolbar_overflow.png );
+}
+
+Button.toolbarOverflowInactive:hover {
+  background-image: url( img/business/toolbar_overflow_hover.png );
+}
+
+Button-FocusIndicator.toolbarOverflowInactive {
+  border: none;
+}
+
+Button.toolbarOverflowActive {
+  color: #4a4a4a;
+  background-color: transparent;
+  background-image: url( img/business/toolbar_overflow_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowActive:pressed {
+  background-image: url( img/business/toolbar_overflow_active.png );
+}
+
+Button.toolbarOverflowActive:hover {
+  background-image: url( img/business/toolbar_overflow_hover_active.png );
+}
+
+Button-FocusIndicator.toolbarOverflowActive {
+  border: none;
+}
+
+Button.partActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #fcfcfc;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partActive:pressed, Button.partActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partActive {
+  border: none;
+}
+
+Button.partInactive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #666666;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactive:pressed, Button.partInactive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partInactive {
+  border: none;
+}
+
+Button.partInActiveActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #fcfcfc;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInActiveActive:pressed, Button.partInActiveActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partInActiveActive {
+  border: none;
+}
+
+/* color change: 
+004277 -->  : dark blue -->
+0059a5 --> ff6633 : blue --> orange
+0059a5 -->  : blue -->
+0369bc -->  : light blue -->
+
+links sollten sein:
+	normal: 475054 dunkel grau
+	hover: 8c969b etwas helleres grau
+	active: ff6633 orange
+005091
+
+gray:
+	475054 dark gray
+	8c969b light gray
+	4b4e53 very dark gray, in the header logo
+orange:
+	ff6633 normal orange
+	ea7620 light orange
+*/
+
+Button.perspective {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #474747;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.perspective:hover {
+  /*font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;*/
+  color: #777777;
+  background-image: none;
+}
+
+Button.perspective:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspective {
+  border: none;
+}
+
+Button.perspectiveActive {
+  color: #ff6633;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  /*font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;*/
+}
+
+Button.perspectiveActive:pressed, Button.perspectiveActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspectiveActive {
+  background-color: #999999;
+  border: none;
+}
+
+Button.tabOverflowActive {
+  color: #4a4a4a;
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( img/business/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:pressed {
+  background-image: url( img/business/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:hover {
+  background-image: url( img/business/stack_tab_overflow_active_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowActive {
+  border: none;
+}
+
+Button.tabOverflowInactive {
+  color: #4a4a4a;
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( img/business/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:pressed {
+  background-image: url( img/business/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:hover {
+  background-image: url( img/business/stack_tab_overflow_inactive_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowInactive {
+  border: none;
+}
+
+/* Shell */
+
+.shellGray {
+  background-color: #ebebeb;
+}
+
+Shell.toolbarLayer {
+  background-color: #ffffff;
+  border: none;
+}
+
+Shell-DisplayOverlay.confDialog {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  background-image: none;
+  background-color: #999999;
+  opacity: 0.5;
+}
+
+/* Label */
+
+Label.menuBorder {
+  background-color: #dddddd;
+}
+
+Label.stackBorder {
+  background-color: #ebebeb;
+}
+
+Label.standaloneView {
+  background-color: transparent;
+  border: none;
+  color: #666666;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+/* Custom Variants */
+
+.compGray {
+  background-color: #ebebeb;
+}
+
+.compTrans {
+  background-color: transparent;
+  background-color: #434343;
+}
+
+.partBorder {
+  border: #eb0000;
+}
+
+/* Composite */
+
+Composite.tabActive {
+  border: 1px solid #ff6633; /* the orange border of the selected view-tab */
+  border-radius: 0px 7px 0px 0px;
+}
+
+Composite.tabInactive {
+  border: 1px solid #949494;
+  border-radius: 0px 7px 0px 0px;
+}
+
+Composite.inactiveButton {
+  background-color: transparent;
+  border: none;
+}
+
+/* Header Toolbar */
+
+ToolBar.header-toolbar {
+  padding: 0px 0px 0px 5px;
+  color: white;
+  spacing: 25px;
+}
+
+ToolItem.header-toolbar {
+  color: white;
+  border: none;
+  padding: 3px 5px 3px 7px;
+  spacing: 10px;
+}
+
+ToolItem.header-toolbar:hover {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ea7620 ),
+    to( #ff6633 )
+  );
+  color: white;
+  border: 1px solid #004e8d;
+  padding: 3px 5px 3px 7px;
+}
+
+ToolItem-DropDownIcon.header-toolbar {
+  background-image: url( img/business/toolbar_arrow.png );
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-toolbar:hover {
+  background-image: url( img/business/toolbar_arrow.png );
+  border: 1px solid #004e8d;
+}
+
+Menu.header-toolbar {
+  color: #ff6633;
+  background-color: white;
+  border: 1px solid #475054;
+  border-radius: 0px 0px 2px 2px;
+}
+
+MenuItem.header-toolbar {
+  color: #ff6633;
+}
+
+MenuItem.header-toolbar:hover {
+  color: #0369bc;
+  background-color: transparent;
+}
+
+
+/* Header overflow toolbar */
+
+ToolItem.header-overflow {
+  color: #ea7620;
+  border: none;
+  padding: 0px 25px 0px 0px;
+}
+
+ToolItem.header-overflow:hover {
+  background-color: transparent;
+  color: #ff6633;
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-overflow {
+  background-image: url( img/business/toolbar_overflow_arrow.png );
+}
+
+ToolItem-DropDownIcon.header-overflow:hover {
+  background-image: url( img/business/toolbar_overflow_arrow.png );
+  border: none;
+}
+
+Menu.header-overflow {
+  color: #656565;
+  background-color: white;
+  border: 1px #475054;
+  border-radius: 2px;
+}
+
+MenuItem.header-overflow {
+  color: #474747;
+}
+
+MenuItem.header-overflow:hover {
+  color: #9b9b9b;
+  background-color: transparent;
+}
+
+/* MenuBar */
+
+/* color change: 
+004277 -->  : dark blue -->
+0059a5 --> ff6633 : blue --> orange
+0059a5 -->  : blue -->
+0369bc -->  : light blue -->
+
+links sollten sein:
+	normal: 475054 dunkel grau
+	hover: 8c969b etwas helleres grau
+	active: ff6633 orange
+005091
+*/
+
+ToolBar.menuBar {
+  background-color: transparent;
+  padding: 0px;
+  color: #ff6633;
+  spacing: 25px;
+}
+
+ToolItem.menuBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #474747;
+  padding: 0px 10px 0px 10px;
+  spacing: 5px;
+}
+
+ToolItem.menuBar:active {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #ff6633;
+  padding: 0px 10px 0px 10px;
+  spacing: 5px;
+}
+
+ToolItem.menuBar:hover {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #f1f1f1 )
+  );
+  border: 1px solid #cccccc;
+  border-radius: 2px 2px 0px 0px;
+  color: #9b9b9b;
+  padding: 0px 10px 0px 10px;
+}
+
+ToolItem-DropDownIcon.menuBar {
+  background-image: url( img/business/menu_arrow.png );
+}
+
+ToolItem-DropDownIcon.menuBar:hover {
+  background-image: url( img/business/menu_arrow.png );
+  border: 1px solid #cccccc;
+}
+
+Menu.menuBar {
+  color: #ff6633;
+  background-color: white;
+  border: 1px solid #cccccc;
+  border-radius: 0px 0px 2px 2px;
+}
+
+MenuItem.menuBar {
+  color: #475054;
+}
+
+MenuItem.menuBar:hover {
+  color: #8c969b;
+  background-color: transparent;
+}
+
+/* View ToolBar */
+
+ToolBar.viewToolbar {
+  background-color: transparent;
+  padding: 1px 2px;
+  spacing: 2px;
+}
+
+ToolItem.viewToolbar {
+  border: none;
+}
+
+ToolItem:selected.viewToolbar {
+  padding: 0px;
+  border: 1px solid #ff6633;
+}
+
+ToolItem-DropDownIcon.viewToolbar {
+  background-image: url( img/business/viewMenu.png );
+  border: none;
+}
