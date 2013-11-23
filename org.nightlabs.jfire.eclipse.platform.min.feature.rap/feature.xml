@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feature id="org.nightlabs.jfire.eclipse.platform.min.feature.rap" label="Feature" provider-name="NightLabs GmbH" version="1.3.3.qualifier">
+
+   <plugin download-size="0" id="org.eclipse.rap.ui.workbench" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.xml.resolver" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.help" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.xerces" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.jasper" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="com.ibm.icu.base" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.databinding.property" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.rap.rwt" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.databinding.observable" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="javax.xml" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.rap.ui.views" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.osgi" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.common" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.xml.serializer" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.preferences" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.log4j" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.jsp.jasper" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.rap.ui" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.app" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.expressions" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.databinding" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.contenttype" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.rap.jface" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.rap.ui.forms" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="javax.servlet.jsp" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.ant" install-size="0" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.jobs" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.commons.el" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.runtime.compatibility.auth" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" fragment="true" id="org.eclipse.core.runtime.compatibility.registry" install-size="0" version="0.0.0"/>
+
+   <plugin download-size="0" fragment="true" id="org.eclipse.equinox.servletbridge.extensionbundle" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.registry" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.http.registry" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.rap.jface.databinding" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.runtime" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="com.ibm.icu" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" fragment="true" id="org.eclipse.rap.rwt.q07" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.osgi.services" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.core.commands" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.commons.codec" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.commons.lang" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.eclipse.equinox.http.servlet" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" fragment="true" id="org.eclipse.equinox.http.servletbridge" install-size="0" unpack="false" version="0.0.0"/>
+
+   <plugin download-size="0" id="org.apache.commons.logging" install-size="0" unpack="false" version="0.0.0"/>
+
+</feature>
