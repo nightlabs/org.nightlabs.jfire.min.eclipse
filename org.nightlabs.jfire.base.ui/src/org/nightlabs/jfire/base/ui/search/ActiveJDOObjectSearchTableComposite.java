@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.jdo;
+package org.nightlabs.jfire.base.ui.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +23,8 @@ import org.nightlabs.base.ui.table.AbstractTableComposite;
 import org.nightlabs.base.ui.table.TableContentProvider;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener;
+import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
+import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectTableListener;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.util.CollectionUtil;
 
@@ -35,7 +37,7 @@ import org.nightlabs.util.CollectionUtil;
  * </p>
  * @author Alexander Bieber <!-- alex [AT] nightlabs [DOT] de -->
  */
-public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> extends
+public abstract class ActiveJDOObjectSearchTableComposite<JDOObjectID, JDOObject> extends
 		AbstractTableComposite<JDOObject> {
 
 	/**
@@ -72,28 +74,27 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	
 	private ContentProvider contentProvider;
 
-	private IActiveJDOObjectController<JDOObjectID, JDOObject> controller;
+	private ActiveJDOObjectSearchController<JDOObjectID, JDOObject> controller;
 
 	private ListenerList tableListeners = new ListenerList();
 
-	public ActiveJDOObjectTableComposite(Composite parent, int style) {
+	public ActiveJDOObjectSearchTableComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 
-	public ActiveJDOObjectTableComposite(Composite parent, int style, int viewerStyle) {
+	public ActiveJDOObjectSearchTableComposite(Composite parent, int style, int viewerStyle) {
 		super(parent, style, true, viewerStyle);
 	}
 
-	protected abstract IActiveJDOObjectController<JDOObjectID, JDOObject> createActiveJDOObjectController();
+	protected abstract ActiveJDOObjectSearchController<JDOObjectID, JDOObject> createActiveJDOObjectController();
 
-	protected IActiveJDOObjectController<JDOObjectID, JDOObject> getActiveJDOObjectController() {
+	protected ActiveJDOObjectSearchController<JDOObjectID, JDOObject> getActiveJDOObjectController() {
 		if (controller == null) {
 			controller = createActiveJDOObjectController();
 			initController(controller);
 		}
 		return controller;
 	}
-
 	protected abstract ITableLabelProvider createLabelProvider();
 
 	/**
@@ -128,9 +129,8 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 	 * Initialises the controller for this table and adds a listener to react to
 	 * changed and deleted objects.
 	 */
-	private void initController(final IActiveJDOObjectController<JDOObjectID, JDOObject> controller)
+	private void initController(ActiveJDOObjectSearchController<JDOObjectID, JDOObject> controller)
 	{
-		assert controller != null;
 		// add the listener.
 		final JDOObjectsChangedListener<JDOObjectID, JDOObject> jdoObjectsChangedListener = new JDOObjectsChangedListener<JDOObjectID, JDOObject>() {
 			public void onJDOObjectsChanged(JDOObjectsChangedEvent<JDOObjectID, JDOObject> event) {
@@ -188,13 +188,10 @@ public abstract class ActiveJDOObjectTableComposite<JDOObjectID, JDOObject> exte
 				}
 			}
 		};
-		controller.addJDOObjectsChangedListener(jdoObjectsChangedListener);
-
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent arg0)
 			{
-				controller.close();
 				tableListeners.clear();
 			}
 		});

@@ -14,6 +14,7 @@ import org.nightlabs.base.ui.tree.TreeContentProvider;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController;
+import org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController;
 import org.nightlabs.jfire.jdo.notification.IJDOLifecycleListenerFilter;
 import org.nightlabs.progress.ProgressMonitor;
 
@@ -112,8 +113,8 @@ extends EntityTreeCategory
 	 */
 	protected abstract void sortJDOObjects(List<JDOObject> objects);
 
-	private ActiveJDOObjectController<JDOObjectID, JDOObject> activeJDOObjectController;
-	protected ActiveJDOObjectController<JDOObjectID, JDOObject> getActiveJDOObjectController()
+	private IActiveJDOObjectController<JDOObjectID, JDOObject> activeJDOObjectController;
+	protected IActiveJDOObjectController<JDOObjectID, JDOObject> getActiveJDOObjectController()
 	{
 		if (activeJDOObjectController == null)
 			activeJDOObjectController = new ActiveEntityTreeCategoryJDOObjectController();
