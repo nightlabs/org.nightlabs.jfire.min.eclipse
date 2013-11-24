@@ -1,4 +1,4 @@
-package org.nightlabs.jfire.base.ui.jdo;
+package org.nightlabs.jfire.base.ui.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.jdo.JDOHelper;
 
@@ -22,6 +23,7 @@ import org.nightlabs.jfire.base.jdo.JDOObjectsChangedEvent;
 import org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleEvent;
 import org.nightlabs.jfire.base.jdo.notification.JDOLifecycleListener;
+import org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController;
 import org.nightlabs.jfire.base.ui.jdo.notification.JDOLifecycleAdapterJob;
 import org.nightlabs.jfire.base.ui.resource.Messages;
 import org.nightlabs.jfire.jdo.notification.DirtyObjectID;
@@ -36,21 +38,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A subclass should be instantiated to show data in an UI element ({@link org.eclipse.swt.widgets.List}, {@link org.eclipse.swt.widgets.Combo}, table and the like).
- * This controller will retrieve the data and update the UI element whenever this data changes or new instances are created (matching the filter criteria).
- * <p>
- * Note, that this class is not appropriate for tree structures. For managing trees, use the {@link org.nightlabs.jfire.base.ui.jdo.tree.ActiveJDOObjectTreeController} instead.
- * </p>
- * <p>
- * More details about how to use this class can be found in our wiki:
- * <a href="https://www.jfire.org/modules/phpwiki/index.php/ActiveJDOObjectController">https://www.jfire.org/modules/phpwiki/index.php/ActiveJDOObjectController</a>
- * </p>
- *
- * @author Marco Schulze - marco at nightlabs dot de
  */
-public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implements IActiveJDOObjectController<JDOObjectID, JDOObject>
+public abstract class ActiveJDOObjectSearchController<JDOObjectID, JDOObject> implements IActiveJDOObjectController<JDOObjectID, JDOObject>
 {
-	private static final Logger logger = LoggerFactory.getLogger(ActiveJDOObjectController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActiveJDOObjectSearchController.class);
 
 	/**
 	 * This method is called on a worker thread and must retrieve JDO objects for
@@ -123,19 +114,11 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implemen
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController#addJDOObjectsChangedListener(org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener)
-	 */
-	@Override
 	public void addJDOObjectsChangedListener(JDOObjectsChangedListener<JDOObjectID, JDOObject> listener)
 	{
 		jdoObjectsChangedListeners.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController#removeJDOObjectsChangedListener(org.nightlabs.jfire.base.jdo.JDOObjectsChangedListener)
-	 */
-	@Override
 	public void removeJDOObjectsChangedListener(JDOObjectsChangedListener<JDOObjectID, JDOObject> listener)
 	{
 		jdoObjectsChangedListeners.remove(listener);
@@ -181,137 +164,97 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implemen
 
 		public void notify(final JDOLifecycleEvent event)
 		{
-			final Collection<JDOObject> loadedJDOObjects;
-			final Set<JDOObjectID> ignoredJDOObjectIDs;
-			final Map<JDOObjectID, JDOObject> ignoredJDOObjects;
-			synchronized (jdoObjectID2jdoObjectMutex) {
-				if (jdoObjectID2jdoObject == null)
-					return; // nothing loaded yet
-
-				HashSet<JDOObjectID> jdoObjectIDsToLoad = new HashSet<JDOObjectID>();
-				for (DirtyObjectID dirtyObjectID : event.getDirtyObjectIDs()) {
-					@SuppressWarnings("unchecked")
-					JDOObjectID jdoObjectID = (JDOObjectID) dirtyObjectID.getObjectID();
-					// only load it, if it's really new - i.e. we don't have it yet!
-					if (!jdoObjectID2jdoObject.containsKey(jdoObjectID) && isIntegrateNewObject(jdoObjectID))
-						jdoObjectIDsToLoad.add(jdoObjectID);
+			
+			Set<JDOObjectID> changedIDs = new HashSet<JDOObjectID>();
+			// The lifecycleListener is registered only for JDOLifecylceState.NEW by default, but this might be overwritten
+			SortedSet<DirtyObjectID> dirtyObjectIDs = event.getDirtyObjectIDs();
+			for (DirtyObjectID dirtyObjectID : dirtyObjectIDs) {
+				if (dirtyObjectID.getLifecycleState() == JDOLifecycleState.DIRTY) {
+					changedIDs.add((JDOObjectID) dirtyObjectID.getObjectID());
 				}
-
-				if (!jdoObjectIDsToLoad.isEmpty()) {
-					// Note: retrieveJDOObjects might not return all objects to the given Collection.
-					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMonitor());
-					loadedJDOObjects = jdoObjects;
-					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
-					if (jdoObjects != null) {
-						for (JDOObject jdoObject : jdoObjects) {
-							@SuppressWarnings("unchecked")
-							JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
-							ignoredJDOObjectIDs.remove(jdoObjectID);
-							jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
-						}
-					}
-					if (ignoredJDOObjectIDs.isEmpty())
-						ignoredJDOObjects = null;
-					else {
-						ignoredJDOObjects = new HashMap<JDOObjectID, JDOObject>(ignoredJDOObjectIDs.size());
-						for (JDOObjectID jdoObjectID : ignoredJDOObjectIDs) {
-							JDOObject jdoObject = jdoObjectID2jdoObject.remove(jdoObjectID);
-							ignoredJDOObjects.put(jdoObjectID, jdoObject);
-						}
-					}
-
-					createJDOObjectList();
-				}
-				else {
-					loadedJDOObjects = null;
-					ignoredJDOObjects = null;
-					ignoredJDOObjectIDs = null;
-				}
-			} // synchronized (jdoObjectID2jdoObjectMutex) {
-
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run()
-				{
-					if (loadedJDOObjects != null)
-						fireJDOObjectsChangedEvent(loadedJDOObjects, ignoredJDOObjects, null);
-				}
-			});
+			}
+			handleChangeNotification(changedIDs, getProgressMonitor());	
 		}
+
 	};
 
 	private NotificationListener notificationListener = new NotificationAdapterJob(Messages.getString("org.nightlabs.jfire.base.ui.jdo.ActiveJDOObjectController.loadingChangedObjectsJob")) //$NON-NLS-1$
 	{
 		public void notify(final NotificationEvent notificationEvent)
 		{
-			final Collection<JDOObject> loadedJDOObjects;
-			final Set<JDOObjectID> ignoredJDOObjectIDs;
-			final Map<JDOObjectID, JDOObject> ignoredJDOObjects;
-			final Map<JDOObjectID, JDOObject> deletedJDOObjects;
-
-			synchronized (jdoObjectID2jdoObjectMutex) {
-				if (jdoObjectID2jdoObject == null)
-					return; // nothing loaded yet
-
-				HashSet<JDOObjectID> jdoObjectIDsToLoad = new HashSet<JDOObjectID>();
-				Map<JDOObjectID, JDOObject> _deletedJDOObjects = null;
-				for (SubjectCarrier subjectCarrier : (List<? extends SubjectCarrier>)notificationEvent.getSubjectCarriers()) {
-					DirtyObjectID dirtyObjectID = (DirtyObjectID) subjectCarrier.getSubject();
-					@SuppressWarnings("unchecked")
-					JDOObjectID jdoObjectID = (JDOObjectID) dirtyObjectID.getObjectID();
-
-					if (JDOLifecycleState.DELETED.equals(dirtyObjectID.getLifecycleState())) {
-						JDOObject jdoObject = jdoObjectID2jdoObject.remove(jdoObjectID);
-						if (_deletedJDOObjects == null)
-							_deletedJDOObjects = new HashMap<JDOObjectID, JDOObject>();
-						_deletedJDOObjects.put(jdoObjectID, jdoObject);
-						jdoObjectIDsToLoad.remove(jdoObjectID);
-					}
-					else if (jdoObjectID2jdoObject.containsKey(jdoObjectID) && isIntegrateNewObject(jdoObjectID)) // only load it, if it's already here
-						jdoObjectIDsToLoad.add(jdoObjectID);
+			Set<JDOObjectID> changedIDs = new HashSet<JDOObjectID>();
+			List<SubjectCarrier> subjectCarriers = notificationEvent.getSubjectCarriers();
+			for (SubjectCarrier subjectCarrier : subjectCarriers) {
+				DirtyObjectID dirtyObjectID = (DirtyObjectID) subjectCarrier.getSubject();
+				if (dirtyObjectID.getLifecycleState() == JDOLifecycleState.DIRTY) {
+					changedIDs.add((JDOObjectID) dirtyObjectID.getObjectID());
 				}
-
-				if (!jdoObjectIDsToLoad.isEmpty()) {
-					Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, getProgressMonitor());
-					ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
-					loadedJDOObjects = jdoObjects;
-					for (JDOObject jdoObject : jdoObjects) {
-						@SuppressWarnings("unchecked")
-						JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
-						ignoredJDOObjectIDs.remove(jdoObjectID);
-						jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
-					}
-					if (ignoredJDOObjectIDs.isEmpty())
-						ignoredJDOObjects = null;
-					else {
-						ignoredJDOObjects = new HashMap<JDOObjectID, JDOObject>(ignoredJDOObjectIDs.size());
-						for (JDOObjectID jdoObjectID : ignoredJDOObjectIDs) {
-							JDOObject jdoObject = jdoObjectID2jdoObject.remove(jdoObjectID);
-							ignoredJDOObjects.put(jdoObjectID, jdoObject);
-						}
-					}
-
-					createJDOObjectList();
-				}
-				else {
-					ignoredJDOObjectIDs = null;
-					ignoredJDOObjects = null;
-					loadedJDOObjects = null;
-				}
-
-				deletedJDOObjects = _deletedJDOObjects;
-			} // synchronized (jdoObjectID2jdoObjectMutex) {
-
-			Display.getDefault().asyncExec(new Runnable()
-			{
-				public void run()
-				{
-					notificationEvent.getSubjectCarriers();
-					fireJDOObjectsChangedEvent(loadedJDOObjects, ignoredJDOObjects, deletedJDOObjects);
-				}
-			});
+			}
+			handleChangeNotification(changedIDs, getProgressMonitor());
 		}
 	};
 
+	private void handleChangeNotification(Set<JDOObjectID> changedObjectIDs, ProgressMonitor monitor) {
+		Collection<JDOObjectID> newSearchResult = searchJDOObjectIDs();
+		HashSet<JDOObjectID> jdoObjectIDsToLoad = new HashSet<JDOObjectID>();
+		HashSet<JDOObjectID> deletedObjectIDs = new HashSet<JDOObjectID>(jdoObjectID2jdoObject.keySet());
+		final Map<JDOObjectID, JDOObject> deletedObjects = new HashMap<JDOObjectID, JDOObject>();
+		
+		for (JDOObjectID jdoObjectID : newSearchResult) {
+			if (changedObjectIDs.contains(jdoObjectID) || !jdoObjectID2jdoObject.containsKey(jdoObjectID)) {
+				jdoObjectIDsToLoad.add(jdoObjectID);
+			}
+			deletedObjectIDs.remove(jdoObjectID);
+		}
+		Collection<JDOObject> deletedObjectsList = retrieveJDOObjects(deletedObjectIDs, monitor);
+		for (JDOObject jdoObject : deletedObjectsList) {
+			JDOObjectID deletedObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
+			jdoObjectID2jdoObject.remove(deletedObjectID);
+			deletedObjects.put(deletedObjectID, jdoObject);
+		}
+		
+		final Map<JDOObjectID, JDOObject> ignoredJDOObjects = new HashMap<JDOObjectID, JDOObject>();
+		if (!jdoObjectIDsToLoad.isEmpty()) {
+			// Note: retrieveJDOObjects might not return all objects to the given Collection.
+			Collection<JDOObject> jdoObjects = retrieveJDOObjects(jdoObjectIDsToLoad, monitor);
+			integrateLoadedObjectAndComputeIgnoredObjects(jdoObjectIDsToLoad, jdoObjects, ignoredJDOObjects);
+		}
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run()
+			{
+				fireJDOObjectsChangedEvent(jdoObjectID2jdoObject.values(), ignoredJDOObjects, deletedObjects);
+			}
+		});
+	}
+
+	private Map<JDOObjectID, JDOObject> integrateLoadedObjectAndComputeIgnoredObjects(
+			HashSet<JDOObjectID> jdoObjectIDsToLoad,
+			Collection<JDOObject> jdoObjects, Map<JDOObjectID, JDOObject> ignoredJDOObjects) {
+		final Set<JDOObjectID> ignoredJDOObjectIDs;
+		ignoredJDOObjectIDs = new HashSet<JDOObjectID>(jdoObjectIDsToLoad);
+		if (jdoObjects != null) {
+			for (JDOObject jdoObject : jdoObjects) {
+				@SuppressWarnings("unchecked")
+				JDOObjectID jdoObjectID = (JDOObjectID) JDOHelper.getObjectId(jdoObject);
+				ignoredJDOObjectIDs.remove(jdoObjectID);
+				jdoObjectID2jdoObject.put(jdoObjectID, jdoObject);
+			}
+		}
+		if (ignoredJDOObjectIDs.isEmpty())
+			ignoredJDOObjects = null;
+		else {
+			ignoredJDOObjects = new HashMap<JDOObjectID, JDOObject>(ignoredJDOObjectIDs.size());
+			for (JDOObjectID jdoObjectID : ignoredJDOObjectIDs) {
+				JDOObject jdoObject = jdoObjectID2jdoObject.remove(jdoObjectID);
+				ignoredJDOObjects.put(jdoObjectID, jdoObject);
+			}
+		}
+		return ignoredJDOObjects;
+	}
+
+	protected abstract Collection<JDOObjectID> searchJDOObjectIDs();
+	
 	private boolean listenersExist = false;
 	private boolean closed = false;
 
@@ -321,10 +264,10 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implemen
 			throw new IllegalStateException("This instance of ActiveJDOObjectController is already closed: " + this); //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController#close()
+	/**
+	 * You <b>must</b> call this method once you don't need this controller anymore.
+	 * It performs some clean-ups, e.g. unregistering all listeners.
 	 */
-	@Override
 	public void close()
 	{
 		assertOpen();
@@ -348,10 +291,13 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implemen
 		sortJDOObjects(jdoObjects);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController#getJDOObjects()
+	/**
+	 * This method will immediately return. If there is no data available yet, this method will return <code>null</code>
+	 * and a {@link Job} will be launched in order to fetch the data.
+	 *
+	 * @return <code>null</code>, if there is no data here yet. An instance of {@link List} containing
+	 *		jdo objects. If a modification happened, this list will be recreated.
 	 */
-	@Override
 	public List<JDOObject> getJDOObjects()
 	{
 		assertOpen();
@@ -394,7 +340,7 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implemen
 						if (closed) {
 							// Even though fireJDOObjectsChangedEvent(...) checks the closed state,
 							// we'll get an exception due to the call to getJDOObjects(). Hence we check hre again.
-							logger.warn("getJDOObjects.job.run: already closed: " + ActiveJDOObjectController.this); //$NON-NLS-1$
+							logger.warn("getJDOObjects.job.run: already closed: " + ActiveJDOObjectSearchController.this); //$NON-NLS-1$
 							return;
 						}
 
@@ -411,10 +357,11 @@ public abstract class ActiveJDOObjectController<JDOObjectID, JDOObject> implemen
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nightlabs.jfire.base.ui.jdo.IActiveJDOObjectController#clearCache()
+	/**
+	 * This method clears the currently existing cache of JDOObjects.
+	 * This is necessary in if I am controlling a UI showing sensitive data that is not allowed to be
+	 * shown to every user. So the UI may check for User changes and clear my caches.
 	 */
-	@Override
 	public void clearCache()
 	{
 		assertOpen();
