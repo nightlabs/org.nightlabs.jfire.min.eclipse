@@ -167,27 +167,28 @@ public class BlockBasedEditor extends AbstractBlockBasedEditor {
 
 		public void dataBlockEditorChanged(DataBlockEditorChangedEvent changedEvent) {
 			if (!refreshing) {
-				DataBlockEditor dataBlockEditor = changedEvent.getDataBlockEditor();
-				DataFieldEditor<? extends DataField> dataFieldEditor = changedEvent.getDataFieldEditor();
-				Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
-				StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup());
-				if (structBlock.getDataBlockValidators().size() > 0) {
-					// if there are validators for the block we have to update the propertySet
-					// i.e. write the data from the editor to the property set
-					dataFieldEditor.updatePropertySet();
-					updateDisplayName();
-					refreshDisplayNameComp();
-				} else {
-					for (DisplayNamePart part : parts) {
-						if (dataFieldEditor.getStructField().equals(part.getStructField())) {
-							dataFieldEditor.updatePropertySet();
-							updateDisplayName();
-							refreshDisplayNameComp();
-							break;
+				if (changedEvent != null) {
+					DataBlockEditor dataBlockEditor = changedEvent.getDataBlockEditor();
+					DataFieldEditor<? extends DataField> dataFieldEditor = changedEvent.getDataFieldEditor();
+					Collection<DisplayNamePart> parts = dataBlockEditor.getStruct().getDisplayNameParts();
+					StructBlock structBlock = dataBlockEditor.getStruct().getStructBlock(dataBlockEditor.getDataBlock().getDataBlockGroup());
+					if (structBlock.getDataBlockValidators().size() > 0) {
+						// if there are validators for the block we have to update the propertySet
+						// i.e. write the data from the editor to the property set
+						dataFieldEditor.updatePropertySet();
+						updateDisplayName();
+						refreshDisplayNameComp();
+					} else {
+						for (DisplayNamePart part : parts) {
+							if (dataFieldEditor.getStructField().equals(part.getStructField())) {
+								dataFieldEditor.updatePropertySet();
+								updateDisplayName();
+								refreshDisplayNameComp();
+								break;
+							}
 						}
 					}
 				}
-
 				Object[] listeners = changeListeners.getListeners();
 				for (Object listener : listeners) {
 					if (listener instanceof DataBlockEditorChangedListener) {
