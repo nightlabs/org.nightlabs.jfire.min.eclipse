@@ -26,7 +26,8 @@ public class DashboardGadgetContainer implements IDashboardGadgetContainer {
 	
 	private Composite gadgetControl;
 	
-	public DashboardGadgetContainer(ToolBarSectionPart sectionPart, IDashboardGadgetFactory gadgetFactory) {
+	public DashboardGadgetContainer(ToolBarSectionPart sectionPart, IDashboardGadgetFactory gadgetFactory,DashboardGadgetLayoutEntry<?> layoutEntry) {
+		this.layoutEntry = layoutEntry;
 		this.sectionPart = sectionPart;
 		this.gadgetFactory = gadgetFactory;
 		if (gadgetFactory != null) {
@@ -47,6 +48,7 @@ public class DashboardGadgetContainer implements IDashboardGadgetContainer {
 	
 	public void refreshGadget() {
 		sectionPart.getSection().setText(layoutEntry.getName());
+		sectionPart.getSection().getParent().layout();
 		if (gadget != null) {
 			gadget.refresh();
 		}

@@ -193,7 +193,7 @@ public class DashboardView extends LSDViewPart {
 		gridData.verticalAlignment = SWT.BEGINNING;
 		gadgetSection.getSection().setLayoutData(gridData);
 		IDashboardGadgetFactory gadgetFactory = DashboardGadgetRegistry.sharedInstance().getFactory(layoutEntry.getEntryType());
-		return new DashboardGadgetContainer(gadgetSection, gadgetFactory);
+		return new DashboardGadgetContainer(gadgetSection, gadgetFactory,layoutEntry);
 	}
 	
 	

@@ -1,5 +1,6 @@
 package org.nightlabs.jfire.base.dashboard.ui;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.nightlabs.jfire.dashboard.DashboardGadgetLayoutEntry;
 
 /**
@@ -19,4 +20,8 @@ public interface IDashboardGadgetContainer {
 	 */
 	void setTitle(String title);
 
+	/**
+	 * @return The toolbar of the gadget
+	 */
+	IToolBarManager getToolBarManager();
 }
