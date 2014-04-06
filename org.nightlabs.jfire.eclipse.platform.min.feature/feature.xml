@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<feature id="org.nightlabs.jfire.eclipse.platform.min.feature" label="JFire Min Feature" provider-name="NightLabs GmbH" version="1.3.3.qualifier">
+<feature id="org.nightlabs.jfire.eclipse.platform.min.feature" label="JFire Min Feature" provider-name="NightLabs GmbH" version="1.3.3">
 
    <plugin download-size="0" id="org.apache.log4j" install-size="0" unpack="false" version="0.0.0"/>
 
