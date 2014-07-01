@@ -313,6 +313,11 @@
             id="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor"
             name="%org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityTypeEditor.name"/>
         <editor
+            class="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityMetaEditor"
+            default="false" icon="icons/keys.png"
+            id="org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityMetaEditor"
+            name="%org.nightlabs.jfire.base.admin.ui.editor.authoritytype.AuthorityMetaEditor.name"/>
+        <editor
               class="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.LocalOrganisationEditor"
               icon="icons/editor/localorganisation/LocalOrganisationEditor.16x16.png"
               id="org.nightlabs.jfire.base.admin.ui.editor.localorganisation.OrganisationEditor"
